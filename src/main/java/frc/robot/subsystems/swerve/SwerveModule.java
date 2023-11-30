@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -25,20 +26,26 @@ public class SwerveModule {
 
     private static final double STEER_VOLTS_RADIANS = 1; //STUB
 
+    private static final double STEER_P = 0;
+    private static final double STEER_I = 0;
+    private static final double STEER_D = 0;
+    private static final double STEER_FF = 0;
+
     public SwerveModule(int drivePort, int steerPort, double offsetRads, boolean falcon) {
         
         driveMotor = falcon ? new FalconDriveMotor(drivePort) : new NEODriveMotor(drivePort);
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
+        steerMotor.setIdleMode(IdleMode.kBrake);
 
         steerAbsoluteEncoder = steerMotor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
         steerAbsoluteEncoder.setPositionConversionFactor(STEER_VOLTS_RADIANS);
 
         steerPidController = MotorUtil.createSparkMaxPIDController(steerMotor, steerAbsoluteEncoder);
-        steerPidController.setP(0);
-        steerPidController.setI(0);
-        steerPidController.setD(0);
-        steerPidController.setFF(0);
+        steerPidController.setP(STEER_P);
+        steerPidController.setI(STEER_I);
+        steerPidController.setD(STEER_D);
+        steerPidController.setFF(STEER_FF);
 
         steerPidController.setPositionPIDWrappingEnabled(true);
         steerPidController.setPositionPIDWrappingMinInput(0.0);
