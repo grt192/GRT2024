@@ -16,4 +16,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class TestSingleModuleSwerveConstants {
+    public static final double POWER = 0.5;
+    public static final int TURNGAP = 2;
+  }
 }
