@@ -101,4 +101,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         testCase = (testCase == 0) ? 8 : testCase - 1;
     }
 
+    public void toggletoRun(){
+        toRun = !toRun;
+    }
+
 }

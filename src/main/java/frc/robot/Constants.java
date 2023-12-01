@@ -18,6 +18,6 @@ public final class Constants {
   }
   public static class TestSingleModuleSwerveConstants {
     public static final double POWER = 0.5;
-    public static final int TURNGAP = 2;
+    public static final double TURNGAP = 2;
   }
 }

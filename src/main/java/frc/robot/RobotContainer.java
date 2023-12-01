@@ -34,11 +34,12 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
       
-  private final XboxController mechController = new XboxController(2);
+  private final XboxController Controller = new XboxController(2);
 
   private final JoystickButton
-    LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
-    RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
+    LBumper = new JoystickButton(Controller, XboxController.Button.kLeftBumper.value),
+    RBumper = new JoystickButton(Controller, XboxController.Button.kRightBumper.value),
+    AButton = new JoystickButton(Controller, XboxController.Button.kA.value);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
@@ -71,6 +72,10 @@ public class RobotContainer {
       testSingleModuleSwerveSubsystem.incrementTest();
     }
     ));
+
+    AButton.onTrue(new InstantCommand(() -> {
+      testSingleModuleSwerveSubsystem.toggletoRun();
+    }));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
