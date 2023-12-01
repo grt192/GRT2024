@@ -65,16 +65,19 @@ public class RobotContainer {
 
     LBumper.onTrue(new InstantCommand(() -> {
       testSingleModuleSwerveSubsystem.decrementTest();
+      System.out.println(testSingleModuleSwerveSubsystem.getTest());
     }
     ));
 
     RBumper.onTrue(new InstantCommand(() -> {
       testSingleModuleSwerveSubsystem.incrementTest();
+      System.out.println(testSingleModuleSwerveSubsystem.getTest());
     }
     ));
 
     AButton.onTrue(new InstantCommand(() -> {
       testSingleModuleSwerveSubsystem.toggletoRun();
+      System.out.println(testSingleModuleSwerveSubsystem.getRunning() ? "Running" : "Not running")
     }));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,

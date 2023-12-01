@@ -105,4 +105,12 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         toRun = !toRun;
     }
 
+    public int getTest(){
+        return testCase;
+    }
+
+    public boolean getRunning(){
+        return toRun;
+    }
+
 }
