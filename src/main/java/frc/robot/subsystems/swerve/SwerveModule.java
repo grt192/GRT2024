@@ -24,16 +24,31 @@ public class SwerveModule {
 
     private double offsetRads;
 
-    private static final double STEER_VOLTS_RADIANS = 1; //STUB
+    private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 5 ; //TODO: test this, 5V is the encoder voltage so should work?
 
-    private static final double STEER_P = 0;
-    private static final double STEER_I = 0;
-    private static final double STEER_D = 0;
-    private static final double STEER_FF = 0;
+    // TODO: tune PIDs, comments are 2023 constants
+    private static final double DRIVE_P = 0; // .05
+    private static final double DRIVE_I = 0; // 0
+    private static final double DRIVE_D = 0; // 0
+    private static final double DRIVE_FF = 0; // 0.186697057706
 
+    private static final double STEER_P = 0; // 1.0
+    private static final double STEER_I = 0; // 0
+    private static final double STEER_D = 0; // 0
+    private static final double STEER_FF = 0; // 0
+
+    /**
+     * Constructs a Swerve Module
+     * @param drivePort The CAN ID of the drive motor
+     * @param steerPort The CAN ID of the steer motor
+     * @param offsetRads The offset of the absolute encoder
+     * @param falcon Whether this is a falcon or not
+     */
     public SwerveModule(int drivePort, int steerPort, double offsetRads, boolean falcon) {
         
         driveMotor = falcon ? new FalconDriveMotor(drivePort) : new NEODriveMotor(drivePort);
+
+        driveMotor.configPID(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
         steerMotor.setIdleMode(IdleMode.kBrake);
@@ -55,24 +70,28 @@ public class SwerveModule {
     }
 
     /**
-     * Default to Falcon motor
-     * @param drivePort
-     * @param steerPort
-     * @param offsetRads
+     * Defaults to Falcon motor
+     * @param drivePort The CAN ID of the drive motor
+     * @param steerPort The CAN ID of the steer motor
+     * @param offsetRads THe offset of the absolute encoder
      */
     public SwerveModule(int drivePort, int steerPort, double offsetRads){
         this(drivePort, steerPort, offsetRads, true);
     }
 
     /**
-     * Default to no offset rads
-     * @param drivePort
-     * @param steerPort
+     * Defaults to no offset rads
+     * @param drivePort The CAN ID of the drive motor
+     * @param steerPort The CAN ID of the steer motor
      */
     public SwerveModule(int drivePort, int steerPort){
         this(drivePort, steerPort, 0.0, true);
     }
 
+    /**
+     * Gets the current state of the swerve module
+     * @return The current SwerveModulePosition of this module
+     */
     public SwerveModulePosition getState(){
         return new SwerveModulePosition(
             driveMotor.getDistance(),
@@ -80,6 +99,11 @@ public class SwerveModule {
         );
     }
 
+    /**
+     * Sets the desired state of this swerve module
+     * Does this through setting the PID targets
+     * @param state The desired SwerveModuleState
+     */
     public void setDesiredState(SwerveModuleState state) {
         Rotation2d currentAngle = getWrappedAngle();
         SwerveModuleState optimized = SwerveModuleState.optimize(state, currentAngle);
@@ -94,16 +118,30 @@ public class SwerveModule {
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
 
+    /**
+     * Sets the raw powers of the swerve module
+     * @param drivePower The power for the drive motor
+     * @param steerPower The power for the steer motor
+     */
     public void setRawPowers(double drivePower, double steerPower){
         driveMotor.setPower(drivePower);
         steerMotor.set(steerPower);
     }
 
+    /**
+     * Sets the raw power for the drive motor, with PID reference for the steer motor
+     * @param drivePower The power for the drive motor
+     * @param angleRads The requested angle for the steer motor
+     */
     public void setRawPowersWithAngle(double drivePower, double angleRads){        
         driveMotor.setPower(drivePower);
         steerPidController.setReference(angleRads, ControlType.kPosition);
     }
 
+    /**
+     * Gets the current angle of the module
+     * @return Wrapped angle in radians from -pi to pi
+     */
     private Rotation2d getWrappedAngle(){
         double angleRads = steerAbsoluteEncoder.getPosition();
         double wrappedAngleRads = MathUtil.angleModulus(angleRads + offsetRads);

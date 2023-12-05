@@ -13,6 +13,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     private double steer;
 
     private Timer crimer;
+    private double crime = 0;
 
     public TestSingleModuleSwerveSubsystem(SwerveModule module){
         super(module);
@@ -32,7 +33,17 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             super.setRawPowers(0, 0);
             return;
         }
+
+        // These are the different test cases as requested by Alex
         switch(testCase) {
+            case 0:
+                //WEAR IN GEARS
+                if(crimer.advanceIfElapsed(crime)){
+                    drive = POWER * (Math.floor(Math.random() * 2) * 2) - 1; //Either 1 or -1
+                    steer = POWER * (Math.floor(Math.random() * 2) * 2) - 1;
+                    
+                    crime = Math.random() * 20 + 20;
+                }
             case 1:
                 //DRIVE FORWARD
                 drive = POWER;
@@ -94,11 +105,13 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     }
 
     public void incrementTest(){
-        testCase = (testCase == 8) ? 0 : testCase + 1 ;
+        testCase = (testCase == 12) ? 0 : testCase + 1;
+        crime = 0;
     }
 
     public void decrementTest(){
-        testCase = (testCase == 0) ? 8 : testCase - 1;
+        testCase = (testCase == 0) ? 12 : testCase - 1;
+        crime = 0;
     }
 
     public void toggletoRun(){
