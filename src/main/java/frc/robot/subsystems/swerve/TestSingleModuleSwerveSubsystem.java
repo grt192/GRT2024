@@ -39,48 +39,62 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             case 0:
                 //WEAR IN GEARS
                 if(crimer.advanceIfElapsed(crime)){
-                    drive = POWER * (Math.floor(Math.random() * 2) * 2) - 1; //Either 1 or -1
-                    steer = POWER * (Math.floor(Math.random() * 2) * 2) - 1;
+                    drive = STEER_POWER * (Math.floor(Math.random() * 2) * 2) - 1; //Either 1 or -1
+                    steer = STEER_POWER * (Math.floor(Math.random() * 2) * 2) - 1;
                     
                     crime = Math.random() * 20 + 20;
                 }
+                break;
             case 1:
                 //DRIVE FORWARD
-                drive = POWER;
+                drive = DRIVE_POWER;
                 steer = 0;
+                break;
             case 2:
                 //DRIVE BACKWARD
-                drive = -POWER;
+                drive = -DRIVE_POWER;
                 steer = 0;
+                break;
             case 3:
                 //STEER LEFT
                 drive = 0;
-                steer = POWER;
+                steer = STEER_POWER;
+                break;
             case 4:
                 //STEER RIGHT
                 drive = 0;
-                steer = -POWER;
+                steer = -STEER_POWER;
+                break;
             case 5:
                 //FORWARD LEFT
-                drive = steer = POWER;
+                drive = DRIVE_POWER;
+                steer = STEER_POWER;
+                break;
             case 6:
                 //FORWARD RIGHT
-                drive = POWER;
-                steer = -POWER;
+                drive = DRIVE_POWER;
+                steer = -STEER_POWER;
+                break;
             case 7:
                 //BACKWARD LEFT
-                drive = -POWER;
-                steer = POWER;
+                drive = -DRIVE_POWER;
+                steer = STEER_POWER;
+                break;
             case 8:
                 //BACKWARD RIGHT
-                drive = steer = -POWER;
+                drive = -DRIVE_POWER;
+                steer = -STEER_POWER;
+                break;
             case 9:
                 //ROTATION 0
-                drive = steer = 0;
+                drive = 0;
+                steer = 0;
+                break;
             case 10:
                 //ROTATION 180
                 drive = 0;
                 steer = Math.PI;
+                break;
             case 11:
                 //INCREMENT 45
                 drive = 0;
@@ -88,6 +102,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
                     steer += Math.PI/2;
                     steer = steer % (2 * Math.PI);
                 }
+                break;
             case 12:
                 //INCREMENT 180
                 drive = 0;
@@ -95,6 +110,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
                     steer += Math.PI;
                     steer = steer % (2 * Math.PI);
                 }
+                break;
         }
         if (testCase > 8){
             super.setRawPowersWithAngle(drive, steer);
@@ -102,6 +118,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         else{
             super.setRawPowers(drive, steer);
         }
+
+        System.out.println(testCase);
     }
 
     public void incrementTest(){

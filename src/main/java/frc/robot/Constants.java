@@ -17,7 +17,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class TestSingleModuleSwerveConstants {
-    public static final double POWER = 0.5;
+    public static final double STEER_POWER = 0.5;
+    public static final double DRIVE_POWER = .3;
     public static final double TURNGAP = 2;
   }
 }
