@@ -18,6 +18,7 @@ public class RobotContainer {
   private final TestSingleModuleSwerveSubsystem testSingleModuleSwerveSubsystem;
       
   private final XboxController Controller = new XboxController(2);
+  private final SwerveModule module;
 
   private final JoystickButton
     LBumper = new JoystickButton(Controller, XboxController.Button.kLeftBumper.value),
@@ -26,10 +27,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
-    SwerveModule module = new SwerveModule(0, 1);
+    module = new SwerveModule(0, 1);
     testSingleModuleSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
     // Configure the trigger bindings
-    configureBindings();
+    configureBindings();    
   }
 
   /**
@@ -69,5 +70,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new InstantCommand();
+  }
+
+  public void periodic(){
+    // System.out.println(module.getWrappedAngle());
   }
 }

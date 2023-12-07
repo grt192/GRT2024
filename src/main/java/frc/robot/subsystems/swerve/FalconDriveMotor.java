@@ -6,13 +6,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class FalconDriveMotor implements SwerveDriveMotor{
     
     private WPI_TalonFX motor;
+    private double positionConversionFactor = 1;
+    private double velocityConversionFactor = 1;
 
     public FalconDriveMotor(int port) {
         motor = new WPI_TalonFX(port);
     }
 
     public void setVelocity(double velocity){
-        motor.set(ControlMode.Velocity, velocity);  //is this rpm? - test (also does this use the pid correctly?)
+        motor.set(ControlMode.Velocity, velocity * velocityConversionFactor);  //is this rpm? - test (also does this use the pid correctly?)
     }
 
     public void setPower(double power){
@@ -27,11 +29,19 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     }
 
     public double getDistance(){
-        return motor.getSelectedSensorPosition(); //STUB need to convert to meters
+        return motor.getSelectedSensorPosition() / positionConversionFactor;
     }
 
     public double getVelocity(){
-        return motor.getSelectedSensorVelocity(); //STUB need to convert to meters/sec
+        return motor.getSelectedSensorVelocity() / velocityConversionFactor; 
+    }
+
+    public void setVelocityConversionFactor(double factor){
+        velocityConversionFactor = factor;
+    }
+
+    public void setPositionConversionFactor(double factor){
+        positionConversionFactor = factor;
     }
 
 }

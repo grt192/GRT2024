@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.MotorUtil;
 
 public class SwerveModule {
@@ -24,7 +25,10 @@ public class SwerveModule {
 
     private double offsetRads;
 
-    private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 5 ; //TODO: test this, 5V is the encoder voltage so should work?
+    private static final double DRIVE_ROTATIONS_TO_METERS = (13 / 90) * Math.PI * Units.inchesToMeters(4);
+    private static final double STEER_ROTATIONS_TO_RADIANS = (130 / 1776) * 2 * Math.PI; // Useful for steer relative encoder if we ever use that
+    private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3 ; // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
+    //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
     // TODO: tune PIDs, comments are 2023 constants
     private static final double DRIVE_P = 0; // .05
@@ -49,6 +53,8 @@ public class SwerveModule {
         driveMotor = falcon ? new FalconDriveMotor(drivePort) : new NEODriveMotor(drivePort);
 
         driveMotor.configPID(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
+        driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_TO_METERS);
+        driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_TO_METERS / 60); //Conversion from rpm to m/s
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
         steerMotor.setIdleMode(IdleMode.kBrake);
@@ -142,7 +148,7 @@ public class SwerveModule {
      * Gets the current angle of the module
      * @return Wrapped angle in radians from -pi to pi
      */
-    private Rotation2d getWrappedAngle(){
+    public Rotation2d getWrappedAngle(){
         double angleRads = steerAbsoluteEncoder.getPosition();
         double wrappedAngleRads = MathUtil.angleModulus(angleRads + offsetRads);
 

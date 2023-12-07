@@ -47,4 +47,12 @@ public class NEODriveMotor implements SwerveDriveMotor {
     public double getVelocity(){
         return encoder.getVelocity();
     }
+
+    public void setVelocityConversionFactor(double factor){
+        encoder.setVelocityConversionFactor(factor);
+    }
+
+    public void setPositionConversionFactor(double factor){
+        encoder.setPositionConversionFactor(factor);
+    }
 }

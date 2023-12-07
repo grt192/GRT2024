@@ -11,4 +11,8 @@ public interface  SwerveDriveMotor {
     public double getDistance();
 
     public double getVelocity();
+
+    public void setVelocityConversionFactor(double factor);
+    
+    public void setPositionConversionFactor(double factor);
 }
