@@ -36,7 +36,7 @@ public class SwerveModule {
     private static final double DRIVE_D = 0; // 0
     private static final double DRIVE_FF = 0; // 0.186697057706
 
-    private static final double STEER_P = .05; // 1.0
+    private static final double STEER_P = .1; // 1.0
     private static final double STEER_I = 0; // 0
     private static final double STEER_D = 0; // 0
     private static final double STEER_FF = 0; // 0
@@ -69,8 +69,8 @@ public class SwerveModule {
         steerPidController.setFF(STEER_FF);
 
         steerPidController.setPositionPIDWrappingEnabled(true);
-        steerPidController.setPositionPIDWrappingMinInput(0.0);
-        steerPidController.setPositionPIDWrappingMaxInput(2 * Math.PI);
+        steerPidController.setPositionPIDWrappingMinInput(- Math.PI);
+        steerPidController.setPositionPIDWrappingMaxInput( Math.PI);
 
         this.offsetRads = offsetRads;
     }
@@ -140,8 +140,13 @@ public class SwerveModule {
      * @param angleRads The requested angle for the steer motor
      */
     public void setRawPowersWithAngle(double drivePower, double angleRads){        
-        driveMotor.setPower(drivePower);
-        steerPidController.setReference(angleRads, ControlType.kPosition);
+        Rotation2d currentAngle = getWrappedAngle();
+        SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(0, new Rotation2d(angleRads)), currentAngle);
+
+        double targetAngleRads = optimized.angle.getRadians() - offsetRads;
+
+        driveMotor.setVelocity(drivePower);
+        steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
 
     /**

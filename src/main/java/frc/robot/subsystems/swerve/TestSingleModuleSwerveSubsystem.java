@@ -22,7 +22,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     public TestSingleModuleSwerveSubsystem(SwerveModule module){
         super(module);
 
-        testCase = 0;
+        testCase = 9;
         toRun = false;
 
         steer = 0;
@@ -34,6 +34,10 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     @Override
     public void periodic() {
+
+        System.out.println(module.getWrappedAngle());
+        System.out.println("test case: " + testCase);
+
         if (!toRun) {
             super.setRawPowers(0, 0);
             return;
@@ -41,6 +45,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
         // These are the different test cases as requested by Alex
         switch(testCase) {
+            
             case 0:
                 //WEAR IN GEARS
                 if(crimer.advanceIfElapsed(crime)){
@@ -124,8 +129,6 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             super.setRawPowers(drive, steer);
         }
 
-        System.out.print(module.getWrappedAngle());
-        System.out.println(testCase);
 
         // System.out.println(testCase);
     }
