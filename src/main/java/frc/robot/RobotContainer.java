@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final TestSingleModuleSwerveSubsystem testSingleModuleSwerveSubsystem;
       
-  private final XboxController Controller = new XboxController(2);
+  private final XboxController Controller = new XboxController(0);
   private final SwerveModule module;
 
   private final JoystickButton
@@ -27,7 +27,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
-    module = new SwerveModule(0, 1);
+    module = new SwerveModule(2, 1);
     testSingleModuleSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
     // Configure the trigger bindings
     configureBindings();    
@@ -70,9 +70,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new InstantCommand();
-  }
-
-  public void periodic(){
-    // System.out.println(module.getWrappedAngle());
   }
 }

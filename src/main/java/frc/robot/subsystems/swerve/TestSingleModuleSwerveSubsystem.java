@@ -6,6 +6,10 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem {
 
+    
+    public static final double STEER_POWER = .1;
+    public static final double DRIVE_POWER = .2;
+
     private int testCase;
     private boolean toRun;
 
@@ -18,12 +22,13 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     public TestSingleModuleSwerveSubsystem(SwerveModule module){
         super(module);
 
-        testCase = 1;
+        testCase = 0;
         toRun = false;
 
         steer = 0;
         drive = 0;
 
+        crimer = new Timer();
         crimer.start();
     }
 
@@ -39,8 +44,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             case 0:
                 //WEAR IN GEARS
                 if(crimer.advanceIfElapsed(crime)){
-                    drive = STEER_POWER * (Math.floor(Math.random() * 2) * 2) - 1; //Either 1 or -1
-                    steer = STEER_POWER * (Math.floor(Math.random() * 2) * 2) - 1;
+                    drive = DRIVE_POWER * (Math.floor(Math.random() * 2) * 2 - 1); //Either 1 or -1
+                    steer = STEER_POWER * (Math.floor(Math.random() * 2) * 2 - 1);
                     
                     crime = Math.random() * 20 + 20;
                 }
@@ -119,7 +124,10 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             super.setRawPowers(drive, steer);
         }
 
+        System.out.print(module.getWrappedAngle());
         System.out.println(testCase);
+
+        // System.out.println(testCase);
     }
 
     public void incrementTest(){

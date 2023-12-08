@@ -6,6 +6,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Launch test",
+      "request": "launch",
+      "mainClass": "frc.robot.test",
+      "projectName": "GRT2024"
+    },
+    {
+      "type": "java",
+      "name": "Launch test",
+      "request": "launch",
+      "mainClass": "frc.robot.subsystems.swerve.test",
+      "projectName": "GRT2024"
+    },
+    {
+      "type": "java",
       "name": "Launch Debug",
       "request": "launch",
       "mainClass": "frc.robot.subsystems.swerve.Debug",
