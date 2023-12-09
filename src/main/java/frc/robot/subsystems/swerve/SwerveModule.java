@@ -36,7 +36,7 @@ public class SwerveModule {
     private static final double DRIVE_D = 0; // 0
     private static final double DRIVE_FF = 0; // 0.186697057706
 
-    private static final double STEER_P = .1; // 1.0
+    private static final double STEER_P = .05; // 1.0
     private static final double STEER_I = 0; // 0
     private static final double STEER_D = 0; // 0
     private static final double STEER_FF = 0; // 0
@@ -48,6 +48,7 @@ public class SwerveModule {
      * @param offsetRads The offset of the absolute encoder
      * @param falcon Whether this is a falcon or not
      */
+
     public SwerveModule(int drivePort, int steerPort, double offsetRads, boolean falcon) {
         
         driveMotor = falcon ? new FalconDriveMotor(drivePort) : new NEODriveMotor(drivePort);
@@ -61,7 +62,6 @@ public class SwerveModule {
 
         steerAbsoluteEncoder = steerMotor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
         steerAbsoluteEncoder.setPositionConversionFactor(STEER_VOLTS_RADIANS);
-
         steerPidController = MotorUtil.createSparkMaxPIDController(steerMotor, steerAbsoluteEncoder);
         steerPidController.setP(STEER_P);
         steerPidController.setI(STEER_I);
@@ -69,8 +69,8 @@ public class SwerveModule {
         steerPidController.setFF(STEER_FF);
 
         steerPidController.setPositionPIDWrappingEnabled(true);
-        steerPidController.setPositionPIDWrappingMinInput(- Math.PI);
-        steerPidController.setPositionPIDWrappingMaxInput( Math.PI);
+        steerPidController.setPositionPIDWrappingMinInput(0);
+        steerPidController.setPositionPIDWrappingMaxInput( 2 * Math.PI);
 
         this.offsetRads = offsetRads;
     }
@@ -143,7 +143,10 @@ public class SwerveModule {
         Rotation2d currentAngle = getWrappedAngle();
         SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(0, new Rotation2d(angleRads)), currentAngle);
 
-        double targetAngleRads = optimized.angle.getRadians() - offsetRads;
+        double targetAngleRads = angleRads - offsetRads;
+
+        System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
+        // System.out.print("error " + (angleRads.minus(currentAngle).getRadians()) + "--------");
 
         driveMotor.setVelocity(drivePower);
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);

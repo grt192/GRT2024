@@ -19,6 +19,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     private Timer crimer;
     private double crime = 0;
 
+    private Timer crimor;
+
     public TestSingleModuleSwerveSubsystem(SwerveModule module){
         super(module);
 
@@ -28,15 +30,18 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         steer = 0;
         drive = 0;
 
+        crimor = new Timer();
+        crimor.start();
         crimer = new Timer();
         crimer.start();
     }
 
     @Override
     public void periodic() {
-
-        System.out.println(module.getWrappedAngle());
-        System.out.println("test case: " + testCase);
+        if (crimor.advanceIfElapsed(2)){
+            System.out.println("test case: " + testCase + "---------");
+            System.out.print("current " + module.getWrappedAngle().getDegrees());
+        }
 
         if (!toRun) {
             super.setRawPowers(0, 0);
@@ -110,7 +115,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
                 drive = 0;
                 if (crimer.advanceIfElapsed(TURNGAP)){
                     steer += Math.PI/2;
-                    steer = steer % (2 * Math.PI);
+                    //steer = steer % (2 * Math.PI);
                 }
                 break;
             case 12:
