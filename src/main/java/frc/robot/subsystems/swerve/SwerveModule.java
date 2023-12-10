@@ -37,7 +37,7 @@ public class SwerveModule {
     private static final double DRIVE_P = 0; // .05
     private static final double DRIVE_I = 0; // 0
     private static final double DRIVE_D = 0; // 0
-    private static final double DRIVE_FF = .19; // 0.186697057706
+    private static final double DRIVE_FF = 1023.0/20660.0; // 0.186697057706
 
     private static final double STEER_P = .6; // 1.0
     private static final double STEER_I = 0; //0.0005; // 0
@@ -60,8 +60,8 @@ public class SwerveModule {
 
         driveMotor.configPID(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
         driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_PER_METER);
-        System.out.println("factor " + DRIVE_ROTATIONS_PER_METER / 60.0);
-        driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_PER_METER / 60.0); //Conversion from rpm to m/s
+        System.out.println("factor " + DRIVE_ROTATIONS_PER_METER);
+        driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_PER_METER * 60.0); //Conversion from rpm to m/s
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
         // steerMotor.setInverted(true);
@@ -129,7 +129,7 @@ public class SwerveModule {
         double targetAngleRads = optimized.angle.getRadians() - offsetRads;
         double angleErrorRads = optimized.angle.minus(currentAngle).getRadians();
 
-        double targetVelocity = optimized.speedMetersPerSecond * Math.abs(Math.cos(angleErrorRads));
+        double targetVelocity = optimized.speedMetersPerSecond; //* Math.abs(Math.cos(angleErrorRads));
         double currentVelocity = driveMotor.getVelocity();
 
         if (crimor.advanceIfElapsed(.1)){
