@@ -2,13 +2,15 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.Constants.TestSingleModuleSwerveConstants.*;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 
 public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem {
 
     
-    public static final double STEER_POWER = .1;
-    public static final double DRIVE_POWER = .2;
+    public static final double STEER_POWER = .06;
+    public static final double DRIVE_POWER = .4;
 
     private int testCase;
     private boolean toRun;
@@ -35,12 +37,14 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         crimer = new Timer();
         crimer.start();
     }
+  
 
     @Override
     public void periodic() {
-        if (crimor.advanceIfElapsed(2)){
-            System.out.println("test case: " + testCase + "---------");
-            System.out.print("current " + module.getWrappedAngle().getDegrees());
+        if (crimor.advanceIfElapsed(.1)){
+            System.out.print("test case: " + testCase);
+            System.out.print(" current " + twoDecimals(module.getWrappedAngle().getDegrees()));
+            System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(steer))));
         }
 
         if (!toRun) {
@@ -115,7 +119,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
                 drive = 0;
                 if (crimer.advanceIfElapsed(TURNGAP)){
                     steer += Math.PI/2;
-                    //steer = steer % (2 * Math.PI);
+                    steer = steer % (2 * Math.PI);
                 }
                 break;
             case 12:
@@ -148,16 +152,16 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         crime = 0;
     }
 
-    public void toggletoRun(){
-        toRun = !toRun;
-    }
-
     public int getTest(){
         return testCase;
     }
 
     public boolean getRunning(){
         return toRun;
+    }
+
+    public double twoDecimals(double num){
+        return ((int) (num * 100)) / 100.d;
     }
 
 }

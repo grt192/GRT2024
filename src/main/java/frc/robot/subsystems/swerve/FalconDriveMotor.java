@@ -1,20 +1,35 @@
 package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class FalconDriveMotor implements SwerveDriveMotor{
     
     private WPI_TalonFX motor;
-    private double positionConversionFactor = 1;
-    private double velocityConversionFactor = 1;
+    private double positionConversionFactor = 0;
+    private double driveRotPerMinPerMetersPerSec = 0;
 
     public FalconDriveMotor(int port) {
         motor = new WPI_TalonFX(port);
+
+        motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
+        motor.selectProfileSlot(0, 0);
     }
 
-    public void setVelocity(double velocity){
-        motor.set(ControlMode.Velocity, velocity * velocityConversionFactor);  //is this rpm? - test (also does this use the pid correctly?)
+    public void setVelocity(double metersPerSec){
+
+        double targetRpm = metersPerSec * driveRotPerMinPerMetersPerSec;
+
+        double targetVelocityPer100ms = targetRpm * 2048 / 600; // (Rev / min) * (2048 units / Rev) * (min / 600 (100ms)) = units / 100ms
+
+        System.out.println(targetRpm);
+        // System.out.println(motor.getClosedLoopError(0));
+        // System.out.println(motor.getClosedLoopTarget());
+
+        motor.set(TalonFXControlMode.Velocity, targetVelocityPer100ms);  //is this rpm? - test (also does this use the pid correctly?)
     }
 
     public void setPower(double power){
@@ -25,7 +40,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
         motor.config_kP(0, P);
         motor.config_kI(0, I);
         motor.config_kD(0, D);
-        motor.config_kF(0, FF);
+        motor.config_kF(0, FF * 1023);
     }
 
     public double getDistance(){
@@ -33,11 +48,11 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     }
 
     public double getVelocity(){
-        return motor.getSelectedSensorVelocity() / velocityConversionFactor; 
+        return motor.getSelectedSensorVelocity() / driveRotPerMinPerMetersPerSec; 
     }
 
     public void setVelocityConversionFactor(double factor){
-        velocityConversionFactor = factor;
+        driveRotPerMinPerMetersPerSec = factor;
     }
 
     public void setPositionConversionFactor(double factor){

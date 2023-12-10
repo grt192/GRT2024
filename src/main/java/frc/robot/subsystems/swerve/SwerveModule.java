@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.MotorUtil;
 
 public class SwerveModule {
@@ -25,8 +26,10 @@ public class SwerveModule {
 
     private double offsetRads;
 
-    private static final double DRIVE_ROTATIONS_TO_METERS = (13 / 90) * Math.PI * Units.inchesToMeters(4);
-    private static final double STEER_ROTATIONS_TO_RADIANS = (130 / 1776) * 2 * Math.PI; // Useful for steer relative encoder if we ever use that
+    
+    private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0);
+    private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION;
+    private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI; // Useful for steer relative encoder if we ever use that
     private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3 ; // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
@@ -34,12 +37,14 @@ public class SwerveModule {
     private static final double DRIVE_P = 0; // .05
     private static final double DRIVE_I = 0; // 0
     private static final double DRIVE_D = 0; // 0
-    private static final double DRIVE_FF = 0; // 0.186697057706
+    private static final double DRIVE_FF = .19; // 0.186697057706
 
-    private static final double STEER_P = .05; // 1.0
-    private static final double STEER_I = 0; // 0
-    private static final double STEER_D = 0; // 0
+    private static final double STEER_P = .6; // 1.0
+    private static final double STEER_I = 0; //0.0005; // 0
+    private static final double STEER_D = 35; // 0
     private static final double STEER_FF = 0; // 0
+
+    private Timer crimor;
 
     /**
      * Constructs a Swerve Module
@@ -54,14 +59,17 @@ public class SwerveModule {
         driveMotor = falcon ? new FalconDriveMotor(drivePort) : new NEODriveMotor(drivePort);
 
         driveMotor.configPID(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
-        driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_TO_METERS);
-        driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_TO_METERS / 60); //Conversion from rpm to m/s
+        driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_PER_METER);
+        System.out.println("factor " + DRIVE_ROTATIONS_PER_METER / 60.0);
+        driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_PER_METER / 60.0); //Conversion from rpm to m/s
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
+        // steerMotor.setInverted(true);
         steerMotor.setIdleMode(IdleMode.kBrake);
 
         steerAbsoluteEncoder = steerMotor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
         steerAbsoluteEncoder.setPositionConversionFactor(STEER_VOLTS_RADIANS);
+        steerAbsoluteEncoder.setInverted(true);
         steerPidController = MotorUtil.createSparkMaxPIDController(steerMotor, steerAbsoluteEncoder);
         steerPidController.setP(STEER_P);
         steerPidController.setI(STEER_I);
@@ -71,6 +79,10 @@ public class SwerveModule {
         steerPidController.setPositionPIDWrappingEnabled(true);
         steerPidController.setPositionPIDWrappingMinInput(0);
         steerPidController.setPositionPIDWrappingMaxInput( 2 * Math.PI);
+
+        crimor = new Timer();
+        crimor.start();
+
 
         this.offsetRads = offsetRads;
     }
@@ -120,6 +132,13 @@ public class SwerveModule {
         double targetVelocity = optimized.speedMetersPerSecond * Math.abs(Math.cos(angleErrorRads));
         double currentVelocity = driveMotor.getVelocity();
 
+        if (crimor.advanceIfElapsed(.1)){
+            // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+            // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
+            System.out.print(" current " + twoDecimals(currentVelocity));
+            System.out.println(" target " + twoDecimals(targetVelocity));
+        }
+
         driveMotor.setVelocity(targetVelocity);
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
@@ -145,11 +164,12 @@ public class SwerveModule {
 
         double targetAngleRads = angleRads - offsetRads;
 
-        System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
+        //System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
         // System.out.print("error " + (angleRads.minus(currentAngle).getRadians()) + "--------");
 
-        driveMotor.setVelocity(drivePower);
+        driveMotor.setPower(drivePower);
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
+        // System.out.println("2");
     }
 
     /**
@@ -161,5 +181,9 @@ public class SwerveModule {
         double wrappedAngleRads = MathUtil.angleModulus(angleRads + offsetRads);
 
         return new Rotation2d(wrappedAngleRads);
+    }
+
+    public double twoDecimals(double num){
+        return ((int) (num * 100)) / 100.d;
     }
 }

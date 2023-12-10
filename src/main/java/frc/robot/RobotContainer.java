@@ -4,31 +4,33 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 public class RobotContainer {
-  private final TestSingleModuleSwerveSubsystem testSingleModuleSwerveSubsystem;
+  private final SingleModuleSwerveSubsystem swerveSubsystem;
       
-  private final XboxController Controller = new XboxController(0);
+  private final XboxController controller = new XboxController(0);
   private final SwerveModule module;
 
   private final JoystickButton
-    LBumper = new JoystickButton(Controller, XboxController.Button.kLeftBumper.value),
-    RBumper = new JoystickButton(Controller, XboxController.Button.kRightBumper.value),
-    AButton = new JoystickButton(Controller, XboxController.Button.kA.value);
+    LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
+    RBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value),
+    AButton = new JoystickButton(controller, XboxController.Button.kA.value);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
-    module = new SwerveModule(2, 1);
-    testSingleModuleSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+    module = new SwerveModule(2, 1, Math.toRadians(-47));
+    swerveSubsystem = new SingleModuleSwerveSubsystem(module);
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -44,24 +46,40 @@ public class RobotContainer {
    */
   private void configureBindings() {
     
+    if(swerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
+      final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) swerveSubsystem;
+      LBumper.onTrue(new InstantCommand(() -> {
+        testSwerveSubsystem.decrementTest();
+        System.out.println(testSwerveSubsystem.getTest());
+      }
+      ));
 
-    LBumper.onTrue(new InstantCommand(() -> {
-      testSingleModuleSwerveSubsystem.decrementTest();
-      System.out.println(testSingleModuleSwerveSubsystem.getTest());
+      RBumper.onTrue(new InstantCommand(() -> {
+        testSwerveSubsystem.incrementTest();
+        System.out.println(testSwerveSubsystem.getTest());
+      }
+      ));
+
+      AButton.onTrue(new InstantCommand(() -> {
+        testSwerveSubsystem.toggletoRun();
+        System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
+      }));
+
+    } else if(swerveSubsystem instanceof SingleModuleSwerveSubsystem){
+
+      System.out.println("1");
+
+      swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+        swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY(), .4 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+      }
+      , swerveSubsystem));
+
+      AButton.onTrue(new InstantCommand(() -> {
+        swerveSubsystem.toggletoRun();
+      }));
+      
     }
-    ));
-
-    RBumper.onTrue(new InstantCommand(() -> {
-      testSingleModuleSwerveSubsystem.incrementTest();
-      System.out.println(testSingleModuleSwerveSubsystem.getTest());
-    }
-    ));
-
-    AButton.onTrue(new InstantCommand(() -> {
-      testSingleModuleSwerveSubsystem.toggletoRun();
-      System.out.println(testSingleModuleSwerveSubsystem.getRunning() ? "Running" : "Not running");
-    }));
-  }
+  } 
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
