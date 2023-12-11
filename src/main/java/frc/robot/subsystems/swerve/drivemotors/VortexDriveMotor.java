@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve;
+package frc.robot.subsystems.swerve.drivemotors;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -9,13 +9,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.util.MotorUtil;
 
-public class NEODriveMotor implements SwerveDriveMotor {
+public class VortexDriveMotor implements SwerveDriveMotor {
     
     private CANSparkMax motor;
     private RelativeEncoder encoder;
     private SparkMaxPIDController pidController;
 
-    public NEODriveMotor (int port){
+    public VortexDriveMotor (int port){
         motor = new CANSparkMax(port, MotorType.kBrushless);
         motor.setIdleMode(IdleMode.kBrake);
 
