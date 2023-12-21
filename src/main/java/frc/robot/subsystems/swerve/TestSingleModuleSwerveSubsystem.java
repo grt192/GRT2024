@@ -40,11 +40,11 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     @Override
     public void periodic() {
-        if (crimor.advanceIfElapsed(.1)){
-            System.out.print("test case: " + testCase);
-            System.out.print(" current " + twoDecimals(module.getWrappedAngle().getDegrees()));
-            System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(steer))));
-        }
+        // if (crimor.advanceIfElapsed(.1)){
+        //     System.out.print("test case: " + testCase);
+        //     // System.out.print(" error " + twoDecimals(module.getError()));
+        //     System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(steer))));
+        // }
 
         if (!toRun) {
             super.setRawPowers(0, 0);

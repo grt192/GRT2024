@@ -56,4 +56,8 @@ public class FalconDriveMotor implements SwerveDriveMotor{
         positionConversionFactor = factor;
     }
 
+    public double getError(){
+        return motor.getClosedLoopError();
+    }
+
 }

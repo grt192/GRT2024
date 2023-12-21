@@ -55,4 +55,8 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     public void setPositionConversionFactor(double factor){
         encoder.setPositionConversionFactor(factor);
     }
+
+    public double getError(){
+        return 0; //STUB
+    }
 }

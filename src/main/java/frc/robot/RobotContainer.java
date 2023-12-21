@@ -70,7 +70,7 @@ public class RobotContainer {
       System.out.println("1");
 
       swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-        swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY(), .4 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+        swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
       }
       , swerveSubsystem));
 
