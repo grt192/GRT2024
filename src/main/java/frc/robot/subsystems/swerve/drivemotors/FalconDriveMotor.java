@@ -1,32 +1,27 @@
 package frc.robot.subsystems.swerve.drivemotors;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 public class FalconDriveMotor implements SwerveDriveMotor{
     
-    private WPI_TalonFX motor;
+    private TalonFX motor;
     private double positionConversionFactor = 0;
     private double driveRotPerMinPerMetersPerSec = 0;
+    private VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
     public FalconDriveMotor(int port) {
-        motor = new WPI_TalonFX(port);
-
-        motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-
-        motor.selectProfileSlot(0, 0);
+        motor = new TalonFX(port);
     }
 
     public void setVelocity(double metersPerSec){
 
-        double targetRpm = metersPerSec * driveRotPerMinPerMetersPerSec;
-
-        double targetVelocityPer100ms = targetRpm * 2048 / 600; // (Rev / min) * (2048 units / Rev) * (min / 600 (100ms)) = units / 100ms
+        double targetRps = metersPerSec * driveRotPerMinPerMetersPerSec / 60; 
 
         // System.out.println(motor.getClosedLoopTarget() + " err: " + motor.getClosedLoopError());
 
-        motor.set(TalonFXControlMode.Velocity, targetVelocityPer100ms);  
+        motor.setControl(request.withVelocity(targetRps));  
     }
 
     public void setPower(double power){
@@ -34,18 +29,22 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     }
 
     public void configPID(double P, double I, double D, double FF){
-        motor.config_kP(0, P);
-        motor.config_kI(0, I);
-        motor.config_kD(0, D);
-        motor.config_kF(0, FF);
+        Slot0Configs slot0Configs = new Slot0Configs();
+
+        slot0Configs.kV = FF;
+        slot0Configs.kP = P;
+        slot0Configs.kI = I;
+        slot0Configs.kD = D;
+
+        motor.getConfigurator().apply(slot0Configs);
     }
 
     public double getDistance(){
-        return motor.getSelectedSensorPosition() / positionConversionFactor;
+        return motor.getPosition().getValue() / positionConversionFactor;
     }
 
     public double getVelocity(){
-        return motor.getSelectedSensorVelocity() / driveRotPerMinPerMetersPerSec; 
+        return motor.getVelocity().getValue() / driveRotPerMinPerMetersPerSec; 
     }
 
     public void setVelocityConversionFactor(double factor){
@@ -57,7 +56,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     }
 
     public double getError(){
-        return motor.getClosedLoopError();
+        return motor.getClosedLoopError().getValue();
     }
 
 }

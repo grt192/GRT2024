@@ -37,10 +37,10 @@ public class SwerveModule {
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
     // TODO: tune PIDs, comments are 2023 constants
-    private static final double FALCON_DRIVE_P = 0.03; // .05
+    private static final double FALCON_DRIVE_P = 0; // .05
     private static final double FALCON_DRIVE_I = 0; // 0
     private static final double FALCON_DRIVE_D = 0; // 0
-    private static final double FALCON_DRIVE_FF = 1023.0/22210.0; // 0.186697057706
+    private static final double FALCON_DRIVE_FF = .11285266; // 0.186697057706
 
     private static final double VORTEX_DRIVE_P = 0;
     private static final double VORTEX_DRIVE_I = 0;
