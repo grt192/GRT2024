@@ -16,7 +16,11 @@ import static frc.robot.Constants.SwerveConstants.*;
 
 import com.kauailabs.navx.frc.AHRS;
 
-public class SwerveSubsystem extends SubsystemBase{
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
+public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final AHRS ahrs;
 
     public static final double MAX_VEL = 5; //STUB
@@ -33,6 +37,21 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveDriveKinematics kinematics;
+
+    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    private final NetworkTable networkTable = inst.getTable("Testing");
+    private final DoublePublisher[] angles = {
+        networkTable.getDoubleTopic("module1rot").publish(),
+        networkTable.getDoubleTopic("module2rot").publish(),
+        networkTable.getDoubleTopic("module3rot").publish(),
+        networkTable.getDoubleTopic("module4rot").publish()
+    };
+    private final DoublePublisher[] velocities = {
+        networkTable.getDoubleTopic("module1vel").publish(),
+        networkTable.getDoubleTopic("module2vel").publish(),
+        networkTable.getDoubleTopic("module3vel").publish(),
+        networkTable.getDoubleTopic("module4vel").publish()
+    };
 
     private SwerveModuleState[] states = {
         new SwerveModuleState(),
@@ -51,6 +70,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
+        inst.startServer();
+
         poseEstimator = new SwerveDrivePoseEstimator(
             kinematics, 
             getGyroHeading(), 
@@ -64,20 +85,29 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public void periodic() {
+
+        
+
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
             getModulePositions()
         );
+        
+        for(int i = 0; i < 4; i++){
+            angles[i].set(states[i].angle.getRadians());
+            velocities[i].set(states[i].speedMetersPerSecond);
+        }
     }
 
-    public void SetDrivePowers(double xPower, double yPower, double angularPower){
+    public void setDrivePowers(double xPower, double yPower, double angularPower){
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xPower * MAX_VEL, 
             yPower * MAX_VEL, 
             angularPower * MAX_OMEGA,
-            getDriverHeading()
+            new Rotation2d(0)//getDriverHeading()
         );
+
 
         this.states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(

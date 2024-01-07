@@ -25,17 +25,17 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final int FL_DRIVE = -1; //STUB
-    public static final int FL_STEER = -1; //STUB
+    public static final int FL_DRIVE = 0; //STUB
+    public static final int FL_STEER = 1; //STUB
     
-    public static final int FR_DRIVE = -1; //STUB
-    public static final int FR_STEER = -1; //STUB
+    public static final int FR_DRIVE = 2; //STUB
+    public static final int FR_STEER = 3; //STUB
 
-    public static final int BL_DRIVE = -1; //STUB
-    public static final int BL_STEER = -1; //STUB
+    public static final int BL_DRIVE = 4; //STUB
+    public static final int BL_STEER = 5; //STUB
     
-    public static final int BR_DRIVE = -1; //STUB
-    public static final int BR_STEER = -1; //STUB
+    public static final int BR_DRIVE = 6; //STUB
+    public static final int BR_STEER = 7; //STUB
 
     private static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
     public static final Translation2d FL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);

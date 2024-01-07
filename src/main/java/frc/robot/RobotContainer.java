@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,10 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 public class RobotContainer {
-  private final SingleModuleSwerveSubsystem swerveSubsystem;
+  private final BaseSwerveSubsystem baseSwerveSubsystem;
       
   private final XboxController controller = new XboxController(0);
-  private final SwerveModule module;
+  // private final SwerveModule module;
 
   private final JoystickButton
     LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
@@ -29,8 +31,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
-    module = new SwerveModule(2, 1, Math.toRadians(-47));
-    swerveSubsystem = new SingleModuleSwerveSubsystem(module);
+    // module = new SwerveModule(2, 1, Math.toRadians(-47));
+    baseSwerveSubsystem = new SwerveSubsystem();
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -45,9 +47,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
-    if(swerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
-      final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) swerveSubsystem;
+    if(baseSwerveSubsystem instanceof SwerveSubsystem){
+      final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+
+      swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+        swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY(), -controller.getRightX());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+      }
+      , swerveSubsystem));
+      
+    } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
+      final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
       LBumper.onTrue(new InstantCommand(() -> {
         testSwerveSubsystem.decrementTest();
         System.out.println(testSwerveSubsystem.getTest());
@@ -65,7 +74,8 @@ public class RobotContainer {
         System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
       }));
 
-    } else if(swerveSubsystem instanceof SingleModuleSwerveSubsystem){
+    } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
+      final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
 
       System.out.println("1");
 
