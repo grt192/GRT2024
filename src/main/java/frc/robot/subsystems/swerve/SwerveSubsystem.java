@@ -63,9 +63,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
-        frontLeftModule = new SwerveModule(FL_DRIVE, FL_STEER);
-        frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER);
-        backLeftModule = new SwerveModule(BL_DRIVE, BL_STEER);
+        frontLeftModule = new SwerveModule(FL_DRIVE, FL_STEER, FL_OFFSET);
+        frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER, FR_OFFSET);
+        backLeftModule = new SwerveModule(BL_DRIVE, BL_STEER, BL_OFFSET);
         backRightModule = new SwerveModule(BR_DRIVE, BR_STEER);
 
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
@@ -85,9 +85,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void periodic() {
-
-        
-
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
@@ -98,6 +95,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             angles[i].set(states[i].angle.getRadians());
             velocities[i].set(states[i].speedMetersPerSecond);
         }
+
+        frontLeftModule.setDesiredState(states[0]);
+        frontRightModule.setDesiredState(states[1]);
+        backLeftModule.setDesiredState(states[2]);
+        backRightModule.setDesiredState(states[3]);
     }
 
     public void setDrivePowers(double xPower, double yPower, double angularPower){
@@ -105,7 +107,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             xPower * MAX_VEL, 
             yPower * MAX_VEL, 
             angularPower * MAX_OMEGA,
-            new Rotation2d(0)//getDriverHeading()
+            getDriverHeading()
         );
 
 
@@ -158,7 +160,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     private Rotation2d getGyroHeading() {
-        return Rotation2d.fromDegrees(-ahrs.getAngle());
+        return Rotation2d.fromDegrees(ahrs.getAngle());
     }
 
     public Rotation2d getDriverHeading() {

@@ -47,9 +47,9 @@ public class SwerveModule {
     private static final double VORTEX_DRIVE_D = 0;
     private static final double VORTEX_DRIVE_FF = 0;
 
-    private static final double STEER_P = .7; // 1.0
+    private static final double STEER_P = .7; // .7
     private static final double STEER_I = 0; // 0
-    private static final double STEER_D = 35; // 0
+    private static final double STEER_D = 0; // 35
     private static final double STEER_FF = 0; // 0
 
     private Timer crimor;
@@ -83,7 +83,7 @@ public class SwerveModule {
 
         steerAbsoluteEncoder = steerMotor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
         steerAbsoluteEncoder.setPositionConversionFactor(STEER_VOLTS_RADIANS);
-        steerAbsoluteEncoder.setInverted(true);
+        steerAbsoluteEncoder.setInverted(false);
         steerPidController = MotorUtil.createSparkMaxPIDController(steerMotor, steerAbsoluteEncoder);
         steerPidController.setP(STEER_P);
         steerPidController.setI(STEER_I);
@@ -146,14 +146,18 @@ public class SwerveModule {
         double targetVelocity = optimized.speedMetersPerSecond; //* Math.abs(Math.cos(angleErrorRads));
         double currentVelocity = driveMotor.getVelocity();
 
-        if (crimor.advanceIfElapsed(.1)){
-            // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
-            // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
-            System.out.print(" error " + twoDecimals(driveMotor.getError()));
-            System.out.println(" target " + twoDecimals(targetVelocity));
-        }
+        // if (crimor.advanceIfElapsed(.1)){
+        //     // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+        //     // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
+        //     System.out.print(" error " + twoDecimals(driveMotor.getError()));
+        //     System.out.println(" target " + twoDecimals(targetVelocity));
+        // }
 
         driveMotor.setVelocity(targetVelocity);
+        if(Math.abs(Math.toDegrees(angleErrorRads)) < .5){
+            steerMotor.set(0);
+            return;
+        }
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
 
@@ -172,16 +176,22 @@ public class SwerveModule {
      * @param drivePower The power for the drive motor
      * @param angleRads The requested angle for the steer motor
      */
-    public void setRawPowersWithAngle(double drivePower, double angleRads){        
+    public void setRawPowersWithAngle(double drivePower, double angleRads){
+                
         Rotation2d currentAngle = getWrappedAngle();
         SwerveModuleState optimized = SwerveModuleState.optimize(new SwerveModuleState(0, new Rotation2d(angleRads)), currentAngle);
 
         double targetAngleRads = angleRads - offsetRads;
-
+        
+        driveMotor.setPower(drivePower);
+        System.out.println(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()));
+        if(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()) < .5){
+            steerMotor.set(0);
+            return;
+        }
         //System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
         // System.out.print("error " + (angleRads.minus(currentAngle).getRadians()) + "--------");
 
-        driveMotor.setPower(drivePower);
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
         // System.out.println("2");
     }

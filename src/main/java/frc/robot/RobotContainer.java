@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
       
   private final XboxController controller = new XboxController(0);
-  // private final SwerveModule module;
+  private final SwerveModule module;
 
   private final JoystickButton
     LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
@@ -31,8 +31,9 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
-    // module = new SwerveModule(2, 1, Math.toRadians(-47));
-    baseSwerveSubsystem = new SwerveSubsystem();
+    module = new SwerveModule(0, 1, FL_OFFSET);
+    baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+    // baseSwerveSubsystem = new SwerveSubsystem();
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -54,6 +55,11 @@ public class RobotContainer {
         swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY(), -controller.getRightX());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
       }
       , swerveSubsystem));
+
+      AButton.onTrue(new InstantCommand(() -> {
+        swerveSubsystem.resetDriverHeading();
+      }
+      ));
       
     } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
       final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;

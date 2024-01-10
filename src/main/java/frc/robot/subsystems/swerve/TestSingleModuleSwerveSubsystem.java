@@ -3,13 +3,14 @@ package frc.robot.subsystems.swerve;
 import static frc.robot.Constants.TestSingleModuleSwerveConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
 public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem {
 
     
-    public static final double STEER_POWER = .06;
-    public static final double DRIVE_POWER = .4;
+    public static final double STEER_POWER = .4;
+    public static final double DRIVE_POWER = .3;
 
     private int testCase;
     private boolean toRun;
@@ -25,7 +26,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     public TestSingleModuleSwerveSubsystem(SwerveModule module){
         super(module);
 
-        testCase = 9;
+        testCase = 1;
         toRun = false;
 
         steer = 0;
@@ -45,6 +46,9 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         //     // System.out.print(" error " + twoDecimals(module.getError()));
         //     System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(steer))));
         // }
+        if(DriverStation.isDisabled()){  
+            System.out.println(module.getWrappedAngle().getRadians() * -1 + Math.PI / 2);
+        }
 
         if (!toRun) {
             super.setRawPowers(0, 0);
@@ -134,6 +138,7 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             super.setRawPowersWithAngle(drive, steer);
         }
         else{
+            System.out.println(drive);
             super.setRawPowers(drive, steer);
         }
 
@@ -161,6 +166,11 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     public double twoDecimals(double num){
         return ((int) (num * 100)) / 100.d;
+    }
+
+    public void toggletoRun(){
+        toRun = !toRun;
+        System.out.println(toRun);
     }
 
 }

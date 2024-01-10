@@ -66,6 +66,7 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
 
     public void toggletoRun(){
         toRun = !toRun;
+        System.out.println(toRun);
     }
 
 

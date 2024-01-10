@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve.drivemotors;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -21,7 +22,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
 
         // System.out.println(motor.getClosedLoopTarget() + " err: " + motor.getClosedLoopError());
 
-        motor.setControl(request.withVelocity(targetRps));  
+        motor.setControl(request.withVelocity(targetRps * .3)); //TODO: REMOVE LIMIT 
     }
 
     public void setPower(double power){
