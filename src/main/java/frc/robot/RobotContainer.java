@@ -12,7 +12,12 @@ import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
+
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -31,6 +36,10 @@ public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
       
   private final XboxController controller = new XboxController(0);
+
+  private Field2d field;
+
+  ChoreoTrajectory traj;
   // private final SwerveModule module;
 
   private final JoystickButton
@@ -43,6 +52,10 @@ public class RobotContainer {
     // module = new SwerveModule(0, 1, 0);
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
+
+    field = new Field2d();
+
+    traj = Choreo.getTrajectory("testTraj");
     // Configure the trigger bindings
     configureBindings();    
   }
