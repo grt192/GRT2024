@@ -59,7 +59,7 @@ public class RobotContainer {
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
 
-    traj = Choreo.getTrajectory("testTraj");
+    traj = Choreo.getTrajectory("NewNewpath");
 
     // Configure the trigger bindings
     configureBindings();    
