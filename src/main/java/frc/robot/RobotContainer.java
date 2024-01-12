@@ -13,12 +13,20 @@ import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 
+import java.util.function.BooleanSupplier;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,8 +45,6 @@ public class RobotContainer {
       
   private final XboxController controller = new XboxController(0);
 
-  private Field2d field;
-
   ChoreoTrajectory traj;
   // private final SwerveModule module;
 
@@ -53,9 +59,8 @@ public class RobotContainer {
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
 
-    field = new Field2d();
-
     traj = Choreo.getTrajectory("testTraj");
+
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -138,6 +143,34 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new InstantCommand();
+    if(baseSwerveSubsystem instanceof SwerveSubsystem){
+      
+      final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+      PIDController thetacontroller = new PIDController(1, 0, 0); //TODO: tune
+      thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
+
+      BooleanSupplier isBlue = () -> DriverStation.getAlliance() == DriverStation.Alliance.Blue; 
+
+      Command swerveCommand = Choreo.choreoSwerveCommand(
+        traj,
+        swerveSubsystem::getRobotPosition, 
+        new PIDController(1, 0, 0), //X TODO: tune
+        new PIDController(1, 0, 0), //Y TODO: tune
+        thetacontroller, 
+        ((ChassisSpeeds speeds) -> swerveSubsystem.setDrivePowers(
+          speeds.vxMetersPerSecond,
+          speeds.vyMetersPerSecond, 
+          speeds.omegaRadiansPerSecond
+          )),
+        isBlue,
+        swerveSubsystem
+        );
+
+        return Commands.sequence(
+          Commands.runOnce(() -> swerveSubsystem.resetPose(traj.getInitialPose())),
+          swerveCommand
+        );
+    }
+    else return null;
   }
 }

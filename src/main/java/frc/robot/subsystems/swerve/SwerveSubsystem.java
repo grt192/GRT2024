@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
@@ -59,6 +63,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         new SwerveModuleState()
     };
 
+    private final ShuffleboardTab choreoTab;
+    private final Field2d field;
+
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -66,10 +73,16 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER, FR_OFFSET);
         backLeftModule = new SwerveModule(BL_DRIVE, BL_STEER, BL_OFFSET);
         backRightModule = new SwerveModule(BR_DRIVE, BR_STEER);
-
+        
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
         inst.startServer();
+
+        choreoTab = Shuffleboard.getTab("Auton");
+        field = new Field2d();
+        choreoTab.add("Field", field)
+        .withPosition(0, 0)
+        .withSize(3, 2);
 
         poseEstimator = new SwerveDrivePoseEstimator(
             kinematics, 
@@ -89,6 +102,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             gyroAngle,
             getModulePositions()
         );
+
+        field.setRobotPose(estimate);
         
         for(int i = 0; i < 4; i++){
             angles[i].set(states[i].angle.getRadians());
