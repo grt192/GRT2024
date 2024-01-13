@@ -10,6 +10,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     private double positionConversionFactor = 0;
     private double driveRotPerMinPerMetersPerSec = 0;
     private VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
+    private double targetRps = 0;
 
     public FalconDriveMotor(int port) {
         motor = new TalonFX(port);
@@ -17,11 +18,11 @@ public class FalconDriveMotor implements SwerveDriveMotor{
 
     public void setVelocity(double metersPerSec){
 
-        double targetRps = metersPerSec * driveRotPerMinPerMetersPerSec / 60; 
+        targetRps = metersPerSec * driveRotPerMinPerMetersPerSec / 60; 
 
         // System.out.println(motor.getClosedLoopTarget() + " err: " + motor.getClosedLoopError());
 
-        motor.setControl(request.withVelocity(targetRps * .3)); //TODO: REMOVE LIMIT 
+        motor.setControl(request.withVelocity(targetRps )); //TODO: REMOVE LIMIT 
     }
 
     public void setPower(double power){
@@ -57,6 +58,10 @@ public class FalconDriveMotor implements SwerveDriveMotor{
 
     public double getError(){
         return motor.getClosedLoopError().getValue();
+    }
+
+    public double getSetPoint(){
+        return targetRps;
     }
 
 }

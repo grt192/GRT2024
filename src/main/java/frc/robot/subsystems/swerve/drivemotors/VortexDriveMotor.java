@@ -59,4 +59,8 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     public double getError(){
         return 0; //STUB
     }
+
+    public double getSetPoint(){
+        return 0;//STUB
+    }
 }

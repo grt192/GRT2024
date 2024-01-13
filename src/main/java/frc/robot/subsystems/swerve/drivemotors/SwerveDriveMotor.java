@@ -17,4 +17,6 @@ public interface  SwerveDriveMotor {
     public void setPositionConversionFactor(double factor);
 
     public double getError();
+
+    public double getSetPoint();
 }
