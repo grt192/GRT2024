@@ -2,10 +2,10 @@ package frc.robot.subsystems.swerve.drivemotors;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.util.MotorUtil;
 
@@ -13,7 +13,7 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     
     private CANSparkMax motor;
     private RelativeEncoder encoder;
-    private SparkMaxPIDController pidController;
+    private SparkPIDController pidController;
 
     public VortexDriveMotor (int port){
         motor = new CANSparkMax(port, MotorType.kBrushless);
@@ -22,7 +22,7 @@ public class VortexDriveMotor implements SwerveDriveMotor {
         encoder = motor.getEncoder();
         encoder.setVelocityConversionFactor(1); //STUB
 
-        pidController = MotorUtil.createSparkMaxPIDController(motor, encoder);
+        pidController = MotorUtil.createSparkPIDController(motor, encoder);
     }
 
     public void setVelocity(double velocity){

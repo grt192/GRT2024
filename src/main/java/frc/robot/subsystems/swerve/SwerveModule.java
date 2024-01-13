@@ -2,11 +2,11 @@ package frc.robot.subsystems.swerve;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAnalogSensor;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkAnalogSensor;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,8 +24,8 @@ public class SwerveModule {
 
     private final CANSparkMax steerMotor;
     private RelativeEncoder steerRelativeEncoder;
-    private SparkMaxAnalogSensor steerAbsoluteEncoder;
-    private SparkMaxPIDController steerPidController;
+    private SparkAnalogSensor steerAbsoluteEncoder;
+    private SparkPIDController steerPidController;
 
     private double offsetRads;
 
@@ -81,10 +81,10 @@ public class SwerveModule {
         // steerMotor.setInverted(true);
         steerMotor.setIdleMode(IdleMode.kBrake);
 
-        steerAbsoluteEncoder = steerMotor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
+        steerAbsoluteEncoder = steerMotor.getAnalog(SparkAnalogSensor.Mode.kAbsolute);
         steerAbsoluteEncoder.setPositionConversionFactor(STEER_VOLTS_RADIANS);
         steerAbsoluteEncoder.setInverted(false);
-        steerPidController = MotorUtil.createSparkMaxPIDController(steerMotor, steerAbsoluteEncoder);
+        steerPidController = MotorUtil.createSparkPIDController(steerMotor, steerAbsoluteEncoder);
         steerPidController.setP(STEER_P);
         steerPidController.setI(STEER_I);
         steerPidController.setD(STEER_D);
