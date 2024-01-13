@@ -26,7 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final AHRS ahrs;
 
-    public static final double MAX_VEL = 5; //STUB
+    public static final double MAX_VEL = 4.90245766303; //calculated
     public static final double MAX_ACCEL = 3; //STUB
     public static final double MAX_OMEGA = MAX_VEL / FL_POS.getNorm();
     public static final double MAX_ALPHA = 8; //STUB
