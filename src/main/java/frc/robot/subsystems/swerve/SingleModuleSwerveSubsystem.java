@@ -33,7 +33,11 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
     public void setDrivePowers(double xPower, double yPower){
 
         double velocity = MAX_VEL * Math.sqrt(yPower * yPower + xPower * xPower) / Math.sqrt(2);
-        
+        if(Math.abs(xPower) < .01 && Math.abs(yPower) < .01 ){
+            System.out.println(Math.atan2(0, 0));
+            module.setRawPowers(0, 0);
+            return;
+        }
         double angle = Math.atan2(yPower, xPower);
 
         module.setDesiredState(new SwerveModuleState(velocity, new Rotation2d(angle)));

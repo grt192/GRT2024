@@ -146,18 +146,18 @@ public class SwerveModule {
         double targetVelocity = optimized.speedMetersPerSecond; //* Math.abs(Math.cos(angleErrorRads));
         // double currentVelocity = driveMotor.getVelocity();
 
-        // if (crimor.advanceIfElapsed(.1)){
-        //     // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
-        //     // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
-        //     System.out.print(" error " + twoDecimals(driveMotor.getError()));
-        //     System.out.println(" target " + twoDecimals(targetVelocity));
-        // }
+        if (crimor.advanceIfElapsed(.1)){
+            System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+            System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
+            // System.out.print(" error " + twoDecimals(driveMotor.getError()));
+            // System.out.println(" target " + twoDecimals(targetVelocity));
+        }
 
         driveMotor.setVelocity(targetVelocity);
-        if(Math.abs(Math.toDegrees(angleErrorRads)) < .5){
-            steerMotor.set(0);
-            return;
-        }
+        // if(Math.abs(Math.toDegrees(angleErrorRads)) < .5){
+        //     steerMotor.set(0);
+        //     return;
+        // }
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
 
@@ -185,10 +185,10 @@ public class SwerveModule {
         
         driveMotor.setPower(drivePower);
         System.out.println(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()));
-        if(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()) < .5){
-            steerMotor.set(0);
-            return;
-        }
+        // if(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()) < .5){
+        //     steerMotor.set(0);
+        //     return;
+        // }
         //System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
         // System.out.print("error " + (angleRads.minus(currentAngle).getRadians()) + "--------");
 
