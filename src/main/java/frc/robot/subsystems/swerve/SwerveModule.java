@@ -1,7 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.revrobotics.CANSparkMax;
-// import com.revrobotics.RelativeEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAnalogSensor;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -23,7 +23,7 @@ public class SwerveModule {
     private final SwerveDriveMotor driveMotor;
 
     private final CANSparkMax steerMotor;
-    // private RelativeEncoder steerRelativeEncoder;
+    private RelativeEncoder steerRelativeEncoder;
     private SparkMaxAnalogSensor steerAbsoluteEncoder;
     private SparkMaxPIDController steerPidController;
 
@@ -32,7 +32,7 @@ public class SwerveModule {
     
     private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0);
     private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION;
-    // private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI; // Useful for steer relative encoder if we ever use that
+    private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI; // Useful for steer relative encoder if we ever use that
     private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3 ; // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
