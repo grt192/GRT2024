@@ -1,7 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -23,7 +23,7 @@ public class SwerveModule {
     private final SwerveDriveMotor driveMotor;
 
     private final CANSparkMax steerMotor;
-    private RelativeEncoder steerRelativeEncoder;
+    // private RelativeEncoder steerRelativeEncoder;
     private SparkAnalogSensor steerAbsoluteEncoder;
     private SparkPIDController steerPidController;
 
