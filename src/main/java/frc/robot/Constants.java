@@ -27,15 +27,15 @@ public final class Constants {
   public static class SwerveConstants {
     public static final int FL_DRIVE = 0; 
     public static final int FL_STEER = 1;
-    public static final double FL_OFFSET = 2.33 + Math.PI / 2;
+    public static final double FL_OFFSET = 3.34 - Math.PI / 4;
     
     public static final int FR_DRIVE = 2; 
     public static final int FR_STEER = 3; 
-    public static final double FR_OFFSET = -.98 + Math.PI / 2;
+    public static final double FR_OFFSET = 2.94 - Math.PI * 3 / 4;
 
     public static final int BL_DRIVE = 4; 
     public static final int BL_STEER = 5; 
-    public static final double BL_OFFSET = 2.31 + Math.PI / 2;
+    public static final double BL_OFFSET = 3.14  + Math.PI / 4;
     
     public static final int BR_DRIVE = 6; 
     public static final int BR_STEER = 7; 

@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
@@ -78,9 +77,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             getModulePositions(),
             new Pose2d(),
             // State measurement standard deviations: [X, Y, theta]
-            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01),
+            MatBuilder.fill(Nat.N3(), Nat.N1(), 0.02, 0.02, 0.01),
             // Vision measurement standard deviations: [X, Y, theta]
-            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)
+            MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
     }
 

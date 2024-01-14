@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.REVLibError;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -87,8 +87,8 @@ public class MotorUtil {
      * @param encoder The feedback device to use for PID.
      * @return The configured SparkMaxPIDController.
      */
-    public static SparkMaxPIDController createSparkMaxPIDController(CANSparkMax spark, MotorFeedbackSensor encoder) {
-        SparkMaxPIDController pidController = spark.getPIDController();
+    public static SparkPIDController createSparkPIDController(CANSparkMax spark, MotorFeedbackSensor encoder) {
+        SparkPIDController pidController = spark.getPIDController();
 
         // Set feedback device
         checkError(spark.getDeviceId(), pidController.setFeedbackDevice(encoder), "PID feedback device");
