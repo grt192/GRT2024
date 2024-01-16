@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -20,6 +21,7 @@ import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
+  private final ClimbSubsystem climbSubsystem;
       
   private final XboxController controller = new XboxController(0);
   // private final SwerveModule module;
@@ -34,6 +36,7 @@ public class RobotContainer {
     // module = new SwerveModule(0, 1, 0);
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
+    climbSubsystem = new ClimbSubsystem();
     // Configure the trigger bindings
     configureBindings();    
   }

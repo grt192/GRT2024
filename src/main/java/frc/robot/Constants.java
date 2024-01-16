@@ -46,4 +46,18 @@ public final class Constants {
     public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
     public static final Translation2d BR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
   }
+
+  public static class ClimbConstants {
+    public static final int LEFT_WINCH_MOTOR_ID = 21;
+    public static final int LEFT_ZERO_LIMIT_ID = 11;
+
+    public static final int RIGHT_WINCH_MOTOR_ID = 22;
+    public static final int RIGHT_ZERO_LIMIT_ID = 12;
+   
+    public static final double WINCH_REDUCTION = 9.49;
+    public static final double AXLE_RADIUS_INCHES = .25;
+    
+    public static final double EXTENSION_LIMIT_INCHES = 39;
+    public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(EXTENSION_LIMIT_INCHES);
+  }
 }
