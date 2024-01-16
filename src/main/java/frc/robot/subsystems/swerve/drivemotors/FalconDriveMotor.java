@@ -63,5 +63,9 @@ public class FalconDriveMotor implements SwerveDriveMotor{
     public double getSetPoint(){
         return targetRps;
     }
+    
+    public double getAmpDraw(){
+        return motor.getSupplyCurrent().getValueAsDouble();
+    }
 
 }

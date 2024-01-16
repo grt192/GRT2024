@@ -207,4 +207,12 @@ public class SwerveModule {
     public double twoDecimals(double num){
         return ((int) (num * 100)) / 100.d;
     }
+
+    public double getDriveAmpDraws(){
+        return driveMotor.getAmpDraw();
+    }
+
+    public double getSteerAmpDraws(){
+        return steerMotor.getOutputCurrent();
+    }
 }
