@@ -9,7 +9,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
-import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 
@@ -20,11 +19,7 @@ import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
@@ -149,7 +143,7 @@ public class RobotContainer {
       PIDController thetacontroller = new PIDController(1, 0, 0); //TODO: tune
       thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
-      BooleanSupplier isBlue = () -> DriverStation.getAlliance() == DriverStation.Alliance.Blue; 
+      BooleanSupplier isBlue = () -> true; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
       Command swerveCommand = Choreo.choreoSwerveCommand(
         traj,
