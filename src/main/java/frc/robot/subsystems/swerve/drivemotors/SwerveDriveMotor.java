@@ -19,4 +19,6 @@ public interface  SwerveDriveMotor {
     public double getError();
 
     public double getSetPoint();
+
+    public double getAmpDraw();
 }
