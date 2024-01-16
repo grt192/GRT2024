@@ -32,6 +32,7 @@ import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
@@ -89,6 +90,7 @@ public class RobotContainer {
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
     ChoreoTrajectory traj;
+    
     // private final SwerveModule module;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -111,6 +113,10 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
+        // private final SwerveModule module;
+        //construct Test
+        // module = new SwerveModule(6, 7, 0);
+        // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
 
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -118,7 +124,7 @@ public class RobotContainer {
         camera1.setResolution(176, 144);
         mjpgserver1 = new MjpegServer("m1", 1181);
         mjpgserver1.setSource(camera1);
-  }
+    }
 
 
   private void configureBindings() {

@@ -120,14 +120,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void periodic() {
-        
-        // System.out.println(frontLeftModule.getDriveSetpoint());
-
-        // if (crimer.advanceIfElapsed(.1)){
-        //     //System.out.println("BR : " + backRightModule.getRawAngle());
-        //     System.out.println("BL : " + backLeftModule.getRawAngle());
-        // }
-    
         FLsteer.setValue(frontLeftModule.getSteerAmpDraws());
         FLdrive.setValue(frontLeftModule.getDriveAmpDraws());
 
