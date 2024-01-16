@@ -244,4 +244,12 @@ public class SwerveModule {
     public double getDriveSetpoint(){
         return driveMotor.getSetpoint();
     }
+
+    public double getDriveAmpDraws(){
+        return driveMotor.getAmpDraw();
+    }
+
+    public double getSteerAmpDraws(){
+        return steerMotor.getOutputCurrent();
+    }
 }
