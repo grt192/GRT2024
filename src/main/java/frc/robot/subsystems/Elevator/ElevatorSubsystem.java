@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -41,16 +42,21 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     private final DigitalInput zeroLimitSwitch;
 
+    //Controller for testing.
+    private final XboxController mechController; 
 
 
     public ElevatorSubsystem(){
+        //Print out current position for debug & measurement
+        System.out.print(extensionEncoder.getPosition());
+
         extensionMotor = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
         
         extensionEncoder = extensionMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor([factor]);
         extensionEncoder.setVelocityConversionFactor([factor]);
-        extensionEncoder.setPosition(0)
+        extensionEncoder.setPosition(0);
         
         extensionFollow = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
@@ -63,9 +69,17 @@ public class ElevatorSubsystem extends SubsystemBase{
         extensionPidController.setSmartMotionAllowedClosedLoopError(extensionTolerance, 0);
         
         zeroLimitSwitch = new DigitalInput(Constants.ElevatorConstants.ZERO_LIMIT_ID);
+
+        //Controller for testing.
+        XboxController mechController = new XboxController([port]);
     }
     @Override
     public void periodic(){
+        if(IS_MANUAL){
+            //Add some factors for better control.
+            extensionMotor.set(mechController.getRightY());
+            return;
+        }
         if (zeroLimitSwitch != null && !zeroLimitSwitch.get()){
             extensionEncoder.setPosition(0); 
         }
@@ -75,6 +89,19 @@ public class ElevatorSubsystem extends SubsystemBase{
         //Start move to target posision
         if (targetState != state){
             extensionPidController.setReference(targetState.getExtension(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
+        }
+
+        if(mechController.getAButtonPressed()){
+            this.setTarget(ElevatorState.GROUND);
+        }
+        else if(mechController.getBButtonPressed()){
+            this.setTarget(ElevatorState.AMP);
+        }
+        else if(mechController.getXButtonPressed()){
+            this.setTarget(ElevatorState.SPEAKER);
+        }
+        else if(mechController.getYButtonPressed()){
+            this.setTarget(ElevatorState.CHUTE);
         }
         
     }
