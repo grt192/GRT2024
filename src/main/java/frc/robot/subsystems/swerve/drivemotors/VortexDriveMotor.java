@@ -74,6 +74,10 @@ public class VortexDriveMotor implements SwerveDriveMotor {
         return lastReference; //STUB
     }
 
+    public double getSetPoint(){
+        return 0; //STUB
+    }
+
     public double getAmpDraw(){
         return motor.getOutputCurrent(); //STUB
     }
