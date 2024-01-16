@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.ClimbConstants.*;
 
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
@@ -29,7 +30,10 @@ public class RobotContainer {
   private final JoystickButton
     LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
     RBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value),
-    AButton = new JoystickButton(controller, XboxController.Button.kA.value);
+    AButton = new JoystickButton(controller, XboxController.Button.kA.value),
+    XButton = new JoystickButton(controller, XboxController.Button.kX.value),
+    YButton = new JoystickButton(controller, XboxController.Button.kY.value);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //construct Test
@@ -96,8 +100,16 @@ public class RobotContainer {
       AButton.onTrue(new InstantCommand(() -> {
         swerveSubsystem.toggletoRun();
       }));
-      
     }
+
+    /* CLIMB */
+    YButton.onTrue(new InstantCommand(() -> {
+      climbSubsystem.goToExtension(EXTENSION_LIMIT_METERS);
+    }));
+
+    XButton.onTrue(new InstantCommand(() -> {
+      climbSubsystem.goToExtension(0);
+    }));
   } 
 
   /**
