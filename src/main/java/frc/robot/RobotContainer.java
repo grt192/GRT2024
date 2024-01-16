@@ -13,6 +13,7 @@ import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
+import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -41,6 +42,8 @@ public class RobotContainer {
     private final ShooterFeederSubsystem feederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
+    private final ClimbSubsystem climbSubsystem;
+
 
     private final XboxController mechController = new XboxController(2);
     private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
@@ -65,6 +68,8 @@ public class RobotContainer {
 
       shooterPivotSubsystem = new ShooterPivotSubsystem(false);
       shooterSubsystem = new ShooterFlywheelSubsystem();
+
+      climbSubsystem = new ClimbSubsystem();
       
       traj = Choreo.getTrajectory("Curve");
 
