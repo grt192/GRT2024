@@ -43,7 +43,7 @@ public class ClimbArm {
     }
 
     public void goToExtension(double desiredHeight) {
-        desiredExtension = MathUtil.clamp(0, desiredHeight, EXTENSION_LIMIT_METERS);
+        desiredExtension = MathUtil.clamp(desiredHeight, 0, EXTENSION_LIMIT_METERS);
     }
 
     public void periodic() {
@@ -56,7 +56,7 @@ public class ClimbArm {
         if (extensionEncoder.getPosition() == desiredExtension)
             winchMotor.set(0);
         else
-            winchMotor.set(desiredExtension - extensionEncoder.getPosition());
+            winchMotor.set(MathUtil.clamp(desiredExtension - extensionEncoder.getPosition(), -MAX_WINCH_POWER, MAX_WINCH_POWER));
 
     }
 
