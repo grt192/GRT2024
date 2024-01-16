@@ -97,6 +97,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void periodic() {
+        frontLeftModule.setVerbose();
+        
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
