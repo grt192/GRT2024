@@ -29,6 +29,8 @@ public class SwerveModule {
 
     private double offsetRads;
 
+    private boolean verbose;
+
     
     private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0);
     private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION;
@@ -37,9 +39,9 @@ public class SwerveModule {
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
     // TODO: tune PIDs, comments are 2023 constants
-    private static final double FALCON_DRIVE_P = 0; // .05
+    private static final double FALCON_DRIVE_P = 0.0028; // .05
     private static final double FALCON_DRIVE_I = 0; // 0
-    private static final double FALCON_DRIVE_D = 0; // 0
+    private static final double FALCON_DRIVE_D = 0.005; // 0
     private static final double FALCON_DRIVE_FF = .11285266; //  .11285266;
 
     private static final double VORTEX_DRIVE_P = 0;
@@ -47,7 +49,7 @@ public class SwerveModule {
     private static final double VORTEX_DRIVE_D = 0;
     private static final double VORTEX_DRIVE_FF = 0;
 
-    private static final double STEER_P = .7; // .7
+    private static final double STEER_P = .68; // .7
     private static final double STEER_I = 0; // 0
     private static final double STEER_D = 0; // 35
     private static final double STEER_FF = 0; // 0
@@ -146,16 +148,18 @@ public class SwerveModule {
         double targetVelocity = optimized.speedMetersPerSecond; //* Math.abs(Math.cos(angleErrorRads));
         // double currentVelocity = driveMotor.getVelocity();
 
+        driveMotor.setVelocity(targetVelocity);
+
+        steerPidController.setReference(targetAngleRads, ControlType.kPosition);
+    }
+
+    public void setVerbose(){
         if (crimor.advanceIfElapsed(.1)){
             // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
             // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
             System.out.print(" error " + twoDecimals(driveMotor.getError()));
             System.out.println(" target " + twoDecimals(driveMotor.getSetPoint()));
         }
-
-        driveMotor.setVelocity(targetVelocity);
-
-        steerPidController.setReference(targetAngleRads, ControlType.kPosition);
     }
 
     /**
