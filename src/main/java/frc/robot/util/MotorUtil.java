@@ -24,7 +24,7 @@ public class MotorUtil {
 
         // Set 60.0 amp current limit
         checkError(deviceId, spark.restoreFactoryDefaults(), "factory reset");
-        checkError(deviceId, spark.setSmartCurrentLimit(60), "current limit");
+        checkError(deviceId, spark.setSmartCurrentLimit(40), "current limit");
 
         // Apply manually configured settings
         configureMotor.accept(spark);
