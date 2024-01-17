@@ -87,16 +87,8 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
-    public incrementAngle(int angle){
-        currentPos = rotationEncoder.getPosition();
-        rotationEncoder.setPosition(angle + currentPos);
-    }
-
-    public decrementAngle(int angle){
-        currentPos = rotationEncoder.getPosition();
-        if(currentPos != 0){
-            rotationEncoder.setPosition(currentPos - angle);
-        }
+    public setAngle(double angle){
+        rotationEncoder.setPosition(angle);
     }
 
     public void periodic(){
