@@ -38,6 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private RelativeEncoder rotationEncoder;
     private SparkMaxPIDController rotationPidController;
     private final DigitalInput limitSwitch;
+    robotState currentState;
 
     //sensors
     private final AnalogPotentiometer shooterSensor; //distance sensor
@@ -60,6 +61,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
         //encoder stuff
         rotationEncoder.setPositionConversionFactor(GEARBOX_RATIO);
+
+        //enums
+        state = robotState.NO_NOTE;
 
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
     }
@@ -87,11 +91,26 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void periodic(){
-
         //resets relative encoder every time robot starts again
         if(limitSwitch != null && !limitSwitch.get()){ //false = limit switch is pressed
             rotationEncoder.setPosition(0); 
-        } 
-
+        }
     }
+
+    //enum functions
+    public robotState setShooterState(robotState state){
+        robotState state = state;
+    }
+
+    // switch(myVar) {
+    //     case LOW:
+    //       System.out.println("Low level");
+    //       break;
+    //     case MEDIUM:
+    //        System.out.println("Medium level");
+    //       break;
+    //     case HIGH:
+    //       System.out.println("High level");
+    //       break;
+    //   }
 }
