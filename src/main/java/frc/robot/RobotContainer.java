@@ -237,6 +237,8 @@ public class RobotContainer {
       PIDController thetacontroller = new PIDController(1, 0, 0); //TODO: tune
       thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
+      swerveSubsystem.resetPose(traj.getInitialPose());
+
       BooleanSupplier isBlue = () -> true; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
       Command swerveCommand = Choreo.choreoSwerveCommand(
@@ -255,6 +257,8 @@ public class RobotContainer {
         );
 
         return Commands.sequence(
+          //ahrs not resetting on own 
+          // Commands.runOnce(() -> swerveSubsystem.resetAhrs()),
           Commands.runOnce(() -> swerveSubsystem.resetPose(traj.getInitialPose())),
           swerveCommand
         );

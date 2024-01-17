@@ -14,7 +14,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
@@ -31,6 +35,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final AHRS ahrs;
 
     private final Timer crimer;
+    private final Timer ahrsTimer;
 
     public static final double MAX_VEL = 4.90245766303; //calculated
     public static final double MAX_ACCEL = 3; //STUB
@@ -72,7 +77,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final ShuffleboardTab choreoTab;
     private final Field2d field;
 
-    private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
+    // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
 
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -89,23 +94,26 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         crimer = new Timer();
         crimer.start();
 
+        ahrsTimer = new Timer();
+        ahrsTimer.start();
+
         choreoTab = Shuffleboard.getTab("Auton");
         field = new Field2d();
-        // choreoTab.add("Field", field)
-        // .withPosition(0, 0)
-        // .withSize(3, 2);
+        choreoTab.add("Field", field)
+        .withPosition(0, 0)
+        .withSize(3, 2);
 
-        FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
-        FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
+        // FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
+        // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
         
-        FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
-        FRdrive = choreoTab.add("FRdrive", 0.).withPosition(1, 1).getEntry();
+        // FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
+        // FRdrive = choreoTab.add("FRdrive", 0.).withPosition(1, 1).getEntry();
         
-        BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
-        BLdrive = choreoTab.add("BLdrive", 0.).withPosition(2, 1).getEntry();
+        // BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
+        // BLdrive = choreoTab.add("BLdrive", 0.).withPosition(2, 1).getEntry();
         
-        BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
-        BRdrive = choreoTab.add("BRdrive", 0.).withPosition(3, 1).getEntry();
+        // BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
+        // BRdrive = choreoTab.add("BRdrive", 0.).withPosition(3, 1).getEntry();
 
         poseEstimator = new SwerveDrivePoseEstimator(
             kinematics, 
@@ -117,26 +125,47 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             // Vision measurement standard deviations: [X, Y, theta]
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
+
+        CommandScheduler.getInstance().schedule(new WaitCommand(1).andThen(new InstantCommand(() -> {ahrs.zeroYaw();}).alongWith(new InstantCommand(() -> {System.out.println("ZEROED");}))));
+        
     }
 
     public void periodic() {
-        FLsteer.setValue(frontLeftModule.getSteerAmpDraws());
-        FLdrive.setValue(frontLeftModule.getDriveAmpDraws());
+        
+        // System.out.println(frontLeftModule.getDriveSetpoint());
 
-        FRsteer.setValue(frontRightModule.getSteerAmpDraws());
-        FRdrive.setValue(frontRightModule.getDriveAmpDraws());
+        // if (crimer.advanceIfElapsed(.1)){
+        //     //System.out.println("BR : " + backRightModule.getRawAngle());
+        //     System.out.println("BL : " + backLeftModule.getRawAngle());
+        // }
+    
+        // FLsteer.setValue(frontLeftModule.getSteerAmpDraws());
+        // FLdrive.setValue(frontLeftModule.getDriveAmpDraws());
 
-        BLsteer.setValue(backLeftModule.getSteerAmpDraws());
-        BLdrive.setValue(backLeftModule.getDriveAmpDraws());
+        // FRsteer.setValue(frontRightModule.getSteerAmpDraws());
+        // FRdrive.setValue(frontRightModule.getDriveAmpDraws());
 
-        BRsteer.setValue(backRightModule.getSteerAmpDraws());
-        BRdrive.setValue(backRightModule.getDriveAmpDraws());
+        // BLsteer.setValue(backLeftModule.getSteerAmpDraws());
+        // BLdrive.setValue(backLeftModule.getDriveAmpDraws());
+
+        // BRsteer.setValue(backRightModule.getSteerAmpDraws());
+        // BRdrive.setValue(backRightModule.getDriveAmpDraws());
         
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
             getModulePositions()
         );
+        
+        if(ahrsTimer.advanceIfElapsed(3)){
+            System.out.println(gyroAngle);
+            resetAhrs();
+            System.out.println(gyroAngle);
+            System.out.println("RESeT THE AHRS");
+            ahrsTimer.stop();
+        }
+
+        
 
         field.setRobotPose(estimate);
         
@@ -235,6 +264,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             : getRobotPosition().getRotation();
         
         return robotHeading.minus(driverHeadingOffset);
+    }
+
+    public void resetAhrs(){
+        ahrs.zeroYaw();
     }
 
 }
