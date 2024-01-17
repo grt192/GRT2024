@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 enum robotState {
     LOADING_NOTE, //taken through intake
     HOLDING_NOTE, //in the conveyer belt
-    NO_NOTE //no note in robot
+    NO_NOTE, //no note in robot
     FIRING
 }
 
@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private RelativeEncoder rotationEncoder;
     private SparkMaxPIDController rotationPidController;
     private final DigitalInput limitSwitch;
-    robotState currentState;
+    private robotState currentState;
 
     //sensors
     private final AnalogPotentiometer shooterSensor; //distance sensor
@@ -68,10 +68,19 @@ public class ShooterSubsystem extends SubsystemBase {
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
     }
 
+    //enum functions
+    public robotState getShooterState(robotState state){
+        return currentState;
+    }
+
+    public robotState setShooterState(robotState newState){
+        currentState = newState;
+    }
+
     public shootNote(){
         if(shooterSensor.get() < tolerance){
-            shooterMotor.set(speed);
             conveyerBelt.set(speed);
+            setShooterState(robotState.FIRING);
         } else {
             shooterMotor.set(0);
             conveyerBelt.set(speed);
@@ -95,22 +104,23 @@ public class ShooterSubsystem extends SubsystemBase {
         if(limitSwitch != null && !limitSwitch.get()){ //false = limit switch is pressed
             rotationEncoder.setPosition(0); 
         }
-    }
 
-    //enum functions
-    public robotState setShooterState(robotState state){
-        robotState state = state;
-    }
+        if(currentState == FIRING && (shooterSensor.get() < tolerance)){  //when there is no note
+            setShooterState(robotState.NO_NOTE);
+        }
 
-    // switch(myVar) {
-    //     case LOW:
-    //       System.out.println("Low level");
-    //       break;
-    //     case MEDIUM:
-    //        System.out.println("Medium level");
-    //       break;
-    //     case HIGH:
-    //       System.out.println("High level");
-    //       break;
-    //   }
+        // switch(currentState) {
+        //     case HOLDING_NOTE:
+        //       shooterMotor.set(speed); //warming up the motor
+        //       break;
+        //     case LOADING_NOTE:
+        //        shooterMotor.set(speed);
+        //        shootNote();
+        //       break;
+        //     case NO_NOTE:
+        //       System.out.println("High level");
+        //       break;
+        // }
+
+    }
 }
