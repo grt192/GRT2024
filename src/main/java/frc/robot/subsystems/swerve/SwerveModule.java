@@ -204,7 +204,7 @@ public class SwerveModule {
 
     }
 
-    public double getRealWrappedAngle(){
+    public double getMappedAngle(){
         //get range of new range
         //get "fake" encoder value + offset
         //fakevalue/fakerange = x/realrange
@@ -218,7 +218,7 @@ public class SwerveModule {
      * @return Wrapped angle in radians from -pi to pi
      */
     public Rotation2d getWrappedAngle(){
-        double angleRads = steerAbsoluteEncoder.getPosition();
+        double angleRads = getMappedAngle();
         double wrappedAngleRads = MathUtil.angleModulus(angleRads + offsetRads);
 
         return new Rotation2d(wrappedAngleRads);
