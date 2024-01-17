@@ -56,6 +56,9 @@ public class SwerveModule {
 
     private Timer crimor;
 
+    private double maxEncoder = 360;
+    private double minEncoder = 0;
+
     /**
      * Constructs a Swerve Module
      * @param drivePort The CAN ID of the drive motor
@@ -193,6 +196,21 @@ public class SwerveModule {
 
         steerPidController.setReference(targetAngleRads, ControlType.kPosition);
         // System.out.println("2");
+    }
+
+    public void configureEncoder(double min, double max){
+        minEncoder = min;
+        maxEncoder = max;
+
+    }
+
+    public double getRealWrappedAngle(){
+        //get range of new range
+        //get "fake" encoder value + offset
+        //fakevalue/fakerange = x/realrange
+        //realrange((fakevalue - min)/fakerange) = x
+
+        return 360. * (steerAbsoluteEncoder.getPosition() - minEncoder) / ((double) (maxEncoder - minEncoder));
     }
 
     /**
