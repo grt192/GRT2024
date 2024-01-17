@@ -139,8 +139,9 @@ public class SwerveModule {
      * @param state The desired SwerveModuleState
      */
     public void setDesiredState(SwerveModuleState state) {
+        //System.out.println(state.angle.getDegrees());
         Rotation2d currentAngle = getWrappedAngle();
-        SwerveModuleState optimized = SwerveModuleState.optimize(state, currentAngle);
+        SwerveModuleState optimized = state;//SwerveModuleState.optimize(state, currentAngle);
 
         double targetAngleRads = optimized.angle.getRadians() - offsetRads;
         double angleErrorRads = optimized.angle.minus(currentAngle).getRadians();
@@ -155,10 +156,11 @@ public class SwerveModule {
 
     public void setVerbose(){
         if (crimor.advanceIfElapsed(.1)){
-            // System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+            System.out.println(" current " + twoDecimals(getWrappedAngle().getDegrees()));
             // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
-            System.out.print(" error " + twoDecimals(driveMotor.getError()));
-            System.out.println(" target " + twoDecimals(driveMotor.getSetPoint()));
+            // System.out.print(" error " + twoDecimals(driveMotor.getError()));
+            // System.out.println(" target " + twoDecimals(driveMotor.getSetPoint()));
+
         }
     }
 
@@ -202,6 +204,10 @@ public class SwerveModule {
         double wrappedAngleRads = MathUtil.angleModulus(angleRads + offsetRads);
 
         return new Rotation2d(wrappedAngleRads);
+    }
+
+    public Rotation2d getRawAngle(){
+        return new Rotation2d(steerAbsoluteEncoder.getPosition());
     }
 
     public double twoDecimals(double num){
