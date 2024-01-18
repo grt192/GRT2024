@@ -203,10 +203,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     @Override
     public void periodic() {
 
-        robotPos.setValue(Units.radiansToDegrees(thetaController.getPositionError()));
-        // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
-        // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
-        // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
+        robotPos.setValue(getRobotPosition().getX());
     
         
         // System.out.println(frontLeftModule.getDriveSetpoint());
