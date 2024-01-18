@@ -54,8 +54,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         extensionMotor.setIdleMode(IdleMode.kBrake);
         
         extensionEncoder = extensionMotor.getEncoder();
-        extensionEncoder.setPositionConversionFactor([factor]);
-        extensionEncoder.setVelocityConversionFactor([factor]);
+        extensionEncoder.setPositionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR);
+        extensionEncoder.setVelocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
         extensionEncoder.setPosition(0);
         
         extensionFollow = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
@@ -71,7 +71,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         zeroLimitSwitch = new DigitalInput(Constants.ElevatorConstants.ZERO_LIMIT_ID);
 
         //Controller for testing.
-        XboxController mechController = new XboxController([port]);
+        mechController = new XboxController(Constants.OperatorConstants.kDriverControllerPort);
     }
     @Override
     public void periodic(){

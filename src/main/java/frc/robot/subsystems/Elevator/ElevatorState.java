@@ -5,12 +5,12 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public enum ElevatorState {
-    GROUND([position]),
-    SPEAKER([position]),
-    AMP([position]),
-    CHUTE([position]),
-    TRAP([position]),
-    START([position]);
+    GROUND(Constants.ElevatorConstants.GROUND_POSITION),
+    SPEAKER(Constants.ElevatorConstants.SPEAKER_POSITION),
+    AMP(Constants.ElevatorConstants.AMP_POSITION),
+    CHUTE(Constants.ElevatorConstants.CHUTE_POSITION),
+    TRAP(Constants.ElevatorConstants.TRAP_POSITION),
+    START(Constants.ElevatorConstants.START_POSITION);
 
     private final double extendDistanceMeters;
 
