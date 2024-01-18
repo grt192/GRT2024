@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -78,6 +79,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final Field2d field;
 
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
+    private final GenericEntry robotPos;
 
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -101,7 +103,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         field = new Field2d();
         choreoTab.add("Field", field)
         .withPosition(0, 0)
-        .withSize(3, 2);
+        .withSize(6, 4);
+
+        robotPos = choreoTab.add("position", 0.).withPosition(7,0).getEntry();
 
         // FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
         // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
@@ -131,6 +135,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void periodic() {
+
+        robotPos.setValue(getRobotPosition().getX());
+    
         
         // System.out.println(frontLeftModule.getDriveSetpoint());
 
@@ -157,13 +164,13 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             getModulePositions()
         );
         
-        if(ahrsTimer.advanceIfElapsed(3)){
-            System.out.println(gyroAngle);
-            resetAhrs();
-            System.out.println(gyroAngle);
-            System.out.println("RESeT THE AHRS");
-            ahrsTimer.stop();
-        }
+        // if(ahrsTimer.advanceIfElapsed(3)){
+        //     System.out.println(gyroAngle);
+        //     resetAhrs();
+        //     System.out.println(gyroAngle);
+        //     System.out.println("RESeT THE AHRS");
+        //     ahrsTimer.stop();
+        // }
 
         
 
@@ -211,6 +218,21 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     
 
+    public void setChassisSpeeds(double xSpeed, double ySpeed, double angleSpeed){
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            xSpeed,
+            ySpeed,
+            angleSpeed,
+            getDriverHeading());
+        
+        this.states = kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            this.states, speeds,
+            MAX_VEL, MAX_VEL, MAX_OMEGA);
+
+        // System.out.println(speeds.vxMetersPerSecond);
+    }
+
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;
     }
@@ -229,7 +251,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public Pose2d getRobotPosition() {
+        System.out.println(poseEstimator.getEstimatedPosition().getRotation());
         return poseEstimator.getEstimatedPosition();
+
     }
 
     public void resetPose(Pose2d currentPose){
