@@ -99,7 +99,6 @@ public class RobotContainer {
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
     ChoreoTrajectory traj;
-    
     // private final SwerveModule module;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -108,6 +107,9 @@ public class RobotContainer {
         // module = new SwerveModule(6, 7, 0, true);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
         baseSwerveSubsystem = new SwerveSubsystem();
+
+    xPID = new PIDController(0, 0, 0);
+    yPID = new PIDController(0, 0, 0);
         intakePivotSubsystem = new IntakePivotSubsystem();
         shooterFeederSubsystem = new ShooterFeederSubsystem();
 
@@ -180,11 +182,7 @@ public class RobotContainer {
 
         }, ledSubsystem));
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-            if(driveController.getRelativeMode()){
-                swerveSubsystem.setRobotRelativeDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
-            } else {
-                swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
-            }
+            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
             // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
         }, swerveSubsystem));
 
@@ -236,20 +234,18 @@ public class RobotContainer {
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-      PIDController thetacontroller = new PIDController(1, 0, 0); //TODO: tune
+      PIDController thetacontroller = new PIDController(0, 0, 0); //TODO: tune
       thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
-
-      swerveSubsystem.resetPose(traj.getInitialPose());
 
       BooleanSupplier isBlue = () -> true; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
       Command swerveCommand = Choreo.choreoSwerveCommand(
         traj,
         swerveSubsystem::getRobotPosition, 
-        new PIDController(1, 0, 0), //X TODO: tune
-        new PIDController(1, 0, 0), //Y TODO: tune
+        xPID, //X TODO: tune
+        yPID, //Y TODO: tune
         thetacontroller, 
-        ((ChassisSpeeds speeds) -> swerveSubsystem.setDrivePowers(
+        ((ChassisSpeeds speeds) -> swerveSubsystem.setChassisSpeeds(
           speeds.vxMetersPerSecond,
           speeds.vyMetersPerSecond, 
           speeds.omegaRadiansPerSecond
