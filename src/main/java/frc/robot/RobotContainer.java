@@ -230,10 +230,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
-      
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
       PIDController thetacontroller = new PIDController(0, 0, 0); //TODO: tune
       thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
+
+      swerveSubsystem.resetPose(traj.getInitialPose());
 
       BooleanSupplier isBlue = () -> true; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 

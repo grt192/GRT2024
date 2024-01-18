@@ -219,18 +219,17 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     
 
     public void setChassisSpeeds(double xSpeed, double ySpeed, double angleSpeed){
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisSpeeds speeds = new ChassisSpeeds(
             xSpeed,
             ySpeed,
-            angleSpeed,
-            getDriverHeading());
+            angleSpeed);
         
         this.states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
             this.states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
 
-        // System.out.println(speeds.vxMetersPerSecond);
+        System.out.println(speeds.vxMetersPerSecond);
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){
@@ -251,7 +250,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public Pose2d getRobotPosition() {
-        System.out.println(poseEstimator.getEstimatedPosition().getRotation());
+        // System.out.println(poseEstimator.getEstimatedPosition().getRotation());
         return poseEstimator.getEstimatedPosition();
 
     }
