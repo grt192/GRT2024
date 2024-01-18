@@ -238,7 +238,7 @@ public class RobotContainer {
 
       swerveSubsystem.resetPose(traj.getInitialPose());
 
-      BooleanSupplier isBlue = () -> true; //DriverStation.getAlliance() == new Optional<Alliance> ; 
+      BooleanSupplier isRed = () -> false; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
       Command swerveCommand = Choreo.choreoSwerveCommand(
         traj,
@@ -246,12 +246,13 @@ public class RobotContainer {
         xPID, //X TODO: tune
         yPID, //Y TODO: tune
         thetacontroller, 
-        ((ChassisSpeeds speeds) -> swerveSubsystem.setChassisSpeeds(
+        ((ChassisSpeeds speeds) -> {swerveSubsystem.setChassisSpeeds(
           speeds.vxMetersPerSecond,
           speeds.vyMetersPerSecond, 
           speeds.omegaRadiansPerSecond
-          )),
-        isBlue,
+          );
+        System.out.println(speeds.vxMetersPerSecond);}),
+        isRed,
         swerveSubsystem
         );
 
