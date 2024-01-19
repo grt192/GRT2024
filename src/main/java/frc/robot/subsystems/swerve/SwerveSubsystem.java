@@ -82,7 +82,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         new SwerveModuleState()
     };
 
-    private final ShuffleboardTab choreoTab;
+    public final ShuffleboardTab choreoTab;
     private final Field2d field;
 
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
@@ -245,7 +245,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             this.states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
 
-        System.out.println(speeds.vxMetersPerSecond);
+        // System.out.println(speeds.vxMetersPerSecond);
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){
