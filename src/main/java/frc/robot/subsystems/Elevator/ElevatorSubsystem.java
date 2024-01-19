@@ -52,13 +52,12 @@ public class ElevatorSubsystem extends SubsystemBase{
     //Controller for testing.
     private final XboxController mechController; 
 
-
     public ElevatorSubsystem(){
         //Print out current position for debug & measurement
         //System.out.print(extensionEncoder.getPosition());
         
         elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
-        elevatorNetworkTable = elevatorNetworkTableInstance.getTable("Elevator");
+        elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
         elevatorNetworkTable.addListener("target_position", EnumSet.of(NetworkTableEvent.Kind.kValueAll), this::acceptNewPosition);
 
         extensionMotor = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
@@ -104,39 +103,54 @@ public class ElevatorSubsystem extends SubsystemBase{
         }
 
         if(mechController.getAButtonPressed()){
-            this.setTarget(ElevatorState.GROUND);
+            this.setTargetState(ElevatorState.GROUND);
         }
         else if(mechController.getBButtonPressed()){
-            this.setTarget(ElevatorState.AMP);
+            this.setTargetState(ElevatorState.AMP);
         }
         else if(mechController.getXButtonPressed()){
-            this.setTarget(ElevatorState.SPEAKER);
+            this.setTargetState(ElevatorState.SPEAKER);
         }
         else if(mechController.getYButtonPressed()){
-            this.setTarget(ElevatorState.CHUTE);
+            this.setTargetState(ElevatorState.CHUTE);
         }
         
     }
     
-    public void setTarget(ElevatorState targetState){
+    public void setState(ElevatorState state) {
+        this.state = state;
+        return;
+    }
+    
+    public void setTargetState(ElevatorState targetState){
         this.targetState = targetState;
         return;
     }
 
+    public void setManual(){
+        this.IS_MANUAL = true;
+        return;
+    }
+
+    public void setAuto(){
+        this.IS_MANUAL = false;
+        return;
+    }
     public double getExtensionMeters() { 
         return extensionEncoder.getPosition();
     }
 
     public ElevatorState getState() {
-        return state;
+        return this.state;
     }
 
-    public void setState(ElevatorState state) {
-        this.state = state;
-        return;
+    public ElevatorState getTargetState(){
+        return this.targetState;
     }
-
+    
+    
     private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
+        System.out.println("got networktablex");
         System.out.println(event.valueData.toString());
     }
 }
