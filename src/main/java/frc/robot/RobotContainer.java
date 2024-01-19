@@ -49,7 +49,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -100,15 +103,27 @@ public class RobotContainer {
     ChoreoTrajectory traj;
     // private final SwerveModule module;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        //construct Test
-        // module = new SwerveModule(6, 7, 0, true);
-        // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-        baseSwerveSubsystem = new SwerveSubsystem();
+  private final GenericEntry xError, yError;
 
-    xPID = new PIDController(0, 0, 0);
-    yPID = new PIDController(0, 0, 0);
+  private final ShuffleboardTab swerveCrauton;
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+    //construct Test
+    // module = new SwerveModule(6, 7, 0);
+    // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+    baseSwerveSubsystem = new SwerveSubsystem();
+
+    xPID = new PIDController(4, 0, 0);
+    yPID = new PIDController(12, 0, 0);
+
+    traj = Choreo.getTrajectory("3MTranslateRotate");
+
+    swerveCrauton = Shuffleboard.getTab("Auton");
+
+    xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
+    yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
+
         intakePivotSubsystem = new IntakePivotSubsystem();
         shooterFeederSubsystem = new ShooterFeederSubsystem();
 
@@ -124,8 +139,6 @@ public class RobotContainer {
         } else {
             driveController = new XboxDriveController();
         }
-
-        traj = Choreo.getTrajectory("Curve");
 
         // Configure the trigger bindings
         configureBindings();
@@ -231,12 +244,12 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-      PIDController thetacontroller = new PIDController(0, 0, 0); //TODO: tune
+      PIDController thetacontroller = new PIDController(3, 0, 0); //TODO: tune
       thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
       swerveSubsystem.resetPose(traj.getInitialPose());
 
-      BooleanSupplier isRed = () -> false; //DriverStation.getAlliance() == new Optional<Alliance> ; 
+      BooleanSupplier isBlue = () -> false; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
       Command swerveCommand = Choreo.choreoSwerveCommand(
         traj,
@@ -250,7 +263,7 @@ public class RobotContainer {
           speeds.omegaRadiansPerSecond
           );
         System.out.println(speeds.vxMetersPerSecond);}),
-        isRed,
+        isBlue,
         swerveSubsystem
         );
 
@@ -263,4 +276,5 @@ public class RobotContainer {
     }
     else return null;
   }
+
 }
