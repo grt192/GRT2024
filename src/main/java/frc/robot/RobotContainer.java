@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.commands.ClimbLowerCommand;
+import frc.robot.commands.ClimbRaiseCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
@@ -103,13 +105,8 @@ public class RobotContainer {
     }
 
     /* CLIMB */
-    YButton.onTrue(new InstantCommand(() -> {
-      climbSubsystem.goToExtension(EXTENSION_LIMIT_METERS);
-    }));
-
-    XButton.onTrue(new InstantCommand(() -> {
-      climbSubsystem.goToExtension(0);
-    }));
+    XButton.onTrue(new ClimbLowerCommand(climbSubsystem));
+    YButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
   } 
 
   /**

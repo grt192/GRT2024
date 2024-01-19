@@ -59,6 +59,7 @@ public final class Constants {
     
     public static final double EXTENSION_LIMIT_INCHES = 39;
     public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(EXTENSION_LIMIT_INCHES);
+    public static final double EXTENSION_TOLERANCE_METERS = 0.01;
 
     public static final double MAX_WINCH_POWER = 0.6;
   }

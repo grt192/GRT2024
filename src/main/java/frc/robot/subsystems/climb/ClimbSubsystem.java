@@ -23,4 +23,8 @@ public class ClimbSubsystem extends SubsystemBase{
         leftClimbArm.goToExtension(height);
         rightClimbArm.goToExtension(height);
     }
+
+    public boolean isAtExtension() {
+        return leftClimbArm.isAtExtension() && rightClimbArm.isAtExtension();
+    }
 }
