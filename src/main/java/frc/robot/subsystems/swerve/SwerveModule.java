@@ -147,8 +147,8 @@ public class SwerveModule {
         // double currentVelocity = driveMotor.getVelocity();
 
         if (crimor.advanceIfElapsed(.1)){
-            System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
-            System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
+            //System.out.print(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+            //System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
             // System.out.print(" error " + twoDecimals(driveMotor.getError()));
             // System.out.println(" target " + twoDecimals(targetVelocity));
         }
