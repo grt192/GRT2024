@@ -1,0 +1,68 @@
+{
+  "Clients": {
+    "open": true
+  },
+  "Connections": {
+    "open": true
+  },
+  "NT3@10.1.92.206:59486": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NT3@10.1.92.206:59984": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NT3@10.1.92.206:61719": {
+    "Publishers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NT3@10.1.92.206:65507": {
+    "Publishers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "192"
+  },
+  "Server": {
+    "open": true
+  },
+  "outlineviewer@5": {
+    "open": true
+  },
+  "retained": {
+    "elevator": {
+      "open": true
+    }
+  },
+  "shuffleboard@2": {
+    "Subscribers": {
+      "open": true
+    }
+  },
+  "transitory": {
+    "Shuffleboard": {
+      "Auton": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  }
+}
