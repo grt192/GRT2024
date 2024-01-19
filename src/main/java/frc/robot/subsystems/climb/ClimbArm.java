@@ -42,10 +42,6 @@ public class ClimbArm {
         zeroLimitSwitch = new DigitalInput(LEFT_ZERO_LIMIT_ID);
     }
 
-    public void goToExtension(double desiredHeight) {
-        desiredExtension = MathUtil.clamp(desiredHeight, 0, EXTENSION_LIMIT_METERS);
-    }
-
     public void periodic() {
         if (zeroLimitSwitch != null && !zeroLimitSwitch.get())
             resetEncoder();
@@ -53,11 +49,19 @@ public class ClimbArm {
         if (extensionEncoder.getPosition() == 0 && zeroLimitSwitch.get())
             System.out.println(this.toString() + "encoder uncalibrated!");
 
-        if (extensionEncoder.getPosition() == desiredExtension)
+        if (isAtExtension())
             winchMotor.set(0);
         else
             winchMotor.set(MathUtil.clamp(desiredExtension - extensionEncoder.getPosition(), -MAX_WINCH_POWER, MAX_WINCH_POWER));
 
+    }
+    
+    public void goToExtension(double desiredHeight) {
+        desiredExtension = MathUtil.clamp(desiredHeight, 0, EXTENSION_LIMIT_METERS);
+    }
+
+    public boolean isAtExtension() {
+        return Math.abs(extensionEncoder.getPosition() - desiredExtension) < EXTENSION_TOLERANCE_METERS; 
     }
 
     private void resetEncoder() {
