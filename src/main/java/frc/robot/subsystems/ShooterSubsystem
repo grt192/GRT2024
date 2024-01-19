@@ -66,6 +66,7 @@ public class ShooterSubsystem extends SubsystemBase {
         state = robotState.NO_NOTE;
 
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
+        setShooterState(robotState.NO_NOTE);
     }
 
     //enum functions
