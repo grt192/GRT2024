@@ -356,6 +356,14 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         return -getRobotPosition().getX() + BLUE_SPEAKER_POS.getX();
     }
 
+    public void setDrivePowerswithFieldAngle(double xPower, double yPower){
+
+    }
+
+    public double getYfromSpeaker(){
+        return 
+    }
+
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;
     }
