@@ -5,6 +5,15 @@
   "Connections": {
     "open": true
   },
+  "NT3@10.1.92.206:51636": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
   "NT3@10.1.92.206:59486": {
     "Publishers": {
       "open": true
@@ -29,6 +38,33 @@
     },
     "open": true
   },
+  "NT3@10.1.92.206:63948": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NT3@10.1.92.206:64086": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
+  "NT3@10.1.92.206:64504": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    },
+    "open": true
+  },
   "NT3@10.1.92.206:65507": {
     "Publishers": {
       "open": true
@@ -40,7 +76,21 @@
     "serverTeam": "192"
   },
   "Server": {
+    "Subscribers": {
+      "open": true
+    },
     "open": true
+  },
+  "Transitory Values": {
+    "open": false
+  },
+  "outlineviewer@2": {
+    "Publishers": {
+      "open": true
+    },
+    "Subscribers": {
+      "open": true
+    }
   },
   "outlineviewer@5": {
     "open": true
