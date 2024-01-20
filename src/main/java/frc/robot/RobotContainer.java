@@ -30,12 +30,16 @@ import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.controllers.BaseDriveController;
+import frc.robot.controllers.DualJoystickDriveController;
+import frc.robot.controllers.XboxDriveController;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+
 
 import java.util.function.BooleanSupplier;
 import com.choreo.lib.Choreo;
@@ -58,7 +62,7 @@ import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final BaseDriveController driveController = new DualJoystickDriveController();
+    private final BaseDriveController driveController;
     private final BaseSwerveSubsystem baseSwerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
@@ -108,6 +112,7 @@ public class RobotContainer {
         climbSubsystem = new ClimbSubsystem();
       
         elevatorSubsystem = new ElevatorSubsystem();
+        driveController = new DualJoystickDriveController();
 
         traj = Choreo.getTrajectory("Curve");
 
