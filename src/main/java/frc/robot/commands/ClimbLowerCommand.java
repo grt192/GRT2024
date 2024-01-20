@@ -27,7 +27,7 @@ public class ClimbLowerCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("CLIMB LOWERED!");
+        System.out.println(interrupted ? "CLIMB LOWERING INTERRUPTED!" : "CLIMB LOWERED!");
     }
 
 }
