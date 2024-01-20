@@ -10,6 +10,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -41,6 +42,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final BaseSwerveSubsystem baseSwerveSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
       
   private final BaseDriveController driveController = new DualJoystickDriveController();
 
@@ -53,6 +55,7 @@ public class RobotContainer {
     // module = new SwerveModule(6, 7, 0);
     // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
 
     traj = Choreo.getTrajectory("Curve");
 
@@ -60,15 +63,11 @@ public class RobotContainer {
     configureBindings();    
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+  private void shooterState(){
+    shooterSubsystem.setFlywheelSpeed(0.75);
+
+  }
+
   private void configureBindings() {
     pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
       pivotSubsystem.setPivotSpeed(controller.getRightTriggerAxis(), -controller.getLeftTriggerAxis());
@@ -130,13 +129,10 @@ public class RobotContainer {
       // }));
       
     }
+
+    
   } 
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       
