@@ -16,7 +16,7 @@ public class ElevatorSetAutoCommand extends Command{
     }
 
     @Override
-    public void execute(){
+    public void initialize(){
         this.elevatorSubsystem.setAuto();
     }
 

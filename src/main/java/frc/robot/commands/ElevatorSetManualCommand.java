@@ -16,7 +16,7 @@ public class ElevatorSetManualCommand extends Command{
     }
 
     @Override
-    public void execute(){
+    public void initialize(){
         this.elevatorSubsystem.setManual();
     }
 

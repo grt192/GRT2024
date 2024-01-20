@@ -17,7 +17,7 @@ public class ElevatorToChuteCommand extends Command{
     }
 
     @Override
-    public void execute(){
+    public void initialize(){
         this.elevatorSubsystem.setTargetState(ElevatorState.CHUTE);
     }
 
