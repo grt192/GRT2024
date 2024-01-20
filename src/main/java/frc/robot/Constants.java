@@ -17,8 +17,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class ElevatorConstants {
-    public static final int EXTENSION_ID = 0;
-    public static final int EXTENSION_FOLLOW_ID = 0;
+    public static final int EXTENSION_ID = 999;
+    public static final int EXTENSION_FOLLOW_ID = 998;
     
     public static final float EXTENSION_LIMIT_METERS = 0;
     
@@ -30,6 +30,12 @@ public final class Constants {
     public static final int CHUTE_POSITION = 0;
     public static final int TRAP_POSITION = 0;
     public static final int START_POSITION = 0; 
+    public static final int ERROR = -1;
+
+    public static final double EXTENSIONP= 2.4;
+    public static final double EXTENSIONI= 0;
+    public static final double EXTENSIOND= 0;
+    public static final double EXTENSIONTOLERANCE= 0.003;
 
     public static final double POSITIONCONVERSIONFACTOR = 0;
     public static final double VELOCITYCONVERSIONFACTOR = 0;
