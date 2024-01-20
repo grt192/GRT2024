@@ -144,7 +144,7 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState state) {
         //System.out.println(state.angle.getDegrees());
         Rotation2d currentAngle = getWrappedAngle();
-        SwerveModuleState optimized = state;//SwerveModuleState.optimize(state, currentAngle);
+        SwerveModuleState optimized = SwerveModuleState.optimize(state, currentAngle);
 
         double targetAngleRads = optimized.angle.getRadians() - offsetRads;
         double angleErrorRads = optimized.angle.minus(currentAngle).getRadians();
