@@ -315,6 +315,14 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
+    public void setDrivePowerswithFieldAngle(double xPower, double yPower){
+
+    }
+
+    public double getYfromSpeaker(){
+        return 
+    }
+
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;
     }

@@ -79,6 +79,8 @@ public final class Constants {
     public static final Translation2d FR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
     public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);
     public static final Translation2d BR_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
+
+    public static final Translation2d BLUE_SPEAKER_POS = new Translation2d(0, Units.inchesToMeters(218.42));
   }
 
   public static class IntakeConstants {
