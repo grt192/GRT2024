@@ -10,7 +10,8 @@ public enum ElevatorState {
     AMP(Constants.ElevatorConstants.AMP_POSITION),
     CHUTE(Constants.ElevatorConstants.CHUTE_POSITION),
     TRAP(Constants.ElevatorConstants.TRAP_POSITION),
-    START(Constants.ElevatorConstants.START_POSITION);
+    START(Constants.ElevatorConstants.START_POSITION),
+    ERROR(Constants.ElevatorConstants.ERROR);
 
     private final double extendDistanceMeters;
 
@@ -18,8 +19,30 @@ public enum ElevatorState {
         this.extendDistanceMeters = extendDistanceMeters;
     }
 
+    public ElevatorState getStateFromString(String state){
+        if(state == "GROUND"){
+            return ElevatorState.GROUND;
+        }
+        else if(state == "SPEAKER"){
+            return ElevatorState.SPEAKER;
+        }
+        else if(state == "AMP"){
+            return ElevatorState.AMP;
+        }
+        else if(state == "CHUTE"){
+            return ElevatorState.CHUTE;
+        }
+        else if(state == "TRAP"){
+            return ElevatorState.TRAP;
+        }
+        else if(state == "START"){
+            return ElevatorState.START;
+        }
+        else{
+            return ElevatorState.ERROR;
+        } 
+    }
     public double getExtension(){
         return this.extendDistanceMeters;
     }
-
 }
