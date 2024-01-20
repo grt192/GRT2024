@@ -78,10 +78,9 @@ public final class Constants {
     public static final int RIGHT_ZERO_LIMIT_ID = 12;
    
     public static final double WINCH_REDUCTION = 9.49;
-    public static final double AXLE_RADIUS_INCHES = .25;
+    public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289) ;
     
-    public static final double EXTENSION_LIMIT_INCHES = 39;
-    public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(EXTENSION_LIMIT_INCHES);
+    public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(39);
     public static final double EXTENSION_TOLERANCE_METERS = 0.01;
 
     public static final double MAX_WINCH_POWER = 0.6;

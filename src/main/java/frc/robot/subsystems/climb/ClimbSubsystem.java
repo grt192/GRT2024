@@ -10,13 +10,13 @@ public class ClimbSubsystem extends SubsystemBase{
 
     public ClimbSubsystem() {
         leftClimbArm = new ClimbArm(LEFT_WINCH_MOTOR_ID, LEFT_ZERO_LIMIT_ID);
-        rightClimbArm = new ClimbArm(RIGHT_WINCH_MOTOR_ID, RIGHT_WINCH_MOTOR_ID);
+        rightClimbArm = new ClimbArm(RIGHT_WINCH_MOTOR_ID, RIGHT_ZERO_LIMIT_ID);
     }
 
     @Override
     public void periodic() {
-        leftClimbArm.periodic();
-        rightClimbArm.periodic();
+        leftClimbArm.update();
+        rightClimbArm.update();
     }
 
     public void goToExtension(double height) {
