@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
-import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
-import frc.robot.subsystems.swerve.SwerveModule;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
+import static frc.robot.Constants.ElevatorConstants.ZERO_LIMIT_ID;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -16,10 +13,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.SwerveConstants.*;
+import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
+import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
+  private final ElevatorSubsystem elevatorSubsystem;
       
   private final XboxController controller = new XboxController(0);
   // private final SwerveModule module;
@@ -29,13 +31,17 @@ public class RobotContainer {
     RBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value),
     AButton = new JoystickButton(controller, XboxController.Button.kA.value);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  
+  private final XboxController mechController = new XboxController(Constants.OperatorConstants.kDriverControllerPort); 
+
   public RobotContainer() {
     //construct Test
     // module = new SwerveModule(0, 1, 0);
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
+    elevatorSubsystem = new ElevatorSubsystem();
     // Configure the trigger bindings
-    configureBindings();    
+    //configureBindings();    
   }
 
   /**
@@ -48,6 +54,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
