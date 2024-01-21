@@ -53,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor = new CANSparkMax(10, MotorType.kBrushless);
         shooterMotorTwo = new CANSparkMax(10, MotorType.kBrushless);
 
-        //shooter follow
+        //second motor shooter follows first
         shooterMotorTwo.follow(shooterMotor, true);
 
         //devices
