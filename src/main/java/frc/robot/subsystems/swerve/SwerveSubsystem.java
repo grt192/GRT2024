@@ -108,8 +108,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
     private final GenericEntry robotPos;
 
-    private boolean enabled = false;
-
     private boolean isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     public SwerveSubsystem() {
@@ -360,10 +358,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     }
 
-    public double getYfromSpeaker(){
-        return 
-    }
-
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;
     }
@@ -423,11 +417,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void resetAhrs(){
         ahrs.zeroYaw();
-    }
-
-    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
     }
 
 }
