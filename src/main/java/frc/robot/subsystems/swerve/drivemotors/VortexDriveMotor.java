@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve.drivemotors;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -81,4 +82,9 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     public double getAmpDraw(){
         return motor.getOutputCurrent(); //STUB
     }
+
+    public TalonFX getTalonMotor(){
+        return null;
+    }
+
 }

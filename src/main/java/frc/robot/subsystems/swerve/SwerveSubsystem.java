@@ -103,6 +103,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
     private final GenericEntry robotPos;
 
+    private boolean enabled = false;
+
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -320,7 +322,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public double getYfromSpeaker(){
-        return 
+        return 0;
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){

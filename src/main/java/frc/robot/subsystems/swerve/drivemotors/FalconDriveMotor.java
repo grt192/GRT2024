@@ -68,4 +68,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
         return motor.getSupplyCurrent().getValueAsDouble();
     }
 
+    public TalonFX getTalonMotor(){
+        return motor;
+    }
 }

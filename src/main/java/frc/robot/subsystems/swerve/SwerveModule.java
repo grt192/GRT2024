@@ -1,5 +1,8 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.hardware.ParentDevice;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 // import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAnalogSensor;
@@ -13,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.swerve.drivemotors.FalconDriveMotor;
 import frc.robot.subsystems.swerve.drivemotors.SwerveDriveMotor;
@@ -103,8 +107,8 @@ public class SwerveModule {
         crimor = new Timer();
         crimor.start();
 
-
         this.offsetRads = offsetRads;
+
     }
 
     /**
