@@ -102,9 +102,21 @@ public class ShooterSubsystem extends SubsystemBase {
     public void loadNote(){
         if(shooterSensor.getRed() < TOLERANCE){
             setFeedingMotorSpeed(speed);
-            setShooterState(ShooterState.LOADING_NOTE);
         } else {
             setFeedingMotorSpeed(0);
+        }
+    }
+
+    private void shooterState(){
+        setFlywheelSpeed(0.75);
+        loadNote();
+    }
+
+    private void shootNote(){
+        if(shooterSensor.getRed() > TOLERANCE){
+            setFeedingMotorSpeed(speed);
+        } else {
+            setFeedingMotor
         }
     }
 

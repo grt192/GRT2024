@@ -34,8 +34,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-      
   private final BaseDriveController driveController = new DualJoystickDriveController();
+
+  private final XboxController mechController = new XboxController(2);
+  private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
 
   ChoreoTrajectory traj;
   // private final SwerveModule module;
@@ -47,19 +49,16 @@ public class RobotContainer {
     // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
     shooterSubsystem = new ShooterSubsystem();
-
     traj = Choreo.getTrajectory("Curve");
 
     // Configure the trigger bindings
-    configureBindings();    
-  }
-
-  private void shooterState(){
-    shooterSubsystem.setFlywheelSpeed(0.75);
-
+    configureBindings();
   }
 
   private void configureBindings() {
+
+    //xbox button commands 
+    
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
