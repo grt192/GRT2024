@@ -17,13 +17,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    //change later
+    //change later (ALL OF THEM ARE PLACEHOLDERS)
     int IDNUMBER = 10; //so I remember to change them later
     double speed = 0.1; //placeholder
-    final int ERRORTOLERANCE = 10; //placeholder
+    final int ERRORTOLERANCE = 10; //error tolerance for pid
     final int LIMIT_SWITCH_ID = 1; //placeholder
-    final double GEARBOX_RATIO = 1/20; //placeholder
-    final int TOLERANCE = 10; //placeholder
+    final double GEARBOX_RATIO = 1/20; //ask cadders
+    final int TOLERANCE = 10; //must test with half of note in front of sensor
+    final int NO_NOTE_TOLERANCE = 10; //must test with no note in front of sensor
 
     //angle PID (CHANGE LATER)
     private static final double ANGLE_P = 2.4;
@@ -87,18 +88,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //motor speed setting functions
     public void setFlywheelSpeed(double speed){
-        shooterMotor.setVoltage(speed * 12);
+        flywheelMotor.setVoltage(speed * 12);
+        System.out.println("flywheer motor speed is: " + flywheelMotor.get())
     }
 
     public void setFeedingMotorSpeed(double speed){
         feederMotor.setVoltage(speed * 12);
+        System.out.println("feeding motor speed is: " + feederMotor.get())
+
     }
 
     public void setShooterSpeed(double speed){
         shooterMotor.setVoltage(speed * 12);
+        System.out.println("shooter motor speed is: " + shooterMotor.get())
     }
 
-    //gets note from intake to shooter
+    //gets note from intake to shooter (test solo with a button)
     public void loadNote(){
         if(shooterSensor.getRed() < TOLERANCE){
             setFeedingMotorSpeed(speed);
@@ -107,32 +112,37 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
+    //commands to run once driver switches robot to shooter state (also test solo with a button, but reset note to intake)
     private void shooterState(){
-        setFlywheelSpeed(0.75);
+        setFlywheelSpeed(speed);
         loadNote();
     }
 
+    //once driver presses button to shoot (should test with a solo button after shooter state called)
     private void shootNote(){
         if(shooterSensor.getRed() > TOLERANCE){
             setFeedingMotorSpeed(speed);
-        } else {
-            setFeedingMotor
+        } else if(shooter.Sensor.getRed() < NO_NOTE_TOLERANCE) {
+            setFeedingMotorSpeed(0);
         }
     }
 
-    public void setAngle(double angle){
+    public void setAngle(double angle){ //check if it works 
         rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        System.out.println("setting angle to: " + angle)
     }
 
     public void periodic(){
         //resets relative encoder every time robot starts again
+        //(check if encoder prints zero when run)
         if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
             rotationEncoder.setPosition(0); 
+            System.out.println(rotationEncoder.getPosition()) //should print 0
         }
 
-        if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
-            setShooterState(ShooterState.NO_NOTE);
-        }
+        // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
+        //     setShooterState(ShooterState.NO_NOTE);
+        // }
 
         // switch(currentState) {
         //     case HOLDING_NOTE:

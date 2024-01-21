@@ -47,6 +47,10 @@ public class RobotContainer {
 
   private final XboxController mechController = new XboxController(2);
   private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
+  private final JoystickButton bButton = new JoystickButton(mechController, XboxController.Button.kB.value);
+  private final JoystickButton bButton = new JoystickButton(mechController, XboxController.Button.kC.value);
+
+
 
   ChoreoTrajectory traj;
   // private final SwerveModule module;
@@ -77,6 +81,37 @@ public class RobotContainer {
       intakeSubsystem.setRollersInwards(controller.getBButton());
     }));
 
+
+    //xbox button commands 
+
+    /**
+     * 1) half note tolerance
+     * 2) no note tolerance
+     * 3) setFlywheelSpeed
+     * 4) setFeederMotorSpeed
+     * 5) setShooterMotorSpeed
+     * 6) loadNote() (intake to shooter)
+     * 7) shooterState() (starts flywheel, note intake to shooter)
+     * 8) shootNote() (note should shoot, should be run after shooter state is called)
+     */
+
+     //testing speed setting functions
+     shooterSubsystem.setFlywheelSpeed(0.2);
+     shooterSubsystem.setFeederMotorSpeed(0.2);
+     shooterSubsystel.setShooterMotorSpeed(0.2);
+
+     //testing load note
+     aButton.onTrue(new InstantCommand (()-> {
+      shooterSubsystem.loadNote();
+     }))
+
+    aButton.onTrue(new InstantCommand (()-> {
+      shooterSubsystem.shooterState();
+    }))
+
+    aButton.onTrue(new InstantCommand (()-> {
+      shooterSubsystem.shootNote();
+    }))
 
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
