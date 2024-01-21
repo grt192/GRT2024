@@ -47,6 +47,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -77,6 +78,9 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsystem;
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+    
+    
+    // Configure the trigger bindings
 
     private final XboxController mechController = new XboxController(2);
     private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
@@ -112,7 +116,12 @@ public class RobotContainer {
         climbSubsystem = new ClimbSubsystem();
       
         elevatorSubsystem = new ElevatorSubsystem();
-        driveController = new DualJoystickDriveController();
+        
+        if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
+            driveController = new DualJoystickDriveController();
+        } else {
+            driveController = new XboxDriveController();
+        }
 
         traj = Choreo.getTrajectory("Curve");
 
