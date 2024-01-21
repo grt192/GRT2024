@@ -165,12 +165,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.targetState;
     }
     
-    public void setManulPower(double power){
+    public void setManualPower(double power){
         this.manualPower = power;
     } 
-
-    private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
+    
+    /* private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
         System.out.println("got networktablex");
         System.out.println(event.valueData.toString());
-    }
+    } */
 }
