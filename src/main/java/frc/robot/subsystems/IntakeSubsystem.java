@@ -7,19 +7,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake extends SubsystemBase {
-  private final WPI_TalonSRX motor1;
-  private final WPI_TalonSRX topmotor;
-  private final WPI_TalonSRX bottommotor;
-  private final WPI_TalonSRX lastmotor;
+public class IntakeSubsystem extends SubsystemBase {
+  private final TalonFX motor1;
+  private final TalonFX topmotor;
+  private final TalonFX bottommotor;
+  private final TalonFX lastmotor;
   private final AnalogPotentiometer sensor;
   private final Encoder apple;
   private final DigitalInput boat;
@@ -31,17 +30,17 @@ public class Intake extends SubsystemBase {
 
 
   /** Creates a new ExampleSubsystem. */
-  public Intake() {
-    motor1 = new WPI_TalonSRX(0);//big motor
-    topmotor = new WPI_TalonSRX(1);
-    bottommotor = new WPI_TalonSRX(2);
-    lastmotor = new WPI_TalonSRX(3);
+  public IntakeSubsystem() {
+    motor1 = new TalonFX(0);//big motor
+    topmotor = new TalonFX(1);
+    bottommotor = new TalonFX(2);
+    lastmotor = new TalonFX(3);
     sensor = new AnalogPotentiometer(4);
     apple = new Encoder(1,2);
     boat = new DigitalInput(0);
    
   }
-  Intake arm = new Intake();
+  IntakeSubsystem arm = new IntakeSubsystem();
   Boolean cherry=false;
   Boolean berry=false;
   
@@ -55,28 +54,6 @@ public class Intake extends SubsystemBase {
     while(boat.get()==false){//nooo
       motor1.set(2);
     }
-  }
-
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  } /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
   }
 
   @Override
