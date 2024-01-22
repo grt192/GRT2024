@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -19,6 +23,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
+  private final Intake m_exampleSubsystem = new Intake();
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController m_driverController =
+      new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final BaseSwerveSubsystem baseSwerveSubsystem;
       
   private final XboxController controller = new XboxController(0);
