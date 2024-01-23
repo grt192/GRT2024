@@ -23,7 +23,7 @@ public class ElevatorToChuteCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.CHUTE){
+        if(this.elevatorSubsystem.atState(ElevatorState.CHUTE)){
             return true;
         }
         else return false;

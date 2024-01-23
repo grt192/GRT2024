@@ -23,7 +23,7 @@ public class ElevatorToGroundCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.GROUND){
+        if(this.elevatorSubsystem.atState(ElevatorState.GROUND)){
             return true;
         }
         else return false;

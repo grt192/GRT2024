@@ -15,10 +15,14 @@ public enum ElevatorState {
 
     private final double extendDistanceMeters;
 
+
     private ElevatorState(double extendDistanceMeters){
         this.extendDistanceMeters = extendDistanceMeters;
     }
 
+    public double getExtendDistanceMeters(){
+        return this.extendDistanceMeters;
+    }
     public ElevatorState getStateFromString(String state){
         if(state == "GROUND"){
             return ElevatorState.GROUND;

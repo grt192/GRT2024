@@ -128,12 +128,22 @@ public class ElevatorSubsystem extends SubsystemBase{
         if (targetState != state){
             extensionPidController.setReference(targetState.getExtension(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
         }
-        if(this.getExtensionMeters() - this.state.getExtension() < ElevatorConstants.EXTENSIONTOLERANCE){
+        if(atState(this.targetState)){
             this.setState(this.getTargetState());
         }
         
     }
     
+    public boolean atState(ElevatorState state){
+        double distance = Math.abs(this.getExtensionMeters() - state.getExtendDistanceMeters());
+        if(distance < ElevatorConstants.EXTENSIONTOLERANCE){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public void setState(ElevatorState state) {
         this.state = state;
         return;

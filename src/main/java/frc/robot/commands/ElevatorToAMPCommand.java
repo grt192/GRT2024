@@ -23,7 +23,7 @@ public class ElevatorToAMPCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.AMP){
+        if(this.elevatorSubsystem.atState(ElevatorState.AMP)){
             return true;
         }
         else return false;
