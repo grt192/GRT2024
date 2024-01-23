@@ -321,8 +321,19 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     }
 
+    public double getShootAngle(double x, double y){
+        return Math.atan2(y, x);
+    }
+
     public double getYfromSpeaker(){
-        return 0;
+        return getRobotPosition().getY() - BLUE_SPEAKER_POS.getY(); 
+    }
+
+    public double getXfromSpeaker(boolean isRed){
+        if (isRed){
+            return SPEAKER_TO_SPEAKER - getRobotPosition().getX() - BLUE_SPEAKER_POS.getX();
+        }
+        return -getRobotPosition().getX() + BLUE_SPEAKER_POS.getX();
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){
