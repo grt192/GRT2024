@@ -4,6 +4,7 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -15,10 +16,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.vision.PhotonWrapper;
 
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.VisionConstants.*;
 
 import java.security.GeneralSecurityException;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -46,6 +52,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveDriveKinematics kinematics;
+    private final PhotonWrapper photonWrapper;
 
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private final NetworkTable networkTable = inst.getTable("Testing");
@@ -117,6 +124,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             // Vision measurement standard deviations: [X, Y, theta]
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
+
+        photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
     }
 
     public void periodic() {
@@ -132,6 +141,15 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         BRsteer.setValue(backRightModule.getSteerAmpDraws());
         BRdrive.setValue(backRightModule.getDriveAmpDraws());
         
+        Optional<EstimatedRobotPose> visionEstimate = photonWrapper.getRobotPose(
+            new Pose3d(field.getRobotPose())
+        );
+
+        if (visionEstimate.isPresent()) poseEstimator.addVisionMeasurement(
+            visionEstimate.get().estimatedPose.toPose2d(),
+            visionEstimate.get().timestampSeconds
+        );
+
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
