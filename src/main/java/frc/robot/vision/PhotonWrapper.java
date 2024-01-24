@@ -9,6 +9,7 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.BooleanSubscriber;
@@ -79,16 +80,12 @@ public class PhotonWrapper {
      * @param prevEstimatedRobotPose The last aggregate robot pose estimate.
      * @return The optional vision-estimated pose.
      */
-    public Optional<Pose3d> getRobotPose(Pose3d prevEstimatedRobotPose) {
+    public Optional<EstimatedRobotPose> getRobotPose(Pose3d prevEstimatedRobotPose) {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);
-        Optional<EstimatedRobotPose> robotPoseObj = poseEstimator.update();
-
-        Optional<Pose3d> robotPose = robotPoseObj.isPresent() 
-            ? Optional.of(robotPoseObj.get().estimatedPose) 
-            : Optional.empty();
+        Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
 
         if (robotPose.isPresent() && debugEnabled.get())
-            updateNetworkTables(robotPose.get());
+            updateNetworkTables(robotPose.get().estimatedPose.toPose2d());
 
         return robotPose;
     }
@@ -97,9 +94,9 @@ public class PhotonWrapper {
      * Updates the camera's NetworkTables topics with a pose estimate.
      * @param robotPose The robot pose to update NetworkTables with.
      */
-    private void updateNetworkTables(Pose3d robotPose) {
+    private void updateNetworkTables(Pose2d robotPose) {
         xPosPub.set(robotPose.getX());
         yPosPub.set(robotPose.getY());
-        headingPub.set(robotPose.getRotation().toRotation2d().getDegrees());
+        headingPub.set(robotPose.getRotation().getDegrees());
     }
 }
