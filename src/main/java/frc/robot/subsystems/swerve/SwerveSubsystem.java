@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.PhotonWrapper;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.util.Util;
+import frc.robot.vision.PhotonWrapper;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.VisionConstants.*;
@@ -143,6 +144,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
         photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
         
+        photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
     }
 
     public void periodic() {
