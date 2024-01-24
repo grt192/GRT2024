@@ -49,19 +49,4 @@ public class ShooterSubsystem extends SubsystemBase {
         System.out.println("shooter motor speed is: " + shooterMotor.get());
     }
 
-    //commands to run once driver switches robot to shooter state (also test solo with a button, but reset note to intake)
-    // public void shooterState(){
-    //     setShooterMotorSpeed(SHOOTER_MOTOR_SPEED);
-    //     loadNote();
-    // }
-
-    // //once driver presses button to shoot (should test with a solo button after shooter state called)
-    // public void shootNote(){
-    //     if(shooterSensor.getRed() > TOLERANCE){
-    //         setFeederMotorSpeed(FEEDER_MOTOR_SPEED);
-    //     } else if(shooterSensor.getRed() < NO_NOTE_TOLERANCE) {
-    //         setFeederMotorSpeed(0);
-    //     }
-    // }
-
 }
