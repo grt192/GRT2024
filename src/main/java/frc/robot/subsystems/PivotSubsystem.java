@@ -1,4 +1,4 @@
-package frc.robot.subsystems.pivot;
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -75,6 +75,9 @@ public class PivotSubsystem {
 
         double posX = 652.73 - field.getX();
         double posY = 323.00 - field.getY();
+        double theta = field.getRotation().getDegrees();
+
+        
     }
 
     public double getPosition(){
