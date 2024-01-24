@@ -3,12 +3,12 @@ package frc.robot.commands.IntakePivot;
 import static frc.robot.Constants.RollerandPivotConstants.pivotcounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PivotSubsystem; 
+import frc.robot.subsystems.IntakePivotSubsystem; 
 
 public class PivotExtendedCommand extends Command{
-    private final PivotSubsystem pivotSubsystem;
+    private final IntakePivotSubsystem pivotSubsystem;
 
-    public PivotExtendedCommand(PivotSubsystem pivotSubsystem){
+    public PivotExtendedCommand(IntakePivotSubsystem pivotSubsystem){
         this.pivotSubsystem = pivotSubsystem;
     }
     

@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class PivotSubsystem extends SubsystemBase{
+public class IntakePivotSubsystem extends SubsystemBase{
     private final com.ctre.phoenix.motorcontrol.can.TalonSRX motor1;
     // private final Encoder intakeencoder;
     private final DigitalInput extendedlimitswitch;
     private final DigitalInput retractedlimitswitch;
 
-    public PivotSubsystem(){
+    public IntakePivotSubsystem(){
         motor1 = new TalonSRX(motor1ID);
         //intakeencoder = new Encoder(1,2);
         extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
@@ -51,8 +51,8 @@ public class PivotSubsystem extends SubsystemBase{
         }
     }
 
-    public void setPivotSpeed(double right, double left){
-        motor1.set(TalonSRXControlMode.PercentOutput, right+left);
+    public void setPivotSpeed(double right){
+        motor1.set(TalonSRXControlMode.PercentOutput, right);
       }
 
     
