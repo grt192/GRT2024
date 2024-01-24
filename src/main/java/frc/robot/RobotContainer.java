@@ -60,7 +60,7 @@ public class RobotContainer {
       intakePivotSubsystem = new IntakePivotSubsystem();
       feederSubsystem = new FeederSubsystem();
 
-      shooterPivotSubsystem = new ShooterPivotSubsystem();
+      shooterPivotSubsystem = new ShooterPivotSubsystem(false);
       shooterSubsystem = new ShooterSubsystem();
       
       traj = Choreo.getTrajectory("Curve");

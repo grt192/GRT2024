@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -29,7 +30,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private static final double ANGLE_I = 0;
     private static final double ANGLE_D = 0;
 
-    public ShooterPivotSubsystem(){
+    //field
+    private Pose2d field;
+    private boolean alliance; //true equals red alliance 
+
+    public ShooterPivotSubsystem(boolean alliance){
 
         //motors
         pivotMotor = new CANSparkMax(10, MotorType.kBrushless); 
@@ -49,6 +54,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationEncoder.setPositionConversionFactor(GEARBOX_RATIO);
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
 
+        //field
+        this.alliance = alliance;
     }
 
     //motor speed setting functions
@@ -61,6 +68,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public void setAngle(double angle){ //check if it works 
         rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
         System.out.println("setting angle to: " + angle);
+    }
+
+    public void setFieldPosition(Pose2d field){
+        //652.73 x width of field 
+        //323.00 y hieght of field
+
+        double posX = 652.73 - field.getX();
+        double posY = 323.00 - field.getY();
     }
 
     public double getPosition(){
