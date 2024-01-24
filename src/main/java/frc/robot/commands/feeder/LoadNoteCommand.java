@@ -1,7 +1,7 @@
 package frc.robot.commands.feeder;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.feeder.FeederSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 
 public class LoadNoteCommand extends Command {
     
