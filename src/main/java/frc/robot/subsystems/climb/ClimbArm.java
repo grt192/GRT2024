@@ -47,7 +47,8 @@ public class ClimbArm {
         if (isAtExtension())
             winchMotor.set(0);
         else
-            winchMotor.set(MathUtil.clamp(desiredExtension - extensionEncoder.getPosition() , -MAX_WINCH_POWER, MAX_WINCH_POWER));
+            winchMotor.set(desiredExtension > extensionEncoder.getPosition()
+                ? MAX_WINCH_POWER : -MAX_WINCH_POWER);
 
     }
     
