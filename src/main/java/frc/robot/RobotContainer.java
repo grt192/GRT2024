@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.ClimbLowerCommand;
 import frc.robot.commands.ClimbRaiseCommand;
+import frc.robot.subsystems.TestMotorSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
@@ -24,6 +25,9 @@ import static frc.robot.Constants.SwerveConstants.*;
 public class RobotContainer {
   private final BaseSwerveSubsystem baseSwerveSubsystem;
   private final ClimbSubsystem climbSubsystem;
+
+  private final TestMotorSubsystem testClimbLeft;
+  private final TestMotorSubsystem testClimbRight;
       
   private final XboxController controller = new XboxController(0);
   // private final SwerveModule module;
@@ -42,6 +46,8 @@ public class RobotContainer {
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
     climbSubsystem = new ClimbSubsystem();
+    testClimbLeft = new TestMotorSubsystem(21);
+    testClimbRight = new TestMotorSubsystem(22);
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -106,6 +112,14 @@ public class RobotContainer {
     /* CLIMB */
     XButton.onTrue(new ClimbLowerCommand(climbSubsystem));
     YButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
+
+    testClimbLeft.setDefaultCommand(new RunCommand(() -> {
+      testClimbLeft.setMotorSpeed(controller.getLeftTriggerAxis());
+    }, testClimbLeft));
+
+    testClimbRight.setDefaultCommand(new RunCommand(() -> {
+      testClimbRight.setMotorSpeed(controller.getRightTriggerAxis());
+    }, testClimbRight));
   } 
 
   /**
