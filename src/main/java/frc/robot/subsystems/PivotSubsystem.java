@@ -70,14 +70,30 @@ public class PivotSubsystem {
     }
 
     public void setFieldPosition(Pose2d field){
-        //652.73 x width of field 
-        //323.00 y hieght of field
+        double speakerHeight = 80.51;
 
-        double posX = 652.73 - field.getX();
-        double posY = 323.00 - field.getY();
-        double theta = field.getRotation().getDegrees();
+        //center of red speaker: (652.73 218.42)
+        double redX = 652.73 + 9.05; //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+        double redY = 218.42;
 
-        
+        //center of blue: (-1.50 218.42)
+        double blueX = -1.5+9.05; //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+        double blueY = 218.42;
+
+        if(alliance){ //true = red
+            double dist = getDistance(field.getX(), field.getY(), redX, redY);
+            setAngle(Math.atan(speakerHeight/dist));
+        } else if (!alliance){
+            double dist = getDistance(field.getX(), field.getY(), blueX, blueY);
+            setAngle(Math.atan(speakerHeight/dist));
+        }   
+    }
+
+    public double getDistance(double robotX, double robotY, double speakerX, double speakerY){
+        double xLength = Math.pow(robotX-speakerX, 2);
+        double yLength = Math.pow(robotY-speakerY, 2);
+
+        return Math.sqrt(xLength + yLength);
     }
 
     public double getPosition(){

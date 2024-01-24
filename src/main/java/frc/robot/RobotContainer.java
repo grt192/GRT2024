@@ -50,7 +50,7 @@ public class RobotContainer {
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
         baseSwerveSubsystem = new SwerveSubsystem();
         shooterSubsystem = new ShooterSubsystem();
-        pivotSubsystem = new PivotSubsystem();
+        pivotSubsystem = new PivotSubsystem(true); //true alliance = red
         feederSubsystem = new FeederSubsystem();
         
         traj = Choreo.getTrajectory("Curve");
