@@ -46,4 +46,28 @@ public final class Constants {
     public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
     public static final Translation2d BR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
   }
+
+  public static class RollerandPivotConstants {
+    public static final int lastmotorID = 0;
+    public static final int topmotorID = 2;
+    public static final int bottommotorID = 3;
+    public static final int motor1ID = 1;
+
+    public static final int sensorID = 0;
+    public static final int extendedlimitswitchID = 1;
+    public static final int retractedlimitswitchID = 2;
+    //public static final int intakeencoderID = 3;
+
+    public static final double rollersclockwise = 1;
+    public static final double rollerscounterclockwise = -1; 
+    public static final double sensorreached = 1;
+    public static final double pivotclockwise = 1;
+    public static final double pivotcounterclockwise = -1;
+    public static final double pastsensortime = 0.5;
+
+
+
+
+
+  }
 }

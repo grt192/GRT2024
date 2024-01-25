@@ -1,7 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.commands.IntakeRollers;
 
+
+import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
+import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RollerIntakeCommand extends Command{
     private final IntakeSubsystem intakeSubsystem;
@@ -18,7 +22,7 @@ public class RollerIntakeCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(-1.0,1.0); 
+        intakeSubsystem.setRollSpeed(rollerscounterclockwise,rollersclockwise); 
     }
 
     @Override
@@ -29,6 +33,6 @@ public class RollerIntakeCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.sensornow();
+        return intakeSubsystem.sensorNow();
     }
 }

@@ -1,7 +1,12 @@
-package frc.robot.subsystems;
+package frc.robot.commands.IntakeRollers;
 
+
+import static frc.robot.Constants.RollerandPivotConstants.pastsensortime;
+import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
+import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.util.TrackingTimer;
 
 public class RollerOutakeCommand extends Command{
@@ -15,14 +20,14 @@ public class RollerOutakeCommand extends Command{
 
     @Override
     public void initialize() {
-        intakeSubsystem.setRollSpeed(1.0,-1.0); 
+        intakeSubsystem.setRollSpeed(rollersclockwise,rollerscounterclockwise); 
     }
 
     @Override
     public void execute() {
         // TODO Auto-generated method stub
        
-        if(intakeSubsystem.sensornow()==false&& timer.hasStarted()==false ){
+        if(intakeSubsystem.sensorNow()==false&& timer.hasStarted()==false ){
             timer.start();
         }
             
@@ -38,7 +43,7 @@ public class RollerOutakeCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return timer.hasElapsed(0.5);
+        return timer.hasElapsed(pastsensortime);
        
     }
 }

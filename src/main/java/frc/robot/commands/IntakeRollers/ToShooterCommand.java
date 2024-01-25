@@ -1,6 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.commands.IntakeRollers;
+
+import static frc.robot.Constants.RollerandPivotConstants.pastsensortime;
+import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
+import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.util.TrackingTimer;
 
 public class ToShooterCommand extends Command{
@@ -15,13 +20,13 @@ public class ToShooterCommand extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeedTwo(0,0);
+        intakeSubsystem.setAllRollSpeed(rollerscounterclockwise,rollersclockwise);
     }
 
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        if(intakeSubsystem.sensornow() == false && timer.hasStarted()==false){
+        if(intakeSubsystem.sensorNow() == false && timer.hasStarted()==false){
             timer.start();
         }
     }
@@ -29,14 +34,14 @@ public class ToShooterCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeedTwo(0,0);
+        intakeSubsystem.setAllRollSpeed(0,0);
         
     }
 
     @Override
     public boolean isFinished() {
         // TODO Auto-generated method stub
-        return timer.hasElapsed(0.5);
+        return timer.hasElapsed(pastsensortime);
     
     }
 
