@@ -52,6 +52,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         //devices
         rotationEncoder = pivotMotor.getEncoder();
+        rotationEncoder.setPosition(0); 
         rotationPIDController = pivotMotor.getPIDController();
         limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
 
@@ -130,6 +131,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if(autoAim){
             setAngle(getAutoAimAngle(getDistance()));
         }
+
+        System.out.println("current pos" + rotationEncoder.getPosition());
 
         // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
         //     setShooterState(ShooterState.NO_NOTE);
