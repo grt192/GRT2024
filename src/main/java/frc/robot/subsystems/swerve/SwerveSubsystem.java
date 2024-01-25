@@ -38,6 +38,8 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import javax.swing.text.html.Option;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import com.kauailabs.navx.frc.AHRS;
@@ -104,6 +106,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final GenericEntry robotPos;
 
     private boolean enabled = false;
+
+    private boolean isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -317,8 +321,14 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
-    public void setDrivePowerswithFieldAngle(double xPower, double yPower){
+    public void setDrivePowerswithFieldAngle(double xPower, double yPower, double angleRads){
 
+    }
+
+    public void setAimMode(){
+        double x = getXfromSpeaker(isRed);
+        double y = getYfromSpeaker();
+        setDrivePowerswithFieldAngle(x, y, getShootAngle(x, y));
     }
 
     public double getShootAngle(double x, double y){
