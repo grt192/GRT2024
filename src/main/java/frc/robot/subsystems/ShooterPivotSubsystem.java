@@ -74,23 +74,23 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     //motor speed setting functions
     public void setPivotMotorSpeed(double speed){
         pivotMotor.setVoltage(speed * 12);
-        System.out.println("flywheer motor speed is: " + pivotMotor.get());
+        //System.out.println("flywheer motor speed is: " + pivotMotor.get());
     }
 
 
     public void setAngle(double angle){ //check if it works 
         rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
-        System.out.println("setting angle to: " + angle);
+        //System.out.println("setting angle to: " + angle);
     }
 
     public void setFieldPosition(Pose2d field){
-        System.out.println("setting field position");
+        //System.out.println("setting field position");
         currentField = field;
     }
 
     public double getAutoAimAngle(double distance){
         double speakerHeight = Units.inchesToMeters(80.51);
-        System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
+        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
         return Math.atan(speakerHeight/distance);
     }
 
@@ -99,7 +99,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if(alliance){ //true = red
             double xLength = Math.pow(currentField.getX()-RED_X, 2);
             double yLength = Math.pow(currentField.getY()-RED_Y, 2);
-            System.out.println("alliance red:" + alliance);
+            //System.out.println("alliance red:" + alliance);
             return Math.sqrt(xLength + yLength);
 
         } else {
@@ -111,6 +111,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     public double getPosition(){
+        //System.out.println("rotation encoder position: " + rotationEncoder.getPosition());
         return rotationEncoder.getPosition();
     }
 
