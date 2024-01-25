@@ -84,11 +84,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     public void setFieldPosition(Pose2d field){
+        System.out.println("setting field position");
         currentField = field;
     }
 
     public double getAutoAimAngle(double distance){
         double speakerHeight = Units.inchesToMeters(80.51);
+        System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
         return Math.atan(speakerHeight/distance);
     }
 
@@ -97,7 +99,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if(alliance){ //true = red
             double xLength = Math.pow(currentField.getX()-RED_X, 2);
             double yLength = Math.pow(currentField.getY()-RED_Y, 2);
-
+            System.out.println("alliance red:" + alliance);
             return Math.sqrt(xLength + yLength);
 
         } else {
