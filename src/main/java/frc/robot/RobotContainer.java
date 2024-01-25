@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -24,7 +24,7 @@ import static frc.robot.Constants.SwerveConstants.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final IntakeSubsystem intakeSubsystem  = new IntakeSubsystem();
-
+  private final PivotSubsystem pivotSubsystem = new PivotSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -57,6 +57,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+      pivotSubsystem.setPivotSpeed(controller.getRightTriggerAxis(), -controller.getLeftTriggerAxis());
+    }));
+
+    intakeSubsystem.setDefaultCommand(new InstantCommand(() -> {
+      intakeSubsystem.setRollersOutwards(controller.getAButton());
+    }));
+
+    intakeSubsystem.setDefaultCommand(new InstantCommand(() -> {
+      intakeSubsystem.setRollersInwards(controller.getBButton());
+    }));
+
+
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
       final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
@@ -80,7 +93,7 @@ public class RobotContainer {
 
       RBumper.onTrue(new InstantCommand(() -> {
         testSwerveSubsystem.incrementTest();
-        System.out.println(testSwerveSubsystem.getTest());
+        System.out.println(testSwerveSubsystem.getTest());    
       }
       ));
 
