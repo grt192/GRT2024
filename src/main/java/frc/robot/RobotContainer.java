@@ -55,6 +55,8 @@ public class RobotContainer {
         
         traj = Choreo.getTrajectory("Curve");
 
+        pivotSubsystem.setAngle(36);
+
         // Configure the trigger bindings
         configureBindings();
     }
