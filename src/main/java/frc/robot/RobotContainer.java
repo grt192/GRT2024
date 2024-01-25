@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.commands.feeder.LoadNoteCommand;
+import frc.robot.commands.feeder.ShootNoteCommand;
+import frc.robot.commands.pivot.AutoAimCommand;
+import frc.robot.commands.pivot.VerticalCommand;
+import frc.robot.commands.shooter.ReadyShooterCommand;
+import frc.robot.commands.shooter.StopShooterCommands;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
@@ -38,6 +44,10 @@ public class RobotContainer {
     private final XboxController mechController = new XboxController(2);
     private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
     private final JoystickButton bButton = new JoystickButton(mechController, XboxController.Button.kB.value);
+    private final JoystickButton leftBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton rightBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
+    private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
+    private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
     ChoreoTrajectory traj;
@@ -55,7 +65,7 @@ public class RobotContainer {
         
         traj = Choreo.getTrajectory("Curve");
 
-        pivotSubsystem.setAngle(36);
+        //pivotSubsystem.setAngle(36);
 
         // Configure the trigger bindings
         configureBindings();
@@ -70,13 +80,17 @@ public class RobotContainer {
          * B button - run feed wheels while button held
          */
 
-        aButton.whileTrue(new InstantCommand (()-> {
-            shooterSubsystem.setShooterMotorSpeed(shooterSubsystem.SHOOTER_MOTOR_SPEED);
-        }));
+        aButton.onTrue(new LoadNoteCommand(feederSubsystem));
 
-        bButton.whileTrue(new InstantCommand (()-> {
-            feederSubsystem.setFeederMotorSpeed(feederSubsystem.FEEDER_MOTOR_SPEED);
-        }));
+        bButton.onTrue(new ShootNoteCommand(feederSubsystem));
+
+        leftBumper.onTrue(new AutoAimCommand(pivotSubsystem));
+
+        rightBumper.onTrue(new VerticalCommand(pivotSubsystem));
+
+        xButton.onTrue(new ReadyShooterCommand(shooterSubsystem));
+
+        yButton.onTrue(new StopShooterCommands(shooterSubsystem));
 
         shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
             pivotSubsystem.setPivotMotorSpeed(-mechController.getLeftTriggerAxis());
@@ -85,6 +99,8 @@ public class RobotContainer {
         shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
             pivotSubsystem.setPivotMotorSpeed(mechController.getRightTriggerAxis());
         }));
+
+
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

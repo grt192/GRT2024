@@ -34,10 +34,12 @@ public class FeederSubsystem extends SubsystemBase{
     }
 
     public int getProximity(){
+        System.out.println("proximity: " + shooterSensor.getProximity());
         return shooterSensor.getProximity();
     }
 
     public ColorSensorV3 getSensor(){
+        System.out.println("returning shooter sensor");
         return shooterSensor;
     }
 }
