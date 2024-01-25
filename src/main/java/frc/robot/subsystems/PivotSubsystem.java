@@ -6,9 +6,11 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PivotSubsystem {
+public class PivotSubsystem extends SubsystemBase{
 
     //final vars
     public final double PIVOT_SPEED = 0.1;
@@ -30,8 +32,18 @@ public class PivotSubsystem {
     private static final double ANGLE_D = 0;
 
     //field
-    private Pose2d field;
     private boolean alliance; //true equals red alliance 
+    private boolean autoAim;
+    private double currentEncoderAngle;
+    private Pose2d currentField = new Pose2d();
+
+    //center of red speaker: (652.73 218.42)
+    double RED_X = Units.inchesToMeters(652.73 + 9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+    double RED_Y = Units.inchesToMeters(218.42);
+
+    //center of blue speaker: (-1.50 218.42)
+    double BLUE_X = Units.inchesToMeters(-1.5+9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+    double BLUE_Y = Units.inchesToMeters(218.42);
 
     public PivotSubsystem(boolean alliance){
 
@@ -55,6 +67,7 @@ public class PivotSubsystem {
 
         //field
         this.alliance = alliance;
+        autoAim = false;
     }
 
     //motor speed setting functions
@@ -70,34 +83,40 @@ public class PivotSubsystem {
     }
 
     public void setFieldPosition(Pose2d field){
-        double speakerHeight = 80.51;
-
-        //center of red speaker: (652.73 218.42)
-        double redX = 652.73 + 9.05; //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
-        double redY = 218.42;
-
-        //center of blue: (-1.50 218.42)
-        double blueX = -1.5+9.05; //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
-        double blueY = 218.42;
-
-        if(alliance){ //true = red
-            double dist = getDistance(field.getX(), field.getY(), redX, redY);
-            setAngle(Math.atan(speakerHeight/dist));
-        } else if (!alliance){
-            double dist = getDistance(field.getX(), field.getY(), blueX, blueY);
-            setAngle(Math.atan(speakerHeight/dist));
-        }   
+        currentField = field;
     }
 
-    public double getDistance(double robotX, double robotY, double speakerX, double speakerY){
-        double xLength = Math.pow(robotX-speakerX, 2);
-        double yLength = Math.pow(robotY-speakerY, 2);
+    public double getAutoAimAngle(double distance){
+        double speakerHeight = Units.inchesToMeters(80.51);
+        return Math.atan(speakerHeight/distance);
+    }
 
-        return Math.sqrt(xLength + yLength);
+    public double getDistance(){
+
+        if(alliance){ //true = red
+            double xLength = Math.pow(currentField.getX()-RED_X, 2);
+            double yLength = Math.pow(currentField.getY()-RED_Y, 2);
+
+            return Math.sqrt(xLength + yLength);
+
+        } else {
+            double xLength = Math.pow(currentField.getX()-BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY()-BLUE_Y, 2);
+
+            return Math.sqrt(xLength + yLength);
+        } 
     }
 
     public double getPosition(){
         return rotationEncoder.getPosition();
+    }
+
+    public double getCurrentAngle(){
+        return currentEncoderAngle;
+    }
+
+    public void setAutoAimBoolean(boolean red){
+        autoAim = red;
     }
 
     public void periodic(){
@@ -106,6 +125,10 @@ public class PivotSubsystem {
         if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
             rotationEncoder.setPosition(0); 
             System.out.println(rotationEncoder.getPosition()); //should print 0
+        }
+
+        if(autoAim){
+            setAngle(getAutoAimAngle(getDistance()));
         }
 
         // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note

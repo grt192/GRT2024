@@ -1,24 +1,27 @@
 package frc.robot.commands.pivot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PivotSubsystem;
 
-public class VerticalCommand extends Command{
+public class AutoAimCommand extends Command{
+    
     PivotSubsystem pivotSubsystem;
 
-    public VerticalCommand(PivotSubsystem pivotSubsystem){
+    public AutoAimCommand(PivotSubsystem pivotSubsystem){
         this.pivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
     }
 
-    @Override
-    public void initialize() {
-        pivotSubsystem.setAutoAimBoolean(false);
-        pivotSubsystem.setAngle(90.0);
+    public void initialize(){
+        pivotSubsystem.setAutoAimBoolean(true);
     }
 
-    @Override
-    public boolean isFinished() {
-        if(Math.abs(pivotSubsystem.getPosition()) - 90 < pivotSubsystem.ERRORTOLERANCE){
+    public void end(){
+        pivotSubsystem.setAutoAimBoolean(false);
+    }
+
+    public boolean isFinished(){
+        if(Math.abs(pivotSubsystem.getPosition()) - pivotSubsystem.getCurrentAngle() < pivotSubsystem.ERRORTOLERANCE){
             return true;
         }
 
