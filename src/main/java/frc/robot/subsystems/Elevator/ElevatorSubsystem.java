@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.elevator;
 
 import java.util.EnumSet;
 
@@ -93,8 +93,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         extensionMotor.setIdleMode(IdleMode.kBrake);
         
         extensionEncoder = extensionMotor.getEncoder();
-        extensionEncoder.setPositionConversionFactor(ElevatorConstants.POSITIONCONVERSIONFACTOR);
-        extensionEncoder.setVelocityConversionFactor(ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+        extensionEncoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+        extensionEncoder.setVelocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
         extensionEncoder.setPosition(0);
         
         extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
@@ -102,10 +102,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         extensionFollow.setIdleMode(IdleMode.kBrake);
 
         extensionPidController = extensionMotor.getPIDController();
-        extensionPidController.setP(ElevatorConstants.EXTENSIONP);
-        extensionPidController.setI(ElevatorConstants.EXTENSIONI);
-        extensionPidController.setD(ElevatorConstants.EXTENSIOND);
-        extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSIONTOLERANCE, 0);
+        extensionPidController.setP(ElevatorConstants.EXTENSION_P);
+        extensionPidController.setI(ElevatorConstants.EXTENSION_I);
+        extensionPidController.setD(ElevatorConstants.EXTENSION_D);
+        extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
     }
     @Override
     public void periodic(){
@@ -136,7 +136,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     
     public boolean atState(ElevatorState state){
         double distance = Math.abs(this.getExtensionMeters() - state.getExtendDistanceMeters());
-        if(distance < ElevatorConstants.EXTENSIONTOLERANCE){
+        if(distance < ElevatorConstants.EXTENSION_TOLERANCE){
             return true;
         }
         else{
