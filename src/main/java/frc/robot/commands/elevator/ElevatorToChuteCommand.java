@@ -1,11 +1,12 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorState;
 
-public class ElevatorSetManualCommand extends Command{
+public class ElevatorToChuteCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorSetManualCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorToChuteCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -17,10 +18,14 @@ public class ElevatorSetManualCommand extends Command{
 
     @Override
     public void initialize(){
-        this.elevatorSubsystem.setManual();
+        this.elevatorSubsystem.setTargetState(ElevatorState.CHUTE);
     }
 
+    @Override
     public boolean isFinished(){
-        return true;
+        if(this.elevatorSubsystem.atState(ElevatorState.CHUTE)){
+            return true;
+        }
+        else return false;
     }
 }

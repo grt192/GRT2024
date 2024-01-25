@@ -1,12 +1,12 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
 
-public class ElevatorToSpeakerCommand extends Command{
+public class ElevatorToAMPCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorToSpeakerCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorToAMPCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -18,12 +18,12 @@ public class ElevatorToSpeakerCommand extends Command{
 
     @Override
     public void initialize(){
-        this.elevatorSubsystem.setTargetState(ElevatorState.SPEAKER);
+        this.elevatorSubsystem.setTargetState(ElevatorState.AMP);
     }
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.atState(ElevatorState.SPEAKER)){
+        if(this.elevatorSubsystem.atState(ElevatorState.AMP)){
             return true;
         }
         else return false;
