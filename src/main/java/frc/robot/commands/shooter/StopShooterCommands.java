@@ -7,6 +7,7 @@ public class StopShooterCommands extends Command{
 
     public StopShooterCommands(ShooterSubsystem shooterSubsystem){
         this.shooterSubsystem = shooterSubsystem;
+        addRequirements(shooterSubsystem);
     }
 
     @Override

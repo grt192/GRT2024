@@ -100,6 +100,7 @@ public class RobotContainer {
 
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
             swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+            pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
         }
         , swerveSubsystem));
 
