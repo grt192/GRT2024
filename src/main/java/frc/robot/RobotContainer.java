@@ -4,12 +4,12 @@
 
 package frc.robot;
 
-import frc.robot.commands.feeder.LoadNoteCommand;
-import frc.robot.commands.feeder.ShootNoteCommand;
-import frc.robot.commands.pivot.AutoAimCommand;
-import frc.robot.commands.pivot.VerticalCommand;
-import frc.robot.commands.shooter.ReadyShooterCommand;
-import frc.robot.commands.shooter.StopShooterCommands;
+// import frc.robot.commands.feeder.LoadNoteCommand;
+// import frc.robot.commands.feeder.ShootNoteCommand;
+// import frc.robot.commands.pivot.AutoAimCommand;
+// import frc.robot.commands.pivot.VerticalCommand;
+// import frc.robot.commands.shooter.ReadyShooterCommand;
+// import frc.robot.commands.shooter.StopShooterCommands;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
