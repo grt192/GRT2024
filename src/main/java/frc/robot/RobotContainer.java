@@ -80,27 +80,37 @@ public class RobotContainer {
          * B button - run feed wheels while button held
          */
 
-        aButton.onTrue(new LoadNoteCommand(feederSubsystem));
+        // aButton.onTrue(new LoadNoteCommand(feederSubsystem));
 
-        bButton.onTrue(new ShootNoteCommand(feederSubsystem));
+        // bButton.onTrue(new ShootNoteCommand(feederSubsystem));
 
-        leftBumper.onTrue(new AutoAimCommand(pivotSubsystem));
+        // leftBumper.onTrue(new AutoAimCommand(pivotSubsystem));
 
-        rightBumper.onTrue(new VerticalCommand(pivotSubsystem));
+        // rightBumper.onTrue(new VerticalCommand(pivotSubsystem));
 
-        xButton.onTrue(new ReadyShooterCommand(shooterSubsystem));
+        // xButton.onTrue(new ReadyShooterCommand(shooterSubsystem));
 
-        yButton.onTrue(new StopShooterCommands(shooterSubsystem));
+        // yButton.onTrue(new StopShooterCommands(shooterSubsystem));
 
-        shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            pivotSubsystem.setPivotMotorSpeed(-mechController.getLeftTriggerAxis());
+        aButton.onTrue(new InstantCommand(() -> {
+          shooterSubsystem.setShooterMotorSpeed(shooterSubsystem.SHOOTER_MOTOR_SPEED);
         }));
 
-        shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            pivotSubsystem.setPivotMotorSpeed(mechController.getRightTriggerAxis());
+        aButton.onFalse(new InstantCommand(() -> {
+          shooterSubsystem.setShooterMotorSpeed(0);
         }));
 
+        bButton.onTrue(new InstantCommand(() -> {
+          feederSubsystem.setFeederMotorSpeed(feederSubsystem.FEEDER_MOTOR_SPEED);
+        }));
+        
+        bButton.onTrue(new InstantCommand(() -> {
+          feederSubsystem.setFeederMotorSpeed(0);
+        }));
 
+        pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            pivotSubsystem.setPivotMotorSpeed(mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
+        }));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
