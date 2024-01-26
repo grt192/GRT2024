@@ -15,7 +15,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     //final vars
     public final double PIVOT_SPEED = 0.1;
     final double GEARBOX_RATIO = 18.16; //ask cadders
-    public final int ERRORTOLERANCE = 10; //error tolerance for pid
+    public final int ERRORTOLERANCE = 5; //error tolerance for pid
     final int LIMIT_SWITCH_ID = 1; //placeholder
 
     //motors
@@ -48,7 +48,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public ShooterPivotSubsystem(boolean alliance){
 
         //motors
-        pivotMotor = new CANSparkMax(10, MotorType.kBrushless); 
+        pivotMotor = new CANSparkMax(12, MotorType.kBrushless); 
 
         //devices
         rotationEncoder = pivotMotor.getEncoder();
