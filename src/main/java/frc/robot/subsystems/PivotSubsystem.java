@@ -14,7 +14,7 @@ public class PivotSubsystem extends SubsystemBase{
 
     //final vars
     public final double PIVOT_SPEED = 0.1;
-    final double GEARBOX_RATIO = 1/20; //ask cadders
+    final double GEARBOX_RATIO = 18.16; //ask cadders
     public final int ERRORTOLERANCE = 10; //error tolerance for pid
     final int LIMIT_SWITCH_ID = 1; //placeholder
 
