@@ -21,7 +21,7 @@ public class FeederSubsystem extends SubsystemBase{
 
     public FeederSubsystem(){
         //motors
-        feederMotor = new TalonFX(10);
+        feederMotor = new TalonFX(15);
 
         //sensors
         shooterSensor = new ColorSensorV3(I2C.Port.kMXP);
