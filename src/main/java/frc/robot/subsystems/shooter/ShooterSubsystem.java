@@ -5,6 +5,7 @@
 
 package frc.robot.subsystems.shooter;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -12,7 +13,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //change later (ALL OF THEM ARE PLACEHOLDERS)
     int IDNUMBER = 10; //so I remember to change them later
-    public final double SHOOTER_MOTOR_SPEED = 0.1;
+    public final double SHOOTER_MOTOR_SPEED = 1;
 
     //motors
     private final CANSparkMax shooterMotor;
@@ -27,6 +28,10 @@ public class ShooterSubsystem extends SubsystemBase {
         //motors
         shooterMotor = new CANSparkMax(13, MotorType.kBrushless);
         shooterMotorTwo = new CANSparkMax(14, MotorType.kBrushless);
+
+        shooterMotor.setIdleMode(IdleMode.kCoast);
+        shooterMotorTwo.setIdleMode(IdleMode.kCoast);
+        
 
         //second motor shooter follows first
         shooterMotorTwo.follow(shooterMotor, true);
@@ -45,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setShooterMotorSpeed(double speed){
-        shooterMotor.setVoltage(speed * 12);
+        shooterMotor.setVoltage(-speed * 12);
         System.out.println("shooter motor speed is: " + shooterMotor.get());
     }
 
