@@ -103,10 +103,18 @@ public class RobotContainer {
         }));
 
         bButton.onTrue(new InstantCommand(() -> {
-          feederSubsystem.setFeederMotorSpeed(feederSubsystem.FEEDER_MOTOR_SPEED);
+          feederSubsystem.setFeederMotorSpeed(.7);
         }));
         
         bButton.onFalse(new InstantCommand(() -> {
+          feederSubsystem.setFeederMotorSpeed(0);
+        }));
+
+        xButton.onTrue(new InstantCommand(() -> {
+          feederSubsystem.setFeederMotorSpeed(-.7);
+        }));
+        
+        xButton.onFalse(new InstantCommand(() -> {
           feederSubsystem.setFeederMotorSpeed(0);
         }));
 
