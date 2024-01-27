@@ -48,10 +48,10 @@ public final class Constants {
   }
 
   public static class ClimbConstants {
-    public static final int LEFT_WINCH_MOTOR_ID = 21;
+    public static final int LEFT_WINCH_MOTOR_ID = 8;
     public static final int LEFT_ZERO_LIMIT_ID = 11;
 
-    public static final int RIGHT_WINCH_MOTOR_ID = 22;
+    public static final int RIGHT_WINCH_MOTOR_ID = 9;
     public static final int RIGHT_ZERO_LIMIT_ID = 12;
    
     public static final double WINCH_REDUCTION = 9.49;

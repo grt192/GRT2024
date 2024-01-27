@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.SwerveConstants.*;
+import static frc.robot.Constants.ClimbConstants;
 
 public class RobotContainer {
   // private final BaseSwerveSubsystem baseSwerveSubsystem;
@@ -46,8 +47,8 @@ public class RobotContainer {
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     // baseSwerveSubsystem = new SwerveSubsystem();
     // climbSubsystem = new ClimbSubsystem();
-    testClimbLeft = new TestMotorSubsystem(8);
-    testClimbRight = new TestMotorSubsystem(9);
+    testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID);
+    testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID);
     // Configure the trigger bindings
     configureBindings();    
   }
