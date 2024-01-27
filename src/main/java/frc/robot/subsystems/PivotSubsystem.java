@@ -128,14 +128,14 @@ public class PivotSubsystem extends SubsystemBase{
         //(check if encoder prints zero when run)
         if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
             rotationEncoder.setPosition(0); 
-            System.out.println(rotationEncoder.getPosition()); //should print 0
+            // System.out.println(rotationEncoder.getPosition()); //should print 0
         }
 
         if(autoAim){
             setAngle(getAutoAimAngle(getDistance()));
         }
 
-        System.out.println("current pos" + rotationEncoder.getPosition());
+        // System.out.println("current pos" + rotationEncoder.getPosition());
 
         // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
         //     setShooterState(ShooterState.NO_NOTE);

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.I2C;
@@ -14,22 +16,24 @@ public class FeederSubsystem extends SubsystemBase{
     public final int TOLERANCE = 10; //represents the value when half note is in front of sensor
 
     //motors
-    private final TalonFX feederMotor; 
+    private final TalonSRX feederMotor; 
 
     //devices
     private final ColorSensorV3 shooterSensor; //distance sensor
 
     public FeederSubsystem(){
         //motors
-        feederMotor = new TalonFX(15);
+        feederMotor = new TalonSRX(15);
+        feederMotor.setInverted(true);
 
         //sensors
         shooterSensor = new ColorSensorV3(I2C.Port.kMXP);
     }
 
     public void setFeederMotorSpeed(double speed){
-        feederMotor.setVoltage(speed * 12);
-        System.out.println("feeding motor speed is: " + feederMotor.get());
+        feederMotor.set(TalonSRXControlMode.PercentOutput,speed);
+        // feederMotor.setVoltage(speed * 12);
+        System.out.println("feeding motor speed is: " + feederMotor.getBusVoltage());
 
     }
 
