@@ -104,30 +104,30 @@ public class RobotContainer {
           feederSubsystem.setFeederMotorSpeed(feederSubsystem.FEEDER_MOTOR_SPEED);
         }));
         
-        bButton.onTrue(new InstantCommand(() -> {
+        bButton.onFalse(new InstantCommand(() -> {
           feederSubsystem.setFeederMotorSpeed(0);
         }));
 
         pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            pivotSubsystem.setPivotMotorSpeed(mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
-        }));
+            pivotSubsystem.setPivotMotorSpeed(.3 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+        }, pivotSubsystem));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
-        final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+          final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
-        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-            pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
-        }
-        , swerveSubsystem));
+          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+              // swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+              // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
+          }
+          , swerveSubsystem));
 
-        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.resetDriverHeading();
-        }
-        ));
-        
+          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+              swerveSubsystem.resetDriverHeading();
+          }
+          ));
+          
         } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
-        final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
+          final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
         // LBumper.onTrue(new InstantCommand(() -> {
         //   testSwerveSubsystem.decrementTest();
         //   System.out.println(testSwerveSubsystem.getTest());
@@ -146,7 +146,7 @@ public class RobotContainer {
         // }));
 
         } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
-        final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
+          final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
 
         // System.out.println("1");
 
