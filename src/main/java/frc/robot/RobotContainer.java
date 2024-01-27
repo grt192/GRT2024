@@ -119,7 +119,8 @@ public class RobotContainer {
         }));
 
         pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            pivotSubsystem.setPivotMotorSpeed(.3 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+            pivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+            // pivotSubsystem.printCurrentAngle();
         }, pivotSubsystem));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){

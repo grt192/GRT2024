@@ -17,6 +17,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final int ERRORTOLERANCE = 5; //error tolerance for pid
     final int LIMIT_SWITCH_ID = 1; //placeholder
+    final double CONVERSION_FACTOR = Math.PI/(2*4.57);
 
     //motors
     private final CANSparkMax pivotMotor;
@@ -49,6 +50,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         //motors
         pivotMotor = new CANSparkMax(12, MotorType.kBrushless); 
+        pivotMotor.setInverted(true);
 
         //devices
         rotationEncoder = pivotMotor.getEncoder();
@@ -63,7 +65,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setD(ANGLE_D);
 
         //encoder stuff
-        rotationEncoder.setPositionConversionFactor(GEARBOX_RATIO);
+        rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
+        //rotationEncoder.setInverted(true);
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
 
         //field
@@ -92,6 +95,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         double speakerHeight = Units.inchesToMeters(80.51);
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
         return Math.atan(speakerHeight/distance);
+    }
+
+    public void printCurrentAngle(){
+        System.out.println("radians: " + rotationEncoder.getPosition() + "degrees: " + rotationEncoder.getPosition() * 57.29);
     }
 
     public double getDistance(){
@@ -126,14 +133,16 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public void periodic(){
         //resets relative encoder every time robot starts again
         //(check if encoder prints zero when run)
-        if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
-            rotationEncoder.setPosition(0); 
-            // System.out.println(rotationEncoder.getPosition()); //should print 0
-        }
+        // if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
+        //     rotationEncoder.setPosition(0); 
+        //     // System.out.println(rotationEncoder.getPosition()); //should print 0
+        // }
 
         if(autoAim){
             setAngle(getAutoAimAngle(getDistance()));
         }
+
+        printCurrentAngle();
 
         // System.out.println("current pos" + rotationEncoder.getPosition());
 
