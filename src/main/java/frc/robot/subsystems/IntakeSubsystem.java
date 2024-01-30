@@ -7,22 +7,24 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.RollerandPivotConstants.*;
-import com.ctre.phoenix6.hardware.TalonFX;
+
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final TalonFX topmotor;
-  private final TalonFX bottommotor;
-  private final TalonFX lastmotor;
+  private final TalonSRX topmotor;
+  private final TalonSRX bottommotor;
+  private final TalonSRX lastmotor;
   private final AnalogPotentiometer sensor;
 
 
   /** Creates a new ExampleSubsystem. */
   public IntakeSubsystem() {
-    lastmotor = new TalonFX(lastmotorID);
-    topmotor = new TalonFX(topmotorID);
-    bottommotor = new TalonFX(bottommotorID);
+    lastmotor = new TalonSRX(lastmotorID);
+    topmotor = new TalonSRX(topmotorID);
+    bottommotor = new TalonSRX(bottommotorID);
     sensor = new AnalogPotentiometer(sensorID);
   }
   
@@ -36,26 +38,26 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setRollSpeed(double top, double bottom){
-    topmotor.set(top);
-    bottommotor.set(bottom);
+    topmotor.set(TalonSRXControlMode.PercentOutput, top);
+    bottommotor.set(TalonSRXControlMode.PercentOutput, bottom);
   }
 
   public void setAllRollSpeed(double topone, double bottomone){
-    topmotor.set(topone);
-    lastmotor.set(topone);
-    bottommotor.set(bottomone);
+    topmotor.set(TalonSRXControlMode.PercentOutput, topone);
+    lastmotor.set(TalonSRXControlMode.PercentOutput, topone);
+    bottommotor.set(TalonSRXControlMode.PercentOutput, bottomone);
   }
 
   public void setRollersOutwards(Boolean pressedA){
     if(pressedA==true)
-      topmotor.set(rollersclockwise);
-      bottommotor.set(rollerscounterclockwise);
+      topmotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+      bottommotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
   }
 
   public void setRollersInwards(Boolean pressedB){
     if(pressedB==true)
-      topmotor.set(rollersclockwise);
-      bottommotor.set(rollerscounterclockwise);
+      topmotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+      bottommotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
   }
   
 

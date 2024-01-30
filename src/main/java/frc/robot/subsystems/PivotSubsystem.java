@@ -2,19 +2,20 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.RollerandPivotConstants.*;
 //import edu.wpi.first.wpilibj.Encoder;
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class PivotSubsystem extends SubsystemBase{
-    private final TalonFX motor1;
+    private final com.ctre.phoenix.motorcontrol.can.TalonSRX motor1;
     // private final Encoder intakeencoder;
     private final DigitalInput extendedlimitswitch;
     private final DigitalInput retractedlimitswitch;
 
     public PivotSubsystem(){
-        motor1 = new TalonFX(motor1ID);
+        motor1 = new TalonSRX(motor1ID);
         //intakeencoder = new Encoder(1,2);
         extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
         retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
@@ -29,7 +30,7 @@ public class PivotSubsystem extends SubsystemBase{
     // }
 
     public void movePivot(double speed){
-        motor1.set(speed);
+        motor1.set(TalonSRXControlMode.PercentOutput, speed);
     }
 
     public boolean pivotisextended(){
@@ -51,7 +52,7 @@ public class PivotSubsystem extends SubsystemBase{
     }
 
     public void setPivotSpeed(double right, double left){
-        motor1.set(right+left);
+        motor1.set(TalonSRXControlMode.PercentOutput, right+left);
       }
 
     
