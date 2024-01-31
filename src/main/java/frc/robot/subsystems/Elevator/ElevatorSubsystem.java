@@ -110,7 +110,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         //System.out.println(elevatorNetworkTablePositionEntry.getString("default")); 
-        System.out.println(this.getTargetState());
+        System.out.println(this.getExtensionMeters());
+        //System.out.println(this.getTargetState());
         if(isManual){
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
