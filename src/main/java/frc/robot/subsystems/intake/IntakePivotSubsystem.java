@@ -1,6 +1,6 @@
 package frc.robot.subsystems.intake;
 
-import static frc.robot.Constants.RollerandPivotConstants.*;
+import static frc.robot.Constants.IntakeConstants.*;
 //import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class IntakePivotSubsystem extends SubsystemBase{
-    private final com.ctre.phoenix.motorcontrol.can.TalonSRX motor1;
+    private final com.ctre.phoenix.motorcontrol.can.TalonSRX pivotMotor;
     // private final Encoder intakeencoder;
     private final DigitalInput extendedlimitswitch;
     private final DigitalInput retractedlimitswitch;
 
     public IntakePivotSubsystem(){
-        motor1 = new TalonSRX(motor1ID);
+        pivotMotor = new TalonSRX(PIVOT_MOTOR_ID);
         //intakeencoder = new Encoder(1,2);
         extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
         retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
@@ -30,7 +30,7 @@ public class IntakePivotSubsystem extends SubsystemBase{
     // }
 
     public void movePivot(double speed){
-        motor1.set(TalonSRXControlMode.PercentOutput, speed);
+        pivotMotor.set(TalonSRXControlMode.PercentOutput, speed);
     }
 
     public boolean pivotisextended(){
@@ -52,7 +52,7 @@ public class IntakePivotSubsystem extends SubsystemBase{
     }
 
     public void setPivotSpeed(double right){
-        motor1.set(TalonSRXControlMode.PercentOutput, right);
+        pivotMotor.set(TalonSRXControlMode.PercentOutput, right);
       }
 
     

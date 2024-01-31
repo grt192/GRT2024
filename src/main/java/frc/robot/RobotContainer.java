@@ -37,13 +37,14 @@ import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final IntakeRollersSubsystem intakeSubsystem  = new IntakeRollersSubsystem();
     private final BaseDriveController driveController = new DualJoystickDriveController();
     private final BaseSwerveSubsystem baseSwerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final ShooterFlywheelSubsystem shooterSubsystem;
-    private final ShooterFeederSubsystem feederSubsystem;
+    private final IntakeRollersSubsystem intakeRollerSubsystem  = new IntakeRollersSubsystem();
+
+    private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
+    private final ShooterFeederSubsystem shooterFeederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
     private final ClimbSubsystem climbSubsystem;
@@ -56,6 +57,7 @@ public class RobotContainer {
     private final JoystickButton rightBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+    
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
     ChoreoTrajectory traj;
@@ -68,10 +70,10 @@ public class RobotContainer {
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
       baseSwerveSubsystem = new SwerveSubsystem();
       intakePivotSubsystem = new IntakePivotSubsystem();
-      feederSubsystem = new ShooterFeederSubsystem();
+      shooterFeederSubsystem = new ShooterFeederSubsystem();
 
       shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-      shooterSubsystem = new ShooterFlywheelSubsystem();
+      shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
       climbSubsystem = new ClimbSubsystem();
       
@@ -84,53 +86,48 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        /**
-         * Right trigger - run pivot forward at speed pulled
-         * Left trigger - run pivot backward at speed pulled
-         * A button - run flywheels while button held
-         * B button - run feed wheels while button held
-         */
-
-        // aButton.onTrue(new LoadNoteCommand(feederSubsystem));
-
-        // bButton.onTrue(new ShootNoteCommand(feederSubsystem));
-
-        // leftBumper.onTrue(new AutoAimCommand(pivotSubsystem));
-
-        // rightBumper.onTrue(new VerticalCommand(pivotSubsystem));
-
-        // xButton.onTrue(new ReadyShooterCommand(shooterSubsystem));
-
-        // yButton.onTrue(new StopShooterCommands(shooterSubsystem));
-
-        intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            intakePivotSubsystem.setPivotSpeed(-mechController.getLeftTriggerAxis());
-        }));
-
-        shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            intakePivotSubsystem.setPivotSpeed(mechController.getRightTriggerAxis());
-        }));
 
         bButton.onTrue(new InstantCommand(() -> {
-          feederSubsystem.setFeederMotorSpeed(.7);
+          shooterFeederSubsystem.setFeederMotorSpeed(.7);
         }));
         
         bButton.onFalse(new InstantCommand(() -> {
-          feederSubsystem.setFeederMotorSpeed(0);
+          shooterFeederSubsystem.setFeederMotorSpeed(0);
         }));
 
         xButton.onTrue(new InstantCommand(() -> {
-          feederSubsystem.setFeederMotorSpeed(-.7);
+          shooterFeederSubsystem.setFeederMotorSpeed(-.7);
         }));
         
         xButton.onFalse(new InstantCommand(() -> {
-          feederSubsystem.setFeederMotorSpeed(0);
+          shooterFeederSubsystem.setFeederMotorSpeed(0);
         }));
 
         shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
             shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
             // pivotSubsystem.printCurrentAngle();
         }, shooterPivotSubsystem));
+
+        aButton.onTrue(new InstantCommand(() -> {
+          shooterFlywheelSubsystem.setShooterMotorSpeed(shooterFlywheelSubsystem.SHOOTER_MOTOR_SPEED);
+        }));
+
+        aButton.onFalse(new InstantCommand(() -> {
+          shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+        }));
+
+        intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
+          if(mechController.getPOV() == 90){
+            intakeRollerSubsystem.setAllRollSpeed(.3, .3);
+          } else if (mechController.getPOV() == 270){
+            intakeRollerSubsystem.setAllRollSpeed(-.3, -.3);
+          } else {
+            intakeRollerSubsystem.setAllRollSpeed(0, 0);
+          }
+        }));
+        
+
+        
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
           final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

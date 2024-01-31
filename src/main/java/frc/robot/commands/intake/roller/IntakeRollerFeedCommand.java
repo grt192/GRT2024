@@ -1,8 +1,8 @@
 package frc.robot.commands.intake.roller;
 
-import static frc.robot.Constants.RollerandPivotConstants.pastsensortime;
-import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
-import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
+import static frc.robot.Constants.IntakeConstants.pastsensortime;
+import static frc.robot.Constants.IntakeConstants.rollersclockwise;
+import static frc.robot.Constants.IntakeConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;

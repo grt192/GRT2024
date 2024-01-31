@@ -66,11 +66,11 @@ public final class Constants {
     public static final Translation2d BR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
   }
 
-  public static class RollerandPivotConstants {
-    public static final int lastmotorID = 0;
-    public static final int topmotorID = 2;
-    public static final int bottommotorID = 3;
-    public static final int motor1ID = 1;
+  public static class IntakeConstants {
+    public static final int INTEGRATION_MOTOR_ID = 19;
+    public static final int FRONT_MOTOR_ID = 17;
+    public static final int BACK_MOTOR_ID = 18;
+    public static final int PIVOT_MOTOR_ID = 16;
 
     public static final int sensorID = 0;
     public static final int extendedlimitswitchID = 1;
