@@ -95,11 +95,11 @@ public class RobotContainer {
         // yButton.onTrue(new StopShooterCommands(shooterSubsystem));
 
         intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            intakePivotSubsystem.setPivotSpeed(-controller.getLeftTriggerAxis());
+            intakePivotSubsystem.setPivotSpeed(-mechController.getLeftTriggerAxis());
         }));
 
         shooterSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            intakePivotSubsystem.setPivotSpeed(controller.getRightTriggerAxis());
+            intakePivotSubsystem.setPivotSpeed(mechController.getRightTriggerAxis());
         }));
 
         bButton.onTrue(new InstantCommand(() -> {
@@ -118,10 +118,10 @@ public class RobotContainer {
           feederSubsystem.setFeederMotorSpeed(0);
         }));
 
-        pivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            pivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
             // pivotSubsystem.printCurrentAngle();
-        }, pivotSubsystem));
+        }, shooterPivotSubsystem));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
           final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
