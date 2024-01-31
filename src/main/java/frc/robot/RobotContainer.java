@@ -13,6 +13,9 @@ import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
+import frc.robot.commands.climb.ClimbLowerCommand;
+import frc.robot.commands.climb.ClimbRaiseCommand;
+import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -29,6 +32,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
@@ -40,6 +45,8 @@ public class RobotContainer {
     private final ShooterFlywheelSubsystem shooterSubsystem;
     private final ShooterFeederSubsystem feederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
+
+    private final ClimbSubsystem climbSubsystem;
 
 
     private final XboxController mechController = new XboxController(2);
@@ -65,6 +72,8 @@ public class RobotContainer {
 
       shooterPivotSubsystem = new ShooterPivotSubsystem(false);
       shooterSubsystem = new ShooterFlywheelSubsystem();
+
+      climbSubsystem = new ClimbSubsystem();
       
       traj = Choreo.getTrajectory("Curve");
 
@@ -173,7 +182,7 @@ public class RobotContainer {
         }
 
     
-    } 
+    }
 
   public Command getAutonomousCommand() {
     if(baseSwerveSubsystem instanceof SwerveSubsystem){
