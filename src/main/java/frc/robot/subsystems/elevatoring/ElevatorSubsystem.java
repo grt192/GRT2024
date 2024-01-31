@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.elevatoring;
 
 import java.util.EnumSet;
 
