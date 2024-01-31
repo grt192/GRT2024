@@ -136,7 +136,7 @@ public class RobotContainer {
           final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
           swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-              // swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+              swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
               // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
           }
           , swerveSubsystem));
@@ -168,16 +168,14 @@ public class RobotContainer {
         } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
           final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
 
-        // System.out.println("1");
+          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+          }
+          , swerveSubsystem));
 
-        // swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-        //   swerveSubsystem.setDrivePowers(controller.getLeftX(), -controller.getLeftY());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-        // }
-        // , swerveSubsystem));
-
-        // AButton.onTrue(new InstantCommand(() -> {
-        //   swerveSubsystem.toggletoRun();
-        // }));
+          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+            swerveSubsystem.toggletoRun();
+          }));
         
         }
 
