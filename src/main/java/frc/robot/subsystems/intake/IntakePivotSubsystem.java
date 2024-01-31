@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.RollerandPivotConstants.*;
 //import edu.wpi.first.wpilibj.Encoder;

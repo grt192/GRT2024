@@ -1,11 +1,11 @@
-package frc.robot.commands.feeder;
+package frc.robot.commands.shooter.feed;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 
-public class ShootNoteCommand extends Command{
-    FeederSubsystem feederSubsystem;
+public class ShooterFeedShootCommand extends Command{
+    ShooterFeederSubsystem feederSubsystem;
 
-    public ShootNoteCommand(FeederSubsystem feederSubsystem){
+    public ShooterFeedShootCommand(ShooterFeederSubsystem feederSubsystem){
         this.feederSubsystem = feederSubsystem;
     }
     

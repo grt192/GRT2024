@@ -5,14 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterPivotSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
+import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
+import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+import frc.robot.subsystems.intake.IntakePivotSubsystem;
+import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
-import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -32,13 +32,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final IntakeSubsystem intakeSubsystem  = new IntakeSubsystem();
+    private final IntakeRollersSubsystem intakeSubsystem  = new IntakeRollersSubsystem();
     private final BaseDriveController driveController = new DualJoystickDriveController();
     private final BaseSwerveSubsystem baseSwerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
-    private final FeederSubsystem feederSubsystem;
+    private final ShooterFlywheelSubsystem shooterSubsystem;
+    private final ShooterFeederSubsystem feederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
 
@@ -61,10 +61,10 @@ public class RobotContainer {
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
       baseSwerveSubsystem = new SwerveSubsystem();
       intakePivotSubsystem = new IntakePivotSubsystem();
-      feederSubsystem = new FeederSubsystem();
+      feederSubsystem = new ShooterFeederSubsystem();
 
       shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-      shooterSubsystem = new ShooterSubsystem();
+      shooterSubsystem = new ShooterFlywheelSubsystem();
       
       traj = Choreo.getTrajectory("Curve");
 

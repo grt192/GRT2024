@@ -1,16 +1,16 @@
 
-package frc.robot.commands.IntakePivot;
+package frc.robot.commands.intake.pivot;
 
 
 import static frc.robot.Constants.RollerandPivotConstants.pivotclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakePivotSubsystem;
+import frc.robot.subsystems.intake.IntakePivotSubsystem;
 
-public class PivotVerticalCommand extends Command{
+public class IntakePivotVerticalCommand extends Command{
     private final IntakePivotSubsystem pivotSubsystem;
 
-    public PivotVerticalCommand(IntakePivotSubsystem pivotSubsystem){
+    public IntakePivotVerticalCommand(IntakePivotSubsystem pivotSubsystem){
         this.pivotSubsystem = pivotSubsystem;
     }
     @Override

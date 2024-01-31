@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     //change later (ALL OF THEM ARE PLACEHOLDERS)
     int IDNUMBER = 10; //so I remember to change them later
@@ -24,7 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //sensors
 
-    public ShooterSubsystem(){
+    public ShooterFlywheelSubsystem(){
         //motors
         shooterMotor = new CANSparkMax(13, MotorType.kBrushless);
         shooterMotorTwo = new CANSparkMax(14, MotorType.kBrushless);

@@ -1,4 +1,4 @@
-package frc.robot.commands.IntakePivot;
+package frc.robot.commands.intake.pivot;
 // package frc.robot.subsystems;
 
 

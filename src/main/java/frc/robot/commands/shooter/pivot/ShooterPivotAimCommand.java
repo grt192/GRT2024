@@ -1,13 +1,13 @@
-package frc.robot.commands.pivot;
+package frc.robot.commands.shooter.pivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterPivotSubsystem;
+import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 
-public class AutoAimCommand extends Command{
+public class ShooterPivotAimCommand extends Command{
     
     ShooterPivotSubsystem shooterPivotSubsystem;
 
-    public AutoAimCommand(ShooterPivotSubsystem pivotSubsystem){
+    public ShooterPivotAimCommand(ShooterPivotSubsystem pivotSubsystem){
         this.shooterPivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
     }

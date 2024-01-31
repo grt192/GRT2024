@@ -4,7 +4,7 @@
 
 //1 = clockwise, -1 = counterclockwise
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.RollerandPivotConstants.*;
 
@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeRollersSubsystem extends SubsystemBase {
   private final TalonSRX topmotor;
   private final TalonSRX bottommotor;
   private final TalonSRX lastmotor;
@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
   /** Creates a new ExampleSubsystem. */
-  public IntakeSubsystem() {
+  public IntakeRollersSubsystem() {
     lastmotor = new TalonSRX(lastmotorID);
     topmotor = new TalonSRX(topmotorID);
     bottommotor = new TalonSRX(bottommotorID);

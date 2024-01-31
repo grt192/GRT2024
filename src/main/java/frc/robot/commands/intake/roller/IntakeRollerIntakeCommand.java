@@ -1,16 +1,16 @@
-package frc.robot.commands.IntakeRollers;
+package frc.robot.commands.intake.roller;
 
 
 import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
 import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 
-public class RollerIntakeCommand extends Command{
-    private final IntakeSubsystem intakeSubsystem;
+public class IntakeRollerIntakeCommand extends Command{
+    private final IntakeRollersSubsystem intakeSubsystem;
 
-    public RollerIntakeCommand(IntakeSubsystem intakeSubsystem){
+    public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
     }
 
