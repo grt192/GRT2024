@@ -1,12 +1,12 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem;
-import frc.robot.subsystems.Elevator.ElevatorState;
+import frc.robot.subsystems.elevator.ElevatorState;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorToChuteCommand extends Command{
+public class ElevatorToGroundCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorToChuteCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorToGroundCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -18,12 +18,12 @@ public class ElevatorToChuteCommand extends Command{
 
     @Override
     public void execute(){
-        this.elevatorSubsystem.setTargetState(ElevatorState.CHUTE);
+        this.elevatorSubsystem.setTargetState(ElevatorState.GROUND);
     }
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.CHUTE){
+        if(this.elevatorSubsystem.getState()==ElevatorState.GROUND){
             return true;
         }
         else return false;

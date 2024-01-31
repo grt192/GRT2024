@@ -1,7 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class ElevatorSetManualCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
