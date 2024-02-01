@@ -16,7 +16,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public final double PIVOT_SPEED = 0.1;
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final int ERRORTOLERANCE = 5; //error tolerance for pid
-    final int LIMIT_SWITCH_ID = 1; //placeholder
+    final int LIMIT_SWITCH_ID = 3; //placeholder
     final double CONVERSION_FACTOR = Math.PI/(2*4.57);
 
     //motors
@@ -142,7 +142,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             setAngle(getAutoAimAngle(getDistance()));
         }
 
-        printCurrentAngle();
+        // printCurrentAngle();
 
         // System.out.println("current pos" + rotationEncoder.getPosition());
 

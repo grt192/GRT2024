@@ -70,7 +70,7 @@ public class RobotContainer {
         //construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = new SwerveSubsystem();
+      baseSwerveSubsystem = null;// new SwerveSubsystem();
       intakePivotSubsystem = new IntakePivotSubsystem();
       shooterFeederSubsystem = new ShooterFeederSubsystem();
 
@@ -88,21 +88,11 @@ public class RobotContainer {
   }
 
 
-    private void configureBindings() {
+  private void configureBindings() {
 
-
-      elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        if(mechController.getLeftTriggerAxis() != 0 && mechController.getRightTriggerAxis() != 0){
-          elevatorSubsystem.setManual();
-          elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
-        }
-        else{
-          elevatorSubsystem.setAuto();
-        }
-      }));
 
       bButton.onTrue(new InstantCommand(() -> {
-        shooterFeederSubsystem.setFeederMotorSpeed(.7);
+        shooterFeederSubsystem.setFeederMotorSpeed(.4);
       }));
       
       bButton.onFalse(new InstantCommand(() -> {
@@ -132,13 +122,15 @@ public class RobotContainer {
 
       intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
         if(mechController.getPOV() == 90){
-          intakeRollerSubsystem.setAllRollSpeed(.3, .3);
+          intakeRollerSubsystem.setAllRollSpeed(1, .8);
         } else if (mechController.getPOV() == 270){
-          intakeRollerSubsystem.setAllRollSpeed(-.3, -.3);
+          intakeRollerSubsystem.setAllRollSpeed(-.8, -.5);
         } else {
           intakeRollerSubsystem.setAllRollSpeed(0, 0);
         }
-      }));
+      }, intakeRollerSubsystem));
+
+      
       
 
       
@@ -189,7 +181,6 @@ public class RobotContainer {
         }));
       
       }
-
     
     }
 

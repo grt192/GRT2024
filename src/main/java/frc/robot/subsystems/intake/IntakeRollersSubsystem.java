@@ -24,6 +24,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
   public IntakeRollersSubsystem() {
     integrationMotor = new TalonSRX(INTEGRATION_MOTOR_ID);
     frontMotor = new TalonSRX(FRONT_MOTOR_ID);
+    frontMotor.setInverted(true);
     backMotor = new TalonSRX(BACK_MOTOR_ID);
     sensor = new AnalogPotentiometer(sensorID);
   }
@@ -44,8 +45,8 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
   public void setAllRollSpeed(double topone, double bottomone){
     frontMotor.set(TalonSRXControlMode.PercentOutput, topone);
-    integrationMotor.set(TalonSRXControlMode.PercentOutput, topone);
-    backMotor.set(TalonSRXControlMode.PercentOutput, bottomone);
+    integrationMotor.set(TalonSRXControlMode.PercentOutput, bottomone);
+    backMotor.set(TalonSRXControlMode.PercentOutput, topone);
   }
 
   public void setRollersOutwards(Boolean pressedA){

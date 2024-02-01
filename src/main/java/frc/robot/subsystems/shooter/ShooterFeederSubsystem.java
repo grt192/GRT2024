@@ -22,7 +22,9 @@ public class ShooterFeederSubsystem extends SubsystemBase{
 
     public ShooterFeederSubsystem(){
         //motors
-        feederMotor = new TalonSRX(10);
+        feederMotor = new TalonSRX(15);
+
+        feederMotor.setInverted(true);
 
         //sensors
         shooterSensor = new ColorSensorV3(I2C.Port.kMXP);

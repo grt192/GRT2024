@@ -22,7 +22,7 @@ public final class Constants {
     
     public static final float EXTENSION_LIMIT_METERS = 0;
     
-    public static final int ZERO_LIMIT_ID = 0;
+    public static final int ZERO_LIMIT_ID = 2;
 
     public static final int GROUND_POSITION = 0;
     public static final int SPEAKER_POSITION = 0;
@@ -78,8 +78,8 @@ public final class Constants {
     public static final int PIVOT_MOTOR_ID = 16;
 
     public static final int sensorID = 0;
-    public static final int extendedlimitswitchID = 1;
-    public static final int retractedlimitswitchID = 2;
+    public static final int extendedlimitswitchID = 5;
+    public static final int retractedlimitswitchID = 6;
     //public static final int intakeencoderID = 3;
 
     public static final double rollersclockwise = 1;
@@ -94,11 +94,11 @@ public final class Constants {
 
 
   public static class ClimbConstants {
-    public static final int LEFT_WINCH_MOTOR_ID = 21;
-    public static final int LEFT_ZERO_LIMIT_ID = 11;
+    public static final int LEFT_WINCH_MOTOR_ID = 10;
+    public static final int LEFT_ZERO_LIMIT_ID = 0;
 
-    public static final int RIGHT_WINCH_MOTOR_ID = 22;
-    public static final int RIGHT_ZERO_LIMIT_ID = 12;
+    public static final int RIGHT_WINCH_MOTOR_ID = 11;
+    public static final int RIGHT_ZERO_LIMIT_ID = 1;
    
     public static final double WINCH_REDUCTION = 9.49;
     public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289) ;
