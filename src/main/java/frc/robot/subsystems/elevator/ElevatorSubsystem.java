@@ -11,6 +11,8 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,17 +22,19 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.*;
 
 public class ElevatorSubsystem extends SubsystemBase{
     private NetworkTableInstance elevatorNetworkTableInstance;
     private NetworkTable elevatorNetworkTable;
+    private NetworkTableEntry elevatorNetworkTablePositionEntry;
 
-    private volatile boolean IS_MANUAL = false;
+    private volatile boolean isManual = false;
+    private double manualPower = 0;
     
     private ElevatorState state = ElevatorState.GROUND;
     private ElevatorState targetState = ElevatorState.START;
@@ -40,83 +44,107 @@ public class ElevatorSubsystem extends SubsystemBase{
     private SparkPIDController extensionPidController;
 
     //PID Values
-    private static final double extensionP = 2.4;
-    private static final double extensionI = 0;
-    private static final double extensionD = 0;
-    private static final double extensionTolerance = 0.003;
 
     private final CANSparkMax extensionFollow;
 
     private final DigitalInput zeroLimitSwitch;
 
     //Controller for testing.
-    private final XboxController mechController; 
 
-    public ElevatorSubsystem(){
+    public ElevatorSubsystem() {
         //Print out current position for debug & measurement
         //System.out.print(extensionEncoder.getPosition());
         
+        this.zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
         elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
         elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
-        elevatorNetworkTable.addListener("target_position", EnumSet.of(NetworkTableEvent.Kind.kValueAll), this::acceptNewPosition);
-
-        extensionMotor = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
+        elevatorNetworkTablePositionEntry = elevatorNetworkTable.getEntry("target_position");
+        elevatorNetworkTable.addListener("target_position",
+        EnumSet.of(NetworkTableEvent.Kind.kValueAll),
+        (NetworkTable table, String key, NetworkTableEvent event) -> {
+            String message = event.valueData.value.getString();
+            System.out.println(message);
+            if(message.equals("GROUND")){
+                System.out.println("Setting Target to Ground");
+                this.setTargetState(ElevatorState.GROUND);
+            }
+            else if(message.equals("SPEAKER")){
+                System.out.println("Setting Target to SPEAKER");
+                this.setTargetState(ElevatorState.SPEAKER);
+            }
+            else if(message.equals("AMP")){
+                System.out.println("Setting Target to AMP");
+                this.setTargetState(ElevatorState.AMP);
+            }
+            else return;
+            ElevatorState currentTargetState = this.getTargetState();
+            if(currentTargetState.equals(ElevatorState.AMP)){
+                System.out.println("New target state is AMP!");
+            }
+            else if(currentTargetState.equals(ElevatorState.GROUND)){
+                System.out.println("New target state is GROUND!");
+            }
+            else if(currentTargetState.equals(ElevatorState.SPEAKER)){
+                System.out.println("New target state is SPEAKER!");
+            }
+        });
+        //this entry is working!
+        extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
         
         extensionEncoder = extensionMotor.getEncoder();
-        extensionEncoder.setPositionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR);
-        extensionEncoder.setVelocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+        extensionEncoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+        extensionEncoder.setVelocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
         extensionEncoder.setPosition(0);
         
-        extensionFollow = new CANSparkMax(Constants.ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
+        extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
         extensionFollow.setIdleMode(IdleMode.kBrake);
 
         extensionPidController = extensionMotor.getPIDController();
-        extensionPidController.setP(extensionP);
-        extensionPidController.setI(extensionI);
-        extensionPidController.setD(extensionD);
-        extensionPidController.setSmartMotionAllowedClosedLoopError(extensionTolerance, 0);
-        
-        zeroLimitSwitch = new DigitalInput(Constants.ElevatorConstants.ZERO_LIMIT_ID);
-
-        //Controller for testing.
-        mechController = new XboxController(Constants.OperatorConstants.kDriverControllerPort);
+        extensionPidController.setP(ElevatorConstants.EXTENSION_P);
+        extensionPidController.setI(ElevatorConstants.EXTENSION_I);
+        extensionPidController.setD(ElevatorConstants.EXTENSION_D);
+        extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
     }
     @Override
     public void periodic(){
-        
-        if(IS_MANUAL){
+        //System.out.println(elevatorNetworkTablePositionEntry.getString("default")); 
+        System.out.println(this.getExtensionMeters());
+        //System.out.println(this.getTargetState());
+        if(isManual){
             //Add some factors for better control.
-            extensionMotor.set(mechController.getRightY());
+            extensionMotor.set(this.manualPower);
             return;
         }
+         
         if (zeroLimitSwitch != null && !zeroLimitSwitch.get()){
             extensionEncoder.setPosition(0); 
         }
-
-        extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        
+        //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        //this through overun when no motor connected.
 
         //Start move to target posision
         if (targetState != state){
-            extensionPidController.setReference(targetState.getExtension(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
+            extensionPidController.setReference(targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
         }
-
-        if(mechController.getAButtonPressed()){
-            this.setTargetState(ElevatorState.GROUND);
-        }
-        else if(mechController.getBButtonPressed()){
-            this.setTargetState(ElevatorState.AMP);
-        }
-        else if(mechController.getXButtonPressed()){
-            this.setTargetState(ElevatorState.SPEAKER);
-        }
-        else if(mechController.getYButtonPressed()){
-            this.setTargetState(ElevatorState.CHUTE);
+        if(atState(this.targetState)){
+            this.setState(this.getTargetState());
         }
         
     }
     
+    public boolean atState(ElevatorState state){
+        double distance = Math.abs(this.getExtensionMeters() - state.getExtendDistanceMeters());
+        if(distance < ElevatorConstants.EXTENSION_TOLERANCE){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public void setState(ElevatorState state) {
         this.state = state;
         return;
@@ -128,12 +156,12 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public void setManual(){
-        this.IS_MANUAL = true;
+        this.isManual = true;
         return;
     }
 
     public void setAuto(){
-        this.IS_MANUAL = false;
+        this.isManual = false;
         return;
     }
     public double getExtensionMeters() { 
@@ -148,9 +176,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         return this.targetState;
     }
     
+    public void setManualPower(double power){
+        this.manualPower = power;
+    } 
     
-    private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
+    /* private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
         System.out.println("got networktablex");
         System.out.println(event.valueData.toString());
-    }
+    } */
 }

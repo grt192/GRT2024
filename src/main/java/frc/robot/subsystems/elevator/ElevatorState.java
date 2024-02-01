@@ -18,7 +18,7 @@ public enum ElevatorState {
         this.extendDistanceMeters = extendDistanceMeters;
     }
 
-    public double getExtension(){
+    public double getExtendDistanceMeters(){
         return this.extendDistanceMeters;
     }
 

@@ -16,6 +16,7 @@ import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
@@ -49,6 +50,7 @@ public class RobotContainer {
 
     private final ClimbSubsystem climbSubsystem;
 
+    private final ElevatorSubsystem elevatorSubsystem;
 
     private final XboxController mechController = new XboxController(2);
     private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
@@ -77,6 +79,8 @@ public class RobotContainer {
 
       climbSubsystem = new ClimbSubsystem();
       
+      elevatorSubsystem = new ElevatorSubsystem();
+
       traj = Choreo.getTrajectory("Curve");
 
     // Configure the trigger bindings
@@ -87,94 +91,104 @@ public class RobotContainer {
     private void configureBindings() {
 
 
-        bButton.onTrue(new InstantCommand(() -> {
-          shooterFeederSubsystem.setFeederMotorSpeed(.7);
-        }));
-        
-        bButton.onFalse(new InstantCommand(() -> {
-          shooterFeederSubsystem.setFeederMotorSpeed(0);
-        }));
-
-        xButton.onTrue(new InstantCommand(() -> {
-          shooterFeederSubsystem.setFeederMotorSpeed(-.7);
-        }));
-        
-        xButton.onFalse(new InstantCommand(() -> {
-          shooterFeederSubsystem.setFeederMotorSpeed(0);
-        }));
-
-        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
-            // pivotSubsystem.printCurrentAngle();
-        }, shooterPivotSubsystem));
-
-        aButton.onTrue(new InstantCommand(() -> {
-          shooterFlywheelSubsystem.setShooterMotorSpeed(shooterFlywheelSubsystem.SHOOTER_MOTOR_SPEED);
-        }));
-
-        aButton.onFalse(new InstantCommand(() -> {
-          shooterFlywheelSubsystem.setShooterMotorSpeed(0);
-        }));
-
-        intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
-          if(mechController.getPOV() == 90){
-            intakeRollerSubsystem.setAllRollSpeed(.3, .3);
-          } else if (mechController.getPOV() == 270){
-            intakeRollerSubsystem.setAllRollSpeed(-.3, -.3);
-          } else {
-            intakeRollerSubsystem.setAllRollSpeed(0, 0);
-          }
-        }));
-        
-
-        
-
-        if(baseSwerveSubsystem instanceof SwerveSubsystem){
-          final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-
-          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-              swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-              // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
-          }
-          , swerveSubsystem));
-
-          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-              swerveSubsystem.resetDriverHeading();
-          }
-          ));
-          
-        } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
-          final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
-        // LBumper.onTrue(new InstantCommand(() -> {
-        //   testSwerveSubsystem.decrementTest();
-        //   System.out.println(testSwerveSubsystem.getTest());
-        // }
-        // ));
-
-        // RBumper.onTrue(new InstantCommand(() -> {
-        //   testSwerveSubsystem.incrementTest();
-        //   System.out.println(testSwerveSubsystem.getTest());
-        // }
-        // ));
-
-        // AButton.onTrue(new InstantCommand(() -> {
-        //   testSwerveSubsystem.toggletoRun();
-        //   System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
-        // }));
-
-        } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
-          final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
-
-          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-          }
-          , swerveSubsystem));
-
-          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.toggletoRun();
-          }));
-        
+      elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        if(mechController.getLeftTriggerAxis() != 0 && mechController.getRightTriggerAxis() != 0){
+          elevatorSubsystem.setManual();
+          elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
         }
+        else{
+          elevatorSubsystem.setAuto();
+        }
+      }));
+
+      bButton.onTrue(new InstantCommand(() -> {
+        shooterFeederSubsystem.setFeederMotorSpeed(.7);
+      }));
+      
+      bButton.onFalse(new InstantCommand(() -> {
+        shooterFeederSubsystem.setFeederMotorSpeed(0);
+      }));
+
+      xButton.onTrue(new InstantCommand(() -> {
+        shooterFeederSubsystem.setFeederMotorSpeed(-.7);
+      }));
+      
+      xButton.onFalse(new InstantCommand(() -> {
+        shooterFeederSubsystem.setFeederMotorSpeed(0);
+      }));
+
+      shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+          shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+          // pivotSubsystem.printCurrentAngle();
+      }, shooterPivotSubsystem));
+
+      aButton.onTrue(new InstantCommand(() -> {
+        shooterFlywheelSubsystem.setShooterMotorSpeed(shooterFlywheelSubsystem.SHOOTER_MOTOR_SPEED);
+      }));
+
+      aButton.onFalse(new InstantCommand(() -> {
+        shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+      }));
+
+      intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        if(mechController.getPOV() == 90){
+          intakeRollerSubsystem.setAllRollSpeed(.3, .3);
+        } else if (mechController.getPOV() == 270){
+          intakeRollerSubsystem.setAllRollSpeed(-.3, -.3);
+        } else {
+          intakeRollerSubsystem.setAllRollSpeed(0, 0);
+        }
+      }));
+      
+
+      
+
+      if(baseSwerveSubsystem instanceof SwerveSubsystem){
+        final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+
+        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+            // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
+        }
+        , swerveSubsystem));
+
+        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+            swerveSubsystem.resetDriverHeading();
+        }
+        ));
+        
+      } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
+        final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
+      // LBumper.onTrue(new InstantCommand(() -> {
+      //   testSwerveSubsystem.decrementTest();
+      //   System.out.println(testSwerveSubsystem.getTest());
+      // }
+      // ));
+
+      // RBumper.onTrue(new InstantCommand(() -> {
+      //   testSwerveSubsystem.incrementTest();
+      //   System.out.println(testSwerveSubsystem.getTest());
+      // }
+      // ));
+
+      // AButton.onTrue(new InstantCommand(() -> {
+      //   testSwerveSubsystem.toggletoRun();
+      //   System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
+      // }));
+
+      } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
+        final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
+
+        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+          swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+        }
+        , swerveSubsystem));
+
+        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+          swerveSubsystem.toggletoRun();
+        }));
+      
+      }
 
     
     }

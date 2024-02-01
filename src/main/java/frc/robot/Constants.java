@@ -31,8 +31,13 @@ public final class Constants {
     public static final int TRAP_POSITION = 0;
     public static final int START_POSITION = 0; 
 
-    public static final double POSITIONCONVERSIONFACTOR = 0;
-    public static final double VELOCITYCONVERSIONFACTOR = 0;
+    public static final double EXTENSION_P= 2.4;
+    public static final double EXTENSION_I= 0;
+    public static final double EXTENSION_D= 0;
+    public static final double EXTENSION_TOLERANCE= 0.003;
+
+    public static final double POSITION_CONVERSION_FACTOR = 0;
+    public static final double VELOCITY_CONVERSION_FACTOR = 0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
