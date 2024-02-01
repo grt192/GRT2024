@@ -47,8 +47,8 @@ public class RobotContainer {
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     // baseSwerveSubsystem = new SwerveSubsystem();
     // climbSubsystem = new ClimbSubsystem();
-    testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID);
-    testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID);
+    testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID, true);
+    testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID, false);
     // Configure the trigger bindings
     configureBindings();    
   }

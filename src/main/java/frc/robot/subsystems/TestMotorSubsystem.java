@@ -11,9 +11,10 @@ public class TestMotorSubsystem extends SubsystemBase {
     private final CANSparkMax motor;
     private double motorSpeed;
 
-    public TestMotorSubsystem(int motorPort) {
+    public TestMotorSubsystem(int motorPort, boolean inverted) {
         motor = new CANSparkMax(motorPort, MotorType.kBrushless);
         motor.setIdleMode(IdleMode.kBrake);
+        motor.setInverted(inverted);
     }
 
     @Override
