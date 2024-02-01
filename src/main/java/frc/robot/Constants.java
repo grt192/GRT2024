@@ -17,8 +17,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class ElevatorConstants {
-    public static final int EXTENSION_ID = 0;
-    public static final int EXTENSION_FOLLOW_ID = 0;
+    public static final int EXTENSION_ID = 10;
+    public static final int EXTENSION_FOLLOW_ID = 11;
     
     public static final float EXTENSION_LIMIT_METERS = 0;
     
@@ -94,10 +94,10 @@ public final class Constants {
 
 
   public static class ClimbConstants {
-    public static final int LEFT_WINCH_MOTOR_ID = 10;
+    public static final int LEFT_WINCH_MOTOR_ID = 8;
     public static final int LEFT_ZERO_LIMIT_ID = 0;
 
-    public static final int RIGHT_WINCH_MOTOR_ID = 11;
+    public static final int RIGHT_WINCH_MOTOR_ID = 9;
     public static final int RIGHT_ZERO_LIMIT_ID = 1;
    
     public static final double WINCH_REDUCTION = 9.49;

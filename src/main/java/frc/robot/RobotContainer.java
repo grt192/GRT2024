@@ -90,6 +90,15 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+      elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        if(mechController.getLeftTriggerAxis() != 0 && mechController.getRightTriggerAxis() != 0){
+          elevatorSubsystem.setManual();
+          elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
+        }
+        else{
+          elevatorSubsystem.setAuto();
+        }
+    }));
 
       bButton.onTrue(new InstantCommand(() -> {
         shooterFeederSubsystem.setFeederMotorSpeed(.4);
