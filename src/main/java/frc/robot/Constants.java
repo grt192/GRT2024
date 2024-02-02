@@ -90,8 +90,15 @@ public final class Constants {
     public static final double pastsensortime = 0.5;
   }
 
+  public static class ShooterConstants {
+    public static final int LIMIT_SWITCH_ID = 1;
+    public static final int PIVOT_MOTOR_ID = 12;
 
+    public static final int SHOOTER_MOTOR_ONE_ID = 13;
+    public static final int SHOOTER_MOTOR_TWO_ID = 14;
 
+    public static final int FEEDER_MOTOR_ID = 10;
+  }
 
   public static class ClimbConstants {
     public static final int LEFT_WINCH_MOTOR_ID = 8;

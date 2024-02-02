@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
-
+import static frc.robot.Constants.ShooterConstants.*;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,8 +22,7 @@ public class ShooterFeederSubsystem extends SubsystemBase{
 
     public ShooterFeederSubsystem(){
         //motors
-        feederMotor = new TalonSRX(15);
-
+        feederMotor = new TalonSRX(FEEDER_MOTOR_ID);
         feederMotor.setInverted(true);
 
         //sensors

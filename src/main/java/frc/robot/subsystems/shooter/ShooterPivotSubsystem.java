@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.Constants.ShooterConstants.*;
+
 
 public class ShooterPivotSubsystem extends SubsystemBase {
 
@@ -49,7 +51,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public ShooterPivotSubsystem(boolean alliance){
 
         //motors
-        pivotMotor = new CANSparkMax(12, MotorType.kBrushless); 
+        pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless); 
         pivotMotor.setInverted(true);
 
         //devices
