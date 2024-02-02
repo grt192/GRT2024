@@ -6,7 +6,6 @@ import frc.robot.Constants;
 
 public enum ElevatorState {
     GROUND(Constants.ElevatorConstants.GROUND_POSITION),
-    SPEAKER(Constants.ElevatorConstants.SPEAKER_POSITION),
     AMP(Constants.ElevatorConstants.AMP_POSITION),
     CHUTE(Constants.ElevatorConstants.CHUTE_POSITION),
     TRAP(Constants.ElevatorConstants.TRAP_POSITION),
