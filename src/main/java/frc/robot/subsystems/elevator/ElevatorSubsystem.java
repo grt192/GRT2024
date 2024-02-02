@@ -22,11 +22,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.ElevatorConstants.*;
 
 public class ElevatorSubsystem extends SubsystemBase{
     private NetworkTableInstance elevatorNetworkTableInstance;
@@ -72,8 +70,8 @@ public class ElevatorSubsystem extends SubsystemBase{
                 this.setTargetState(ElevatorState.GROUND);
             }
             else if(message.equals("SPEAKER")){
-                System.out.println("Setting Target to SPEAKER");
-                this.setTargetState(ElevatorState.SPEAKER);
+                System.out.println("Setting Target to TRAP");
+                this.setTargetState(ElevatorState.TRAP);
             }
             else if(message.equals("AMP")){
                 System.out.println("Setting Target to AMP");
@@ -87,8 +85,8 @@ public class ElevatorSubsystem extends SubsystemBase{
             else if(currentTargetState.equals(ElevatorState.GROUND)){
                 System.out.println("New target state is GROUND!");
             }
-            else if(currentTargetState.equals(ElevatorState.SPEAKER)){
-                System.out.println("New target state is SPEAKER!");
+            else if(currentTargetState.equals(ElevatorState.TRAP)){
+                System.out.println("New target state is TRAP!");
             }
         });
         //this entry is working!
@@ -135,13 +133,6 @@ public class ElevatorSubsystem extends SubsystemBase{
         
         //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
         //this through overun when no motor connected.
-
-        //Start move to target posision
-        if (targetState != state){
-            
-        }
-        
-        
     }
     
     public boolean atState(ElevatorState state){
@@ -188,9 +179,4 @@ public class ElevatorSubsystem extends SubsystemBase{
     public void setManualPower(double power){
         this.manualPower = power;
     } 
-    
-    /* private void acceptNewPosition(NetworkTable table, String key, NetworkTableEvent event){
-        System.out.println("got networktablex");
-        System.out.println(event.valueData.toString());
-    } */
 }
