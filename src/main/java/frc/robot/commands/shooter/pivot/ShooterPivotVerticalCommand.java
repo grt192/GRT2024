@@ -18,10 +18,6 @@ public class ShooterPivotVerticalCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        if(Math.abs(pivotSubsystem.getPosition()) - 90 < pivotSubsystem.ERRORTOLERANCE){
-            return true;
-        }
-
-        return false;
+        return (Math.abs(pivotSubsystem.getPosition() - 90) < pivotSubsystem.ERRORTOLERANCE);
     }
 }

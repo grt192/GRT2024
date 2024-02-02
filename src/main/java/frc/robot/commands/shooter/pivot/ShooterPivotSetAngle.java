@@ -20,10 +20,6 @@ public class ShooterPivotSetAngle extends Command{
 
     @Override
     public boolean isFinished() {
-        if(Math.abs(pivotSubsystem.getPosition()) - angle < pivotSubsystem.ERRORTOLERANCE){
-            return true;
-        }
-
-        return false;
+        return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.ERRORTOLERANCE);
     }
 }

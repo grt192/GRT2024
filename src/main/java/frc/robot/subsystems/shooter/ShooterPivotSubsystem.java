@@ -38,6 +38,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private boolean alliance; //true equals red alliance 
     private boolean autoAim;
     private double currentEncoderAngle;
+    private double currentDistance;
     private Pose2d currentField = new Pose2d();
 
     //center of red speaker: (652.73 218.42)
@@ -92,32 +93,29 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public void setFieldPosition(Pose2d field){
         //System.out.println("setting field position");
         currentField = field;
-    }
-
-    public double getAutoAimAngle(double distance){
-        double speakerHeight = Units.inchesToMeters(80.51);
-        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
-        return Math.atan(speakerHeight/distance);
-    }
-
-    public void printCurrentAngle(){
-        System.out.println("radians: " + rotationEncoder.getPosition() + "degrees: " + rotationEncoder.getPosition() * 57.29);
-    }
-
-    public double getDistance(){
 
         if(alliance){ //true = red
             double xLength = Math.pow(currentField.getX()-RED_X, 2);
             double yLength = Math.pow(currentField.getY()-RED_Y, 2);
             //System.out.println("alliance red:" + alliance);
-            return Math.sqrt(xLength + yLength);
+            currentDistance = Math.sqrt(xLength + yLength);
 
         } else {
             double xLength = Math.pow(currentField.getX()-BLUE_X, 2);
             double yLength = Math.pow(currentField.getY()-BLUE_Y, 2);
 
-            return Math.sqrt(xLength + yLength);
+            currentDistance = Math.sqrt(xLength + yLength);
         } 
+    }
+
+    public double getAutoAimAngle(){
+        double speakerHeight = Units.inchesToMeters(80.51);
+        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
+        return Math.atan(speakerHeight/currentDistance);
+    }
+
+    public void printCurrentAngle(){
+        System.out.println("radians: " + rotationEncoder.getPosition() + "degrees: " + rotationEncoder.getPosition() * 57.29);
     }
 
     public double getPosition(){
@@ -142,7 +140,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         // }
 
         if(autoAim){
-            setAngle(getAutoAimAngle(getDistance()));
+            setAngle(getAutoAimAngle());
         }
 
         // printCurrentAngle();
