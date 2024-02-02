@@ -104,7 +104,7 @@ Temporary Items
 .apdisk
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -170,6 +170,7 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+.OutlineViewer/
 
 # Simulation data log directory
 logs/
