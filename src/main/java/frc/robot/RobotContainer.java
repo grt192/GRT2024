@@ -17,6 +17,8 @@ import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
 import frc.robot.commands.elevator.ElevatorToGroundCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotSetAngle;
+import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
@@ -114,10 +116,10 @@ public class RobotContainer {
         shooterFeederSubsystem.setFeederMotorSpeed(0);
       }));
 
-      shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-          // shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
-          // pivotSubsystem.printCurrentAngle();
-      }, shooterPivotSubsystem));
+      // shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+      //     shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+      //     // pivotSubsystem.printCurrentAngle();
+      // }, shooterPivotSubsystem));
 
       aButton.onTrue(new InstantCommand(() -> {
         shooterFlywheelSubsystem.setShooterMotorSpeed(shooterFlywheelSubsystem.SHOOTER_MOTOR_SPEED);
@@ -137,13 +139,8 @@ public class RobotContainer {
         }
       }, intakeRollerSubsystem));
 
-      rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
-      leftBumper.onTrue(new ElevatorToGroundCommand(elevatorSubsystem));
-
-      
-      
-
-      
+      rightBumper.onTrue(new ShooterPivotSetAngle(shooterPivotSubsystem, Math.toRadians(40)));
+      leftBumper.onTrue(new ShooterPivotSetAngle(shooterPivotSubsystem, Math.toRadians(60)));
 
       if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

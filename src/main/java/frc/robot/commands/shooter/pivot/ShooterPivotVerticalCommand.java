@@ -13,11 +13,20 @@ public class ShooterPivotVerticalCommand extends Command{
     @Override
     public void initialize() {
         pivotSubsystem.setAutoAimBoolean(false);
-        pivotSubsystem.setAngle(90.0);
+        pivotSubsystem.setAngle(0.0);
     }
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(pivotSubsystem.getPosition() - 90) < pivotSubsystem.ERRORTOLERANCE);
+        return (Math.abs(pivotSubsystem.getPosition()) < pivotSubsystem.ERRORTOLERANCE);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if(interrupted){
+            System.out.println("VERTICAL INTERRUPTED");
+        } else {
+            System.out.println("VERTICAL ARRIVED");
+        }
     }
 }

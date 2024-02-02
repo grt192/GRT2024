@@ -8,6 +8,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -17,7 +18,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     //final vars
     public final double PIVOT_SPEED = 0.1;
     final double GEARBOX_RATIO = 18.16; //ask cadders
-    public final int ERRORTOLERANCE = 5; //error tolerance for pid
+    public final double ERRORTOLERANCE = Math.toRadians(2); //error tolerance for pid
     final int LIMIT_SWITCH_ID = 3; //placeholder
     final double CONVERSION_FACTOR = Math.PI/(2.*4.57);
 
@@ -30,9 +31,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private final DigitalInput limitSwitch;
 
     //angle PID (CHANGE LATER)
-    private static final double ANGLE_P = 2.4;
-    private static final double ANGLE_I = 0;
-    private static final double ANGLE_D = 0;
+    private static final double ANGLE_P = 0.5;
+    private static final double ANGLE_I = 0.001;
+    private static final double ANGLE_D = 15;
+    private static final double ANGLE_FF = -.5;
 
     //field
     private boolean alliance; //true equals red alliance 
@@ -49,7 +51,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     double BLUE_X = Units.inchesToMeters(-1.5+9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
     double BLUE_Y = Units.inchesToMeters(218.42);
 
+    private final Timer timer = new Timer();
+
     public ShooterPivotSubsystem(boolean alliance){
+
+        timer.start();
 
         //motors
         pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless); 
@@ -59,6 +65,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationEncoder = pivotMotor.getEncoder();
         rotationEncoder.setPosition(0); 
         rotationPIDController = pivotMotor.getPIDController();
+        rotationPIDController.setOutputRange(-.4, 0.07);
         limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
 
 
@@ -66,6 +73,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setP(ANGLE_P);
         rotationPIDController.setI(ANGLE_I);
         rotationPIDController.setD(ANGLE_D);
+        rotationPIDController.setFF(0);
+        System.out.println(rotationPIDController.getFF());
 
         //encoder stuff
         rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
@@ -87,7 +96,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     public void setAngle(double angle){ //check if it works 
         rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
-        //System.out.println("setting angle to: " + angle);
+        System.out.println("setting angle to: " + angle);
+       
     }
 
     public void setFieldPosition(Pose2d field){
@@ -115,7 +125,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     public void printCurrentAngle(){
-        System.out.println("radians: " + rotationEncoder.getPosition() + "degrees: " + rotationEncoder.getPosition() * 57.29);
+        System.out.println("radians: " + rotationEncoder.getPosition() + "  degrees: " + rotationEncoder.getPosition() * 57.29);
+        // System.out.println(pivotMotor.get());
+        System.out.println(rotationPIDController.getFF());
     }
 
     public double getPosition(){
@@ -143,7 +155,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             setAngle(getAutoAimAngle());
         }
 
-        // printCurrentAngle();
+        if(timer.advanceIfElapsed(.2)){ 
+            printCurrentAngle();
+        }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());
 

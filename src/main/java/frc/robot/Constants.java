@@ -97,7 +97,7 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_ONE_ID = 13;
     public static final int SHOOTER_MOTOR_TWO_ID = 14;
 
-    public static final int FEEDER_MOTOR_ID = 10;
+    public static final int FEEDER_MOTOR_ID = 15;
   }
 
   public static class ClimbConstants {

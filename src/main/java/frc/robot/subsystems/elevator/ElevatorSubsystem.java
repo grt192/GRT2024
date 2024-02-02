@@ -117,7 +117,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     public void periodic(){
         //System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
         if(timer.advanceIfElapsed(.2)){
-            System.out.println(Units.metersToInches(getExtensionMeters()));
+            // System.out.println(Units.metersToInches(getExtensionMeters()));
         }
         
         //System.out.println(this.getTargetState());

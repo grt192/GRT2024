@@ -22,4 +22,12 @@ public class ShooterPivotSetAngle extends Command{
     public boolean isFinished() {
         return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.ERRORTOLERANCE);
     }
+
+    public void end(boolean interrupted) {
+        if(interrupted){
+            System.out.println("ANGLE INTERRUPTED");
+        } else {
+            System.out.println("ANGLE ARRIVED");
+        }
+    }
 }
