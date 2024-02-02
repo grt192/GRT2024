@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.ClimbIdleCommand;
 import frc.robot.commands.ClimbLowerCommand;
 import frc.robot.commands.ClimbRaiseCommand;
 import frc.robot.subsystems.TestMotorSubsystem;
@@ -25,10 +26,13 @@ import static frc.robot.Constants.ClimbConstants;
 
 public class RobotContainer {
   // private final BaseSwerveSubsystem baseSwerveSubsystem;
-  // private final ClimbSubsystem climbSubsystem;
-
+  private final boolean IS_MANUAL = false;
+  
   private final TestMotorSubsystem testClimbLeft;
   private final TestMotorSubsystem testClimbRight;
+  private final ClimbSubsystem climbSubsystem;
+
+
       
   private final XboxController controller = new XboxController(0);
   // private final SwerveModule module;
@@ -36,9 +40,12 @@ public class RobotContainer {
   // private final JoystickButton
     // LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
     // RBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value),
-    // AButton = new JoystickButton(controller, XboxController.Button.kA.value),
-    // XButton = new JoystickButton(controller, XboxController.Button.kX.value),
-    // YButton = new JoystickButton(controller, XboxController.Button.kY.value);
+    // AButton = new JoystickButton(controller, XboxController.Button.kA.value);
+
+  private final JoystickButton
+    YButton = new JoystickButton(controller, XboxController.Button.kY.value),
+    AButton = new JoystickButton(controller, XboxController.Button.kA.value),
+    BButton = new JoystickButton(controller, XboxController.Button.kB.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -46,9 +53,15 @@ public class RobotContainer {
     // module = new SwerveModule(0, 1, 0);
     // baseSwerveSubsystem = new SingleModuleSwerveSubsystem(module);
     // baseSwerveSubsystem = new SwerveSubsystem();
-    // climbSubsystem = new ClimbSubsystem();
-    testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID, true);
-    testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID, false);
+    if (IS_MANUAL) {
+      climbSubsystem = new ClimbSubsystem();
+      testClimbLeft = null;
+      testClimbRight = null;
+    } else {
+      climbSubsystem = null;
+      testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID, true);
+      testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID, false);
+    }
     // Configure the trigger bindings
     configureBindings();    
   }
@@ -111,16 +124,19 @@ public class RobotContainer {
     // }
 
     /* CLIMB */
-    // XButton.onTrue(new ClimbLowerCommand(climbSubsystem));
-    // YButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
+    if (IS_MANUAL) {
+      testClimbLeft.setDefaultCommand(new RunCommand(() -> {
+        testClimbLeft.setMotorSpeed(controller.getLeftTriggerAxis() * (controller.getBButton() ? -1 : +1));
+      }, testClimbLeft));
 
-    testClimbLeft.setDefaultCommand(new RunCommand(() -> {
-      testClimbLeft.setMotorSpeed(controller.getLeftTriggerAxis() * (controller.getBButton() ? -1 : +1));
-    }, testClimbLeft));
-
-    testClimbRight.setDefaultCommand(new RunCommand(() -> {
-      testClimbRight.setMotorSpeed(controller.getRightTriggerAxis() * (controller.getBButton() ? -1 : +1));
-    }, testClimbRight));
+      testClimbRight.setDefaultCommand(new RunCommand(() -> {
+        testClimbRight.setMotorSpeed(controller.getRightTriggerAxis() * (controller.getBButton() ? -1 : +1));
+      }, testClimbRight));
+    } else {
+      YButton.onTrue(new ClimbLowerCommand(climbSubsystem));
+      AButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
+      BButton.onTrue(new ClimbIdleCommand(climbSubsystem));
+    }
   } 
 
   /**
