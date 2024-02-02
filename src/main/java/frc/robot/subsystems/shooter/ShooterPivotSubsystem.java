@@ -17,7 +17,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final int ERRORTOLERANCE = 5; //error tolerance for pid
     final int LIMIT_SWITCH_ID = 3; //placeholder
-    final double CONVERSION_FACTOR = Math.PI/(2*4.57);
+    final double CONVERSION_FACTOR = Math.PI/(2.*4.57);
 
     //motors
     private final CANSparkMax pivotMotor;
@@ -66,6 +66,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         //encoder stuff
         rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
+        rotationEncoder.setVelocityConversionFactor(CONVERSION_FACTOR * 60);
         //rotationEncoder.setInverted(true);
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
 

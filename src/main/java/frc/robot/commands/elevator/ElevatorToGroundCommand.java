@@ -13,19 +13,25 @@ public class ElevatorToGroundCommand extends Command{
 
     @Override
     public void end(boolean interrupted){
+        System.out.println("TO GROUND FINISHED");
+        if (interrupted){
+            System.out.println("TO GROUND INTERUPTED");
+        }
         return;
     }
 
     @Override
+    public void initialize() {
+        
+    }
+
+    @Override
     public void execute(){
-        this.elevatorSubsystem.setTargetState(ElevatorState.GROUND);
+        elevatorSubsystem.setTargetState(ElevatorState.GROUND);
     }
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.GROUND){
-            return true;
-        }
-        else return false;
+        return elevatorSubsystem.atState(ElevatorState.GROUND);
     }
 }

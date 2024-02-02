@@ -24,20 +24,20 @@ public final class Constants {
     
     public static final int ZERO_LIMIT_ID = 2;
 
-    public static final int GROUND_POSITION = 0;
-    public static final int SPEAKER_POSITION = 0;
-    public static final int AMP_POSITION = 0;
-    public static final int CHUTE_POSITION = 0;
-    public static final int TRAP_POSITION = 0;
-    public static final int START_POSITION = 0; 
+    public static final double GROUND_POSITION = 0;
+    public static final double SPEAKER_POSITION = 0;
+    public static final double AMP_POSITION = Units.inchesToMeters(28);
+    public static final double CHUTE_POSITION = Units.inchesToMeters(25);
+    public static final double TRAP_POSITION = Units.inchesToMeters(30);
+    public static final double START_POSITION = 0; 
 
-    public static final double EXTENSION_P= 2.4;
+    public static final double EXTENSION_P= 3.5;
     public static final double EXTENSION_I= 0;
     public static final double EXTENSION_D= 0;
     public static final double EXTENSION_TOLERANCE= 0.003;
 
-    public static final double POSITION_CONVERSION_FACTOR = 0;
-    public static final double VELOCITY_CONVERSION_FACTOR = 0;
+    public static final double POSITION_CONVERSION_FACTOR = Units.inchesToMeters(30.)/63.5;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;

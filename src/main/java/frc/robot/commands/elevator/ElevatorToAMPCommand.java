@@ -13,6 +13,10 @@ public class ElevatorToAMPCommand extends Command{
 
     @Override
     public void end(boolean interrupted){
+        System.out.println("TO AMP FINISHED");
+        if (interrupted){
+            System.out.println("TO AMP INTERUPTED");
+        }
         return;
     }
 
@@ -23,9 +27,6 @@ public class ElevatorToAMPCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.AMP){
-            return true;
-        }
-        else return false;
+        return elevatorSubsystem.atState(ElevatorState.AMP);
     }
 }

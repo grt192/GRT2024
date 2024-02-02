@@ -12,7 +12,7 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -42,6 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final CANSparkMax extensionMotor;
     private RelativeEncoder extensionEncoder;
     private SparkPIDController extensionPidController;
+    private final Timer timer = new Timer();
 
     //PID Values
 
@@ -54,6 +55,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     public ElevatorSubsystem() {
         //Print out current position for debug & measurement
         //System.out.print(extensionEncoder.getPosition());
+
+        timer.start();
         
         this.zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
         elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
@@ -91,6 +94,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         //this entry is working!
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
+        extensionMotor.setInverted(true);
+        extensionMotor.setClosedLoopRampRate(0.3);
+        
         
         extensionEncoder = extensionMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR);
@@ -100,17 +106,22 @@ public class ElevatorSubsystem extends SubsystemBase{
         extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
         extensionFollow.setIdleMode(IdleMode.kBrake);
+        extensionFollow.setInverted(true);
 
         extensionPidController = extensionMotor.getPIDController();
         extensionPidController.setP(ElevatorConstants.EXTENSION_P);
         extensionPidController.setI(ElevatorConstants.EXTENSION_I);
         extensionPidController.setD(ElevatorConstants.EXTENSION_D);
         extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
+        extensionPidController.setOutputRange(-0.7, 1);
     }
     @Override
     public void periodic(){
-        //System.out.println(elevatorNetworkTablePositionEntry.getString("default")); 
-        System.out.println(this.getExtensionMeters());
+        //System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
+        if(timer.advanceIfElapsed(.2)){
+            System.out.println(Units.metersToInches(getExtensionMeters()));
+        }
+        
         //System.out.println(this.getTargetState());
         if(isManual){
             //Add some factors for better control.
@@ -127,11 +138,9 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         //Start move to target posision
         if (targetState != state){
-            extensionPidController.setReference(targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
+            
         }
-        if(atState(this.targetState)){
-            this.setState(this.getTargetState());
-        }
+        
         
     }
     
@@ -151,7 +160,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     
     public void setTargetState(ElevatorState targetState){
-        this.targetState = targetState;
+        extensionPidController.setReference(targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut);
         return;
     }
 

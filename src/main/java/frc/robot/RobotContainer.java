@@ -15,6 +15,8 @@ import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
+import frc.robot.commands.elevator.ElevatorToAMPCommand;
+import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
@@ -91,14 +93,10 @@ public class RobotContainer {
   private void configureBindings() {
 
       elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        if(mechController.getLeftTriggerAxis() != 0 && mechController.getRightTriggerAxis() != 0){
-          elevatorSubsystem.setManual();
-          elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
-        }
-        else{
-          elevatorSubsystem.setAuto();
-        }
-    }));
+       
+        elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
+      
+      }, elevatorSubsystem));
 
       bButton.onTrue(new InstantCommand(() -> {
         shooterFeederSubsystem.setFeederMotorSpeed(.4);
@@ -117,7 +115,7 @@ public class RobotContainer {
       }));
 
       shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-          shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
+          // shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
           // pivotSubsystem.printCurrentAngle();
       }, shooterPivotSubsystem));
 
@@ -138,6 +136,9 @@ public class RobotContainer {
           intakeRollerSubsystem.setAllRollSpeed(0, 0);
         }
       }, intakeRollerSubsystem));
+
+      rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
+      leftBumper.onTrue(new ElevatorToGroundCommand(elevatorSubsystem));
 
       
       

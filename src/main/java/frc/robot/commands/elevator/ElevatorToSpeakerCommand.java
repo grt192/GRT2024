@@ -23,9 +23,6 @@ public class ElevatorToSpeakerCommand extends Command{
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.SPEAKER){
-            return true;
-        }
-        else return false;
+        return elevatorSubsystem.atState(ElevatorState.SPEAKER);
     }
 }
