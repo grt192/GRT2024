@@ -20,11 +20,11 @@ public class ClimbSubsystem extends SubsystemBase{
     }
 
     public void goToExtension(double height) {
-        leftClimbArm.goToExtension(height);
-        rightClimbArm.goToExtension(height);
+        leftClimbArm.setTargetExtension(height);
+        rightClimbArm.setTargetExtension(height);
     }
 
-    public boolean isAtExtension() {
-        return leftClimbArm.isAtExtension() && rightClimbArm.isAtExtension();
+    public boolean isAtTargetExtension() {
+        return leftClimbArm.isAtTargetExtension() && rightClimbArm.isAtTargetExtension();
     }
 }

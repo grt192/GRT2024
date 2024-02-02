@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.ClimbConstants.LOWER_LIMIT_METERS;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 
@@ -14,12 +16,12 @@ public class ClimbLowerCommand extends Command {
     @Override
     public void initialize() {
         System.out.println("LOWERING CLIMB...");
-        climbSubsystem.goToExtension(0);
+        climbSubsystem.goToExtension(LOWER_LIMIT_METERS);
     }
 
     @Override
     public boolean isFinished() {
-        return climbSubsystem.isAtExtension();
+        return climbSubsystem.isAtTargetExtension();
     }
 
     @Override

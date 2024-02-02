@@ -2,20 +2,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climb.ClimbSubsystem;
-import static frc.robot.Constants.ClimbConstants.*;
 
-public class ClimbRaiseCommand extends Command {
+public class ClimbIdleCommand extends Command {
     private ClimbSubsystem climbSubsystem;
 
-    public ClimbRaiseCommand(ClimbSubsystem climbSubsystem){
+    public ClimbIdleCommand(ClimbSubsystem climbSubsystem){
         this.climbSubsystem = climbSubsystem;
         this.addRequirements(climbSubsystem);
     }
 
     @Override
     public void initialize() {
-        System.out.println("RAISING CLIMB...");
-        climbSubsystem.goToExtension(RAISE_LIMIT_METERS);
+        System.out.println("RESETTING CLIMB...");
+        climbSubsystem.goToExtension(0);
     }
 
     @Override
@@ -28,7 +27,7 @@ public class ClimbRaiseCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println(interrupted ? "CLIMB RAISING INTERRUPTED!" : "CLIMB RAISED!");
+        System.out.println(interrupted ? "CLIMB RESETTING INTERRUPTED!" : "CLIMB RESET TO IDLE!");
     }
 
 }
