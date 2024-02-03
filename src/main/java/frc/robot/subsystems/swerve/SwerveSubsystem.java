@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -77,6 +78,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final SwerveDriveKinematics kinematics;
     private final PhotonWrapper photonWrapper;
 
+    //heading lock controller
+    private final PIDController thetaController;
+
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private final NetworkTable networkTable = inst.getTable("Testing");
     private final DoublePublisher[] angles = {
@@ -118,6 +122,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         backRightModule = new SwerveModule(BR_DRIVE, BR_STEER, BR_OFFSET, true);
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
+
+        thetaController = new PIDController(0, 0, 0);
+        thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
 
@@ -321,14 +328,18 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
-    public void setDrivePowerswithFieldAngle(double xPower, double yPower, double angleRads){
+    public void setDrivePowerswithHeadingLock(double xPower, double yPower, double targetAngles){
+        Rotation2d currentRotation = getDriverHeading();
+        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles);
+        double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
+        setDrivePowers(xPower, yPower, turnPower);
     }
 
     public void setAimMode(){
         double x = getXfromSpeaker(isRed);
         double y = getYfromSpeaker();
-        setDrivePowerswithFieldAngle(x, y, getShootAngle(x, y));
+        setDrivePowerswithHeadingLock(x, y, getShootAngle(x, y));
     }
 
     public double getShootAngle(double x, double y){
