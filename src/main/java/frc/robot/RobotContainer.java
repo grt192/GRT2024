@@ -101,8 +101,16 @@ public class RobotContainer {
     private MjpegServer mjpgserver1;
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
-    ChoreoTrajectory traj;
-    // private final SwerveModule module;
+  ChoreoTrajectory traj;
+  // private final SwerveModule module;
+
+    private PIDController xPID;
+    private PIDController yPID;
+
+  private final JoystickButton
+    LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
+    RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value),
+    AButton = new JoystickButton(mechController, XboxController.Button.kA.value);
 
   private final GenericEntry xError, yError;
 
@@ -114,6 +122,15 @@ public class RobotContainer {
     // module = new SwerveModule(6, 7, 0);
     // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
     baseSwerveSubsystem = new SwerveSubsystem();
+    intakePivotSubsystem = new IntakePivotSubsystem();
+    shooterFeederSubsystem = new ShooterFeederSubsystem();
+
+    shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+    shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+
+    climbSubsystem = new ClimbSubsystem();
+  
+    elevatorSubsystem = new ElevatorSubsystem();
 
     xPID = new PIDController(4, 0, 0);
     yPID = new PIDController(12, 0, 0);
@@ -124,23 +141,11 @@ public class RobotContainer {
 
     xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
     yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
-
-        intakePivotSubsystem = new IntakePivotSubsystem();
-        shooterFeederSubsystem = new ShooterFeederSubsystem();
-
-        shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
-
-        climbSubsystem = new ClimbSubsystem();
-      
-        elevatorSubsystem = new ElevatorSubsystem();
-        
-        if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
+    if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
             driveController = new DualJoystickDriveController();
         } else {
             driveController = new XboxDriveController();
         }
-
         // Configure the trigger bindings
         configureBindings();
         // private final SwerveModule module;
