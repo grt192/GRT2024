@@ -60,7 +60,7 @@ public class FalconDriveMotor implements SwerveDriveMotor{
         return motor.getClosedLoopError().getValue();
     }
 
-    public double getSetPoint(){
+    public double getSetpoint(){
         return targetRps;
     }
     

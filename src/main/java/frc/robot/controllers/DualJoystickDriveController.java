@@ -68,5 +68,13 @@ public class DualJoystickDriveController extends BaseDriveController {
     public JoystickButton getFieldResetButton() {
         return right2;
     }
+
+    public JoystickButton getRightBumper(){
+        return rightMiddleRightButton;
+    }
+
+    public JoystickButton getLeftBumper(){
+        return rightMiddleLeftButton;
+    }
     
 }

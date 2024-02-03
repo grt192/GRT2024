@@ -77,10 +77,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
-        frontLeftModule = new SwerveModule(FL_DRIVE, FL_STEER, FL_OFFSET);
-        frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER, FR_OFFSET);
-        backLeftModule = new SwerveModule(BL_DRIVE, BL_STEER, BL_OFFSET);
-        backRightModule = new SwerveModule(BR_DRIVE, BR_STEER, BR_OFFSET);
+        frontLeftModule = new SwerveModule(FL_DRIVE, FL_STEER, FL_OFFSET, true);
+        frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER, FR_OFFSET, true);
+        backLeftModule = new SwerveModule(BL_DRIVE, BL_STEER, BL_OFFSET, true);
+        backRightModule = new SwerveModule(BR_DRIVE, BR_STEER, BR_OFFSET, true);
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
@@ -120,6 +120,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void periodic() {
+        
+        // System.out.println(frontLeftModule.getDriveSetpoint());
 
         // if (crimer.advanceIfElapsed(.1)){
         //     //System.out.println("BR : " + backRightModule.getRawAngle());
@@ -155,6 +157,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         frontRightModule.setDesiredState(states[1]);
         backLeftModule.setDesiredState(states[2]);
         backRightModule.setDesiredState(states[3]);
+
     }
 
     public void setDrivePowers(double xPower, double yPower, double angularPower){

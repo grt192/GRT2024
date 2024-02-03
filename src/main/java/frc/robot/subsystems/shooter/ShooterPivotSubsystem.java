@@ -125,9 +125,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     public void printCurrentAngle(){
-        System.out.println("radians: " + rotationEncoder.getPosition() + "  degrees: " + rotationEncoder.getPosition() * 57.29);
+        // System.out.println("radians: " + rotationEncoder.getPosition() + "  degrees: " + rotationEncoder.getPosition() * 57.29);
         // System.out.println(pivotMotor.get());
-        System.out.println(rotationPIDController.getFF());
+        // System.out.println(rotationPIDController.getFF());
     }
 
     public double getPosition(){

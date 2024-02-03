@@ -42,7 +42,7 @@ import static frc.robot.Constants.SwerveConstants.*;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final BaseDriveController driveController = new DualJoystickDriveController();
+    private final BaseDriveController driveController = new XboxDriveController();
     private final BaseSwerveSubsystem baseSwerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
@@ -72,23 +72,23 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         //construct Test
-        // module = new SwerveModule(6, 7, 0);
+        // module = new SwerveModule(6, 7, 0, true);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = null;// new SwerveSubsystem();
-      intakePivotSubsystem = new IntakePivotSubsystem();
-      shooterFeederSubsystem = new ShooterFeederSubsystem();
+        baseSwerveSubsystem = new SwerveSubsystem();
+        intakePivotSubsystem = new IntakePivotSubsystem();
+        shooterFeederSubsystem = new ShooterFeederSubsystem();
 
-      shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-      shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+        shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
-      climbSubsystem = new ClimbSubsystem();
+        climbSubsystem = new ClimbSubsystem();
       
-      elevatorSubsystem = new ElevatorSubsystem();
+        elevatorSubsystem = new ElevatorSubsystem();
 
-      traj = Choreo.getTrajectory("Curve");
+        traj = Choreo.getTrajectory("Curve");
 
-    // Configure the trigger bindings
-    configureBindings();
+        // Configure the trigger bindings
+        configureBindings();
   }
 
 
@@ -158,22 +158,22 @@ public class RobotContainer {
         
       } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
         final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
-      // LBumper.onTrue(new InstantCommand(() -> {
-      //   testSwerveSubsystem.decrementTest();
-      //   System.out.println(testSwerveSubsystem.getTest());
-      // }
-      // ));
+        driveController.getLeftBumper().onTrue(new InstantCommand(() -> {
+          testSwerveSubsystem.decrementTest();
+          System.out.println(testSwerveSubsystem.getTest());
+        }
+        ));
 
-      // RBumper.onTrue(new InstantCommand(() -> {
-      //   testSwerveSubsystem.incrementTest();
-      //   System.out.println(testSwerveSubsystem.getTest());
-      // }
-      // ));
+        driveController.getRightBumper().onTrue(new InstantCommand(() -> {
+          testSwerveSubsystem.incrementTest();
+          System.out.println(testSwerveSubsystem.getTest());
+        }
+        ));
 
-      // AButton.onTrue(new InstantCommand(() -> {
-      //   testSwerveSubsystem.toggletoRun();
-      //   System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
-      // }));
+        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+          testSwerveSubsystem.toggletoRun();
+          System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
+        }));
 
       } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
         final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;

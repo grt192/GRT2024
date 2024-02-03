@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.util.Util;
 
 public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
 
@@ -33,12 +34,14 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
     public void setDrivePowers(double xPower, double yPower){
 
         double velocity = MAX_VEL * Math.sqrt(yPower * yPower + xPower * xPower) / Math.sqrt(2);
-        if(Math.abs(xPower) < .01 && Math.abs(yPower) < .01 ){
-            System.out.println(Math.atan2(0, 0));
-            module.setRawPowers(0, 0);
-            return;
-        }
+        // if(Math.abs(xPower) < .01 && Math.abs(yPower) < .01 ){
+        //     // System.out.println(Math.atan2(0, 0));
+        //     module.setRawPowers(0, 0);
+        //     return;
+        // }
         double angle = Math.atan2(yPower, xPower);
+
+        // System.out.println(velocity);
 
         module.setDesiredState(new SwerveModuleState(velocity, new Rotation2d(angle)));
     }
@@ -71,6 +74,11 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
     public void toggletoRun(){
         toRun = !toRun;
         System.out.println(toRun);
+    }
+
+    @Override
+    public void periodic() {
+        System.out.println("error  " + Util.twoDecimals(module.getDriveError()) + " setpoint" + Util.twoDecimals(module.getDriveSetpoint()));
     }
 
 

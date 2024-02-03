@@ -18,6 +18,7 @@ import frc.robot.subsystems.swerve.drivemotors.FalconDriveMotor;
 import frc.robot.subsystems.swerve.drivemotors.SwerveDriveMotor;
 import frc.robot.subsystems.swerve.drivemotors.VortexDriveMotor;
 import frc.robot.util.MotorUtil;
+import frc.robot.util.Util;
 
 public class SwerveModule {
     private final SwerveDriveMotor driveMotor;
@@ -32,8 +33,8 @@ public class SwerveModule {
     private boolean verbose;
 
     
-    private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0);
-    private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION;
+    private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0); // .0461
+    private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION; // 21.69
     private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI; // Useful for steer relative encoder if we ever use that
     private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3 ; // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
@@ -47,7 +48,7 @@ public class SwerveModule {
     private static final double VORTEX_DRIVE_P = 0;
     private static final double VORTEX_DRIVE_I = 0;
     private static final double VORTEX_DRIVE_D = 0;
-    private static final double VORTEX_DRIVE_FF = 0;
+    private static final double VORTEX_DRIVE_FF = .22591262  * 3.6 / 4; // rotations/m * max vel
 
     private static final double STEER_P = .68; // .7
     private static final double STEER_I = 0; // 0
@@ -64,17 +65,17 @@ public class SwerveModule {
      * @param drivePort The CAN ID of the drive motor
      * @param steerPort The CAN ID of the steer motor
      * @param offsetRads The offset of the absolute encoder
-     * @param falcon Whether this is a falcon or not
+     * @param vortex Whether this is a falcon or not
      */
 
-    public SwerveModule(int drivePort, int steerPort, double offsetRads, boolean falcon) {
+    public SwerveModule(int drivePort, int steerPort, double offsetRads, boolean vortex) {
         
-        driveMotor = falcon ? new FalconDriveMotor(drivePort) : new VortexDriveMotor(drivePort);
+        driveMotor = vortex ? new VortexDriveMotor(drivePort) : new FalconDriveMotor(drivePort);
         
-        if(falcon){
-            driveMotor.configPID(FALCON_DRIVE_P, FALCON_DRIVE_I, FALCON_DRIVE_D, FALCON_DRIVE_FF);
-        } else {
+        if(vortex){
             driveMotor.configPID(VORTEX_DRIVE_P, VORTEX_DRIVE_I, VORTEX_DRIVE_D, VORTEX_DRIVE_FF);
+        } else {
+            driveMotor.configPID(FALCON_DRIVE_P, FALCON_DRIVE_I, FALCON_DRIVE_D, FALCON_DRIVE_FF);
         }
 
         // untested for vortexes
@@ -159,7 +160,7 @@ public class SwerveModule {
 
     public void setVerbose(){
         if (crimor.advanceIfElapsed(.1)){
-            System.out.println(" current " + twoDecimals(getWrappedAngle().getDegrees()));
+            System.out.println(" current " + Util.twoDecimals(getWrappedAngle().getDegrees()));
             // System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(targetAngleRads))));
             // System.out.print(" error " + twoDecimals(driveMotor.getError()));
             // System.out.println(" target " + twoDecimals(driveMotor.getSetPoint()));
@@ -190,7 +191,7 @@ public class SwerveModule {
         double targetAngleRads = angleRads - offsetRads;
         
         driveMotor.setPower(drivePower);
-        System.out.println(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()));
+        // System.out.println(Math.abs(currentAngle.minus(new Rotation2d(targetAngleRads)).getDegrees()));
         //System.out.print("target " + new Rotation2d(targetAngleRads).getDegrees()  + "--------");
         // System.out.print("error " + (angleRads.minus(currentAngle).getRadians()) + "--------");
 
@@ -228,15 +229,19 @@ public class SwerveModule {
         return new Rotation2d(steerAbsoluteEncoder.getPosition());
     }
 
-    public double twoDecimals(double num){
-        return ((int) (num * 100)) / 100.d;
-    }
-
     public double getDriveAmpDraws(){
         return driveMotor.getAmpDraw();
     }
 
     public double getSteerAmpDraws(){
         return steerMotor.getOutputCurrent();
+    }
+
+    public double getDriveError(){
+        return driveMotor.getError();
+    }
+
+    public double getDriveSetpoint(){
+        return driveMotor.getSetpoint();
     }
 }

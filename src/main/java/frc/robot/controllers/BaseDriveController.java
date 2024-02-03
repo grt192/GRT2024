@@ -22,4 +22,8 @@ public abstract class BaseDriveController {
     public abstract double getRotatePower();
 
     public abstract JoystickButton getFieldResetButton();
+
+    public abstract JoystickButton getLeftBumper();
+
+    public abstract JoystickButton getRightBumper();
 }
