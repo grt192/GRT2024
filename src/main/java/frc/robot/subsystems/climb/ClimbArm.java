@@ -13,6 +13,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.MotorUtil;
 
+/**
+ * Represents a single Climb arm
+ */
 public class ClimbArm {
     private final CANSparkMax winchMotor;
     private final RelativeEncoder extensionEncoder;
@@ -20,10 +23,16 @@ public class ClimbArm {
 
     private final DigitalInput zeroLimitSwitch;
 
-    private double targetExtension = 0;
+    private double targetExtension;
 
-    public ClimbArm(int WINCH_MOTOR_ID, int ZERO_LIMIT_ID) {
-        winchMotor = MotorUtil.createSparkMax(WINCH_MOTOR_ID, (sparkMax) -> {
+    /**
+     * Constructs a new {@link ClimbArm}
+     * @param winchMotorID The motor's CAN ID
+     * @param zeroLimitID The limit switch's RIO port ID
+     */
+    public ClimbArm(int winchMotorID, int zeroLimitID) {
+        /* Configures the motor */
+        winchMotor = MotorUtil.createSparkMax(winchMotorID, (sparkMax) -> {
             sparkMax.setIdleMode(IdleMode.kBrake); 
             sparkMax.setInverted(true);
             sparkMax.setClosedLoopRampRate(EXTENSION_RAMP_RATE);
@@ -38,6 +47,7 @@ public class ClimbArm {
         extensionEncoder.setPositionConversionFactor(AXLE_PERIMETER_METERS / WINCH_REDUCTION);
         extensionEncoder.setPosition(0);
 
+        /* Sets up the PID controller */
         extensionPIDController = MotorUtil.createSparkPIDController(winchMotor, extensionEncoder);
         extensionPIDController.setP(EXTENSION_P);
         extensionPIDController.setI(EXTENSION_I);
@@ -45,8 +55,13 @@ public class ClimbArm {
         extensionPIDController.setSmartMotionAllowedClosedLoopError(EXTENSION_TOLERANCE_METERS, 0);
 
         zeroLimitSwitch = new DigitalInput(LEFT_ZERO_LIMIT_ID);
+
+        targetExtension = 0;
     }
 
+    /**
+     * Run this function every periodic loop.
+     */
     public void update() {
         if (zeroLimitSwitch != null && zeroLimitSwitch.get())
             resetEncoder();
@@ -55,22 +70,38 @@ public class ClimbArm {
 
     }
     
+    /**
+     * Sets the targeted extension height for this climb arm
+     * @param targetExtension The extension target
+     */
     public void setTargetExtension(double targetExtension) {
         this.targetExtension = MathUtil.clamp(targetExtension, LOWER_LIMIT_METERS, RAISE_LIMIT_METERS);
     }
 
+    /**
+     * @return This climb arm's extension target
+     */
     public double getTargetExtension() {
         return targetExtension;
     }
 
+    /**
+     * @return This climb arm's current extension
+     */
     public double getCurrentExtension() {
         return extensionEncoder.getPosition();
     }
 
+    /**
+     * @return True if this climb arm is within tolerance of its target, False otherwise
+     */
     public boolean isAtTargetExtension() {
         return Math.abs(getCurrentExtension() - getTargetExtension()) < EXTENSION_TOLERANCE_METERS; 
     }
 
+    /**
+     * Resets the motor's encoder to 0
+     */
     private void resetEncoder() {
         extensionEncoder.setPosition(0);
     }
