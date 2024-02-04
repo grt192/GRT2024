@@ -11,8 +11,8 @@ public class ShooterFeederSubsystem extends SubsystemBase{
 
     //finals
     public final double FEEDER_MOTOR_SPEED = 0.1;
-    public final int NO_NOTE_TOLERANCE = 10; //must test with no note in front of sensor
-    public final int TOLERANCE = 10; //represents the value when half note is in front of sensor
+    public final int NO_NOTE_TOLERANCE = 500; //must test with no note in front of sensor
+    public final int TOLERANCE = 7000; //represents the value when half note is in front of sensor
 
     //motors
     private final TalonSRX feederMotor; 
@@ -35,9 +35,9 @@ public class ShooterFeederSubsystem extends SubsystemBase{
 
     }
 
-    public int getProximity(){
+    public int getRed(){
         System.out.println("proximity: " + shooterSensor.getProximity());
-        return shooterSensor.getProximity();
+        return shooterSensor.getRed();
     }
 
     public ColorSensorV3 getSensor(){

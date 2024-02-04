@@ -19,7 +19,7 @@ public class ShooterFeedLoadCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if(feederSubsystem.getProximity() > feederSubsystem.TOLERANCE){
+        if(feederSubsystem.getRed() > feederSubsystem.TOLERANCE){
             return true;
         }
         return false;

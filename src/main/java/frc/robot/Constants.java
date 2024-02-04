@@ -84,7 +84,7 @@ public final class Constants {
 
     public static final double rollersclockwise = 1;
     public static final double rollerscounterclockwise = -1; 
-    public static final double sensorreached = 1;
+    public static final double sensorreached = .3;
     public static final double pivotclockwise = 1;
     public static final double pivotcounterclockwise = -1;
     public static final double pastsensortime = 0.5;
@@ -98,6 +98,8 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_TWO_ID = 14;
 
     public static final int FEEDER_MOTOR_ID = 15;
+
+    public static final double FEED_ANGLE = Units.degreesToRadians(70);
   }
 
   public static class ClimbConstants {

@@ -16,7 +16,7 @@ public class ShooterFeedShootCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        if(feederSubsystem.getProximity() < feederSubsystem.NO_NOTE_TOLERANCE){
+        if(feederSubsystem.getRed() < feederSubsystem.NO_NOTE_TOLERANCE){
             return true;
         }
         return false;

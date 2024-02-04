@@ -13,11 +13,18 @@ import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
+import frc.robot.commands.IdleCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
 import frc.robot.commands.elevator.ElevatorToGroundCommand;
-import frc.robot.commands.shooter.pivot.ShooterPivotSetAngle;
+import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
+import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
+import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
+import frc.robot.commands.sequences.ShootModeSequence;
+import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
+import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -26,6 +33,8 @@ import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
+import frc.robot.util.ConditionalWaitCommand;
+
 import java.util.function.BooleanSupplier;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
@@ -36,6 +45,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.SwerveConstants.*;
@@ -93,54 +104,27 @@ public class RobotContainer {
 
 
   private void configureBindings() {
+        aButton.onTrue(new IntakeRollerIntakeCommand(intakeRollerSubsystem));
 
-      elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-       
-        elevatorSubsystem.setManualPower(mechController.getRightTriggerAxis()-mechController.getLeftTriggerAxis());
-      
-      }, elevatorSubsystem));
+        bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
+                                       elevatorSubsystem, 
+                                       shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, 
+                                       climbSubsystem
+        ));
 
-      bButton.onTrue(new InstantCommand(() -> {
-        shooterFeederSubsystem.setFeederMotorSpeed(.4);
-      }));
-      
-      bButton.onFalse(new InstantCommand(() -> {
-        shooterFeederSubsystem.setFeederMotorSpeed(0);
-      }));
+        leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem, 
+                                                elevatorSubsystem, 
+                                                shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem
+                          ).andThen(
+                          new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+                          new ShooterFeedShootCommand(shooterFeederSubsystem)
+        )));
 
-      xButton.onTrue(new InstantCommand(() -> {
-        shooterFeederSubsystem.setFeederMotorSpeed(-.7);
-      }));
-      
-      xButton.onFalse(new InstantCommand(() -> {
-        shooterFeederSubsystem.setFeederMotorSpeed(0);
-      }));
+        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
+                           new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+                           new IntakeRollerOutakeCommand(intakeRollerSubsystem)
+        )));
 
-      // shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-      //     shooterPivotSubsystem.setPivotMotorSpeed((.2 * mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()));
-      //     // pivotSubsystem.printCurrentAngle();
-      // }, shooterPivotSubsystem));
-
-      aButton.onTrue(new InstantCommand(() -> {
-        shooterFlywheelSubsystem.setShooterMotorSpeed(shooterFlywheelSubsystem.SHOOTER_MOTOR_SPEED);
-      }));
-
-      aButton.onFalse(new InstantCommand(() -> {
-        shooterFlywheelSubsystem.setShooterMotorSpeed(0);
-      }));
-
-      intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        if(mechController.getPOV() == 90){
-          intakeRollerSubsystem.setAllRollSpeed(1, .8);
-        } else if (mechController.getPOV() == 270){
-          intakeRollerSubsystem.setAllRollSpeed(-.8, -.5);
-        } else {
-          intakeRollerSubsystem.setAllRollSpeed(0, 0);
-        }
-      }, intakeRollerSubsystem));
-
-      rightBumper.onTrue(new ShooterPivotSetAngle(shooterPivotSubsystem, Math.toRadians(40)));
-      leftBumper.onTrue(new ShooterPivotSetAngle(shooterPivotSubsystem, Math.toRadians(60)));
 
       if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
@@ -148,8 +132,7 @@ public class RobotContainer {
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
             swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
             // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
-        }
-        , swerveSubsystem));
+        }, swerveSubsystem));
 
         driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
             swerveSubsystem.resetDriverHeading();

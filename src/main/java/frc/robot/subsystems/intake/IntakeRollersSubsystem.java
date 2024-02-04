@@ -30,7 +30,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
   }
   
   public boolean sensorNow(){
-    if (sensor.get()<=sensorreached){
+    if (sensor.get()>=sensorreached){
       return true;
     }
     else{
