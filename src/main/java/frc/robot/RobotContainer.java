@@ -139,11 +139,6 @@ public class RobotContainer {
         climbSubsystem = new ClimbSubsystem();
         
         elevatorSubsystem = new ElevatorSubsystem();
-  private final JoystickButton
-    LBumper = new JoystickButton(controller, XboxController.Button.kLeftBumper.value),
-    RBumper = new JoystickButton(controller, XboxController.Button.kRightBumper.value),
-    AButton = new JoystickButton(controller, XboxController.Button.kA.value);
-
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
