@@ -123,7 +123,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
-        thetaController = new PIDController(0, 0, 0);
+        thetaController = new PIDController(3, 0, 0);
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
