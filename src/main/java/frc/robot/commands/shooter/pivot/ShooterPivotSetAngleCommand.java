@@ -14,12 +14,14 @@ public class ShooterPivotSetAngleCommand extends Command{
 
     @Override
     public void initialize() {
+        System.out.println("SET ANGLE");
         pivotSubsystem.setAutoAimBoolean(false);
         pivotSubsystem.setAngle(angle);
     }
 
     @Override
     public boolean isFinished() {
+        System.out.println("NOT FINISHED");
         return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.ERRORTOLERANCE);
     }
 

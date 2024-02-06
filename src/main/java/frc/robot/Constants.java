@@ -27,14 +27,14 @@ public final class Constants {
     public static final double GROUND_POSITION = 0;
     public static final double SPEAKER_POSITION = 0;
     public static final double AMP_POSITION = Units.inchesToMeters(28);
-    public static final double CHUTE_POSITION = Units.inchesToMeters(25);
+    public static final double CHUTE_POSITION = Units.inchesToMeters(1);
     public static final double TRAP_POSITION = Units.inchesToMeters(30);
     public static final double START_POSITION = 0; 
 
     public static final double EXTENSION_P= 3.5;
     public static final double EXTENSION_I= 0;
     public static final double EXTENSION_D= 0;
-    public static final double EXTENSION_TOLERANCE= 0.003;
+    public static final double EXTENSION_TOLERANCE= 0.3;
 
     public static final double POSITION_CONVERSION_FACTOR = Units.inchesToMeters(30.)/63.5;
     public static final double VELOCITY_CONVERSION_FACTOR = 1;
@@ -83,7 +83,7 @@ public final class Constants {
     //public static final int intakeencoderID = 3;
 
     public static final double rollersclockwise = 1;
-    public static final double rollerscounterclockwise = -1; 
+    public static final double rollerscounterclockwise = 1; 
     public static final double sensorreached = .3;
     public static final double pivotclockwise = 1;
     public static final double pivotcounterclockwise = -1;

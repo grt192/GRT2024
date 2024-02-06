@@ -21,15 +21,15 @@ public class IdleCommand extends ParallelCommandGroup{
                        ShooterFeederSubsystem shooterFeederSubsystem,
                        ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                        ClimbSubsystem climbSubsystem){
-        addRequirements(intakePivotSubsystem, intakeRollersSubsystem,
-                        elevatorSubsystem,
-                        shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem,
-                        climbSubsystem
-        );
+        // addRequirements(intakePivotSubsystem, intakeRollersSubsystem,
+        //                 elevatorSubsystem,
+        //                 shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem,
+        //                 climbSubsystem
+        // );
 
-        addCommands(new InstantCommand(() -> intakeRollersSubsystem.setAllRollSpeed(0, 0)),
+        addCommands(new InstantCommand(() -> intakeRollersSubsystem.setAllRollSpeed(0, 0), intakeRollersSubsystem),
                     new ElevatorToGroundCommand(elevatorSubsystem),
-                    new InstantCommand(() -> shooterFeederSubsystem.setFeederMotorSpeed(0)),
+                    new InstantCommand(() -> shooterFeederSubsystem.setFeederMotorSpeed(0), shooterFeederSubsystem),
                     new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)//,
                     // new ClimbLowerCommand(climbSubsystem) // NOT USING CLIMB FOR NOW
         );

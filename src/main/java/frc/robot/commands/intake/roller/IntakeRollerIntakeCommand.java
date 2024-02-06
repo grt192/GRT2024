@@ -12,6 +12,7 @@ public class IntakeRollerIntakeCommand extends Command{
 
     public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
+        addRequirements(intakeSubsystem);
     }
 
     @Override

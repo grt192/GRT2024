@@ -15,12 +15,13 @@ public class IntakeRollerFeedCommand extends Command{
     public IntakeRollerFeedCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
+        addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(rollerscounterclockwise,rollersclockwise);
+        intakeSubsystem.setAllRollSpeed(rollerscounterclockwise, rollersclockwise);
     }
 
     @Override

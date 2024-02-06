@@ -16,11 +16,13 @@ public class IntakeRollerOutakeCommand extends Command{
     public IntakeRollerOutakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
+        addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.setRollSpeed(rollersclockwise,rollerscounterclockwise); 
+        timer.reset();
+        intakeSubsystem.setRollSpeed(-1,-1); 
     }
 
     @Override

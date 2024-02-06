@@ -218,7 +218,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     private Rotation2d getGyroHeading() {
-        return Rotation2d.fromDegrees(ahrs.getAngle());
+        return Rotation2d.fromDegrees(-ahrs.getAngle());
     }
 
     public Rotation2d getDriverHeading() {

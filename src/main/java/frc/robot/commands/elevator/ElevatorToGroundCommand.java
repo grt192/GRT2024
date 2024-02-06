@@ -32,6 +32,7 @@ public class ElevatorToGroundCommand extends Command{
 
     @Override
     public boolean isFinished(){
+        System.out.println("TO GROUND RUNNING");
         return elevatorSubsystem.atState(ElevatorState.GROUND);
     }
 }

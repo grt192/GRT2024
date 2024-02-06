@@ -19,7 +19,7 @@ public class ShootModeSequence extends SequentialCommandGroup {
 
     /*
      *                    START
-     *              /     |     `---------.
+     *                /   |     `---------.
      *  Angle shooter    lower         Start Flywheels   
      *  for intaking    elevator          |
      *             \  /                  |

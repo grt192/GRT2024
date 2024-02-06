@@ -17,6 +17,7 @@ import frc.robot.commands.IdleCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
+import frc.robot.commands.elevator.ElevatorToChuteCommand;
 import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
@@ -51,9 +52,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.SwerveConstants.*;
 
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-    private final BaseDriveController driveController = new XboxDriveController();
+    private final BaseDriveController driveController = new DualJoystickDriveController();
     private final BaseSwerveSubsystem baseSwerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
@@ -75,6 +78,8 @@ public class RobotContainer {
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
     
+    private UsbCamera camera1;
+    private MjpegServer mjpgserver1;
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
     ChoreoTrajectory traj;
@@ -100,11 +105,19 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
+
+        camera1 = new UsbCamera("camera1", 0);
+        camera1.setFPS(60);
+        camera1.setBrightness(45);
+        camera1.setResolution(176, 144);
+        mjpgserver1 = new MjpegServer("m1", 1181);
+        mjpgserver1.setSource(camera1);
   }
 
 
   private void configureBindings() {
-        aButton.onTrue(new IntakeRollerIntakeCommand(intakeRollerSubsystem));
+        aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
+                       new IntakeRollerIntakeCommand(intakeRollerSubsystem)));
 
         bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
                                        elevatorSubsystem, 
