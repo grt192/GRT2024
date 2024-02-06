@@ -117,4 +117,9 @@ public final class Constants {
 
     public static final double MAX_WINCH_POWER = 0.6;
   }
+
+  public static class LEDConstants {
+    public static final int LED_LENGTH = 140;
+    public static final int LED_PWM_PORT = 0;
+  }
 }

@@ -10,6 +10,7 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
@@ -40,6 +41,7 @@ import java.util.function.BooleanSupplier;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,6 +71,8 @@ public class RobotContainer {
     private final ClimbSubsystem climbSubsystem;
 
     private final ElevatorSubsystem elevatorSubsystem;
+
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
     private final XboxController mechController = new XboxController(2);
     private final JoystickButton aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
@@ -138,9 +142,15 @@ public class RobotContainer {
                            new IntakeRollerOutakeCommand(intakeRollerSubsystem)
         )));
 
+      
+
 
       if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+
+        ledSubsystem.setDefaultCommand(new RunCommand(() -> {
+          ledSubsystem.setDriverHeading(-swerveSubsystem.getDriverHeading().getRadians());// - swerveSubsystem.getRobotPosition().getRotation().getRadians());
+        }, ledSubsystem));
 
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
             swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));

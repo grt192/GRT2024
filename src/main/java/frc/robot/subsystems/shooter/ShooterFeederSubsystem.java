@@ -47,6 +47,6 @@ public class ShooterFeederSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        System.out.println(getRed());
+        // System.out.println(getRed());
     }
 }
