@@ -16,6 +16,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class CameraConstants{
+    public static final int resolutionX = 176;
+    public static final int resolutionY = 144;
+  }
   public static class ElevatorConstants {
     public static final int EXTENSION_ID = 10;
     public static final int EXTENSION_FOLLOW_ID = 11;
