@@ -1,9 +1,9 @@
 package frc.robot.commands.intake.roller;
 
 
-import static frc.robot.Constants.RollerandPivotConstants.pastsensortime;
-import static frc.robot.Constants.RollerandPivotConstants.rollersclockwise;
-import static frc.robot.Constants.RollerandPivotConstants.rollerscounterclockwise;
+import static frc.robot.Constants.IntakeConstants.pastsensortime;
+import static frc.robot.Constants.IntakeConstants.rollersclockwise;
+import static frc.robot.Constants.IntakeConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -16,11 +16,13 @@ public class IntakeRollerOutakeCommand extends Command{
     public IntakeRollerOutakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
+        addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.setRollSpeed(rollersclockwise,rollerscounterclockwise); 
+        timer.reset();
+        intakeSubsystem.setRollSpeed(-1,-1); 
     }
 
     @Override

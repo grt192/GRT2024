@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve.drivemotors;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -11,21 +12,28 @@ import frc.robot.util.MotorUtil;
 
 public class VortexDriveMotor implements SwerveDriveMotor {
     
-    private CANSparkMax motor;
+    private CANSparkFlex motor;
     private RelativeEncoder encoder;
     private SparkPIDController pidController;
+    private double conversionFactor = 1;
+
+    private double lastReference;
 
     public VortexDriveMotor (int port){
-        motor = new CANSparkMax(port, MotorType.kBrushless);
+        motor = new CANSparkFlex(port, MotorType.kBrushless);
         motor.setIdleMode(IdleMode.kBrake);
 
         encoder = motor.getEncoder();
         encoder.setVelocityConversionFactor(1); //STUB
 
-        pidController = MotorUtil.createSparkPIDController(motor, encoder);
+        pidController = motor.getPIDController();
+
+        // pidController = MotorUtil.createSparkPIDController(motor, encoder);
     }
 
     public void setVelocity(double velocity){
+        lastReference = velocity;
+        // motor.set(velocity / 4.9);
         pidController.setReference(velocity, ControlType.kVelocity);
     }
 
@@ -50,6 +58,7 @@ public class VortexDriveMotor implements SwerveDriveMotor {
 
     public void setVelocityConversionFactor(double factor){
         encoder.setVelocityConversionFactor(factor);
+        conversionFactor = factor;
     }
 
     public void setPositionConversionFactor(double factor){
@@ -57,14 +66,14 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     }
 
     public double getError(){
-        return 0; //STUB
+        return (encoder.getVelocity() * 4.90245766303 / 8870000) - getSetpoint(); 
     }
 
-    public double getSetPoint(){
-        return 0; //STUB
+    public double getSetpoint(){
+        return lastReference; //STUB
     }
 
     public double getAmpDraw(){
-        return 0; //STUB
+        return motor.getOutputCurrent(); //STUB
     }
 }

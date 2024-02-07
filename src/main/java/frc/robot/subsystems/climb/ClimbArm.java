@@ -34,7 +34,7 @@ public class ClimbArm {
             sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
         });
 
-        zeroLimitSwitch = new DigitalInput(LEFT_ZERO_LIMIT_ID);
+        zeroLimitSwitch = new DigitalInput(ZERO_LIMIT_ID);
     }
 
     public void update() {

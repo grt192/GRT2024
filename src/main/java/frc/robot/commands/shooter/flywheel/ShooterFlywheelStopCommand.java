@@ -2,10 +2,10 @@ package frc.robot.commands.shooter.flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 
-public class ShooterFlywheelStopCommands extends Command{
+public class ShooterFlywheelStopCommand extends Command{
     ShooterFlywheelSubsystem shooterSubsystem;
 
-    public ShooterFlywheelStopCommands(ShooterFlywheelSubsystem shooterSubsystem){
+    public ShooterFlywheelStopCommand(ShooterFlywheelSubsystem shooterSubsystem){
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }

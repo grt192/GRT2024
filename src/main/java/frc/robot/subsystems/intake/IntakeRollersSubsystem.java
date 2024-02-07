@@ -6,7 +6,7 @@
 
 package frc.robot.subsystems.intake;
 
-import static frc.robot.Constants.RollerandPivotConstants.*;
+import static frc.robot.Constants.IntakeConstants.*;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -14,22 +14,23 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollersSubsystem extends SubsystemBase {
-  private final TalonSRX topmotor;
-  private final TalonSRX bottommotor;
-  private final TalonSRX lastmotor;
+  private final TalonSRX frontMotor;
+  private final TalonSRX backMotor;
+  private final TalonSRX integrationMotor;
   private final AnalogPotentiometer sensor;
 
 
   /** Creates a new ExampleSubsystem. */
   public IntakeRollersSubsystem() {
-    lastmotor = new TalonSRX(lastmotorID);
-    topmotor = new TalonSRX(topmotorID);
-    bottommotor = new TalonSRX(bottommotorID);
+    integrationMotor = new TalonSRX(INTEGRATION_MOTOR_ID);
+    frontMotor = new TalonSRX(FRONT_MOTOR_ID);
+    frontMotor.setInverted(true);
+    backMotor = new TalonSRX(BACK_MOTOR_ID);
     sensor = new AnalogPotentiometer(sensorID);
   }
   
   public boolean sensorNow(){
-    if (sensor.get()<=sensorreached){
+    if (sensor.get()>=sensorreached){
       return true;
     }
     else{
@@ -38,31 +39,32 @@ public class IntakeRollersSubsystem extends SubsystemBase {
   }
 
   public void setRollSpeed(double top, double bottom){
-    topmotor.set(TalonSRXControlMode.PercentOutput, top);
-    bottommotor.set(TalonSRXControlMode.PercentOutput, bottom);
+    frontMotor.set(TalonSRXControlMode.PercentOutput, top);
+    backMotor.set(TalonSRXControlMode.PercentOutput, bottom);
   }
 
   public void setAllRollSpeed(double topone, double bottomone){
-    topmotor.set(TalonSRXControlMode.PercentOutput, topone);
-    lastmotor.set(TalonSRXControlMode.PercentOutput, topone);
-    bottommotor.set(TalonSRXControlMode.PercentOutput, bottomone);
+    frontMotor.set(TalonSRXControlMode.PercentOutput, topone);
+    integrationMotor.set(TalonSRXControlMode.PercentOutput, bottomone);
+    backMotor.set(TalonSRXControlMode.PercentOutput, topone);
   }
 
   public void setRollersOutwards(Boolean pressedA){
     if(pressedA==true)
-      topmotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
-      bottommotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
+      frontMotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+      backMotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
   }
 
   public void setRollersInwards(Boolean pressedB){
     if(pressedB==true)
-      topmotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
-      bottommotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
+      frontMotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+      backMotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
   }
   
 
   @Override
   public void periodic() {
+    // System.out.println(sensor.get());
     // This method will be called once per scheduler run
   }
   @Override

@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import java.util.function.Consumer;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.REVLibError;
@@ -88,6 +89,15 @@ public class MotorUtil {
      * @return The configured SparkMaxPIDController.
      */
     public static SparkPIDController createSparkPIDController(CANSparkMax spark, MotorFeedbackSensor encoder) {
+        SparkPIDController pidController = spark.getPIDController();
+
+        // Set feedback device
+        checkError(spark.getDeviceId(), pidController.setFeedbackDevice(encoder), "PID feedback device");
+
+        return pidController;
+    }
+
+    public static SparkPIDController createSparkPIDController(CANSparkFlex spark, MotorFeedbackSensor encoder) {
         SparkPIDController pidController = spark.getPIDController();
 
         // Set feedback device

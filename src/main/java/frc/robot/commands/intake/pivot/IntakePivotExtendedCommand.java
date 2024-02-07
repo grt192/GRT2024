@@ -1,6 +1,6 @@
 package frc.robot.commands.intake.pivot;
 
-import static frc.robot.Constants.RollerandPivotConstants.pivotcounterclockwise;
+import static frc.robot.Constants.IntakeConstants.pivotcounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakePivotSubsystem; 

@@ -27,7 +27,7 @@ public class XboxDriveController extends BaseDriveController {
 
     @Override
     public double getLeftPower() {
-        return -driveController.getLeftX();
+        return driveController.getLeftX();
     }
 
     @Override
@@ -37,5 +37,13 @@ public class XboxDriveController extends BaseDriveController {
 
     public JoystickButton getFieldResetButton() {
         return driveAButton;
+    }
+
+    public JoystickButton getLeftBumper() {
+        return driveLBumper;
+    }
+
+    public JoystickButton getRightBumper() {
+        return driveRBumper;
     }
 }

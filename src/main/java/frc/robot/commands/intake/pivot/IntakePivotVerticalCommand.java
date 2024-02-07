@@ -2,7 +2,7 @@
 package frc.robot.commands.intake.pivot;
 
 
-import static frc.robot.Constants.RollerandPivotConstants.pivotclockwise;
+import static frc.robot.Constants.IntakeConstants.pivotclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;

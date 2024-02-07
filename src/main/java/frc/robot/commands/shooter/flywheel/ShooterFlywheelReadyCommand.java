@@ -16,6 +16,11 @@ public class ShooterFlywheelReadyCommand extends Command{
         shooterSubsystem.setShooterMotorSpeed(shooterSubsystem.SHOOTER_MOTOR_SPEED);
     }
 
+    @Override
+    public boolean isFinished() {
+        return true; //STUB
+    }
+
     //pivot: vertical, auto-aim
     //feed: load, shoot
     //shooter: stop, ready shooters

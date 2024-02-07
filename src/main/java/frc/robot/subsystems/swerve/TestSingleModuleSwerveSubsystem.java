@@ -5,12 +5,13 @@ import static frc.robot.Constants.TestSingleModuleSwerveConstants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.util.Util;
 
 public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem {
 
     
     public static final double STEER_POWER = .4;
-    public static final double DRIVE_POWER = .3;
+    public static final double DRIVE_POWER = 1;
 
     private int testCase;
     private boolean toRun;
@@ -138,12 +139,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             super.setRawPowersWithAngle(drive, steer);
         }
         else{
-            System.out.println(drive);
             super.setRawPowers(drive, steer);
         }
-
-
-        // System.out.println(testCase);
     }
 
     public void incrementTest(){
@@ -162,10 +159,6 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     public boolean getRunning(){
         return toRun;
-    }
-
-    public double twoDecimals(double num){
-        return ((int) (num * 100)) / 100.d;
     }
 
     public void toggletoRun(){

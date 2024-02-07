@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorToSpeakerCommand extends Command{
+public class ElevatorToTrapCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorToSpeakerCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorToTrapCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -18,14 +18,11 @@ public class ElevatorToSpeakerCommand extends Command{
 
     @Override
     public void execute(){
-        this.elevatorSubsystem.setTargetState(ElevatorState.SPEAKER);
+        this.elevatorSubsystem.setTargetState(ElevatorState.TRAP);
     }
 
     @Override
     public boolean isFinished(){
-        if(this.elevatorSubsystem.getState()==ElevatorState.SPEAKER){
-            return true;
-        }
-        else return false;
+        return elevatorSubsystem.atState(ElevatorState.TRAP);
     }
 }
