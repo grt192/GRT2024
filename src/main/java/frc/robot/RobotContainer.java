@@ -20,13 +20,13 @@ import static frc.robot.Constants.ClimbConstants;
 
 public class RobotContainer {
   // private final BaseSwerveSubsystem baseSwerveSubsystem;
-  private final boolean IS_MANUAL = false;
+  private final boolean IS_MANUAL = true;
   
   private final TestMotorSubsystem testClimbLeft;
   private final TestMotorSubsystem testClimbRight;
   private final ClimbSubsystem climbSubsystem;
 
-  private final XboxController controller = new XboxController(0);
+  private final XboxController controller = new XboxController(2);
 
   private final JoystickButton
     YButton = new JoystickButton(controller, XboxController.Button.kY.value),
@@ -35,7 +35,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    if (IS_MANUAL) {
+    if (!IS_MANUAL) {
       climbSubsystem = new ClimbSubsystem();
       testClimbLeft = null;
       testClimbRight = null;
