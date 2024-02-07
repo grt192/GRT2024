@@ -28,7 +28,7 @@ public final class Constants {
     
     public static final int ZERO_LIMIT_ID = 3;
 
-    public static final double GROUND_POSITION = Units.inchesToMeters(0.5);
+    public static final double GROUND_POSITION = Units.inchesToMeters(1);
     public static final double SPEAKER_POSITION = 0;
     public static final double AMP_POSITION = Units.inchesToMeters(29);
     public static final double CHUTE_POSITION = Units.inchesToMeters(1);
@@ -66,7 +66,7 @@ public final class Constants {
     
     public static final int BR_DRIVE = 6; 
     public static final int BR_STEER = 7; 
-    public static final double BR_OFFSET = 2.43 - Math.PI * 1 / 4;
+    public static final double BR_OFFSET = 2.66 + Math.PI * 3.0 / 4.0;
 
     private static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
     public static final Translation2d FL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);

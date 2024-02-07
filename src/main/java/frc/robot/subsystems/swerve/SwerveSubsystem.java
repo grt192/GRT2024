@@ -160,12 +160,27 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             getDriverHeading()
         );
 
-
-        this.states = kinematics.toSwerveModuleStates(speeds);
+        states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
-            this.states, speeds,
+            states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
+
+    public void setRobotRelativeDrivePowers(double xPower, double yPower, double angularPower){
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+            xPower * MAX_VEL, 
+            yPower * MAX_VEL, 
+            angularPower * MAX_OMEGA, 
+            new Rotation2d(0)
+        );
+
+        states = kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(
+            states, speeds,
+            MAX_VEL, MAX_VEL, MAX_OMEGA);
+    }
+
+    
 
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;

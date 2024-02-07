@@ -76,5 +76,8 @@ public class DualJoystickDriveController extends BaseDriveController {
     public JoystickButton getLeftBumper(){
         return rightMiddleLeftButton;
     }
-    
+
+    public Boolean getRelativeMode(){
+        return rightTrigger.getAsBoolean();
+    }
 }

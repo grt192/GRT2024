@@ -35,7 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private double manualPower = 0;
     
     private ElevatorState state = ElevatorState.GROUND;
-    private ElevatorState targetState = ElevatorState.START;
+    private ElevatorState targetState = ElevatorState.GROUND;
 
     private final CANSparkMax extensionMotor;
     private RelativeEncoder extensionEncoder;
