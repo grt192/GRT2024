@@ -44,7 +44,7 @@ public class ClimbArm {
         });
 
         extensionEncoder = winchMotor.getEncoder();
-        extensionEncoder.setPositionConversionFactor(AXLE_PERIMETER_METERS / WINCH_REDUCTION);
+        extensionEncoder.setPositionConversionFactor(1 / ROTATIONS_PER_EXTENSION_METER);
         extensionEncoder.setPosition(0);
 
         /* Sets up the PID controller */
