@@ -17,6 +17,13 @@ import frc.robot.util.MotorUtil;
  * Represents a single Climb arm
  */
 public class ClimbArm {
+    private static final double EXTENSION_TOLERANCE_METERS = 0.01;
+    private static final double EXTENSION_RAMP_RATE = 0.5;
+
+    private static final double EXTENSION_P = 0;
+    private static final double EXTENSION_I = 0;
+    private static final double EXTENSION_D = 0;
+
     private final CANSparkMax winchMotor;
     private final RelativeEncoder extensionEncoder;
     private final SparkPIDController extensionPIDController;

@@ -58,13 +58,5 @@ public final class Constants {
     
     public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(39);
     public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(-2);
-    public static final double EXTENSION_TOLERANCE_METERS = 0.01;
-
-    public static final double MAX_WINCH_POWER = 0.6;
-    public static final double EXTENSION_RAMP_RATE = 0.5;
-
-    public static final double EXTENSION_P = 0;
-    public static final double EXTENSION_I = 0;
-    public static final double EXTENSION_D = 0;
   }
 }
