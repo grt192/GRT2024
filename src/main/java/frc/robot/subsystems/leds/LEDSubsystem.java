@@ -14,6 +14,8 @@ public class LEDSubsystem extends SubsystemBase {
     // private final LEDStrip rishayStrip;
     private final LEDLayer baseLayer;
     private final RotaryLEDLayer driveAngleLayer;
+    private final RotaryLEDLayer driveBackAngleLayer;
+    private final RotaryLEDLayer rainbowLayer;
     private final LEDLayer aprilDetectedLayer;
 
     private final Timer blinkTimer;
@@ -30,15 +32,16 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean colorSensorOff = false;
     private double colorOffset = 0;
 
-    private static final double BRIGHTNESS_SCALE_FACTOR = .5;
+    
     private static final double INPUT_DEADZONE = 0.35;
     private static final int LEDS_PER_SEC = 150;
 
     private Color pieceColor = CUBE_COLOR;
     private Color manualColor = new Color(0, 0, 0);
 
-    private boolean manual = false; // If the driver is directly controlling leds
+    private boolean rainbow = false; // If the driver is directly controlling leds
     public boolean pieceGrabbed = false;
+    private boolean enabled = false;
 
     
     private static final Color BASE_COLOR = scaleDownColorBrightness(new Color(255, 0, 0));
@@ -47,6 +50,7 @@ public class LEDSubsystem extends SubsystemBase {
     private static final Color CONE_COLOR = scaleDownColorBrightness(new Color(255, 100, 0));
     private static final Color WHITE = scaleDownColorBrightness(new Color(255,255,255));
     private static final Color COLOR_SENSOR_OFF_COLOR = scaleDownColorBrightness(new Color(255, 0, 0));
+    private static final Color BLUE = scaleDownColorBrightness(new Color(0,0,255));
 
     private final Timer ledTimer; // TODO: better naming
 
@@ -58,6 +62,8 @@ public class LEDSubsystem extends SubsystemBase {
 
         baseLayer = new LEDLayer(LED_LENGTH);
         driveAngleLayer = new RotaryLEDLayer(LED_LENGTH);
+        driveBackAngleLayer = new RotaryLEDLayer(LED_LENGTH);
+        rainbowLayer = new RotaryLEDLayer(LED_LENGTH);
         aprilDetectedLayer = new LEDLayer(LED_LENGTH);
 
         blinkTimer = new Timer();
@@ -89,8 +95,12 @@ public class LEDSubsystem extends SubsystemBase {
 
         if(!DriverStation.isEnabled()){
             driverHeading = 2 * Math.PI * ((double) offset) / (double) LED_LENGTH;
+            driveBackAngleLayer.fillColor(null);
+        } else {
+            driveBackAngleLayer.setAngleGroup(driverHeading + Math.PI, 5, 5, BLUE, .7);
         }
-        driveAngleLayer.setAngleGroup(driverHeading, 2, 5, WHITE, .7);
+        driveAngleLayer.setAngleGroup(driverHeading, 5, 5, WHITE, .7);
+        
 
         // Update aprilDetectedLayer - white pulses to indicate an april tag detection.
         if (!aprilBlinkTimer.hasElapsed(APRIL_BLINK_DURATION_SECONDS) && aprilBlinkTimer.hasStarted()) {
@@ -99,10 +109,17 @@ public class LEDSubsystem extends SubsystemBase {
             aprilDetectedLayer.incrementColors(inc, null);
         }
 
+        if(rainbow){
+            rainbowLayer.setRainbow(offset);
+        } else {
+            rainbowLayer.fillColor(null);
+        }
+
         // Add layers to buffer, set leds
         ledStrip.addLayer(baseLayer);
         ledStrip.addLayer(driveAngleLayer);
-        // ledStrip.addLayer(aprilDetectedLayer);
+        ledStrip.addLayer(driveBackAngleLayer);
+        ledStrip.addLayer(rainbowLayer);
         ledStrip.setBuffer();
 
         // rishayStrip.addLayer(baseLayer);
@@ -112,8 +129,8 @@ public class LEDSubsystem extends SubsystemBase {
     /**
      * Toggles whether drivers are manually controlling the color of the LEDs.
      */
-    public void toggleManual() {
-        this.manual = !manual;
+    public void setRainbow(boolean rainbow) {
+        this.rainbow = rainbow;
     }
 
     /**

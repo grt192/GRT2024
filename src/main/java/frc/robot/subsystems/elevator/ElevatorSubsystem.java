@@ -56,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         timer.start();
         
-        this.zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
+        zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
         elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
         elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
         elevatorNetworkTablePositionEntry = elevatorNetworkTable.getEntry("target_position");
@@ -116,9 +116,9 @@ public class ElevatorSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         //System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
-        if(timer.advanceIfElapsed(.2)){
-            // System.out.println(Units.metersToInches(getExtensionMeters()));
-        }
+        // if(timer.advanceIfElapsed(.2)){
+        //     System.out.println(zeroLimitSwitch.get());
+        // }
         
         //System.out.println(this.getTargetState());
         if(isManual){
@@ -128,6 +128,7 @@ public class ElevatorSubsystem extends SubsystemBase{
         }
          
         if (zeroLimitSwitch != null && !zeroLimitSwitch.get()){
+            // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
         

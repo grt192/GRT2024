@@ -1,6 +1,7 @@
 package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
+import static frc.robot.Constants.LEDConstants.*;
 
 public class RotaryLEDLayer extends LEDLayer {
 
@@ -56,6 +57,16 @@ public class RotaryLEDLayer extends LEDLayer {
 
         for (int i = 0; i < borderLength; i++) {
             setLED(offset + radius + i, color,  opacity * (1 - (i / (borderLength + 1.))));
+        }
+    }
+
+    public void setRainbow(int offset){
+        for(int i = 0; i < colorArray.length; i++){
+            setLED(i + offset, Color.fromHSV(
+                (int) (((double) i) * 180.0 / colorArray.length),
+                (int) 255,
+                (int) (255 * BRIGHTNESS_SCALE_FACTOR)
+            ));
         }
     }
 }

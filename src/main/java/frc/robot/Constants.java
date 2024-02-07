@@ -26,11 +26,11 @@ public final class Constants {
     
     public static final float EXTENSION_LIMIT_METERS = 0;
     
-    public static final int ZERO_LIMIT_ID = 2;
+    public static final int ZERO_LIMIT_ID = 3;
 
-    public static final double GROUND_POSITION = 0;
+    public static final double GROUND_POSITION = Units.inchesToMeters(0.5);
     public static final double SPEAKER_POSITION = 0;
-    public static final double AMP_POSITION = Units.inchesToMeters(28);
+    public static final double AMP_POSITION = Units.inchesToMeters(29);
     public static final double CHUTE_POSITION = Units.inchesToMeters(1);
     public static final double TRAP_POSITION = Units.inchesToMeters(30);
     public static final double START_POSITION = 0; 
@@ -91,7 +91,7 @@ public final class Constants {
     public static final double sensorreached = .3;
     public static final double pivotclockwise = 1;
     public static final double pivotcounterclockwise = -1;
-    public static final double pastsensortime = 0.5;
+    public static final double pastsensortime = 3;
   }
 
   public static class ShooterConstants {
@@ -125,5 +125,6 @@ public final class Constants {
   public static class LEDConstants {
     public static final int LED_LENGTH = 140;
     public static final int LED_PWM_PORT = 0;
+    public static final double BRIGHTNESS_SCALE_FACTOR = .5;
   }
 }

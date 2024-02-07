@@ -21,7 +21,7 @@ public class ShooterPivotSetAngleCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        System.out.println("NOT FINISHED");
+        System.out.println("NOT FINISHED" + Math.abs(pivotSubsystem.getPosition() - angle));
         return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.ERRORTOLERANCE);
     }
 

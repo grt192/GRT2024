@@ -43,6 +43,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -81,6 +82,9 @@ public class RobotContainer {
     private final JoystickButton rightBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+
+    private final GenericHID switchboard = new GenericHID(3);
+    private final JoystickButton redButton = new JoystickButton(switchboard, 5);
     
     private UsbCamera camera1;
     private MjpegServer mjpgserver1;
@@ -142,6 +146,8 @@ public class RobotContainer {
                            new IntakeRollerOutakeCommand(intakeRollerSubsystem)
         )));
 
+        xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
+
       
 
 
@@ -194,6 +200,10 @@ public class RobotContainer {
         }));
       
       }
+
+      redButton.onTrue(new RunCommand(() -> {ledSubsystem.setRainbow(true);}, ledSubsystem));
+      redButton.onFalse(new RunCommand(() -> {ledSubsystem.setRainbow(false);}, ledSubsystem));
+
     
     }
 

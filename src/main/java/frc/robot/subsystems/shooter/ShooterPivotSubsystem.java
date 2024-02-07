@@ -19,7 +19,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public final double PIVOT_SPEED = 0.1;
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final double ERRORTOLERANCE = Math.toRadians(2); //error tolerance for pid
-    final int LIMIT_SWITCH_ID = 3; //placeholder
+    final int LIMIT_SWITCH_ID = 4; //placeholder
     final double CONVERSION_FACTOR = Math.PI/(2.*4.57);
 
     //motors
