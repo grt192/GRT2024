@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.PhotonWrapper;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -31,6 +32,8 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.DoublePublisher;
@@ -307,6 +310,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void resetAhrs(){
         ahrs.zeroYaw();
+    }
+
+    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
     }
 
 }
