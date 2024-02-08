@@ -521,4 +521,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         ahrs.zeroYaw();
     }
 
+    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
+    }
+
 }
