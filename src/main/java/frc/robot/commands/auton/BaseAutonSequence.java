@@ -3,6 +3,7 @@ package frc.robot.commands.auton;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.pivot.IntakePivotExtendedCommand;
 import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
@@ -62,15 +63,20 @@ public class BaseAutonSequence extends SequentialCommandGroup{
         return swerveCommand;
     }
 
-    public SequentialCommandGroup goIntake(ChoreoTrajectory traj){
-        return followPath(traj)
+    public ParallelDeadlineGroup intakeandMove(ChoreoTrajectory endintaketraj){
+        return new ParallelDeadlineGroup(followPath(endintaketraj), new IntakeRollerIntakeCommand(intakeRollersSubsystem));
+    }
+
+    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, ChoreoTrajectory endintaketraj){
+        return followPath(intaketraj)
         .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-        .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem))
+        .andThen(intakeandMove(endintaketraj))
+        .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem))//just in case the note isn't fully intaked during intakeandMove 
         .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
     
-    public SequentialCommandGroup goToSpeaker(ChoreoTrajectory traj){
-        return followPath(traj)
+    public SequentialCommandGroup goToSpeaker(ChoreoTrajectory intaketraj){
+        return followPath(intaketraj)
         .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
         .andThen(new IntakeRollerOutakeCommand(intakeRollersSubsystem))
         .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
