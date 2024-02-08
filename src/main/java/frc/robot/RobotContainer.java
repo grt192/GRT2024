@@ -97,43 +97,43 @@ public class RobotContainer {
     private MjpegServer mjpgserver1;
     //private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
 
-  ChoreoTrajectory traj;
-  // private final SwerveModule module;
+    ChoreoTrajectory traj;
+    // private final SwerveModule module;
 
     private PIDController xPID;
     private PIDController yPID;
 
-  private final JoystickButton
-    LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
-    RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value),
-    AButton = new JoystickButton(mechController, XboxController.Button.kA.value);
+    private final JoystickButton
+      LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
+      RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value),
+      AButton = new JoystickButton(mechController, XboxController.Button.kA.value);
 
-  private final GenericEntry xError, yError;
+    private final GenericEntry xError, yError;
 
-  private final ShuffleboardTab swerveCrauton;
+    private final ShuffleboardTab swerveCrauton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    //construct Test
-    // module = new SwerveModule(6, 7, 0);
-    // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-    baseSwerveSubsystem = new SwerveSubsystem();
-    intakePivotSubsystem = new IntakePivotSubsystem();
-    shooterFeederSubsystem = new ShooterFeederSubsystem();
+    public RobotContainer() {
+      //construct Test
+      // module = new SwerveModule(6, 7, 0);
+      // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+      baseSwerveSubsystem = new SwerveSubsystem();
+      intakePivotSubsystem = new IntakePivotSubsystem();
+      shooterFeederSubsystem = new ShooterFeederSubsystem();
 
-    shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-    shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+      shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+      shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
-    climbSubsystem = new ClimbSubsystem();
-  
-    elevatorSubsystem = new ElevatorSubsystem();
+      climbSubsystem = new ClimbSubsystem();
+    
+      elevatorSubsystem = new ElevatorSubsystem();
 
-    xPID = new PIDController(4, 0, 0);
-    yPID = new PIDController(12, 0, 0);
+      xPID = new PIDController(4, 0, 0);
+      yPID = new PIDController(12, 0, 0);
 
-    traj = Choreo.getTrajectory("3MTranslateRotate");
+      traj = Choreo.getTrajectory("3MTranslateRotate");
 
-    swerveCrauton = Shuffleboard.getTab("Auton");
+      swerveCrauton = Shuffleboard.getTab("Auton");
 
     xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
     yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
@@ -158,125 +158,129 @@ public class RobotContainer {
     }
 
 
-  private void configureBindings() {
-        aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
-                       new IntakeRollerIntakeCommand(intakeRollerSubsystem)));
+    private void configureBindings() {
+          aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
+                        new IntakeRollerIntakeCommand(intakeRollerSubsystem)));
 
-        bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
-                                       elevatorSubsystem, 
-                                       shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, 
-                                       climbSubsystem
-        ));
+          bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
+                                        elevatorSubsystem, 
+                                        shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, 
+                                        climbSubsystem
+          ));
 
-        leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem, 
-                                                elevatorSubsystem, 
-                                                shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem
-                          ).andThen(
-                          new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-                          new ShooterFeedShootCommand(shooterFeederSubsystem)
-        )));
+          leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem, 
+                                                  elevatorSubsystem, 
+                                                  shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem
+                            ).andThen(
+                            new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+                            new ShooterFeedShootCommand(shooterFeederSubsystem)
+          )));
 
-        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
-                           new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-                           new IntakeRollerOutakeCommand(intakeRollerSubsystem)
-        )));
+          rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
+                            new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+                            new IntakeRollerOutakeCommand(intakeRollerSubsystem)
+          )));
 
-        xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
+          xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
 
       
 
 
-      if(baseSwerveSubsystem instanceof SwerveSubsystem){
-        final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-
-        ledSubsystem.setDefaultCommand(new RunCommand(() -> {
-
-            ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
-
-        }, ledSubsystem));
-        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-            swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-            // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
-        }, swerveSubsystem));
-
-        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.resetDriverHeading();
-        }
-        ));
         
-      } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
-        final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
-        driveController.getLeftBumper().onTrue(new InstantCommand(() -> {
-          testSwerveSubsystem.decrementTest();
-          System.out.println(testSwerveSubsystem.getTest());
-        }
-        ));
 
-        driveController.getRightBumper().onTrue(new InstantCommand(() -> {
-          testSwerveSubsystem.incrementTest();
-          System.out.println(testSwerveSubsystem.getTest());
-        }
-        ));
 
-        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-          testSwerveSubsystem.toggletoRun();
-          System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
-        }));
+        if(baseSwerveSubsystem instanceof SwerveSubsystem){
+          final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
-      } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
-        final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
+          ledSubsystem.setDefaultCommand(new RunCommand(() -> {
+            ledSubsystem.setDriverHeading(-swerveSubsystem.getDriverHeading().getRadians());// - swerveSubsystem.getRobotPosition().getRotation().getRadians());
+          }, ledSubsystem));
+
+          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+              swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+          // System.out.println(-controller.getLeftY());
+          xError.setValue(xPID.getPositionError());
+          yError.setValue(yPID.getPositionError());
+          // System.out.println("y: " + yPID.getPositionError());
+              // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
+          }, swerveSubsystem));
+
+          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+              swerveSubsystem.resetDriverHeading();
+          }
+          ));
+          
+        } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
+          final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
+          driveController.getLeftBumper().onTrue(new InstantCommand(() -> {
+            testSwerveSubsystem.decrementTest();
+            System.out.println(testSwerveSubsystem.getTest());
+          }
+          ));
+
+          driveController.getRightBumper().onTrue(new InstantCommand(() -> {
+            testSwerveSubsystem.incrementTest();
+            System.out.println(testSwerveSubsystem.getTest());
+          }
+          ));
+
+          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+            testSwerveSubsystem.toggletoRun();
+            System.out.println(testSwerveSubsystem.getRunning() ? "Running" : "Not running");
+          }));
+
+        } else if (baseSwerveSubsystem instanceof SingleModuleSwerveSubsystem){
+          final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
 
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
           swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
         }
         , swerveSubsystem));
 
-        driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-          swerveSubsystem.toggletoRun();
-        }));
-      
+          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
+            swerveSubsystem.toggletoRun();
+          }));
+        
+        }
+
+        redButton.onTrue(new RunCommand(() -> {ledSubsystem.setRainbow(true);}, ledSubsystem));
+        redButton.onFalse(new RunCommand(() -> {ledSubsystem.setRainbow(false);}, ledSubsystem));
       }
 
-      redButton.onTrue(new RunCommand(() -> {ledSubsystem.setRainbow(true);}, ledSubsystem));
-      redButton.onFalse(new RunCommand(() -> {ledSubsystem.setRainbow(false);}, ledSubsystem));
+    public Command getAutonomousCommand() {
+      if(baseSwerveSubsystem instanceof SwerveSubsystem){
+        final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+        PIDController thetacontroller = new PIDController(3, 0, 0); //TODO: tune
+        thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
-    
-    }
+        swerveSubsystem.resetPose(traj.getInitialPose());
 
-  public Command getAutonomousCommand() {
-    if(baseSwerveSubsystem instanceof SwerveSubsystem){
-      final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-      PIDController thetacontroller = new PIDController(3, 0, 0); //TODO: tune
-      thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
+        BooleanSupplier isRed = () -> false; //DriverStation.getAlliance() == new Optional<Alliance> ; 
 
-      swerveSubsystem.resetPose(traj.getInitialPose());
-
-      BooleanSupplier isRed = () -> false; //DriverStation.getAlliance() == new Optional<Alliance> ; 
-
-      Command swerveCommand = Choreo.choreoSwerveCommand(
-        traj,
-        swerveSubsystem::getRobotPosition, 
-        xPID, //X TODO: tune
-        yPID, //Y TODO: tune
-        thetacontroller, 
-        ((ChassisSpeeds speeds) -> {swerveSubsystem.setChassisSpeeds(
-          speeds.vxMetersPerSecond,
-          speeds.vyMetersPerSecond, 
-          speeds.omegaRadiansPerSecond
+        Command swerveCommand = Choreo.choreoSwerveCommand(
+          traj,
+          swerveSubsystem::getRobotPosition, 
+          xPID, //X TODO: tune
+          yPID, //Y TODO: tune
+          thetacontroller, 
+          ((ChassisSpeeds speeds) -> {swerveSubsystem.setChassisSpeeds(
+            speeds.vxMetersPerSecond,
+            speeds.vyMetersPerSecond, 
+            speeds.omegaRadiansPerSecond
+            );
+          System.out.println(speeds.vxMetersPerSecond);}),
+          isRed,
+          swerveSubsystem
           );
-        System.out.println(speeds.vxMetersPerSecond);}),
-        isRed,
-        swerveSubsystem
-        );
 
-        return Commands.sequence(
-          //ahrs not resetting on own 
-          // Commands.runOnce(() -> swerveSubsystem.resetAhrs()),
-          Commands.runOnce(() -> swerveSubsystem.resetPose(traj.getInitialPose())),
-          swerveCommand
-        );
+          return Commands.sequence(
+            //ahrs not resetting on own 
+            // Commands.runOnce(() -> swerveSubsystem.resetAhrs()),
+            Commands.runOnce(() -> swerveSubsystem.resetPose(traj.getInitialPose())),
+            swerveCommand
+          );
+      }
+      else return null;
     }
-    else return null;
-  }
 
-}
+  }
