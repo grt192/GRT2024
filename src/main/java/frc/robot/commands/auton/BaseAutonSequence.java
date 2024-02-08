@@ -71,8 +71,8 @@ public class BaseAutonSequence extends SequentialCommandGroup{
     
     public SequentialCommandGroup goToSpeaker(ChoreoTrajectory traj){
         return followPath(traj)
-        .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem)
-        .andThen(new IntakeRollerOutakeCommand(intakeRollersSubsystem)))
+        .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
+        .andThen(new IntakeRollerOutakeCommand(intakeRollersSubsystem))
         .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
 
