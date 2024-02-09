@@ -98,9 +98,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
         choreoTab = Shuffleboard.getTab("Auton");
         field = new Field2d();
-        // choreoTab.add("Field", field)
-        // .withPosition(0, 0)
-        // .withSize(3, 2);
+        choreoTab.add("Field", field)
+        .withPosition(0, 0)
+        .withSize(3, 2);
 
         FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
         FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
