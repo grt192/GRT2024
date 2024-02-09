@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -124,6 +126,29 @@ public final class Constants {
     public static final double EXTENSION_TOLERANCE_METERS = 0.01;
 
     public static final double MAX_WINCH_POWER = 0.6;
+  }
+
+  public static class AutoAlignConstants {
+
+    // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
+    // ROT: rotated 180 deg from Apriltag pos since robots shoots from back
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.50 + 37.711 + 0), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0 + 180)); 
+    
+    // Source position closer to the centerline
+    // Y: APRILTAG_POS 
+    public static final Pose2d BLUE_SOURCE_POSE = new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120)); 
+    
+    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(270));
+    
+    // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
+    // ROT: rotated 180 deg from Apriltag pos since robots shoots from back
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73 - 37.711 - 0), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180 - 180));
+    
+    // Source position closer to the centerline
+    // Y: APRILTAG_POS 
+    public static final Pose2d RED_SOURCE_POSE = new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(60)); 
+    
+    public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(270));
   }
 
   public static class LEDConstants {
