@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -14,6 +16,7 @@ import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
+import frc.robot.commands.align.AlignCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
@@ -51,6 +54,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -150,6 +154,8 @@ public class RobotContainer {
         //construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+
+        SmartDashboard.putData("AUTO ALIGN BLUE AMP", AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE));
 
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
