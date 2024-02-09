@@ -160,9 +160,10 @@ public class RobotContainer {
     }
 
 
-    private void configureBindings() {
-          aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
-                        new IntakeRollerIntakeCommand(intakeRollerSubsystem)));
+  private void configureBindings() {
+        aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
+                       new IntakeRollerIntakeCommand(intakeRollerSubsystem).andThen(
+                       new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1))));
 
           bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
                                         elevatorSubsystem, 
