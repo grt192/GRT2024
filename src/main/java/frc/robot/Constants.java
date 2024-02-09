@@ -129,26 +129,28 @@ public final class Constants {
   }
 
   public static class AutoAlignConstants {
+    
+    public static final double robotRadius = 30/2;
 
     // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
     // ROT: rotated 180 deg from Apriltag pos since robots shoots from back
-    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.50 + 37.711 + 0), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0 + 180)); 
+    public static final Pose2d BLUE_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(-1.50 + 37.711 + robotRadius), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(0 + 180)); 
     
     // Source position closer to the centerline
     // Y: APRILTAG_POS 
     public static final Pose2d BLUE_SOURCE_POSE = new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120)); 
     
-    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(270));
+    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(270));
     
     // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
     // ROT: rotated 180 deg from Apriltag pos since robots shoots from back
-    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73 - 37.711 - 0), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180 - 180));
+    public static final Pose2d RED_SPEAKER_POSE = new Pose2d(Units.inchesToMeters(652.73 - 37.711 - robotRadius), Units.inchesToMeters(218.42), Rotation2d.fromDegrees(180 - 180));
     
     // Source position closer to the centerline
     // Y: APRILTAG_POS 
     public static final Pose2d RED_SOURCE_POSE = new Pose2d(Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(60)); 
     
-    public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00), Rotation2d.fromDegrees(270));
+    public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77), Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(270));
   }
 
   public static class LEDConstants {
