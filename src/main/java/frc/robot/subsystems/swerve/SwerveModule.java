@@ -229,14 +229,6 @@ public class SwerveModule {
         return new Rotation2d(steerAbsoluteEncoder.getPosition());
     }
 
-    public double getDriveAmpDraws(){
-        return driveMotor.getAmpDraw();
-    }
-
-    public double getSteerAmpDraws(){
-        return steerMotor.getOutputCurrent();
-    }
-
     public double getDriveError(){
         return driveMotor.getError();
     }
