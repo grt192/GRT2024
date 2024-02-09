@@ -66,7 +66,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
     public ParallelDeadlineGroup driveForward(double xpower, double ypower, double angularpower){
 
-        return new ParallelDeadlineGroup(swerveSubsystem.setDefaultCommand(), new IntakeRollerIntakeCommand(intakeRollersSubsystem));
+        return new ParallelDeadlineGroup( new IntakeRollerIntakeCommand(intakeRollersSubsystem));
     }
     public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, double xpower, double ypower, double angularpower ){
         return followPath(intaketraj)
