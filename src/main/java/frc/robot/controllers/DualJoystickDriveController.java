@@ -39,7 +39,7 @@ public class DualJoystickDriveController extends BaseDriveController {
     @Override
     public double getLeftPower() {
         double scale = getDriveScaling();
-        return MathUtil.applyDeadband(leftJoystick.getX() * scale, JOYSTICK_DEADBAND);
+        return MathUtil.applyDeadband(-leftJoystick.getX() * scale, JOYSTICK_DEADBAND);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DualJoystickDriveController extends BaseDriveController {
      */
     private double getTurnScaling() {
         boolean isSlowMode = leftJoystick.getTrigger();
-        return isSlowMode ? 0.125 : 0.5;
+        return isSlowMode ? 0.125 : 0.8;
     }
 
     public JoystickButton getFieldResetButton() {

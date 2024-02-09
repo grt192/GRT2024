@@ -177,12 +177,11 @@ public class RobotContainer {
             ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
 
         }, ledSubsystem));
-
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
             if(driveController.getRelativeMode()){
-                swerveSubsystem.setRobotRelativeDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());
+                swerveSubsystem.setRobotRelativeDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
             } else {
-                swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());
+                swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
             }
             // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
         }, swerveSubsystem));

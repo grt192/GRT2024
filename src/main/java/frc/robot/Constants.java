@@ -51,28 +51,28 @@ public final class Constants {
     public static final double TURNGAP = 2;
   }
 
-  public static class SwerveConstants {
+  public static class SwerveConstants { //ADD 90 degrees to all
     public static final int FL_DRIVE = 20; 
     public static final int FL_STEER = 1;
-    public static final double FL_OFFSET = 3.36 - 1. * Math.PI / 4.;
+    public static final double FL_OFFSET = 3.36 + Math.PI * 5.0 / 4.;
     
     public static final int FR_DRIVE = 2; 
     public static final int FR_STEER = 3; 
-    public static final double FR_OFFSET = 3.02 - Math.PI * 3 / 4;
+    public static final double FR_OFFSET = 3.02 + Math.PI * 3.0 / 4;
 
     public static final int BL_DRIVE = 4; 
     public static final int BL_STEER = 5; 
-    public static final double BL_OFFSET = 2.83  + Math.PI / 4;
+    public static final double BL_OFFSET = 2.83 + Math.PI * 7.0 / 4;
     
     public static final int BR_DRIVE = 6; 
     public static final int BR_STEER = 7; 
-    public static final double BR_OFFSET = 2.66 + Math.PI * 3.0 / 4.0;
+    public static final double BR_OFFSET = 2.66 + Math.PI * 1.0 / 4.0;
 
     private static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
-    public static final Translation2d FL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);
-    public static final Translation2d FR_POS = new Translation2d(MODULE_DIST, MODULE_DIST);
-    public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
-    public static final Translation2d BR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
+    public static final Translation2d FL_POS = new Translation2d(MODULE_DIST, MODULE_DIST);
+    public static final Translation2d FR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
+    public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);
+    public static final Translation2d BR_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
   }
 
   public static class IntakeConstants {
