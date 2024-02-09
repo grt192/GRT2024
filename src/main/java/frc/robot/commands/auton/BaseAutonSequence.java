@@ -28,6 +28,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
     private PIDController yPID;
     private BooleanSupplier isRed;
     private final PIDController thetaController;
+    private int driveforwardtime;
 
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, SwerveSubsystem swerveSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
@@ -63,15 +64,15 @@ public class BaseAutonSequence extends SequentialCommandGroup{
         return swerveCommand;
     }
 
-    public ParallelDeadlineGroup intakeandMove(ChoreoTrajectory endintaketraj){
-        return new ParallelDeadlineGroup(followPath(endintaketraj), new IntakeRollerIntakeCommand(intakeRollersSubsystem));
-    }
+    public ParallelDeadlineGroup driveForward(double xpower, double ypower, double angularpower){
 
-    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, ChoreoTrajectory endintaketraj){
+        return new ParallelDeadlineGroup(swerveSubsystem.setDefaultCommand(), new IntakeRollerIntakeCommand(intakeRollersSubsystem));
+    }
+    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, double xpower, double ypower, double angularpower ){
         return followPath(intaketraj)
         .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-        .andThen(intakeandMove(endintaketraj))
-        .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem))//just in case the note isn't fully intaked during intakeandMove 
+        .andThen(driveForward(xpower, ypower, angularpower))
+        .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem))//just in case the note isn't fully intaken during intakeandMove 
         .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
     
