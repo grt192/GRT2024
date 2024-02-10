@@ -4,5 +4,8 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)"
+  },
+  "Server": {
+    "open": true
   }
 }

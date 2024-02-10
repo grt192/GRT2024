@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.util.Util;
 
 import static frc.robot.Constants.SwerveConstants.*;
 
@@ -41,7 +42,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     private final Timer crimer;
     private final Timer ahrsTimer;
 
-    public static final double MAX_VEL = 4.90245766303; //calculated
+    public static final double MAX_VEL = 4.172; //calculated
     public static final double MAX_ACCEL = 3; //STUB
     public static final double MAX_OMEGA = MAX_VEL / FL_POS.getNorm();
     public static final double MAX_ALPHA = 8; //STUB
@@ -140,6 +141,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     public void periodic() {
 
         robotPos.setValue(getRobotPosition().getX());
+        // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
+        // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
+        // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
     
         
         // System.out.println(frontLeftModule.getDriveSetpoint());

@@ -63,10 +63,11 @@ public class VortexDriveMotor implements SwerveDriveMotor {
 
     public void setPositionConversionFactor(double factor){
         encoder.setPositionConversionFactor(factor);
+        System.out.println(" FACTOR " + factor);
     }
 
     public double getError(){
-        return (encoder.getVelocity() * 4.90245766303 / 8870000) - getSetpoint(); 
+        return getSetpoint() - encoder.getVelocity(); 
     }
 
     public double getSetpoint(){
