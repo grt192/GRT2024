@@ -32,7 +32,6 @@ public class IntakeRollerOutakeCommand extends Command{
         if(intakeSubsystem.sensorNow()==false&& timer.hasStarted()==false ){
             timer.start();
         }
-            
 
     }
 
