@@ -214,7 +214,7 @@ public class RobotContainer {
         final SingleModuleSwerveSubsystem swerveSubsystem = (SingleModuleSwerveSubsystem) baseSwerveSubsystem;
 
         swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-          swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+          swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
         }
         , swerveSubsystem));
 

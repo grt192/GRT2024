@@ -28,7 +28,7 @@ public class XboxDriveController extends BaseDriveController {
 
     @Override
     public double getLeftPower() {
-        return driveController.getLeftX();
+        return -driveController.getLeftX();
     }
 
     @Override
