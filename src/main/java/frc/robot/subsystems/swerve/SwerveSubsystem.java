@@ -204,6 +204,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     public void periodic() {
 
         robotPos.setValue(getRobotPosition().getX());
+        // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
+        // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
+        // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
     
         
         // System.out.println(frontLeftModule.getDriveSetpoint());
@@ -519,11 +522,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     /** Reset the ahrs on the navX. */
     public void resetAhrs() {
         ahrs.zeroYaw();
-    }
-
-    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
     }
 
 }
