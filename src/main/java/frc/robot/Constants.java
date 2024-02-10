@@ -134,19 +134,11 @@ public final class Constants {
   
   public static final class VisionConstants {
     public static final String POSE_TABLE_KEY = "PoseEstimates";
-    
+
     public static final PhotonCamera FRONT_CAMERA = new PhotonCamera("Arducam_OV9281_USB_Camera_2");
     public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(
-        // new Translation3d(Units.inchesToMeters(10.375), Units.inchesToMeters(10.597), Units.inchesToMeters(22.638875)),
-        new Translation3d(Units.inchesToMeters(10.125), Units.inchesToMeters(7.767605), Units.inchesToMeters(22.25)),
-        new Rotation3d(Math.PI, 0, 0)
+      new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(-0.25), Units.inchesToMeters(+44)),
+      new Rotation3d(Math.PI, 0, 0)
     );
-
-    // public static final PhotonCamera RIGHT_CAMERA = new PhotonCamera("HD_USB_Camera");
-    // public static final Transform3d RIGHT_CAMERA_POSE = new Transform3d(
-    //     // new Translation3d(Units.inchesToMeters(7.375), Units.inchesToMeters(10.597), Units.inchesToMeters(22.638875)),
-    //     new Translation3d(Units.inchesToMeters(10.125), Units.inchesToMeters(-7.767605), Units.inchesToMeters(22.25)),
-    //     new Rotation3d(Math.PI, 0, 0)
-    // );
   }
 }
