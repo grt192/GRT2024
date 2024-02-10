@@ -34,21 +34,21 @@ public class SwerveModule {
 
     
     private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0); // .0461
-    private static final double DRIVE_ROTATIONS_PER_METER = 1.0 / DRIVE_METERS_PER_ROTATION; // 21.69
+    private static final double DRIVE_ROTATIONS_PER_METER = 4.172 / 6428 * 60 * 4 / 3.42;//1.0 / DRIVE_METERS_PER_ROTATION; // 21.69
     private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI; // Useful for steer relative encoder if we ever use that
     private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3 ; // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
     //The encoder board maps the 5V output of the encoder to 3.3V of the Spark Max
 
-    // TODO: tune PIDs, comments are 2023 constants
+    private static final double MAX_VEL = 4.172;
     private static final double FALCON_DRIVE_P = 0.0028; // .05
     private static final double FALCON_DRIVE_I = 0; // 0
     private static final double FALCON_DRIVE_D = 0.005; // 0
     private static final double FALCON_DRIVE_FF = .11285266; //  .11285266;
 
-    private static final double VORTEX_DRIVE_P = 0;
+    private static final double VORTEX_DRIVE_P = .35;
     private static final double VORTEX_DRIVE_I = 0;
     private static final double VORTEX_DRIVE_D = 0;
-    private static final double VORTEX_DRIVE_FF = .22591262  * 3.6 / 4; // rotations/m * max vel
+    private static final double VORTEX_DRIVE_FF = DRIVE_ROTATIONS_PER_METER  * MAX_VEL * 4.2/2.81 * 4.27 / 4.12 * 2.01 / 2.11; // rotations/m * max vel
 
     private static final double STEER_P = .68; // .7
     private static final double STEER_I = 0; // 0
@@ -243,5 +243,13 @@ public class SwerveModule {
 
     public double getSteerAmpDraws(){
         return steerMotor.getOutputCurrent();
+    }
+    
+    public double getDriveEncoder(){
+        return driveMotor.getDistance();
+    }
+
+    public double getDriveVelocity(){
+        return driveMotor.getVelocity();
     }
 }

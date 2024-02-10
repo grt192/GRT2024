@@ -131,9 +131,9 @@ public class RobotContainer {
       elevatorSubsystem = new ElevatorSubsystem();
 
       xPID = new PIDController(4, 0, 0);
-      yPID = new PIDController(12, 0, 0);
+      yPID = new PIDController(4, 0, 0);
 
-      traj = Choreo.getTrajectory("3MTranslateRotate");
+      traj = Choreo.getTrajectory("2mLine");
 
       swerveCrauton = Shuffleboard.getTab("Auton");
 
@@ -200,7 +200,7 @@ public class RobotContainer {
           }, ledSubsystem));
 
           swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-              swerveSubsystem.setDrivePowers(driveController.getLeftPower(), driveController.getForwardPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+              swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
           // System.out.println(-controller.getLeftY());
           xError.setValue(xPID.getPositionError());
           yError.setValue(yPID.getPositionError());
@@ -254,7 +254,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
       if(baseSwerveSubsystem instanceof SwerveSubsystem){
         final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-        PIDController thetacontroller = new PIDController(3, 0, 0); //TODO: tune
+        PIDController thetacontroller = new PIDController(4, 0, 0); //TODO: tune
         thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
         swerveSubsystem.resetPose(traj.getInitialPose());
