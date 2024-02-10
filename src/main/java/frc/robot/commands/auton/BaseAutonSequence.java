@@ -38,6 +38,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem,intakePivotSubsystem);
 
+        isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
     
         swerveSubsystem = new SwerveSubsystem();
 
@@ -59,7 +60,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
                 speeds.omegaRadiansPerSecond
                 );
             System.out.println(speeds.vxMetersPerSecond);}),
-            () -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
+            () -> isRed,
             swerveSubsystem
             );
         return swerveCommand;
