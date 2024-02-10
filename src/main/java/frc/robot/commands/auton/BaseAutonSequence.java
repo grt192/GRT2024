@@ -2,6 +2,7 @@ package frc.robot.commands.auton;
  
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -26,7 +27,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
     private final SwerveSubsystem swerveSubsystem;
     private PIDController xPID;
     private PIDController yPID;
-    private BooleanSupplier isRed;
+    private boolean isRed;
     private final PIDController thetaController;
     private int driveforwardtime;
 
@@ -58,7 +59,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
                 speeds.omegaRadiansPerSecond
                 );
             System.out.println(speeds.vxMetersPerSecond);}),
-            isRed,
+            () -> DriverStation.getAlliance().get() == DriverStation.Alliance.Red,
             swerveSubsystem
             );
         return swerveCommand;
