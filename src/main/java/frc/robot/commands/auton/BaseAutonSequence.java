@@ -64,14 +64,10 @@ public class BaseAutonSequence extends SequentialCommandGroup{
         return swerveCommand;
     }
 
-    public ParallelDeadlineGroup driveForward(double xpower, double ypower, double angularpower){
-
-        return new ParallelDeadlineGroup( new IntakeRollerIntakeCommand(intakeRollersSubsystem));
-    }
-    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, double xpower, double ypower, double angularpower ){
+    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj){
         return followPath(intaketraj)
         .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-        .andThen(driveForward(xpower, ypower, angularpower))
+        .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).deadlineWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)))
         .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem))//just in case the note isn't fully intaken during intakeandMove 
         .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
