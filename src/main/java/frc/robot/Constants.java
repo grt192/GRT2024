@@ -74,7 +74,7 @@ public final class Constants {
     public static final int BR_STEER = 7; 
     public static final double BR_OFFSET = 2.66 + Math.PI * 1.0 / 4.0;
 
-    private static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
+    public static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
     public static final Translation2d FL_POS = new Translation2d(MODULE_DIST, MODULE_DIST);
     public static final Translation2d FR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
     public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);
@@ -140,7 +140,9 @@ public final class Constants {
     // Y: APRILTAG_POS 
     public static final Pose2d BLUE_SOURCE_POSE = new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120)); 
     
-    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(270));
+    // public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00 - robotRadius - 11.0), Rotation2d.fromDegrees(90));
+    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(323.00 - robotRadius - 11.0), Units.inchesToMeters(72.5), Rotation2d.fromDegrees(90));
+    public static final Pose2d ORIGIN_POSE = new Pose2d(0, 0, new Rotation2d(0));
     
     // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
     // ROT: rotated 180 deg from Apriltag pos since robots shoots from back

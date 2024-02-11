@@ -25,7 +25,7 @@ public class AlignCommand {
                 Units.degreesToRadians(360), Units.degreesToRadians(540)
             ), 
     0, 
-    2.0
+    0.0
         );
     }
 

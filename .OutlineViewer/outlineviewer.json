@@ -7,5 +7,10 @@
   },
   "Server": {
     "open": true
+  },
+  "transitory": {
+    "Testing": {
+      "open": true
+    }
   }
 }
