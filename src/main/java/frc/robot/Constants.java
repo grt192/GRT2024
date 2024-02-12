@@ -34,10 +34,10 @@ public final class Constants {
     
     public static final int ZERO_LIMIT_ID = 3;
 
-    public static final double GROUND_POSITION = Units.inchesToMeters(1);
+    public static final double GROUND_POSITION = Units.inchesToMeters(1.5);
     public static final double SPEAKER_POSITION = 0;
     public static final double AMP_POSITION = Units.inchesToMeters(29);
-    public static final double CHUTE_POSITION = Units.inchesToMeters(1);
+    public static final double CHUTE_POSITION = Units.inchesToMeters(1.5);
     public static final double TRAP_POSITION = Units.inchesToMeters(30);
     public static final double START_POSITION = 0; 
 
