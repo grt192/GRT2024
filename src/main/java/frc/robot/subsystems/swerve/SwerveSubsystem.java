@@ -161,9 +161,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             this::getRobotRelativeChassisSpeeds, 
             this::setRobotRelativeDrivePowers, 
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(1.0, 0.0, 0.0), // Rotation PID constants
-                        1, // Max module speed, in m/s
+                        new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        2, // Max module speed, in m/s
                         Constants.SwerveConstants.MODULE_DIST * 1.414, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
@@ -172,10 +172,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
                 // This will flip the path being followed to the red side of the field.
                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
+                // var alliance = DriverStation.getAlliance();
+                // if (alliance.isPresent()) {
+                //     return alliance.get() == DriverStation.Alliance.Red;
+                // }
                 return false;
             },
             this
@@ -280,8 +280,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
             robotRelativeSpeeds,
-            getRobotPosition().getRotation()
+            new Rotation2d(0)
         );
+        // System.out.println(speeds.vxMetersPerSecond);
 
         states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -295,6 +296,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             kinematics.toChassisSpeeds(states),
             getRobotPosition().getRotation() // getGyroHeading()
         );
+
+        System.out.println(robotRelativeSpeeds.omegaRadiansPerSecond);
 
         return robotRelativeSpeeds;
     }

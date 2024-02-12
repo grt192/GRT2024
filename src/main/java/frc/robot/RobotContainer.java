@@ -155,7 +155,7 @@ public class RobotContainer {
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
 
-        swerveCrauton.add("AUTO ALIGN BLUE AMP", AlignCommand.getAlignCommand(AutoAlignConstants.ORIGIN_POSE));
+        swerveCrauton.add("AUTO ALIGN BLUE AMP", AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE));
 
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -191,12 +191,6 @@ public class RobotContainer {
           )));
 
           xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
-
-      
-
-
-        
-
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
           final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

@@ -22,7 +22,7 @@ public class AlignCommand {
             targetPose, 
             new PathConstraints(
         4.0, 4.0, 
-                Units.degreesToRadians(360), Units.degreesToRadians(540)
+                Units.degreesToRadians(720), Units.degreesToRadians(1080)
             ), 
     0, 
     0.0
