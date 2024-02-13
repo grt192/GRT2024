@@ -51,4 +51,12 @@ public class XboxDriveController extends BaseDriveController {
     public Boolean getRelativeMode() {
         return driveController.getRightTriggerAxis() > .1;
     }
+
+    public JoystickButton getAmpAlign() {
+        return driveXButton;
+    }
+
+    public JoystickButton getSwerveStop() {
+        return driveBButton;
+    }
 }

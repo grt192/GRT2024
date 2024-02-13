@@ -16,7 +16,6 @@ import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
-import frc.robot.commands.align.AlignCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
@@ -30,6 +29,8 @@ import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
 import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
+import frc.robot.commands.swerve.AlignCommand;
+import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.controllers.BaseDriveController;
@@ -155,8 +156,6 @@ public class RobotContainer {
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
 
-        swerveCrauton.add("AUTO ALIGN BLUE AMP", AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE));
-
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
         camera1.setBrightness(45);
@@ -193,20 +192,28 @@ public class RobotContainer {
           xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
-          final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+            final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
+            swerveCrauton.add("AUTO ALIGN BLUE AMP", AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
 
-          ledSubsystem.setDefaultCommand(new RunCommand(() -> {
-            ledSubsystem.setDriverHeading(-swerveSubsystem.getDriverHeading().getRadians());// - swerveSubsystem.getRobotPosition().getRotation().getRadians());
-          }, ledSubsystem));
+            ledSubsystem.setDefaultCommand(new RunCommand(() -> {
+                ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
+            }, ledSubsystem));
 
-          swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-              swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
-          // System.out.println(-controller.getLeftY());
-          xError.setValue(xPID.getPositionError());
-          yError.setValue(yPID.getPositionError());
-          // System.out.println("y: " + yPID.getPositionError());
-              // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
-          }, swerveSubsystem));
+            driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
+            driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
+
+            swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+                if(driveController.getRelativeMode()){
+                    swerveSubsystem.setRobotRelativeDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
+                } else {
+                    swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
+                }
+                // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
+                xError.setValue(xPID.getPositionError());
+                yError.setValue(yPID.getPositionError());
+                // System.out.println("y: " + yPID.getPositionError());
+                // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
+            }, swerveSubsystem));
 
           driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
               swerveSubsystem.resetDriverHeading();

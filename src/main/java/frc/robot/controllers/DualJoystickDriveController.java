@@ -80,4 +80,12 @@ public class DualJoystickDriveController extends BaseDriveController {
     public Boolean getRelativeMode(){
         return rightTrigger.getAsBoolean();
     }
+
+    public JoystickButton getAmpAlign(){
+        return leftTrigger;
+    }
+
+    public JoystickButton getSwerveStop(){
+        return leftMiddleButton;
+    }
 }
