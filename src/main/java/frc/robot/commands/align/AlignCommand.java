@@ -21,7 +21,7 @@ public class AlignCommand {
         return  AutoBuilder.pathfindToPose(
             targetPose, 
             new PathConstraints(
-        4.0, 4.0, 
+        2.0, 2.0, 
                 Units.degreesToRadians(720), Units.degreesToRadians(1080)
             ), 
     0, 

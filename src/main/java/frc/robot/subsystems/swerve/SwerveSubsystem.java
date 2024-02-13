@@ -162,7 +162,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             this::setRobotRelativeDrivePowers, 
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        new PIDConstants(3.0, 0.0, 0.0), // Rotation PID constants
                         4.5, // Max module speed, in m/s
                         FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, true)
@@ -234,7 +234,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
         
 
-        field.setRobotPose(estimate);
+        field.setRobotPose(new Pose2d(estimate.getX() + 1, estimate.getY() + .3, estimate.getRotation()));
         
         for(int i = 0; i < 4; i++){
             angles[i].set(states[i].angle.getRadians());
