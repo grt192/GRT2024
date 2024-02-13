@@ -24,10 +24,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.vision.PhotonWrapper;
+import frc.robot.vision.ApriltagWrapper;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.util.Util;
-import frc.robot.vision.PhotonWrapper;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
@@ -76,7 +75,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveDriveKinematics kinematics;
-    private final PhotonWrapper photonWrapper;
+    private final ApriltagWrapper apriltagWrapper;
 
     //heading lock controller
     private final PIDController thetaController;
@@ -165,7 +164,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
 
-        photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
+        apriltagWrapper = new ApriltagWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
@@ -221,7 +220,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // BRsteer.setValue(backRightModule.getSteerAmpDraws());
         // BRdrive.setValue(backRightModule.getDriveAmpDraws());
         
-        Optional<EstimatedRobotPose> visionEstimate = photonWrapper.getRobotPose(
+        Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
             new Pose3d(field.getRobotPose())
         );
 

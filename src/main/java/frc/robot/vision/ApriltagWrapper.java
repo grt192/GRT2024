@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import static frc.robot.Constants.VisionConstants.*;
 
 /**
- * The PhotonWrapper class gets robot pose estimates from a given camera and publishes robot pose estimations over
+ * The ApriltagWrapper class gets robot pose estimates from a given camera and publishes robot pose estimations over
  * NetworkTables.
  */
-public class PhotonWrapper {
+public class ApriltagWrapper {
     private final PhotonPoseEstimator poseEstimator;
     private final String name;
 
@@ -41,7 +41,7 @@ public class PhotonWrapper {
      * @param camera The PhotonVision camera object.
      * @param cameraPose The camera's 3d transformation relative to the robot.
      */
-    public PhotonWrapper(PhotonCamera camera, Transform3d cameraPose) {
+    public ApriltagWrapper(PhotonCamera camera, Transform3d cameraPose) {
         this.name = camera.getName();
         
         /* Pose Estimation Setup */
