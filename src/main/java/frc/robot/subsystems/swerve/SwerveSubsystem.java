@@ -152,8 +152,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         );
 
         photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
-        
-        photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
