@@ -31,5 +31,7 @@ public abstract class BaseDriveController {
 
     public abstract JoystickButton getAmpAlign();
 
+    public abstract JoystickButton getNoteAlign();
+
     public abstract JoystickButton getSwerveStop();
 }

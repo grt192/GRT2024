@@ -30,6 +30,7 @@ import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
+import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -42,6 +43,8 @@ import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+
+import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
 import java.sql.Driver;
 import java.util.function.BooleanSupplier;
@@ -111,10 +114,6 @@ public class RobotContainer {
     private PIDController xPID;
     private PIDController yPID;
 
-    private final JoystickButton
-      LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
-      RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value),
-      AButton = new JoystickButton(mechController, XboxController.Button.kA.value);
 
     private final GenericEntry xError, yError;
 
@@ -201,6 +200,7 @@ public class RobotContainer {
             }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
+            driveController.getNoteAlign().onTrue(new NoteAlignCommand(swerveSubsystem, NOTE_CAMERA));
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
             swerveSubsystem.setDefaultCommand(new RunCommand(() -> {

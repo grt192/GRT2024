@@ -85,6 +85,10 @@ public class DualJoystickDriveController extends BaseDriveController {
         return leftTrigger;
     }
 
+    public JoystickButton getNoteAlign() {
+        return null;
+    }
+
     public JoystickButton getSwerveStop(){
         return leftMiddleButton;
     }
