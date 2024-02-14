@@ -347,7 +347,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public double getYfromSpeaker(){
-        return getRobotPosition().getY() - BLUE_SPEAKER_POS.getY(); 
+        return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
     }
 
     public double getXfromSpeaker(boolean isRed){
