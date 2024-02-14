@@ -172,5 +172,8 @@ public final class Constants {
       new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
       new Rotation3d(Math.PI, Units.degreesToRadians(16), 0)
     );
+
+    public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Global_Shutter_Camera");
+    public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
   }
 }
