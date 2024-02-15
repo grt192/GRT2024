@@ -140,7 +140,7 @@ public final class Constants {
     // Y: APRILTAG_POS 
     public static final Pose2d BLUE_SOURCE_POSE = new Pose2d(Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120)); 
     
-    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00 - robotRadius - 19.2), Rotation2d.fromDegrees(90));
+    public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5), Units.inchesToMeters(323.00 - robotRadius - 6.2), Rotation2d.fromDegrees(90));
     // public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(323.00 - robotRadius - 11.0), Units.inchesToMeters(72.5), Rotation2d.fromDegrees(90));
     public static final Pose2d ORIGIN_POSE = new Pose2d(0, 0, new Rotation2d(0));
     
@@ -167,7 +167,7 @@ public final class Constants {
     public static final PhotonCamera FRONT_CAMERA = new PhotonCamera("Arducam_OV9281_USB_Camera_2");
     public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(
       new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
-      new Rotation3d(Math.PI, 0, 0)
+      new Rotation3d(Math.PI, Units.degreesToRadians(16), 0)
     );
   }
 }

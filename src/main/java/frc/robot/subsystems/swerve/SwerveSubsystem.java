@@ -31,6 +31,7 @@ import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.VisionConstants.*;
+import static frc.robot.Constants.AutoAlignConstants.*;
 
 import java.security.GeneralSecurityException;
 import java.util.Optional;
@@ -295,7 +296,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             getRobotPosition().getRotation() // getGyroHeading()
         );
 
-        System.out.println(robotRelativeSpeeds.omegaRadiansPerSecond);
+        System.out.println("x: " + Util.twoDecimals(Units.metersToInches(getRobotPosition().getX() - BLUE_AMP_POSE.getX())) + "   y: " + Util.twoDecimals(Units.metersToInches(getRobotPosition().getY() - BLUE_AMP_POSE.getY())));
 
         return robotRelativeSpeeds;
     }
