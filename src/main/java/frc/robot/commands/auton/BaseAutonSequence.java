@@ -107,15 +107,13 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                 .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
 
-    /** 
-     * Follows trajectory and then shoots note
-     * @param shoottraj
-     * @return SequentialCommandGroup
-     */
-    public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj) {
+     public SequentialCommandGroup shoot(){
+        return new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem)
+        .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
+
+    public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){
         return followPath(shoottraj)
-        .andThen(new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, ledSubsystem))
-        .andThen(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+        .andThen(shoot());
     }
 
 }
