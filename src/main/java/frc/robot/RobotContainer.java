@@ -151,7 +151,7 @@ public class RobotContainer {
         // construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = null;// new SwerveSubsystem();
+      baseSwerveSubsystem = new SwerveSubsystem();
       intakePivotSubsystem = new IntakePivotSubsystem();
       shooterFeederSubsystem = new ShooterFeederSubsystem();
 

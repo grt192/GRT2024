@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.Pose2dSupplier;
+import frc.robot.util.Util;
 
 import static frc.robot.Constants.ShooterConstants.*;
 
@@ -43,7 +44,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private boolean autoAim;
     private double currentEncoderAngle;
     private double currentDistance;
-    private Pose2d poseSupplier; //new Pose2d();
+    private Pose2dSupplier poseSupplier; //new Pose2d();
 
     //center of red speaker: (652.73 218.42)
     double RED_X = Units.inchesToMeters(652.73 + 9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
@@ -59,7 +60,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         timer.start();
 
-        this.poseSupplier = poseSupplier.getPose2d();
+        this.poseSupplier = poseSupplier;
 
         //motors
         pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless); 
@@ -158,7 +159,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         if(timer.advanceIfElapsed(.2)){ 
             printCurrentAngle();
-            System.out.println(getAutoAimAngle);
+            System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
         }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());
