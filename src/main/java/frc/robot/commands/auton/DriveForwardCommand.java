@@ -5,7 +5,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class DriveForwardCommand extends Command{
     private final SwerveSubsystem swerve;
-    private int xpower;
+    private double xpower = .3;
 
 
     public DriveForwardCommand(SwerveSubsystem swerve){
@@ -14,7 +14,7 @@ public class DriveForwardCommand extends Command{
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         swerve.setRobotRelativeDrivePowers(xpower, 0, 0);
     }
 

@@ -24,6 +24,7 @@ import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
+import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
 import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
 import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
@@ -200,7 +201,9 @@ public class RobotContainer {
             }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
-            driveController.getNoteAlign().onTrue(new NoteAlignCommand(swerveSubsystem, NOTE_CAMERA));
+            driveController.getNoteAlign().onTrue(
+              new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem,swerveSubsystem)
+            );
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
             swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
