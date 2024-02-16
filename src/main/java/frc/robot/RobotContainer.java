@@ -153,8 +153,6 @@ public class RobotContainer {
         } else {
             driveController = new XboxDriveController();
         }
-        // Configure the trigger bindings
-        configureBindings();
         // private final SwerveModule module;
         //construct Test
         // module = new SwerveModule(6, 7, 0);
@@ -170,6 +168,9 @@ public class RobotContainer {
         camera1.setResolution(176, 144);
         mjpgserver1 = new MjpegServer("m1", 1181);
         mjpgserver1.setSource(camera1);
+
+        // Configure the trigger bindings
+        configureBindings();
     }
 
 
