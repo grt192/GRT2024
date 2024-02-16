@@ -173,7 +173,7 @@ public final class Constants {
       new Rotation3d(Math.PI, Units.degreesToRadians(16), 0)
     );
 
-    public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Global_Shutter_Camera");
+    public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
     public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
   }
 }
