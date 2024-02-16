@@ -3,8 +3,6 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
-
 import java.util.NoSuchElementException;
 
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -16,9 +14,10 @@ public class NoteAlignCommand extends Command{
 
     private double noteYawOffsetDegrees;
 
-    public NoteAlignCommand(SwerveSubsystem swerveSubsystem) {
+    public NoteAlignCommand(SwerveSubsystem swerveSubsystem, NoteDetectionWrapper noteDetector) {
         this.swerveSubsystem = swerveSubsystem;
-        noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
+        this.noteDetector = noteDetector;
+        System.out.println("Note Detector 3: " + noteDetector);
 
         this.addRequirements(swerveSubsystem);
     }

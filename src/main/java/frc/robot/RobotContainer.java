@@ -44,6 +44,7 @@ import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+import frc.robot.vision.NoteDetectionWrapper;
 
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
@@ -90,6 +91,8 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsystem;
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+
+    private final NoteDetectionWrapper noteDetector;  
     
     
     // Configure the trigger bindings
@@ -122,30 +125,30 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-      //construct Test
-      // module = new SwerveModule(6, 7, 0);
-      // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = new SwerveSubsystem();
-      intakePivotSubsystem = new IntakePivotSubsystem();
-      shooterFeederSubsystem = new ShooterFeederSubsystem();
+        //construct Test
+        // module = new SwerveModule(6, 7, 0);
+        // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+        baseSwerveSubsystem = new SwerveSubsystem();
+        intakePivotSubsystem = new IntakePivotSubsystem();
+        shooterFeederSubsystem = new ShooterFeederSubsystem();
 
-      shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-      shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+        shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
-      climbSubsystem = new ClimbSubsystem();
-    
-      elevatorSubsystem = new ElevatorSubsystem();
+        climbSubsystem = new ClimbSubsystem();
+        
+        elevatorSubsystem = new ElevatorSubsystem();
 
-      xPID = new PIDController(4, 0, 0);
-      yPID = new PIDController(4, 0, 0);
+        xPID = new PIDController(4, 0, 0);
+        yPID = new PIDController(4, 0, 0);
 
-      traj = Choreo.getTrajectory("2mLine");
+        traj = Choreo.getTrajectory("2mLine");
 
-      swerveCrauton = Shuffleboard.getTab("Auton");
+        swerveCrauton = Shuffleboard.getTab("Auton");
 
-    xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
-    yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
-    if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
+        xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
+        yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
+        if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
             driveController = new DualJoystickDriveController();
         } else {
             driveController = new XboxDriveController();
@@ -156,6 +159,10 @@ public class RobotContainer {
         //construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+
+
+        noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
+        System.out.println("Note Detector 1: " + noteDetector);
 
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -202,7 +209,8 @@ public class RobotContainer {
 
             driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
             driveController.getNoteAlign().onTrue(
-              new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem,swerveSubsystem)
+              new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
+              //.unless(() -> noteDetector.getNoteYawOffset().isEmpty())
             );
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 

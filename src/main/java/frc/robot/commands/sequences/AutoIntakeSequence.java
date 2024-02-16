@@ -9,17 +9,20 @@ import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.vision.NoteDetectionWrapper;
 
-public class AutoIntakeSequence extends SequentialCommandGroup{
+public class AutoIntakeSequence extends SequentialCommandGroup {
 
 
     public AutoIntakeSequence(
         ElevatorSubsystem elevatorSubsystem, 
         IntakeRollersSubsystem intakeRollersSubsystem,
-        SwerveSubsystem swerveSubsystem
+        SwerveSubsystem swerveSubsystem,
+        NoteDetectionWrapper noteDetector
     ){
+        System.out.println("Note Detector 2: " + noteDetector);
         addCommands(new ElevatorToGroundCommand(elevatorSubsystem)
-        .andThen(new NoteAlignCommand(swerveSubsystem))
+        .andThen(new NoteAlignCommand(swerveSubsystem, noteDetector))
         .andThen(new ParallelDeadlineGroup(
             new IntakeRollerIntakeCommand(intakeRollersSubsystem).withTimeout(3),
             new DriveForwardCommand(swerveSubsystem)))
