@@ -69,4 +69,27 @@ public class RotaryLEDLayer extends LEDLayer {
             ));
         }
     }
+
+    public void setGroups(double startAngle, double endAngle, int onGroupLength, int offGroupLength, int borderLength, Color color, double opacity, int offset, boolean inverted){
+        for (int i = (int) (colorArray.length * startAngle / (2 * Math.PI)); i < colorArray.length * endAngle / (2 * Math.PI); i++) {
+            int ledNumInSegment = (i + (inverted ? offset : -offset)) % (2 * borderLength + onGroupLength + offGroupLength);
+            if (ledNumInSegment < borderLength){
+                setLED(i, color, opacity *  (ledNumInSegment + 1) / (borderLength + 1));
+            } else if (ledNumInSegment < onGroupLength + borderLength) {
+                setLED(i, color, opacity);
+            } else if(ledNumInSegment < onGroupLength + borderLength * 2){
+                setLED(i, color, opacity * (1 - ((ledNumInSegment - onGroupLength - borderLength + 1.) / (borderLength + 1))));                
+            } else {
+                setLED(i, null, opacity);
+            }
+        }
+    }
+
+    public void setGroups(int onGroupLength, int offGroupLength, int borderLength, Color color, double opacity, int offset){
+        setGroups(0, Math.PI * 2, onGroupLength, offGroupLength, borderLength, color, opacity, offset, false);
+    }
+
+    public void setGroups(int onGroupLength, int offGroupLength, Color color, double opacity, int offset){
+        setGroups(0, Math.PI * 2, onGroupLength, offGroupLength, 0, color, opacity, offset, false);
+    }
 }

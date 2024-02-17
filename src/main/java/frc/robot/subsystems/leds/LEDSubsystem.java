@@ -16,7 +16,8 @@ public class LEDSubsystem extends SubsystemBase {
     private final RotaryLEDLayer driveAngleLayer;
     private final RotaryLEDLayer driveBackAngleLayer;
     private final RotaryLEDLayer rainbowLayer;
-    private final LEDLayer aprilDetectedLayer;
+    private final RotaryLEDLayer noteLayer;
+    private final RotaryLEDLayer aprilDetectedLayer;
 
     private final Timer blinkTimer;
     private static final double BLINK_DURATION_SECONDS = 0.5;
@@ -64,7 +65,8 @@ public class LEDSubsystem extends SubsystemBase {
         driveAngleLayer = new RotaryLEDLayer(LED_LENGTH);
         driveBackAngleLayer = new RotaryLEDLayer(LED_LENGTH);
         rainbowLayer = new RotaryLEDLayer(LED_LENGTH);
-        aprilDetectedLayer = new LEDLayer(LED_LENGTH);
+        noteLayer = new RotaryLEDLayer(LED_LENGTH);
+        aprilDetectedLayer = new RotaryLEDLayer(LED_LENGTH);
 
         blinkTimer = new Timer();
         ledTimer = new Timer();
