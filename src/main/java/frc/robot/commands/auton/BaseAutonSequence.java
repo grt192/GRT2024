@@ -16,9 +16,10 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 /** 
@@ -38,39 +39,29 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private PIDController xPID;
     private PIDController yPID;
     private boolean isRed;
-    private int driveforwardtime;
+    private int driveforwardtime = 2;
 
-    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem,
-            ShooterPivotSubsystem shooterPivotSubsystem,
-            ElevatorSubsystem elevatorSubsystem,
-            SwerveSubsystem swerveSubsystem,
-            LEDSubsystem ledSubsystem) {
-        this.intakePivotSubsystem = intakePivotSubsystem;
+    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem){
+        this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollersSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.swerveSubsystem = swerveSubsystem;
-        this.ledSubsystem = ledSubsystem;
+        this.swerveSubsystem = (SwerveSubsystem) swerveSubsystem;
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
-        isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
+        isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    
         swerveSubsystem = new SwerveSubsystem();
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(12, 0, 0);
         thetaController = new PIDController(3, 0, 0);
     }
-    
-    
-    /**
-     * Follows the choreo path.
-     * @param traj
-     * @return
-     */
-    public Command followPath(ChoreoTrajectory traj) {
+
+    public Command followPath(ChoreoTrajectory traj){
+        //swerveSubsystem.resetPose(traj.getInitialPose());
         Command swerveCommand = Choreo.choreoSwerveCommand(
                 traj,
                 swerveSubsystem::getRobotPosition,
@@ -108,8 +99,11 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     }
 
      public SequentialCommandGroup shoot(){
-        return new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem)
-        .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
+        return new SequentialCommandGroup(null);
+        // return new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem)
+        // .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
+        // .andThen(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+    }
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){
         return followPath(shoottraj)
