@@ -13,7 +13,7 @@ public class NoteDetectionWrapper {
         this.camera = camera;
     }
 
-    public Optional<Double> getNoteYawOffset() {
+    public Optional<PhotonTrackedTarget> getNote() {
         PhotonPipelineResult result = camera.getLatestResult();
         if (!result.hasTargets()) {
             return Optional.empty();
@@ -21,7 +21,7 @@ public class NoteDetectionWrapper {
 
         PhotonTrackedTarget target = result.getBestTarget();
         
-        return Optional.of(target.getYaw());
+        return Optional.of(target);
     }
     
 }

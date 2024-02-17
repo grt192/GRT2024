@@ -163,12 +163,12 @@ public class RobotContainer {
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
 
-        // camera1 = new UsbCamera("camera1", 0);
-        // camera1.setFPS(60);
-        // camera1.setBrightness(45);
-        // camera1.setResolution(176, 144);
-        // mjpgserver1 = new MjpegServer("m1", 1181);
-        // mjpgserver1.setSource(camera1);
+        camera1 = new UsbCamera("camera1", 0);
+        camera1.setFPS(60);
+        camera1.setBrightness(45);
+        camera1.setResolution(176, 144);
+        mjpgserver1 = new MjpegServer("m1", 1181);
+        mjpgserver1.setSource(camera1);
 
         // Configure the trigger bindings
         configureBindings();
@@ -215,7 +215,7 @@ public class RobotContainer {
             ));
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
                 new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
-                .unless(() -> noteDetector.getNoteYawOffset().isEmpty()),
+                .unless(() -> noteDetector.getNote().isEmpty()),
                 new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())
             ));
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));

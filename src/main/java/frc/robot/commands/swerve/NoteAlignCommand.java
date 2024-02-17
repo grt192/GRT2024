@@ -27,7 +27,7 @@ public class NoteAlignCommand extends Command{
 
         this.noteYawOffsetDegrees = 0;
         try {
-            noteYawOffsetDegrees = noteDetector.getNoteYawOffset().get();
+            noteYawOffsetDegrees = noteDetector.getNote().get().getYaw();
         } catch(NoSuchElementException e) {
             System.out.println("Tried to align to a note, but none was detected.");
             this.end(true);
@@ -45,7 +45,7 @@ public class NoteAlignCommand extends Command{
     @Override
     public void execute() {
         try {
-            noteYawOffsetDegrees = noteDetector.getNoteYawOffset().get();
+            noteYawOffsetDegrees = noteDetector.getNote().get().getYaw();
         } catch(NoSuchElementException e) {
 
         }
