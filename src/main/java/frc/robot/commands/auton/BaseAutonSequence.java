@@ -11,8 +11,7 @@ import frc.robot.commands.intake.pivot.IntakePivotExtendedCommand;
 import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
-import frc.robot.commands.sequences.ShootModeSequence;
-import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
+import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -30,10 +29,10 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
     private final IntakeRollersSubsystem intakeRollersSubsystem;
-    private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
+    private final ShooterFeederSubsystem shooterFeederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
+    private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    private final LEDSubsystem ledSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final PIDController thetaController;
     private PIDController xPID;
@@ -89,11 +88,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj) {
         return followPath(intaketraj)
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem)
-                        .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)))
-                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem))// just in case the note
-                                                                                             // isn't fully intaken
-                                                                                             // above
+                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)))
                 .andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem))
                 .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
