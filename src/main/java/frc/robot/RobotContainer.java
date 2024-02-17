@@ -211,7 +211,7 @@ public class RobotContainer {
             driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
             driveController.getNoteAlign().onTrue(
               new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
-              //.unless(() -> noteDetector.getNoteYawOffset().isEmpty())
+              .unless(() -> noteDetector.getNoteYawOffset().isEmpty())
             );
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
