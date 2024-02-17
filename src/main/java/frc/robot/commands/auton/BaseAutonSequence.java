@@ -51,8 +51,6 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
         isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-    
-        swerveSubsystem = new SwerveSubsystem();
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(12, 0, 0);
@@ -89,8 +87,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return followPath(intaketraj)
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
                 .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)))
-                .andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem))
-                .andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
+                .andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
+                //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
 
      public SequentialCommandGroup shoot(){

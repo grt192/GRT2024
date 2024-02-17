@@ -10,6 +10,7 @@ import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class speakertomiddletoamp extends BaseAutonSequence{
 
@@ -22,14 +23,16 @@ public class speakertomiddletoamp extends BaseAutonSequence{
         
         middlenoteintaketraj = Choreo.getTrajectory("speakerstarttomiddlenote");
         ampnoteintaketraj = Choreo.getTrajectory("speakermiddlenotetoampnote");
-        shootampnotetraj = Choreo.getTrajectory("shootampnotetraj");
+        shootampnotetraj = Choreo.getTrajectory("speakerampnoteshoot");
+
+        ((SwerveSubsystem) swerveSubsystem).resetPose(middlenoteintaketraj.getInitialPose());
 
         addCommands(
-            shoot(), 
+            //shoot(), 
             goIntake(middlenoteintaketraj),
-            shoot(),
-            goIntake(ampnoteintaketraj),
-            goShoot(shootampnotetraj)
+            //shoot(),
+            goIntake(ampnoteintaketraj)
+            //goShoot(shootampnotetraj)
         );
     }
 }
