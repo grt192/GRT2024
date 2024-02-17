@@ -10,7 +10,6 @@ import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class speakertomiddletoamp extends BaseAutonSequence{
 
