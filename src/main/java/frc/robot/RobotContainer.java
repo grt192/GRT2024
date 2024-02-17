@@ -65,6 +65,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -160,14 +161,14 @@ public class RobotContainer {
 
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
-        System.out.println("Note Detector 1: " + noteDetector);
 
-        camera1 = new UsbCamera("camera1", 0);
-        camera1.setFPS(60);
-        camera1.setBrightness(45);
-        camera1.setResolution(176, 144);
-        mjpgserver1 = new MjpegServer("m1", 1181);
-        mjpgserver1.setSource(camera1);
+
+        // camera1 = new UsbCamera("camera1", 0);
+        // camera1.setFPS(60);
+        // camera1.setBrightness(45);
+        // camera1.setResolution(176, 144);
+        // mjpgserver1 = new MjpegServer("m1", 1181);
+        // mjpgserver1.setSource(camera1);
 
         // Configure the trigger bindings
         configureBindings();
@@ -208,11 +209,15 @@ public class RobotContainer {
                 ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
             }, ledSubsystem));
 
-            driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
-            driveController.getNoteAlign().onTrue(
-              new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
-              .unless(() -> noteDetector.getNoteYawOffset().isEmpty())
-            );
+            driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
+                AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem),
+                new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
+            ));
+            driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
+                new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
+                .unless(() -> noteDetector.getNoteYawOffset().isEmpty()),
+                new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())
+            ));
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
             swerveSubsystem.setDefaultCommand(new RunCommand(() -> {

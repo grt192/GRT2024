@@ -20,7 +20,6 @@ public class AutoIntakeSequence extends SequentialCommandGroup {
         SwerveSubsystem swerveSubsystem,
         NoteDetectionWrapper noteDetector
     ){
-        System.out.println("Note Detector 2: " + noteDetector);
         addCommands(new ElevatorToGroundCommand(elevatorSubsystem)
         .andThen(new NoteAlignCommand(swerveSubsystem, noteDetector))
         .andThen(new ParallelDeadlineGroup(

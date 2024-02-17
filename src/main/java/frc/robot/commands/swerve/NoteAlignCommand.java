@@ -17,7 +17,6 @@ public class NoteAlignCommand extends Command{
     public NoteAlignCommand(SwerveSubsystem swerveSubsystem, NoteDetectionWrapper noteDetector) {
         this.swerveSubsystem = swerveSubsystem;
         this.noteDetector = noteDetector;
-        System.out.println("Note Detector 3: " + noteDetector);
 
         this.addRequirements(swerveSubsystem);
     }
