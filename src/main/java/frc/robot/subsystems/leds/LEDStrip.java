@@ -3,6 +3,7 @@ package frc.robot.subsystems.leds;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.util.Util;
 
 public class LEDStrip {
     private final AddressableLED led;
@@ -23,6 +24,12 @@ public class LEDStrip {
      */
     public void setBuffer() {
         led.setData(ledBuffer);
+    }
+
+    public void setBuffer(double brightnessFactor){
+        for(int i = 0; i < ledLength; i++){
+            ledBuffer.setLED(i, Util.scaleColor(ledBuffer.getLED(i), brightnessFactor));
+        }
     }
 
     /**

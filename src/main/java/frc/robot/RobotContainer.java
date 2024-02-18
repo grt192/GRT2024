@@ -9,6 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+import frc.robot.subsystems.superstructure.NotePosition;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -177,30 +178,35 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-        aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
-                       new IntakeRollerIntakeCommand(intakeRollerSubsystem).andThen(
+          aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
+                       new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).andThen(
                        new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1))));
 
           bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem, 
                                         elevatorSubsystem, 
                                         shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, 
-                                        climbSubsystem
+                                        climbSubsystem, ledSubsystem
           ));
 
           leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem, 
                                                   elevatorSubsystem, 
-                                                  shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem
+                                                  shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
+                                                  ledSubsystem
                             ).andThen(
                             new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
                             new ShooterFeedShootCommand(shooterFeederSubsystem)
           )));
 
           rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
-                            new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-                            new IntakeRollerOutakeCommand(intakeRollerSubsystem)
-          )));
+                            new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
+                            new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1),
+                            new IntakeRollerOutakeCommand(intakeRollerSubsystem),
+                            new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))
+          ));
 
-          xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem));
+          xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem).andThen(
+                         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))
+          ));
 
         if(baseSwerveSubsystem instanceof SwerveSubsystem){
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
@@ -208,6 +214,7 @@ public class RobotContainer {
 
             ledSubsystem.setDefaultCommand(new RunCommand(() -> {
                 ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
+                ledSubsystem.setNoteSeen(noteDetector.getNote().isPresent());
             }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
@@ -215,7 +222,7 @@ public class RobotContainer {
                 new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
             ));
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
-                new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
+                new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector, ledSubsystem)
                 .unless(() -> noteDetector.getNote().isEmpty()),
                 new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())
             ));

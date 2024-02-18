@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.subsystems.superstructure.NotePosition;
 import frc.robot.util.TrackingTimer;
+import frc.robot.util.Util;
+
 import static frc.robot.Constants.LEDConstants.*;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -35,23 +37,20 @@ public class LEDSubsystem extends SubsystemBase {
 
     
     private static final double INPUT_DEADZONE = 0.35;
-    private static final int LEDS_PER_SEC = 150;
-
-    private Color pieceColor = CUBE_COLOR;
+    private static final int LEDS_PER_SEC = 100;
     private Color manualColor = new Color(0, 0, 0);
 
     private boolean rainbow = false; // If the driver is directly controlling leds
-    public boolean pieceGrabbed = false;
+    public boolean pieceSeen = false;
     private boolean enabled = false;
-
+    private NotePosition notePosition = NotePosition.NONE;
     
-    private static final Color BASE_COLOR = scaleDownColorBrightness(new Color(255, 0, 0));
-    private static final Color APRIL_COLOR = scaleDownColorBrightness(new Color(252, 255, 236));
-    private static final Color CUBE_COLOR = scaleDownColorBrightness(new Color(192, 8, 254));
-    private static final Color CONE_COLOR = scaleDownColorBrightness(new Color(255, 100, 0));
-    private static final Color WHITE = scaleDownColorBrightness(new Color(255,255,255));
-    private static final Color COLOR_SENSOR_OFF_COLOR = scaleDownColorBrightness(new Color(255, 0, 0));
-    private static final Color BLUE = scaleDownColorBrightness(new Color(0,0,255));
+    private static final Color BASE_COLOR = new Color(255, 0, 0);
+    private static final Color APRIL_COLOR = new Color(252, 255, 236);
+    private static final Color NOTE_COLOR = new Color(255,110,0);
+    private static final Color WHITE = new Color(255,255,255);
+    private static final Color COLOR_SENSOR_OFF_COLOR = new Color(255, 0, 0);
+    private static final Color BLUE = new Color(0,0,255);
 
     private final Timer ledTimer; // TODO: better naming
 
@@ -104,6 +103,49 @@ public class LEDSubsystem extends SubsystemBase {
         driveAngleLayer.setAngleGroup(driverHeading, 5, 5, WHITE, .7);
         
 
+        if(rainbow){
+            rainbowLayer.setRainbow(offset);
+        } else {
+            rainbowLayer.fillColor(null);
+        }
+
+        Color noteColor = pieceSeen ? crossFadeWithTime(NOTE_COLOR, null, 1) : NOTE_COLOR;
+
+        switch (notePosition) {
+            case NONE:
+                noteLayer.fillColor(pieceSeen ? noteColor : null);
+                break;
+            case INTAKING:
+                noteLayer.fillColor(null);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset, false);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset, true);
+                break;
+            case INTAKE_HOLDING:
+                noteLayer.setAngleGroup(0, 30, 5, NOTE_COLOR, 1);
+                break;
+            case TRANFER_TO_SHOOTER:
+                noteLayer.fillColor(null);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset * 2, false);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset * 2, true);
+                break;
+            case TRANSFER_TO_INTAKE:
+                noteLayer.fillColor(null);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset, true);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset, false);
+                break;
+            case INTAKE_READY_TO_SHOOT:
+                noteLayer.setAngleGroup(0, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), 1);
+                break;
+            case SHOOTER_READY_TO_SHOOT:
+                noteLayer.setAngleGroup(Math.PI, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), 1);
+                break;
+            case SHOOTING:
+
+            default:
+                noteLayer.reset();
+                break;
+        }
+
         // Update aprilDetectedLayer - white pulses to indicate an april tag detection.
         if (!aprilBlinkTimer.hasElapsed(APRIL_BLINK_DURATION_SECONDS) && aprilBlinkTimer.hasStarted()) {
             aprilDetectedLayer.fillGrouped(3, 6, 1, APRIL_COLOR, .7, offset);
@@ -111,18 +153,15 @@ public class LEDSubsystem extends SubsystemBase {
             aprilDetectedLayer.incrementColors(inc, null);
         }
 
-        if(rainbow){
-            rainbowLayer.setRainbow(offset);
-        } else {
-            rainbowLayer.fillColor(null);
-        }
+        
 
         // Add layers to buffer, set leds
         ledStrip.addLayer(baseLayer);
+        ledStrip.addLayer(noteLayer);
         ledStrip.addLayer(driveAngleLayer);
         ledStrip.addLayer(driveBackAngleLayer);
         ledStrip.addLayer(rainbowLayer);
-        ledStrip.setBuffer();
+        ledStrip.setBuffer(BRIGHTNESS_SCALE_FACTOR);
 
         // rishayStrip.addLayer(baseLayer);
         // rishayStrip.addLayer(driveAngleLayer);
@@ -167,37 +206,18 @@ public class LEDSubsystem extends SubsystemBase {
      * @return The scaled down color.
      */
     private static Color scaleDownColorBrightness(Color color) {
-        return new Color(
-            color.red * BRIGHTNESS_SCALE_FACTOR,
-            color.green * BRIGHTNESS_SCALE_FACTOR,
-            color.blue * BRIGHTNESS_SCALE_FACTOR
-        );
-    }
-
-    /**
-     * Sets the color of the LEDs commanded by driver input. If manual input is enabled, this sets the color
-     * to the HSV color created by the angle of the joystick. Otherwise, set the color to CUBE if the joystick
-     * is pushed right and CONE if it is pushed left.
-     * 
-     * @param x The x input of the joystick.
-     * @param y The y input of the joystick.
-     */
-    public void setDriverColors(double x, double y){
-        double angleRads = MathUtil.inputModulus(Math.atan2(y, x), 0, 2 * Math.PI);
-        manualColor = Color.fromHSV(
-            (int) (Math.toDegrees(angleRads) / 2.0),
-            (int) 255,
-            (int) (255 * BRIGHTNESS_SCALE_FACTOR)
-        );
-
-        if (x > INPUT_DEADZONE) {
-            pieceColor = CUBE_COLOR;
-        } else if (x < -INPUT_DEADZONE) {
-            pieceColor = CONE_COLOR;
-        }
+        return Util.scaleColor(color, BRIGHTNESS_SCALE_FACTOR);
     }
 
     public void setDriverHeading(double heading){
         driverHeading = heading;
+    }
+
+    public void setNoteMode(NotePosition notePosition){
+
+    }
+
+    public void setNoteSeen(boolean noteSeen){
+        pieceSeen = noteSeen;
     }
 }

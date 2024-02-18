@@ -1,6 +1,7 @@
 package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.util.Util;
 
 public class LEDLayer {
     protected final Color[] colorArray;
@@ -113,5 +114,11 @@ public class LEDLayer {
      */
     public void reset() {
         fillColor(null, 1);
+    }
+
+    public void scale(double factor){
+        for(int i = 0; i < colorArray.length; i++){
+            setLED(i, Util.scaleColor(getLEDColor(i), factor));
+        }
     }
 }
