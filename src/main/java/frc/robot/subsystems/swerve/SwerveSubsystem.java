@@ -8,6 +8,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -334,13 +335,18 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void setAimMode(double xPower, double yPower){
-        double x = getXfromSpeaker(isRed);
-        double y = getYfromSpeaker();
-        setDrivePowerswithHeadingLock(xPower, yPower, new Rotation2d(getShootAngle(x, y)));
+        double shootAngleRadians = getShootAngle(isRed);
+
+        setDrivePowerswithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
 
-    public double getShootAngle(double x, double y){
-        return Math.atan2(y, x);
+    public double getShootAngle(boolean isRed) {
+        double xDistance = getXfromSpeaker(isRed);
+        double yDistance = getYfromSpeaker();
+
+        /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
+         the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
+        return Math.atan2(yDistance, xDistance) + (!isRed ? Math.PI : 0); 
     }
 
     public double getYfromSpeaker(){
@@ -348,10 +354,15 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public double getXfromSpeaker(boolean isRed){
-        if (isRed){
-            return SPEAKER_TO_SPEAKER - getRobotPosition().getX() - BLUE_SPEAKER_POS.getX();
+        return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
+    }
+
+    public Translation2d getSpeakerPosition(boolean isRed) {
+        if (isRed) {
+            return RED_SPEAKER_POS;
+        } else {
+            return BLUE_SPEAKER_POS;
         }
-        return -getRobotPosition().getX() + BLUE_SPEAKER_POS.getX();
     }
 
     public void setDrivePowerswithFieldAngle(double xPower, double yPower){
