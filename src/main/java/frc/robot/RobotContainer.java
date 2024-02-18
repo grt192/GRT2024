@@ -58,6 +58,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -264,10 +265,6 @@ public class RobotContainer {
           swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
         }
         , swerveSubsystem));
-
-          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.toggletoRun();
-          }));
         
         }
 

@@ -325,18 +325,18 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
-    public void setDrivePowerswithHeadingLock(double xPower, double yPower, double targetAngles){
+    public void setDrivePowerswithHeadingLock(double xPower, double yPower, Rotation2d targetAngles){
         Rotation2d currentRotation = getDriverHeading();
-        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles);
+        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles.getRadians());
         double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    public void setAimMode(){
+    public void setAimMode(double xPower, double yPower){
         double x = getXfromSpeaker(isRed);
         double y = getYfromSpeaker();
-        setDrivePowerswithHeadingLock(x, y, getShootAngle(x, y));
+        setDrivePowerswithHeadingLock(xPower, yPower, new Rotation2d(getShootAngle(x, y)));
     }
 
     public double getShootAngle(double x, double y){
