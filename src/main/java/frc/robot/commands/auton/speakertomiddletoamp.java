@@ -26,6 +26,8 @@ public class speakertomiddletoamp extends BaseAutonSequence{
         shootampnotetraj = Choreo.getTrajectory("speakerampnoteshoot");
 
         ((SwerveSubsystem) swerveSubsystem).resetPose(middlenoteintaketraj.getInitialPose());
+        System.out.println("X:" + middlenoteintaketraj.getInitialPose().getX());
+        System.out.println("Y:" + middlenoteintaketraj.getInitialPose().getY());
 
         addCommands(
             //shoot(), 

@@ -38,7 +38,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private PIDController xPID;
     private PIDController yPID;
     private boolean isRed;
-    private int driveforwardtime = 2;
+    private double driveforwardtime = 1;
 
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
@@ -53,27 +53,27 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         xPID = new PIDController(4, 0, 0);
-        yPID = new PIDController(12, 0, 0);
+        yPID = new PIDController(4, 0, 0);
         thetaController = new PIDController(3, 0, 0);
     }
 
     public Command followPath(ChoreoTrajectory traj){
         //swerveSubsystem.resetPose(traj.getInitialPose());
         Command swerveCommand = Choreo.choreoSwerveCommand(
-                traj,
-                swerveSubsystem::getRobotPosition,
-                xPID,
-                yPID,
-                thetaController,
-                ((ChassisSpeeds speeds) -> {
-                    swerveSubsystem.setChassisSpeeds(
-                            speeds.vxMetersPerSecond,
-                            speeds.vyMetersPerSecond,
-                            speeds.omegaRadiansPerSecond);
-                    System.out.println(speeds.vxMetersPerSecond);
-                }),
-                () -> isRed,
-                swerveSubsystem);
+            traj,
+            swerveSubsystem::getRobotPosition,
+            xPID, 
+            yPID, 
+            thetaController, 
+            ((ChassisSpeeds speeds) -> {swerveSubsystem.setChassisSpeeds(
+                speeds.vxMetersPerSecond,
+                speeds.vyMetersPerSecond, 
+                speeds.omegaRadiansPerSecond
+                );
+            }),
+            () -> isRed,
+            swerveSubsystem
+            );
         return swerveCommand;
     }
 
@@ -86,8 +86,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj) {
         return followPath(intaketraj)
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)))
-                .andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
+                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
+                //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
                 //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
     }
 
