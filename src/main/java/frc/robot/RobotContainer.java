@@ -221,6 +221,7 @@ public class RobotContainer {
                 AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem),
                 new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
             ));
+
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
                 new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector, ledSubsystem)
                 .unless(() -> noteDetector.getNote().isEmpty()),

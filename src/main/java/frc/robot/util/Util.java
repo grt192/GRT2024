@@ -8,6 +8,10 @@ public class Util {
     }
 
     public static Color scaleColor(Color color, double scale){
-        return new Color((int) (color.red * scale), (int) (color.green * scale), (int) (color.blue * scale));
+        return new Color((int) (color.red * scale * 255), (int) (color.green * scale * 255), (int) (color.blue * scale * 255));
+    }
+
+    public static OpacityColor scaleColor(OpacityColor color, double scale){
+        return OpacityColor.blendColors(color, new OpacityColor(), scale);
     }
 }

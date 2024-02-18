@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.NotePosition;
+import frc.robot.util.OpacityColor;
 import frc.robot.util.TrackingTimer;
 import frc.robot.util.Util;
 
@@ -30,27 +31,21 @@ public class LEDSubsystem extends SubsystemBase {
     private static final double APRIL_BLINK_DURATION_SECONDS = 0.05;
 
     private static final Timer fadeTimer = new Timer();
-    private static final double COLOR_SENSOR_FADE_PERIOD_SECONDS = .5;
-    private final double COLOR_PULSE_SPEED = .2;
-    private boolean colorSensorOff = false;
-    private double colorOffset = 0;
-
-    
-    private static final double INPUT_DEADZONE = 0.35;
     private static final int LEDS_PER_SEC = 100;
-    private Color manualColor = new Color(0, 0, 0);
 
     private boolean rainbow = false; // If the driver is directly controlling leds
     public boolean pieceSeen = false;
     private boolean enabled = false;
     private NotePosition notePosition = NotePosition.NONE;
     
-    private static final Color BASE_COLOR = new Color(255, 0, 0);
-    private static final Color APRIL_COLOR = new Color(252, 255, 236);
-    private static final Color NOTE_COLOR = new Color(255,110,0);
-    private static final Color WHITE = new Color(255,255,255);
-    private static final Color COLOR_SENSOR_OFF_COLOR = new Color(255, 0, 0);
-    private static final Color BLUE = new Color(0,0,255);
+    private static final OpacityColor BASE_COLOR = new OpacityColor(255, 0, 0);
+    private static final OpacityColor APRIL_COLOR = new OpacityColor(252, 255, 236);
+    private static final OpacityColor NOTE_COLOR = new OpacityColor(255,80,0);
+    private static final OpacityColor FRONT_COLOR = new OpacityColor(255,255,255);
+    private static final OpacityColor BACK_COLOR = new OpacityColor(0,0,255);
+    private static final OpacityColor COLOR_SENSOR_OFF_COLOR = new OpacityColor(255, 0, 0);
+    private static final OpacityColor TRANSPARENT_COLOR = new OpacityColor();
+    
 
     private final Timer ledTimer; // TODO: better naming
 
@@ -98,9 +93,9 @@ public class LEDSubsystem extends SubsystemBase {
             driverHeading = 2 * Math.PI * ((double) offset) / (double) LED_LENGTH;
             driveBackAngleLayer.fillColor(null);
         } else {
-            driveBackAngleLayer.setAngleGroup(driverHeading + Math.PI, 5, 5, BLUE, .7);
+            driveBackAngleLayer.setAngleGroup(driverHeading + Math.PI, 5, 5, BACK_COLOR.withOpacity(.7), TRANSPARENT_COLOR);
         }
-        driveAngleLayer.setAngleGroup(driverHeading, 5, 5, WHITE, .7);
+        driveAngleLayer.setAngleGroup(driverHeading, 5, 5, FRONT_COLOR.withOpacity(.7), TRANSPARENT_COLOR);
         
 
         if(rainbow){
@@ -109,35 +104,37 @@ public class LEDSubsystem extends SubsystemBase {
             rainbowLayer.fillColor(null);
         }
 
-        Color noteColor = pieceSeen ? crossFadeWithTime(NOTE_COLOR, null, 1) : NOTE_COLOR;
+        OpacityColor noteColor = pieceSeen ? crossFadeWithTime(NOTE_COLOR, null, 1) : NOTE_COLOR;
+
+        System.out.println(pieceSeen);
 
         switch (notePosition) {
             case NONE:
-                noteLayer.fillColor(pieceSeen ? noteColor : null);
+                noteLayer.fillColor(pieceSeen ? noteColor : new OpacityColor());
                 break;
             case INTAKING:
                 noteLayer.fillColor(null);
-                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset, false);
-                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset, true);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset, false);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset, true);
                 break;
             case INTAKE_HOLDING:
-                noteLayer.setAngleGroup(0, 30, 5, NOTE_COLOR, 1);
+                noteLayer.setAngleGroup(0, 30, 5, NOTE_COLOR, TRANSPARENT_COLOR);
                 break;
             case TRANFER_TO_SHOOTER:
                 noteLayer.fillColor(null);
-                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset * 2, false);
-                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset * 2, true);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset * 2, false);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset * 2, true);
                 break;
             case TRANSFER_TO_INTAKE:
                 noteLayer.fillColor(null);
-                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, 1, offset, true);
-                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, 1, offset, false);
+                noteLayer.setGroups(0., Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset, true);
+                noteLayer.setGroups(Math.PI, 2 * Math.PI, 4, 4, 1, noteColor, TRANSPARENT_COLOR, offset, false);
                 break;
             case INTAKE_READY_TO_SHOOT:
-                noteLayer.setAngleGroup(0, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), 1);
+                noteLayer.setAngleGroup(0, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), TRANSPARENT_COLOR);
                 break;
             case SHOOTER_READY_TO_SHOOT:
-                noteLayer.setAngleGroup(Math.PI, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), 1);
+                noteLayer.setAngleGroup(Math.PI, 30, 5, crossFadeWithTime(NOTE_COLOR, null, .5), TRANSPARENT_COLOR);
                 break;
             case SHOOTING:
 
@@ -148,7 +145,7 @@ public class LEDSubsystem extends SubsystemBase {
 
         // Update aprilDetectedLayer - white pulses to indicate an april tag detection.
         if (!aprilBlinkTimer.hasElapsed(APRIL_BLINK_DURATION_SECONDS) && aprilBlinkTimer.hasStarted()) {
-            aprilDetectedLayer.fillGrouped(3, 6, 1, APRIL_COLOR, .7, offset);
+            aprilDetectedLayer.fillGrouped(3, 6, 1, APRIL_COLOR.withOpacity(.7), TRANSPARENT_COLOR, offset);
         } else {
             aprilDetectedLayer.incrementColors(inc, null);
         }
@@ -162,9 +159,6 @@ public class LEDSubsystem extends SubsystemBase {
         ledStrip.addLayer(driveBackAngleLayer);
         ledStrip.addLayer(rainbowLayer);
         ledStrip.setBuffer(BRIGHTNESS_SCALE_FACTOR);
-
-        // rishayStrip.addLayer(baseLayer);
-        // rishayStrip.addLayer(driveAngleLayer);
     }
 
     /**
@@ -188,15 +182,19 @@ public class LEDSubsystem extends SubsystemBase {
      * @param periodSeconds The period of the fade function, in seconds.
      * @return The scale to set the opacity to
      */
-    private static Color crossFadeWithTime(Color color, Color fadeColor, double periodSeconds) {
+    private static OpacityColor crossFadeWithTime(OpacityColor color, OpacityColor fadeColor, double periodSeconds) {
         // The [0.0, 1.0] brightness scale to scale the color by. Scale = 1/2 * cos(t) + 1/2 where
         // t is scaled to produce the desired period.
+
+        // mid workaround, TODO: find a better way
+
         double scale = 0.5 * Math.cos(fadeTimer.get() * 2 * Math.PI / periodSeconds) + 0.5;
 
-        return new Color(
+        return new OpacityColor(
             color.red * scale + fadeColor.red * (1 - scale),
             color.green * scale + fadeColor.green * (1 - scale),
-            color.blue * scale + fadeColor.blue * (1 - scale)
+            color.blue * scale + fadeColor.blue * (1 - scale),
+            color.opacity * scale + fadeColor.opacity * (1 - scale)
         );
     }
 
