@@ -13,9 +13,11 @@ public class ShooterFeederSubsystem extends SubsystemBase{
     public final double FEEDER_MOTOR_SPEED = .8;
     public final int NO_NOTE_TOLERANCE = 500; //must test with no note in front of sensor
     public final int TOLERANCE = 1000; //represents the value when half note is in front of sensor
+    private final double FEEDER_MOTOR_RESISTANCE = 1.01;
 
     //motors
     private final TalonSRX feederMotor; 
+    //private final TalonSRX feederMotor2;
 
     //devices
     private final ColorSensorV3 shooterSensor; //distance sensor
@@ -25,12 +27,16 @@ public class ShooterFeederSubsystem extends SubsystemBase{
         feederMotor = new TalonSRX(FEEDER_MOTOR_ID);
         feederMotor.setInverted(true);
 
+        // feederMotor2 = new TalonSRX(FEEDER_MOTOR_2_ID);
+        // feederMotor.setInverted(true);
+
         //sensors
         shooterSensor = new ColorSensorV3(I2C.Port.kMXP);
     }
 
     public void setFeederMotorSpeed(double speed){
         feederMotor.set(TalonSRXControlMode.PercentOutput, speed);
+        //feederMotor2.set(TalonSRXControlMode.PercentOutput, speed*FEEDER_MOTOR_RESISTANCE);
         System.out.println("feeding motor speed is: " + feederMotor.getMotorOutputPercent());
 
     }
