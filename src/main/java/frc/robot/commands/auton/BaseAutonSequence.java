@@ -7,6 +7,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.elevator.ElevatorToChuteCommand;
 import frc.robot.commands.intake.pivot.IntakePivotExtendedCommand;
 import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
@@ -85,6 +87,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
      */
     public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj) {
         return followPath(intaketraj)
+                //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
                 .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
                 //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
