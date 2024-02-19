@@ -165,7 +165,7 @@ public final class Constants {
   }
   
   public static final class VisionConstants {
-    public static final String POSE_TABLE_KEY = "PoseEstimates";
+    public static final String VISION_TABLE_KEY = "Vision";
 
     public static final PhotonCamera FRONT_CAMERA = new PhotonCamera("Arducam_OV9281_USB_Camera_2");
     public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(

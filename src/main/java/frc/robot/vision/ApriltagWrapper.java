@@ -62,12 +62,12 @@ public class ApriltagWrapper {
 
         /* NetworkTables Setup */
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        NetworkTable poseTable = inst.getTable(POSE_TABLE_KEY);
+        NetworkTable visionTable = inst.getTable(VISION_TABLE_KEY);
         
-        BooleanTopic debugEnabledTopic = poseTable.getBooleanTopic("debugEnabled");
-        DoubleTopic xPosTopic = poseTable.getDoubleTopic("xPos" + name);
-        DoubleTopic yPosTopic = poseTable.getDoubleTopic("yPos" + name);
-        DoubleTopic headingTopic = poseTable.getDoubleTopic("heading" + name);
+        BooleanTopic debugEnabledTopic = visionTable.getBooleanTopic("debugEnabled");
+        DoubleTopic xPosTopic = visionTable.getDoubleTopic("xPos" + name);
+        DoubleTopic yPosTopic = visionTable.getDoubleTopic("yPos" + name);
+        DoubleTopic headingTopic = visionTable.getDoubleTopic("heading" + name);
 
         this.debugEnabled = debugEnabledTopic.subscribe(false);
         this.xPosPub = xPosTopic.publish(PubSubOption.keepDuplicates(true));
