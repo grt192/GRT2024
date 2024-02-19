@@ -64,7 +64,7 @@ public class XboxDriveController extends BaseDriveController {
         return driveBButton;
     }
 
-    public JoystickButton setTurnMode(){
+    public Boolean getTurnMode(){
         return null;
     }
 }

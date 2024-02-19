@@ -225,7 +225,12 @@ public class RobotContainer {
                 if(driveController.getRelativeMode()){
                     swerveSubsystem.setRobotRelativeDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
                 } else {
+                  if(driveController.getTurnMode()){
+                    swerveSubsystem.setAimMode(driveController.getForwardPower(), driveController.getLeftPower());
+                  }
+                  else{
                     swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
+                  }
                 }
                 // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
                 xError.setValue(xPID.getPositionError());

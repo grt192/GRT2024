@@ -109,7 +109,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
     private final GenericEntry robotPos;
 
-    private boolean isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -121,7 +121,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
-        thetaController = new PIDController(3, 0, 0);
+        thetaController = new PIDController(3.5, 0, 0);
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
@@ -194,7 +194,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void periodic() {
 
-        robotPos.setValue(getRobotPosition().getX());
+        robotPos.setValue(Units.radiansToDegrees(thetaController.getPositionError()));
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -327,14 +327,14 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public void setDrivePowerswithHeadingLock(double xPower, double yPower, Rotation2d targetAngles){
-        Rotation2d currentRotation = getDriverHeading();
+        Rotation2d currentRotation = getRobotPosition().getRotation();
         double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles.getRadians());
         double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    public void setAimMode(double xPower, double yPower){
+    public void setAimMode(double xPower, double yPower) {
         double shootAngleRadians = getShootAngle(isRed);
 
         setDrivePowerswithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
@@ -344,9 +344,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         double xDistance = getXfromSpeaker(isRed);
         double yDistance = getYfromSpeaker();
 
+        double rawAngle = Math.atan2(yDistance, xDistance);
+
         /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
          the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
-        return Math.atan2(yDistance, xDistance) + (!isRed ? Math.PI : 0); 
+        return rawAngle; 
     }
 
     public double getYfromSpeaker(){
@@ -363,10 +365,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         } else {
             return BLUE_SPEAKER_POS;
         }
-    }
-
-    public void setDrivePowerswithFieldAngle(double xPower, double yPower){
-
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){

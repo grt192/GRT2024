@@ -92,8 +92,8 @@ public class DualJoystickDriveController extends BaseDriveController {
     public JoystickButton getSwerveStop(){
         return leftTrigger;
     }
-    public JoystickButton setTurnMode(){
-        return leftTopRightButton;
+    public Boolean getTurnMode(){
+        return leftTopRightButton.getAsBoolean();
     }
     
 }
