@@ -121,7 +121,7 @@ public class LEDSubsystem extends SubsystemBase {
             case INTAKE_HOLDING:
                 noteLayer.setAngleGroup(0, 30, 5, NOTE_COLOR, TRANSPARENT_COLOR);
                 break;
-            case TRANFER_TO_SHOOTER:
+            case TRANSFER_TO_SHOOTER:
                 noteLayer.fillColor(TRANSPARENT_COLOR);
                 noteLayer.setGroups(0., Math.PI, 22, 12, 3, NOTE_COLOR, TRANSPARENT_COLOR, offset, true);
                 noteLayer.setGroups(Math.PI, 2 * Math.PI, 22, 12, 3, NOTE_COLOR, TRANSPARENT_COLOR, offset, false);
