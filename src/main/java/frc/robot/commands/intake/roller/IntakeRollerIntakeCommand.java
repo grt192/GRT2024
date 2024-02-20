@@ -22,6 +22,7 @@ public class IntakeRollerIntakeCommand extends Command{
     @Override
     public void initialize() {
         ledSubsystem.setNoteMode(NotePosition.INTAKING);
+        System.out.println("SLDKJFHDSFLJKHDSFKHJDSFLKJKJLD");
     }
 
     @Override

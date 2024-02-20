@@ -70,8 +70,9 @@ public class RotaryLEDLayer extends LEDLayer {
     }
 
     public void setGroups(double startAngle, double endAngle, int onGroupLength, int offGroupLength, int borderLength, OpacityColor color, OpacityColor baseColor, int offset, boolean inverted){
+        int period = (2 * borderLength + onGroupLength + offGroupLength);
         for (int i = (int) (colorArray.length * startAngle / (2 * Math.PI)); i < colorArray.length * endAngle / (2 * Math.PI); i++) {
-            int ledNumInSegment = (i + (inverted ? offset : -offset)) % (2 * borderLength + onGroupLength + offGroupLength);
+            int ledNumInSegment = (((i + (inverted ? -offset : offset)) % period) + period) % period;
             if (ledNumInSegment < borderLength){
                 setLED(i, OpacityColor.blendColors(baseColor, color, (ledNumInSegment + 1) / (borderLength + 1)));
             } else if (ledNumInSegment < onGroupLength + borderLength) {
