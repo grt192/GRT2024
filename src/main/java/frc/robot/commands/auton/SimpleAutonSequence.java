@@ -17,10 +17,18 @@ public class SimpleAutonSequence extends BaseAutonSequence{
     private ChoreoTrajectory intaketraj;
     private ChoreoTrajectory speakertraj;
    
-    public SimpleAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
-                               ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
-                               ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
-        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
+    public SimpleAutonSequence(IntakePivotSubsystem intakePivotSubsystem, 
+                                                IntakeRollersSubsystem intakeRollersSubsystem, 
+                                                ShooterFeederSubsystem shooterFeederSubsystem, 
+                                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
+                                                ShooterPivotSubsystem shooterPivotSubsystem, 
+                                                ElevatorSubsystem elevatorSubsystem, 
+                                                SwerveSubsystem swerveSubsystem, 
+                                                LEDSubsystem ledSubsystem) {
+        super(intakePivotSubsystem, intakeRollersSubsystem, 
+                shooterFeederSubsystem, shooterFlywheelSubsystem, 
+                shooterPivotSubsystem, elevatorSubsystem, 
+                swerveSubsystem, ledSubsystem);
 
         addCommands(
             goShoot(preloadedtraj), 
