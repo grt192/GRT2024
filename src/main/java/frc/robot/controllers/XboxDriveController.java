@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -27,7 +28,7 @@ public class XboxDriveController extends BaseDriveController {
 
     @Override
     public double getLeftPower() {
-        return driveController.getLeftX();
+        return -driveController.getLeftX();
     }
 
     @Override
@@ -45,5 +46,17 @@ public class XboxDriveController extends BaseDriveController {
 
     public JoystickButton getRightBumper() {
         return driveRBumper;
+    }
+
+    public Boolean getRelativeMode() {
+        return driveController.getRightTriggerAxis() > .1;
+    }
+
+    public JoystickButton getAmpAlign() {
+        return driveXButton;
+    }
+
+    public JoystickButton getSwerveStop() {
+        return driveBButton;
     }
 }

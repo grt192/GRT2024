@@ -26,4 +26,10 @@ public abstract class BaseDriveController {
     public abstract JoystickButton getLeftBumper();
 
     public abstract JoystickButton getRightBumper();
+
+    public abstract Boolean getRelativeMode();
+
+    public abstract JoystickButton getAmpAlign();
+
+    public abstract JoystickButton getSwerveStop();
 }

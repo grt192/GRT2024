@@ -22,7 +22,7 @@ public class IntakeRollerOutakeCommand extends Command{
     @Override
     public void initialize() {
         timer.reset();
-        intakeSubsystem.setRollSpeed(-1,-1); 
+        intakeSubsystem.setAllRollSpeed(-1,-1); 
     }
 
     @Override
@@ -32,7 +32,6 @@ public class IntakeRollerOutakeCommand extends Command{
         if(intakeSubsystem.sensorNow()==false&& timer.hasStarted()==false ){
             timer.start();
         }
-            
 
     }
 
@@ -40,7 +39,7 @@ public class IntakeRollerOutakeCommand extends Command{
     public void end(boolean interrupted){
         // TODO Auto-generated method stub
     
-        intakeSubsystem.setRollSpeed(0,0);
+        intakeSubsystem.setAllRollSpeed(0,0);
     }
 
     @Override

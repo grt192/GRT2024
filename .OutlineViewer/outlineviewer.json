@@ -1,0 +1,16 @@
+{
+  "Connections": {
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)"
+  },
+  "Server": {
+    "open": true
+  },
+  "transitory": {
+    "Testing": {
+      "open": true
+    }
+  }
+}

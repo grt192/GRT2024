@@ -3,9 +3,15 @@ package frc.robot.commands.elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class ElevatorToGroundCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
+    private NetworkTableInstance nt;
+    private NetworkTable table;
+    private NetworkTableEntry entry;
     public ElevatorToGroundCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
@@ -17,6 +23,10 @@ public class ElevatorToGroundCommand extends Command{
         if (interrupted){
             System.out.println("TO GROUND INTERUPTED");
         }
+        nt = NetworkTableInstance.getDefault();
+        table = nt.getTable("elevator");
+        entry = table.getEntry("position");
+        entry.setInteger(0);
         return;
     }
 

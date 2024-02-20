@@ -78,7 +78,7 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
 
     @Override
     public void periodic() {
-        System.out.println("error  " + Util.twoDecimals(module.getDriveError()) + " setpoint" + Util.twoDecimals(module.getDriveSetpoint()));
+        // System.out.println("error  " + Util.twoDecimals(module.getDriveError()) + " setpoint" + Util.twoDecimals(module.getDriveSetpoint()));
     }
 
 
