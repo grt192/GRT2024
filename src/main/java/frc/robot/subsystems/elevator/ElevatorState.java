@@ -1,9 +1,11 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.util.Units;
 
 import frc.robot.Constants;
 
+/**
+    States of the elevator.
+*/
 public enum ElevatorState {
     GROUND(Constants.ElevatorConstants.GROUND_POSITION),
     AMP(Constants.ElevatorConstants.AMP_POSITION),
@@ -13,11 +15,16 @@ public enum ElevatorState {
 
     private final double extendDistanceMeters;
 
-    private ElevatorState(double extendDistanceMeters){
+    private ElevatorState(double extendDistanceMeters) {
         this.extendDistanceMeters = extendDistanceMeters;
     }
 
-    public double getExtendDistanceMeters(){
+    /**
+     * get the distance of a state in meters.
+
+     * @return meters in double.
+     */
+    public double getExtendDistanceMeters() {
         return this.extendDistanceMeters;
     }
 
