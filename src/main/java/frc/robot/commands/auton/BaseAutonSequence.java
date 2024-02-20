@@ -56,7 +56,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
-        thetaController = new PIDController(3, 0, 0);
+        thetaController = new PIDController(3.5, 0, 0);
     }
 
     public Command followPath(ChoreoTrajectory traj){

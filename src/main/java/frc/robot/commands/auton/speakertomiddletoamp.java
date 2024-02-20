@@ -21,7 +21,7 @@ public class speakertomiddletoamp extends BaseAutonSequence{
     public speakertomiddletoamp(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem);
         
-        middlenoteintaketraj = Choreo.getTrajectory("speakerstarttomiddlenote");
+        middlenoteintaketraj = Choreo.getTrajectory("REAL3MCurve");
         ampnoteintaketraj = Choreo.getTrajectory("speakermiddlenotetoampnote");
         shootampnotetraj = Choreo.getTrajectory("speakerampnoteshoot");
 
@@ -31,9 +31,9 @@ public class speakertomiddletoamp extends BaseAutonSequence{
 
         addCommands(
             //shoot(), 
-            goIntake(middlenoteintaketraj),
+            followPath(middlenoteintaketraj)
             //shoot(),
-            goIntake(ampnoteintaketraj)
+            //goIntake(ampnoteintaketraj)
             //goShoot(shootampnotetraj)
         );
     }
