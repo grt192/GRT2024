@@ -21,8 +21,8 @@ public class DualJoystickDriveController extends BaseDriveController {
     private final Joystick rightJoystick = new Joystick(1);
     private final JoystickButton
         rightTrigger = new JoystickButton(rightJoystick, 1),
-        right2 = new JoystickButton(rightJoystick, 2),
-        rightTopLeftButton = new JoystickButton(rightJoystick, 3),
+        rightBottomButton = new JoystickButton(rightJoystick, 2),
+        rightTopButton = new JoystickButton(rightJoystick, 3),
         rightTopRightButton = new JoystickButton(rightJoystick, 4),
         rightMiddleLeftButton = new JoystickButton(rightJoystick, 5),
         rightMiddleRightButton = new JoystickButton(rightJoystick, 6),
@@ -66,7 +66,7 @@ public class DualJoystickDriveController extends BaseDriveController {
     }
 
     public JoystickButton getFieldResetButton() {
-        return right2;
+        return rightTopButton;
     }
 
     public JoystickButton getRightBumper(){
@@ -82,10 +82,18 @@ public class DualJoystickDriveController extends BaseDriveController {
     }
 
     public JoystickButton getAmpAlign(){
-        return leftTrigger;
+        return leftTopLeftButton;
+    }
+
+    public JoystickButton getNoteAlign() {
+        return leftMiddleButton;
     }
 
     public JoystickButton getSwerveStop(){
-        return leftMiddleButton;
+        return leftTrigger;
     }
+    public Boolean getTurnMode(){
+        return leftTopRightButton.getAsBoolean();
+    }
+    
 }

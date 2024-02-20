@@ -24,12 +24,14 @@ import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
+import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
 import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
 import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
+import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -38,9 +40,13 @@ import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+import frc.robot.vision.NoteDetectionWrapper;
+
+import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
 import java.sql.Driver;
 import java.util.function.BooleanSupplier;
@@ -52,6 +58,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -59,6 +66,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -85,6 +93,8 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsystem;
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
+
+    private final NoteDetectionWrapper noteDetector;  
     
     
     // Configure the trigger bindings
@@ -110,10 +120,6 @@ public class RobotContainer {
     private PIDController xPID;
     private PIDController yPID;
 
-    private final JoystickButton
-      LBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value),
-      RBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value),
-      AButton = new JoystickButton(mechController, XboxController.Button.kA.value);
 
     private final GenericEntry xError, yError;
 
@@ -121,40 +127,42 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-      //construct Test
-      // module = new SwerveModule(6, 7, 0);
-      // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = new SwerveSubsystem();
-      intakePivotSubsystem = new IntakePivotSubsystem();
-      shooterFeederSubsystem = new ShooterFeederSubsystem();
+        //construct Test
+        // module = new SwerveModule(6, 7, 0);
+        // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+        baseSwerveSubsystem = new SwerveSubsystem();
+        intakePivotSubsystem = new IntakePivotSubsystem();
+        shooterFeederSubsystem = new ShooterFeederSubsystem();
 
-      shooterPivotSubsystem = new ShooterPivotSubsystem(false);
-      shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+        shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
-      climbSubsystem = new ClimbSubsystem();
-    
-      elevatorSubsystem = new ElevatorSubsystem();
+        climbSubsystem = new ClimbSubsystem();
+        
+        elevatorSubsystem = new ElevatorSubsystem();
 
-      xPID = new PIDController(4, 0, 0);
-      yPID = new PIDController(4, 0, 0);
+        xPID = new PIDController(4, 0, 0);
+        yPID = new PIDController(4, 0, 0);
 
-      traj = Choreo.getTrajectory("2mLine");
+        traj = Choreo.getTrajectory("2mLine");
 
-      swerveCrauton = Shuffleboard.getTab("Auton");
+        swerveCrauton = Shuffleboard.getTab("Auton");
 
-    xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
-    yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
-    if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
+        xError = swerveCrauton.add("Xerror", 0).withPosition(8, 0).getEntry();
+        yError = swerveCrauton.add("Yerror", 0).withPosition(9, 0).getEntry();
+        if(DriverStation.getJoystickName(0).equals("Cyborg V.1")){
             driveController = new DualJoystickDriveController();
         } else {
             driveController = new XboxDriveController();
         }
-        // Configure the trigger bindings
-        configureBindings();
         // private final SwerveModule module;
         //construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+
+
+        noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
+
 
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -162,6 +170,9 @@ public class RobotContainer {
         camera1.setResolution(176, 144);
         mjpgserver1 = new MjpegServer("m1", 1181);
         mjpgserver1.setSource(camera1);
+
+        // Configure the trigger bindings
+        configureBindings();
     }
 
 
@@ -199,14 +210,27 @@ public class RobotContainer {
                 ledSubsystem.setDriverHeading(driveController.getRelativeMode() ? 0 : -swerveSubsystem.getDriverHeading().getRadians());
             }, ledSubsystem));
 
-            driveController.getAmpAlign().onTrue(AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
+            driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
+                AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem),
+                new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
+            ));
+            driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
+                new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector)
+                .unless(() -> noteDetector.getNote().isEmpty()),
+                new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())
+            ));
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
             swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
                 if(driveController.getRelativeMode()){
                     swerveSubsystem.setRobotRelativeDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
                 } else {
+                  if(driveController.getTurnMode()){
+                    swerveSubsystem.setAimMode(driveController.getForwardPower(), driveController.getLeftPower());
+                  }
+                  else{
                     swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower(), driveController.getRotatePower());
+                  }
                 }
                 // pivotSubsystem.setFieldPosition(swerveSubsystem.getRobotPosition());
                 xError.setValue(xPID.getPositionError());
@@ -246,10 +270,6 @@ public class RobotContainer {
           swerveSubsystem.setDrivePowers(driveController.getForwardPower(), driveController.getLeftPower());//, 1 * (controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
         }
         , swerveSubsystem));
-
-          driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.toggletoRun();
-          }));
         
         }
 

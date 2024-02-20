@@ -1,12 +1,14 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -23,10 +25,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.vision.PhotonWrapper;
+import frc.robot.vision.ApriltagWrapper;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.util.Util;
-import frc.robot.vision.PhotonWrapper;
 import frc.robot.Constants;
 
 import static frc.robot.Constants.SwerveConstants.*;
@@ -37,6 +38,8 @@ import java.security.GeneralSecurityException;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+
+import javax.swing.text.html.Option;
 
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
@@ -73,7 +76,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveDriveKinematics kinematics;
-    private final PhotonWrapper photonWrapper;
+    private final ApriltagWrapper apriltagWrapper;
+
+    //heading lock controller
+    private final PIDController thetaController;
 
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private final NetworkTable networkTable = inst.getTable("Testing");
@@ -103,6 +109,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
     private final GenericEntry robotPos;
 
+    private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -112,6 +120,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         backRightModule = new SwerveModule(BR_DRIVE, BR_STEER, BR_OFFSET, true);
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
+
+        thetaController = new PIDController(3.5, 0, 0);
+        thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
 
@@ -152,7 +163,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
 
-        photonWrapper = new PhotonWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
+        apriltagWrapper = new ApriltagWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
@@ -183,7 +194,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void periodic() {
 
-        robotPos.setValue(getRobotPosition().getX());
+        robotPos.setValue(Units.radiansToDegrees(thetaController.getPositionError()));
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -208,7 +219,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // BRsteer.setValue(backRightModule.getSteerAmpDraws());
         // BRdrive.setValue(backRightModule.getDriveAmpDraws());
         
-        Optional<EstimatedRobotPose> visionEstimate = photonWrapper.getRobotPose(
+        Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
             new Pose3d(field.getRobotPose())
         );
 
@@ -315,6 +326,47 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
+    public void setDrivePowerswithHeadingLock(double xPower, double yPower, Rotation2d targetAngles){
+        Rotation2d currentRotation = getRobotPosition().getRotation();
+        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles.getRadians());
+        double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
+
+        setDrivePowers(xPower, yPower, turnPower);
+    }
+
+    public void setAimMode(double xPower, double yPower) {
+        double shootAngleRadians = getShootAngle(isRed);
+
+        setDrivePowerswithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
+    }
+
+    public double getShootAngle(boolean isRed) {
+        double xDistance = getXfromSpeaker(isRed);
+        double yDistance = getYfromSpeaker();
+
+        double rawAngle = Math.atan2(yDistance, xDistance);
+
+        /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
+         the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
+        return rawAngle; 
+    }
+
+    public double getYfromSpeaker(){
+        return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
+    }
+
+    public double getXfromSpeaker(boolean isRed){
+        return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
+    }
+
+    public Translation2d getSpeakerPosition(boolean isRed) {
+        if (isRed) {
+            return RED_SPEAKER_POS;
+        } else {
+            return BLUE_SPEAKER_POS;
+        }
+    }
+
     public void setSwerveModuleStates(SwerveModuleState[] states){
         this.states = states;
     }
@@ -374,11 +426,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void resetAhrs(){
         ahrs.zeroYaw();
-    }
-
-    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
     }
 
 }

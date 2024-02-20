@@ -56,7 +56,15 @@ public class XboxDriveController extends BaseDriveController {
         return driveXButton;
     }
 
+    public JoystickButton getNoteAlign() {
+        return driveYButton;
+    }
+
     public JoystickButton getSwerveStop() {
         return driveBButton;
+    }
+
+    public Boolean getTurnMode(){
+        return null;
     }
 }

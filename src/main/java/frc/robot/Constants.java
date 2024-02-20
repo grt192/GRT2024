@@ -79,6 +79,10 @@ public final class Constants {
     public static final Translation2d FR_POS = new Translation2d(MODULE_DIST, -MODULE_DIST);
     public static final Translation2d BL_POS = new Translation2d(-MODULE_DIST, MODULE_DIST);
     public static final Translation2d BR_POS = new Translation2d(-MODULE_DIST, -MODULE_DIST);
+
+    public static final Translation2d BLUE_SPEAKER_POS = new Translation2d(Units.inchesToMeters(-1.50 + 17.5), Units.inchesToMeters(218.42));
+    public static final Translation2d RED_SPEAKER_POS = new Translation2d(Units.inchesToMeters(652.73 - 17.5), Units.inchesToMeters(218.42));
+    public static final double SPEAKER_TO_SPEAKER = Units.inchesToMeters(651.23);
   }
 
   public static class IntakeConstants {
@@ -162,12 +166,15 @@ public final class Constants {
   }
   
   public static final class VisionConstants {
-    public static final String POSE_TABLE_KEY = "PoseEstimates";
+    public static final String VISION_TABLE_KEY = "Vision";
 
     public static final PhotonCamera FRONT_CAMERA = new PhotonCamera("Arducam_OV9281_USB_Camera_2");
     public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(
       new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
       new Rotation3d(Math.PI, Units.degreesToRadians(16), 0)
     );
+
+    public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+    public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
   }
 }
