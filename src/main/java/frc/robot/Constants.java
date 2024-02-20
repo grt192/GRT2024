@@ -162,7 +162,7 @@ public final class Constants {
   public static class LEDConstants {
     public static final int LED_LENGTH = 140;
     public static final int LED_PWM_PORT = 0;
-    public static final double BRIGHTNESS_SCALE_FACTOR = .5;
+    public static final double BRIGHTNESS_SCALE_FACTOR = .6;
   }
   
   public static final class VisionConstants {
