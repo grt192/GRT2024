@@ -52,7 +52,7 @@ public class ShootModeSequence extends SequentialCommandGroup {
                         ),
                         new ParallelDeadlineGroup(new ShooterFeedLoadCommand(shooterFeederSubsystem),
                                                   new IntakeRollerFeedCommand(intakeRollerSubsystem),
-                                                  new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.TRANFER_TO_SHOOTER))),
+                                                  new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.TRANSFER_TO_SHOOTER))),
                         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.SHOOTER_HOLDING)),
                         new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)), //STUB FOR AUTOAIM
                         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.SHOOTER_READY_TO_SHOOT))
