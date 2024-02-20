@@ -8,6 +8,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -108,9 +109,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
     private final GenericEntry robotPos;
 
-    private boolean enabled = false;
-
-    private boolean isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -122,7 +121,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
-        thetaController = new PIDController(3, 0, 0);
+        thetaController = new PIDController(3.5, 0, 0);
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
@@ -195,7 +194,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void periodic() {
 
-        robotPos.setValue(getRobotPosition().getX());
+        robotPos.setValue(Units.radiansToDegrees(thetaController.getPositionError()));
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -327,22 +326,29 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         // System.out.println(speeds.vxMetersPerSecond);
     }
 
-    public void setDrivePowerswithHeadingLock(double xPower, double yPower, double targetAngles){
-        Rotation2d currentRotation = getDriverHeading();
-        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles);
+    public void setDrivePowerswithHeadingLock(double xPower, double yPower, Rotation2d targetAngles){
+        Rotation2d currentRotation = getRobotPosition().getRotation();
+        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles.getRadians());
         double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    public void setAimMode(){
-        double x = getXfromSpeaker(isRed);
-        double y = getYfromSpeaker();
-        setDrivePowerswithHeadingLock(x, y, getShootAngle(x, y));
+    public void setAimMode(double xPower, double yPower) {
+        double shootAngleRadians = getShootAngle(isRed);
+
+        setDrivePowerswithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
 
-    public double getShootAngle(double x, double y){
-        return Math.atan2(y, x);
+    public double getShootAngle(boolean isRed) {
+        double xDistance = getXfromSpeaker(isRed);
+        double yDistance = getYfromSpeaker();
+
+        double rawAngle = Math.atan2(yDistance, xDistance);
+
+        /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
+         the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
+        return rawAngle; 
     }
 
     public double getYfromSpeaker(){
@@ -350,10 +356,15 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
     }
 
     public double getXfromSpeaker(boolean isRed){
-        if (isRed){
-            return SPEAKER_TO_SPEAKER - getRobotPosition().getX() - BLUE_SPEAKER_POS.getX();
+        return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
+    }
+
+    public Translation2d getSpeakerPosition(boolean isRed) {
+        if (isRed) {
+            return RED_SPEAKER_POS;
+        } else {
+            return BLUE_SPEAKER_POS;
         }
-        return -getRobotPosition().getX() + BLUE_SPEAKER_POS.getX();
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states){
@@ -415,11 +426,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     public void resetAhrs(){
         ahrs.zeroYaw();
-    }
-
-    public SequentialCommandGroup choreoSwerveCommand(ChoreoTrajectory traj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'choreoSwerveCommand'");
     }
 
 }
