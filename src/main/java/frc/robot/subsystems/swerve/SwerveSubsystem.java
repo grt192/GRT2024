@@ -127,6 +127,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final Field2d field;
 
     // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
+    private final GenericEntry FLsteer, FRsteer, BLsteer, BRsteer;
     private final GenericEntry robotPos;
 
     private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
@@ -161,16 +162,16 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         robotPos = choreoTab.add("position", 0.).withPosition(7, 0).getEntry();
 
-        // FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
+        FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
         // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
         
-        // FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
+        FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
         // FRdrive = choreoTab.add("FRdrive", 0.).withPosition(1, 1).getEntry();
         
-        // BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
+        BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
         // BLdrive = choreoTab.add("BLdrive", 0.).withPosition(2, 1).getEntry();
         
-        // BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
+        BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
         // BRdrive = choreoTab.add("BRdrive", 0.).withPosition(3, 1).getEntry();
 
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -215,7 +216,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     @Override
     public void periodic() {
 
-        robotPos.setValue(getRobotPosition().getX());
+        robotPos.setValue(Util.twoDecimals(getRobotPosition().getX()));
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -227,18 +228,20 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         //     //System.out.println("BR : " + backRightModule.getRawAngle());
         //     System.out.println("BL : " + backLeftModule.getRawAngle());
         // }
+
+        SwerveModulePosition[] modulePos = getModulePositions(); 
     
-        // FLsteer.setValue(frontLeftModule.getSteerAmpDraws());
-        // FLdrive.setValue(frontLeftModule.getDriveAmpDraws());
+        FLsteer.setValue(Util.twoDecimals(modulePos[0].angle.getDegrees()));
+        // FLdrive.setValue(Util.twoDecimals(modulePos[0].distanceMeters));
 
-        // FRsteer.setValue(frontRightModule.getSteerAmpDraws());
-        // FRdrive.setValue(frontRightModule.getDriveAmpDraws());
+        FRsteer.setValue(Util.twoDecimals(modulePos[1].angle.getDegrees()));
+        // FRdrive.setValue(Util.twoDecimals(modulePos[1].distanceMeters));
 
-        // BLsteer.setValue(backLeftModule.getSteerAmpDraws());
-        // BLdrive.setValue(backLeftModule.getDriveAmpDraws());
+        BLsteer.setValue(Util.twoDecimals(modulePos[2].angle.getDegrees()));
+        // BLdrive.setValue(Util.twoDecimals(modulePos[2].distanceMeters));
 
-        // BRsteer.setValue(backRightModule.getSteerAmpDraws());
-        // BRdrive.setValue(backRightModule.getDriveAmpDraws());
+        BRsteer.setValue(Util.twoDecimals(modulePos[3].angle.getDegrees()));
+        // BRdrive.setValue(Util.twoDecimals(modulePos[3].distanceMeters));
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
             Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
@@ -269,7 +272,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         
 
-        field.setRobotPose(new Pose2d(estimate.getX() + 1, estimate.getY() + .3, estimate.getRotation()));
+        field.setRobotPose(new Pose2d(Util.twoDecimals(estimate.getX() + 1), estimate.getY() + .3, estimate.getRotation()));
         
         for (int i = 0; i < 4; i++) {
             angles[i].set(states[i].angle.getRadians());
