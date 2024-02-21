@@ -1,6 +1,4 @@
-
 package frc.robot.commands.intake.pivot;
-
 
 import static frc.robot.Constants.IntakeConstants.pivotclockwise;
 
@@ -10,9 +8,14 @@ import frc.robot.subsystems.intake.IntakePivotSubsystem;
 public class IntakePivotVerticalCommand extends Command{
     private final IntakePivotSubsystem pivotSubsystem;
 
+    /**
+     * retracts the intake 
+     * @param pivotSubsystem
+     */
     public IntakePivotVerticalCommand(IntakePivotSubsystem pivotSubsystem){
         this.pivotSubsystem = pivotSubsystem;
     }
+
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
