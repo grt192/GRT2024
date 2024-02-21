@@ -123,7 +123,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             currentDistance = Math.sqrt(xLength + yLength);
         } 
 
-        return Math.atan(speakerHeight/currentDistance);
+        return Math.pi - Math.atan(speakerHeight/currentDistance);
     }
 
     public void printCurrentAngle(){

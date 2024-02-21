@@ -125,7 +125,7 @@ public final class Constants {
     public static final int RIGHT_WINCH_MOTOR_ID = 9;
     public static final int RIGHT_ZERO_LIMIT_ID = 1;
    
-    public static final double WINCH_REDUCTION = 9.49;
+    public static final double INCH_REDUCTION = 9.49;
     public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289) ;
     
     public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(39);
