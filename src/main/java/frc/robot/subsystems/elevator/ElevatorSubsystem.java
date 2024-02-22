@@ -116,7 +116,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             return;
         }
          
-        if (zeroLimitSwitch != null && !zeroLimitSwitch.get()) {
+        if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
             // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
@@ -125,6 +125,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         //this through overun when no motor connected.
     }
     
+    /**
+     * If the elevator is touching the limit switch.
+
+     * @return true if the elevator is touching the limit switch, false if not.
+     */
+    public boolean atGround() {
+        if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * Check if the elevator is at a certain state.
 
