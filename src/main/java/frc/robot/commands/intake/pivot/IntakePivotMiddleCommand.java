@@ -13,6 +13,7 @@ import frc.robot.subsystems.intake.IntakePivotSubsystem;
 public class IntakePivotMiddleCommand  extends Command{
     private final IntakePivotSubsystem pivotSubsystem;
 
+
     /**
      * sets the intake pivot to a middle position
      * @param pivotSubsystem
@@ -23,7 +24,7 @@ public class IntakePivotMiddleCommand  extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        pivotSubsystem.movePivot(pivotcounterclockwise);
+        pivotSubsystem.setPosition(encodermiddle);
     }
     @Override
     public void execute() {
