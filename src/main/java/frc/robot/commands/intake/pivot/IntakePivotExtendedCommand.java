@@ -8,6 +8,10 @@ import frc.robot.subsystems.intake.IntakePivotSubsystem;
 public class IntakePivotExtendedCommand extends Command{
     private final IntakePivotSubsystem pivotSubsystem;
 
+    /**
+     * extends intake 
+     * @param pivotSubsystem
+     */
     public IntakePivotExtendedCommand(IntakePivotSubsystem pivotSubsystem){
         this.pivotSubsystem = pivotSubsystem;
     }

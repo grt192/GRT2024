@@ -12,6 +12,10 @@ public class IntakeRollerFeedCommand extends Command{
     private final IntakeRollersSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
+    /**
+     * Sets all the rollers inwards to pass note into shooter
+     * @param intakeSubsystem
+     */
     public IntakeRollerFeedCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
@@ -28,7 +32,7 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        if(intakeSubsystem.sensorNow() == false && timer.hasStarted()==false){
+        if (intakeSubsystem.sensorNow() == false && timer.hasStarted()==false){
             timer.start();
         }
     }
@@ -36,7 +40,7 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(0,0);
+        intakeSubsystem.setAllRollSpeed(0, 0); 
         
     }
 

@@ -94,8 +94,9 @@ public final class Constants {
     public static final int sensorID = 0;
     public static final int extendedlimitswitchID = 5;
     public static final int retractedlimitswitchID = 6;
-    //public static final int intakeencoderID = 3;
+    public static final int intakeencoderID = 3;
 
+    public static final double encodermiddle = 1;
     public static final double rollersclockwise = 1;
     public static final double rollerscounterclockwise = 1; 
     public static final double sensorreached = .3;

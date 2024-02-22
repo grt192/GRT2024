@@ -1,7 +1,5 @@
 package frc.robot.commands.intake.roller;
 
-
-import static frc.robot.Constants.IntakeConstants.rollersclockwise;
 import static frc.robot.Constants.IntakeConstants.rollerscounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +11,11 @@ public class IntakeRollerIntakeCommand extends Command{
     private final IntakeRollersSubsystem intakeSubsystem;
     private final LEDSubsystem ledSubsystem;
 
+    /**
+     * intakes note
+     * @param intakeSubsystem
+     * @param ledSubsystem
+     */
     public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem, LEDSubsystem ledSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         this.ledSubsystem = ledSubsystem;
@@ -28,13 +31,13 @@ public class IntakeRollerIntakeCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(rollerscounterclockwise,rollersclockwise); 
+        intakeSubsystem.setRollSpeed(rollerscounterclockwise); 
     }
 
     @Override
     public void end(boolean interrupted){
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(0,0); 
+        intakeSubsystem.setRollSpeed(0); 
         ledSubsystem.setNoteMode(intakeSubsystem.sensorNow() ? NotePosition.INTAKE_HOLDING : NotePosition.NONE);
     }
 
