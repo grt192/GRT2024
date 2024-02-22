@@ -1,6 +1,6 @@
 package frc.robot.commands.intake.pivot;
 
-import static frc.robot.Constants.IntakeConstants.pivotcounterclockwise;
+import static frc.robot.Constants.IntakeConstants.PIVOT_COUNTERCLOCKWISE;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakePivotSubsystem; 
@@ -15,7 +15,7 @@ public class IntakePivotExtendedCommand extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        pivotSubsystem.movePivot(pivotcounterclockwise);
+        pivotSubsystem.movePivot(PIVOT_COUNTERCLOCKWISE);
     }
     
     @Override

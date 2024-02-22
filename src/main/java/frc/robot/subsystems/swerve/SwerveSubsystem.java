@@ -1,5 +1,31 @@
 package frc.robot.subsystems.swerve;
 
+import static frc.robot.Constants.SwerveConstants.BLUE_SPEAKER_POS;
+import static frc.robot.Constants.SwerveConstants.BL_DRIVE;
+import static frc.robot.Constants.SwerveConstants.BL_OFFSET;
+import static frc.robot.Constants.SwerveConstants.BL_POS;
+import static frc.robot.Constants.SwerveConstants.BL_STEER;
+import static frc.robot.Constants.SwerveConstants.BR_DRIVE;
+import static frc.robot.Constants.SwerveConstants.BR_OFFSET;
+import static frc.robot.Constants.SwerveConstants.BR_POS;
+import static frc.robot.Constants.SwerveConstants.BR_STEER;
+import static frc.robot.Constants.SwerveConstants.FL_DRIVE;
+import static frc.robot.Constants.SwerveConstants.FL_OFFSET;
+import static frc.robot.Constants.SwerveConstants.FL_POS;
+import static frc.robot.Constants.SwerveConstants.FL_STEER;
+import static frc.robot.Constants.SwerveConstants.FR_DRIVE;
+import static frc.robot.Constants.SwerveConstants.FR_OFFSET;
+import static frc.robot.Constants.SwerveConstants.FR_POS;
+import static frc.robot.Constants.SwerveConstants.FR_STEER;
+import static frc.robot.Constants.SwerveConstants.RED_SPEAKER_POS;
+import static frc.robot.Constants.VisionConstants.FRONT_CAMERA;
+import static frc.robot.Constants.VisionConstants.FRONT_CAMERA_POSE;
+
+import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
@@ -14,49 +40,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.vision.ApriltagWrapper;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.util.Util;
-import frc.robot.Constants;
-
-import static frc.robot.Constants.SwerveConstants.*;
-import static frc.robot.Constants.VisionConstants.*;
-import static frc.robot.Constants.AutoAlignConstants.*;
-
-import java.security.GeneralSecurityException;
 import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 
-import javax.swing.text.html.Option;
-
-import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoTrajectory;
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-
-
-public class SwerveSubsystem extends BaseSwerveSubsystem{
+/** The subsystem that controls the swerve drivetrain. */
+public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final AHRS ahrs;
 
     private final Timer crimer;
@@ -111,6 +109,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
+    /** Constructs a swerve subsystem. */
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -135,10 +134,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         choreoTab = Shuffleboard.getTab("Auton");
         field = new Field2d();
         choreoTab.add("Field", field)
-        .withPosition(0, 0)
-        .withSize(6, 4);
+            .withPosition(0, 0)
+            .withSize(6, 4);
 
-        robotPos = choreoTab.add("position", 0.).withPosition(7,0).getEntry();
+        robotPos = choreoTab.add("position", 0.).withPosition(7, 0).getEntry();
 
         // FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
         // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
@@ -170,7 +169,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             this::resetPose, 
             this::getRobotRelativeChassisSpeeds, 
             this::setRobotRelativeDrivePowers, 
-            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            new HolonomicPathFollowerConfig(
                         new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(3.0, 0.0, 0.0), // Rotation PID constants
                         4.5, // Max module speed, in m/s
@@ -189,9 +188,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
                 return false;
             },
             this
-    );
+        );
     }
 
+    @Override
     public void periodic() {
 
         robotPos.setValue(Units.radiansToDegrees(thetaController.getPositionError()));
@@ -223,10 +223,12 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             new Pose3d(field.getRobotPose())
         );
 
-        if (visionEstimate.isPresent()) poseEstimator.addVisionMeasurement(
-            visionEstimate.get().estimatedPose.toPose2d(),
-            visionEstimate.get().timestampSeconds
-        );
+        if (visionEstimate.isPresent()) {
+            poseEstimator.addVisionMeasurement(
+                visionEstimate.get().estimatedPose.toPose2d(),
+                visionEstimate.get().timestampSeconds
+            );
+        }
 
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
@@ -246,7 +248,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
         field.setRobotPose(new Pose2d(estimate.getX() + 1, estimate.getY() + .3, estimate.getRotation()));
         
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             angles[i].set(states[i].angle.getRadians());
             velocities[i].set(states[i].speedMetersPerSecond);
         }
@@ -258,7 +260,13 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
 
     }
 
-    public void setDrivePowers(double xPower, double yPower, double angularPower){
+    /** Sets the powers of the drivetrain through PIDs. Relative to the driver heading on the field.
+     *
+     * @param xPower [-1, 1] The forward power.
+     * @param yPower [-1, 1] The left power.
+     * @param angularPower [-1, 1] The rotational power.
+     */
+    public void setDrivePowers(double xPower, double yPower, double angularPower) {
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xPower * MAX_VEL, 
             yPower * MAX_VEL, 
@@ -272,7 +280,13 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    public void setRobotRelativeDrivePowers(double xPower, double yPower, double angularPower){
+    /** Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
+     *
+     * @param xPower [-1, 1] The forward power.
+     * @param yPower [-1, 1] The left power.
+     * @param angularPower [-1, 1] The rotational power.
+     */
+    public void setRobotRelativeDrivePowers(double xPower, double yPower, double angularPower) {
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
             xPower * MAX_VEL, 
             yPower * MAX_VEL, 
@@ -286,7 +300,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    public void setRobotRelativeDrivePowers(ChassisSpeeds robotRelativeSpeeds){
+    /** Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
+     *
+     * @param robotRelativeSpeeds The speeds of the chassis to set to.
+     */
+    public void setRobotRelativeDrivePowers(ChassisSpeeds robotRelativeSpeeds) {
         
         ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
             robotRelativeSpeeds,
@@ -300,19 +318,25 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    public ChassisSpeeds getRobotRelativeChassisSpeeds(){
-
+    /** Gets the current chassis speeds relative to the robot.
+     *
+     * @return The robot relative chassis speeds.
+     */
+    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         ChassisSpeeds robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             kinematics.toChassisSpeeds(states),
             getRobotPosition().getRotation() // getGyroHeading()
         );
-
-        System.out.println("x: " + Util.twoDecimals(Units.metersToInches(getRobotPosition().getX() - BLUE_AMP_POSE.getX())) + "   y: " + Util.twoDecimals(Units.metersToInches(getRobotPosition().getY() - BLUE_AMP_POSE.getY())));
-
         return robotRelativeSpeeds;
     }
 
-    public void setChassisSpeeds(double xSpeed, double ySpeed, double angleSpeed){
+    /** Sets the chassis speeds.
+     *
+     * @param xSpeed x direction speed in meters/second.
+     * @param ySpeed y direction speed in meters/second.
+     * @param angleSpeed angular speed in rads/second.
+     */
+    public void setChassisSpeeds(double xSpeed, double ySpeed, double angleSpeed) {
         ChassisSpeeds speeds = new ChassisSpeeds(
             xSpeed,
             ySpeed,
@@ -322,27 +346,41 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         SwerveDriveKinematics.desaturateWheelSpeeds(
             this.states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
-
-        // System.out.println(speeds.vxMetersPerSecond);
     }
 
-    public void setDrivePowerswithHeadingLock(double xPower, double yPower, Rotation2d targetAngles){
+    /** Sets the drive powers with a heading lock. Field relative.
+     *
+     * @param xPower [-1, 1] The x direction power (forward).
+     * @param yPower [-1, 1] The y direction power (left).
+     * @param targetAngle Rotation2d of the angle wanted.
+     */
+    public void setDrivePowersWithHeadingLock(double xPower, double yPower, Rotation2d targetAngle) {
         Rotation2d currentRotation = getRobotPosition().getRotation();
-        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngles.getRadians());
+        double turnSpeed = thetaController.calculate(currentRotation.getRadians(), targetAngle.getRadians());
         double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    public void setAimMode(double xPower, double yPower) {
+    /** Sets the drive powers while aiming at the speaker.
+     *
+     * @param xPower The power in x direction.
+     * @param yPower The power in the y direction.
+     */
+    public void setSwerveAimDrivePowers(double xPower, double yPower) {
         double shootAngleRadians = getShootAngle(isRed);
 
-        setDrivePowerswithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
+        setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
 
+    /** Gets the correct angle to aim the swerve at to point at the speaker.
+     *
+     * @param isRed Whether the team is red or not.
+     * @return The angle to point at.
+     */
     public double getShootAngle(boolean isRed) {
-        double xDistance = getXfromSpeaker(isRed);
-        double yDistance = getYfromSpeaker();
+        double xDistance = getXFromSpeaker(isRed);
+        double yDistance = getYFromSpeaker();
 
         double rawAngle = Math.atan2(yDistance, xDistance);
 
@@ -351,14 +389,28 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         return rawAngle; 
     }
 
-    public double getYfromSpeaker(){
+    /** Gets the Y distance from the speaker.
+     *
+     * @return The Y distance from the speaker in meters.
+     */
+    public double getYFromSpeaker() {
         return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
     }
 
-    public double getXfromSpeaker(boolean isRed){
+    /** Gets the X distance from the speaker.
+     *
+     * @param isRed Whether the current team is red or not.
+     * @return The X distance from the speaker in meters.
+     */
+    public double getXFromSpeaker(boolean isRed) {
         return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
     }
 
+    /** Gets the current speaker position.
+     *
+     * @param isRed If our team is red or not.
+     * @return The translation 2d of the speaker.
+     */
     public Translation2d getSpeakerPosition(boolean isRed) {
         if (isRed) {
             return RED_SPEAKER_POS;
@@ -367,10 +419,19 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         }
     }
 
-    public void setSwerveModuleStates(SwerveModuleState[] states){
+
+    /** Sets the states of the swerve modules.
+     *
+     * @param states The array of swerve modules states
+     */
+    public void setSwerveModuleStates(SwerveModuleState[] states) {
         this.states = states;
     }
 
+    /** Get the module positions.
+     *
+     * @return The array of module positions.
+     */
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
             frontLeftModule.getState(),
@@ -380,17 +441,29 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         };
     }
 
+    /** Get the kinematics object.
+     *
+     * @return The kinematics object.
+     */
     public SwerveDriveKinematics getKinematics() {
         return kinematics;
     }
 
+    /** Get the current robot pose.
+     *
+     * @return The robot Pose2d.
+     */
     public Pose2d getRobotPosition() {
         // System.out.println(poseEstimator.getEstimatedPosition().getRotation());
         return poseEstimator.getEstimatedPosition();
 
     }
 
-    public void resetPose(Pose2d currentPose){
+    /** Reset the robot pose.
+     *
+     * @param currentPose The pose to reset to.
+     */
+    public void resetPose(Pose2d currentPose) {
         Rotation2d gyroAngle = getGyroHeading();
         poseEstimator.resetPosition(
             gyroAngle, 
@@ -399,22 +472,33 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         );
     }
 
+    /** Reset the pose to 0,0,0. */
     public void resetPose() {
         resetPose(new Pose2d());
     }
 
-    public void resetDriverHeading(Rotation2d currentRotation){
+    /** Reset the driver heading.
+     *
+     * @param currentRotation The new driver heading.
+     */
+    public void resetDriverHeading(Rotation2d currentRotation) {
         driverHeadingOffset = getGyroHeading().minus(currentRotation);
     }
 
+    /** Reset the driver heading to 0. */
     public void resetDriverHeading() {
         resetDriverHeading(new Rotation2d());
     }
 
+    /** Get the gyro heading. TODO: uninvert because it is right side up now. */
     private Rotation2d getGyroHeading() {
         return Rotation2d.fromDegrees(-ahrs.getAngle());
     }
 
+    /** Get the driver heading.
+     *
+     * @return The angle of the robot relative to the driver heading.
+     */
     public Rotation2d getDriverHeading() {
 
         Rotation2d robotHeading = ahrs.isConnected()
@@ -424,7 +508,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem{
         return robotHeading.minus(driverHeadingOffset);
     }
 
-    public void resetAhrs(){
+    /** Reset the ahrs on the navX. */
+    public void resetAhrs() {
         ahrs.zeroYaw();
     }
 

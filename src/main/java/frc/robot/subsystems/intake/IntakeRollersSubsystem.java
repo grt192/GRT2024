@@ -26,11 +26,11 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     frontMotor = new TalonSRX(FRONT_MOTOR_ID);
     frontMotor.setInverted(true);
     backMotor = new TalonSRX(BACK_MOTOR_ID);
-    sensor = new AnalogPotentiometer(sensorID);
+    sensor = new AnalogPotentiometer(SENSOR_ID);
   }
   
   public boolean sensorNow(){
-    if (sensor.get()>=sensorreached){
+    if (sensor.get()>=SENSOR_REACHED){
       return true;
     }
     else{
@@ -51,14 +51,14 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
   public void setRollersOutwards(Boolean pressedA){
     if(pressedA==true)
-      frontMotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
-      backMotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
+      frontMotor.set(TalonSRXControlMode.PercentOutput, ROLLERS_CLOCKWISE);
+      backMotor.set(TalonSRXControlMode.PercentOutput, ROLLERS_COUNTERCLOCKWISE);
   }
 
   public void setRollersInwards(Boolean pressedB){
     if(pressedB==true)
-      frontMotor.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
-      backMotor.set(TalonSRXControlMode.PercentOutput, rollerscounterclockwise);
+      frontMotor.set(TalonSRXControlMode.PercentOutput, ROLLERS_CLOCKWISE);
+      backMotor.set(TalonSRXControlMode.PercentOutput, ROLLERS_COUNTERCLOCKWISE);
   }
   
 

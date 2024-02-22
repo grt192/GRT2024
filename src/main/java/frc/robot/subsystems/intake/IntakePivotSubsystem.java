@@ -17,8 +17,8 @@ public class IntakePivotSubsystem extends SubsystemBase{
     public IntakePivotSubsystem(){
         pivotMotor = new TalonSRX(PIVOT_MOTOR_ID);
         //intakeencoder = new Encoder(1,2);
-        extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
-        retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
+        extendedlimitswitch = new DigitalInput(EXTENDED_LIMIT_SWITCH_ID);
+        retractedlimitswitch = new DigitalInput(RETRACTED_LIMIT_SWITCH_ID);
     }
    
     // public void resetEncoder(){

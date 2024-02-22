@@ -1,30 +1,33 @@
 package frc.robot.subsystems.leds;
 
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.util.OpacityColor;
 import frc.robot.util.Util;
 
+/** One layer of the LED strip subsystem. */
 public class LEDLayer {
     protected final OpacityColor[] colorArray;
     protected final int ledLength;
 
+    /** One ledStrip layer.
+     *
+     * @param length The number of leds in the layer.
+     */
     public LEDLayer(int length) {
         ledLength = length;
         colorArray = new OpacityColor[length];
     }
 
-    /**
-     * Sets an LED at a specified index.
+    /** Sets an LED at a specified index.
+     *
      * @param i The LED index to set.
-     * @param color The color to set the LED at index i to (null is equivalent to transparent).
-     * @param opacity The opacity to set the LED at index i to
+     * @param color The color containing am RGBA value
      */
     public void setLED(int i, OpacityColor color) {
         colorArray[i] = color;
     }
 
-    /**
-     * Gets the color of the LED at a specified index.
+    /** Gets the color of the LED at a specified index.
+     *
      * @param i The LED index to retrieve.
      * @return The color of the LED at index i.
      */
@@ -33,11 +36,10 @@ public class LEDLayer {
     }
 
 
-    /**
-     * Moves the leds up by an increment
+    /** Moves the leds up by an increment.
+     *
      * @param inc The number of leds to move up by
-     * @param color The color to set at the bottom
-     * @param opacity The opacity to set the new leds at
+     * @param color The color & opacity to set at the bottom
      */
     public void incrementColors(int inc, OpacityColor color) {
         for (int i = 0; i < colorArray.length - inc; i++) {
@@ -48,10 +50,9 @@ public class LEDLayer {
         }
     }
 
-    /**
-     * Fills the layer with a solid color.
-     * @param color The color to fill the layer with.
-     * @param opacity The opacity to fill the layer with
+    /** Fills the layer with a solid color.
+     *
+     * @param color The color & opacity to fill the layer with.
      */
     public void fillColor(OpacityColor color) {
         for (int i = 0; i < colorArray.length; i++) {
@@ -60,43 +61,57 @@ public class LEDLayer {
     }
 
 
-    /**
-     * Fills the layer with alternating groups of "on" and "off" LEDs. "off" leds are set to null (transparent).
+    /** Fills the layer with alternating groups of "on" and "off" LEDs. "off" leds are set to the base color.
+     *
      * @param onGroupLength The length of the "on" group.
      * @param offGroupLength The length of the "off" group.
      * @param borderLength The length of a gradient border which fades in at the edge of each "on" length
-     * @param color The color to set the "on" LEDs.
-     * @param opacity The opacity of the "on" LEDs.
+     * @param color The color & opacity to set the "on" LEDs.
+     * @param baseColor The color & opacity to set "off" leds
      * @param offset The number of LEDs to offset the base by
      */
-    public void fillGrouped(int onGroupLength, int offGroupLength, int borderLength, OpacityColor color, OpacityColor baseColor, int offset) {
+    public void fillGrouped(int onGroupLength, int offGroupLength, int borderLength, 
+        OpacityColor color, OpacityColor baseColor, int offset) {
+        
         for (int i = 0; i < colorArray.length; i++) {
             int ledNumInSegment = (i + offset) % (2 * borderLength + onGroupLength + offGroupLength);
-            if (ledNumInSegment < borderLength){
+            if (ledNumInSegment < borderLength) {
                 setLED(i, OpacityColor.blendColors(baseColor, color, (ledNumInSegment + 1) / (borderLength + 1)));
             } else if (ledNumInSegment < onGroupLength + borderLength) {
                 setLED(i, color);
-            } else if(ledNumInSegment < onGroupLength + borderLength * 2){
-                setLED(i, OpacityColor.blendColors(baseColor, color, (1 - ((ledNumInSegment - onGroupLength - borderLength + 1.) / (borderLength + 1)))));                
+            } else if (ledNumInSegment < onGroupLength + borderLength * 2) {
+                setLED(i, OpacityColor.blendColors(
+                    baseColor, 
+                    color, 
+                    (1 - ((ledNumInSegment - onGroupLength - borderLength + 1.) / (borderLength + 1)))
+                ));                
             } else {
                 setLED(i, baseColor);
             }
         }
     }
 
-    public void fillGrouped(int onGroupLength, int offGroupLength, OpacityColor color){
+    /** Fills the layer with alternating groups of "on" and "off" LEDs. "off" leds are set to the base color.
+     *
+     * @param onGroupLength The length of the "on" group.
+     * @param offGroupLength The length of the "off" group.
+     * @param color The color & opacity to set the "on" LEDs.
+     */
+    public void fillGrouped(int onGroupLength, int offGroupLength, OpacityColor color) {
         fillGrouped(onGroupLength, offGroupLength, 0, color, new OpacityColor(), 0);
     }
 
-    /**
-     * Resets the layer by setting all LEDs to null (transparent).
-     */
+    /** Resets the layer by setting all LEDs to null (transparent). */
     public void reset() {
         fillColor(new OpacityColor());
     }
 
-    public void scale(double factor){
-        for(int i = 0; i < colorArray.length; i++){
+    /** Scales the entire layer by a factor.
+     *
+     * @param factor The factor to scale the layer by.
+     */
+    public void scale(double factor) {
+        for (int i = 0; i < colorArray.length; i++) {
             setLED(i, Util.scaleColor(getLEDColor(i), factor));
         }
     }

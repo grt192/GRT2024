@@ -3,9 +3,9 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.util.Util;
 
-public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
+/** A singular swerve module. */
+public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem {
 
     private static final double MAX_VEL = 5; // m/s STUB
 
@@ -16,70 +16,66 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem{
 
     private double angle = 0;
 
-    public SingleModuleSwerveSubsystem(SwerveModule module){
+    /** A singular swerve module.
+     *
+     * @param module The module to use.
+     */
+    public SingleModuleSwerveSubsystem(SwerveModule module) {
         toRun = false;
         this.module = module;
         crimor = new Timer();
         crimor.start();
     }
 
-    public void setRawPowers(double drivePower, double steerPower){
+    /** Set the raw powers of the module.
+     *
+     * @param drivePower [-1, 1] Drive motor power.
+     * @param steerPower [-1, 1] Steer motor power.
+     */
+    public void setRawPowers(double drivePower, double steerPower) {
         module.setRawPowers(drivePower, steerPower);
     }
 
-    public void setRawPowersWithAngle(double drivePower, double angleRads){
+    /** Set the raw power of drive with a set angle.
+     *
+     * @param drivePower [-1, 1] The power to set the drive motor to.
+     * @param angleRads [-pi, pi] The angle in radians to set the steer to.
+     */
+    public void setRawPowersWithAngle(double drivePower, double angleRads) {
         module.setRawPowersWithAngle(drivePower, angleRads);
     }
 
-    public void setDrivePowers(double xPower, double yPower){
-
+    /** Set the drive powers. xPower is forward and yPower is left.
+     *
+     * @param xPower [-1, 1] The power in the x direction.
+     * @param yPower [-1, 1] The power in the y direction.
+     */
+    public void setDrivePowers(double xPower, double yPower) {
         double velocity = MAX_VEL * Math.sqrt(yPower * yPower + xPower * xPower) / Math.sqrt(2);
-        // if(Math.abs(xPower) < .01 && Math.abs(yPower) < .01 ){
-        //     // System.out.println(Math.atan2(0, 0));
-        //     module.setRawPowers(0, 0);
-        //     return;
-        // }
         double angle = Math.atan2(yPower, xPower);
-
-        // System.out.println(velocity);
 
         module.setDesiredState(new SwerveModuleState(velocity, new Rotation2d(angle)));
     }
 
-    public void setDrivePowers(double x, double y, double drivePower){
-        if(!(x == 0 && y == 0)){
+    /** Set the drive powers. x and y are used for angle, drivePower is for drive.
+     *
+     * @param x [-1, 1] The x direction for setting the angle.
+     * @param y [-1, 1] The y direction for setting the angle.
+     * @param drivePower [-1, 1] The power to run the drive motor at.
+     */
+    public void setDrivePowers(double x, double y, double drivePower) {
+        if (!(x == 0 && y == 0)) {
             angle = Math.atan2(y, x);
         }
-
         double velocity = MAX_VEL * drivePower;
-
-        if(toRun){
+        if (toRun) {
             module.setDesiredState(new SwerveModuleState(velocity, new Rotation2d(angle)));
-            // module.setRawPowersWithAngle(drivePower, angle);
         }
-
-        // if (crimor.advanceIfElapsed(.1)){
-        //     System.out.print(" set drive power" + twoDecimals(drivePower));
-        //     System.out.print(" to run " + toRun);
-        //     System.out.print(" current " + twoDecimals(module.getWrappedAngle().getDegrees()));
-        //     System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(angle))));
-            
-        // }
     }
 
-    public double twoDecimals(double num){
-        return ((int) (num * 100)) / 100.d;
-    }
-
-    public void toggletoRun(){
+    /** Toggles whether the module should run or not. */
+    public void toggleToRun() {
         toRun = !toRun;
         System.out.println(toRun);
     }
-
-    @Override
-    public void periodic() {
-        // System.out.println("error  " + Util.twoDecimals(module.getDriveError()) + " setpoint" + Util.twoDecimals(module.getDriveSetpoint()));
-    }
-
-
 }

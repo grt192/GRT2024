@@ -1,8 +1,8 @@
 package frc.robot.commands.intake.roller;
 
-import static frc.robot.Constants.IntakeConstants.pastsensortime;
-import static frc.robot.Constants.IntakeConstants.rollersclockwise;
-import static frc.robot.Constants.IntakeConstants.rollerscounterclockwise;
+import static frc.robot.Constants.IntakeConstants.PAST_SENSOR_TIME;
+import static frc.robot.Constants.IntakeConstants.ROLLERS_CLOCKWISE;
+import static frc.robot.Constants.IntakeConstants.ROLLERS_COUNTERCLOCKWISE;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -21,7 +21,7 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(rollerscounterclockwise, rollersclockwise);
+        intakeSubsystem.setAllRollSpeed(ROLLERS_COUNTERCLOCKWISE, ROLLERS_CLOCKWISE);
         timer.reset();
     }
 
@@ -43,7 +43,7 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public boolean isFinished() {
         // TODO Auto-generated method stub
-        return timer.hasElapsed(pastsensortime);
+        return timer.hasElapsed(PAST_SENSOR_TIME);
     
     }
 

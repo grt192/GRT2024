@@ -1,6 +1,5 @@
 package frc.robot.controllers;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -9,17 +8,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class XboxDriveController extends BaseDriveController {
     private final XboxController driveController = new XboxController(0);
-    private final JoystickButton 
-        driveAButton = new JoystickButton(driveController, XboxController.Button.kA.value),
-        driveBButton = new JoystickButton(driveController, XboxController.Button.kB.value),
-        driveXButton = new JoystickButton(driveController, XboxController.Button.kX.value),
-        driveYButton = new JoystickButton(driveController, XboxController.Button.kY.value),
-        driveLBumper = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value),
-        driveRBumper = new JoystickButton(driveController, XboxController.Button.kRightBumper.value),
-        driveLStickButton = new JoystickButton(driveController, XboxController.Button.kLeftStick.value),
-        driveRStickButton = new JoystickButton(driveController, XboxController.Button.kRightStick.value),
-        driveBackButton = new JoystickButton(driveController, XboxController.Button.kBack.value),
-        driveStartButton = new JoystickButton(driveController, XboxController.Button.kStart.value);
+     
+    private final JoystickButton aButton = new JoystickButton(driveController, XboxController.Button.kA.value);
+    private final JoystickButton bButton = new JoystickButton(driveController, XboxController.Button.kB.value);
+    private final JoystickButton xButton = new JoystickButton(driveController, XboxController.Button.kX.value);
+    private final JoystickButton yButton = new JoystickButton(driveController, XboxController.Button.kY.value);
+    private final JoystickButton lBumper = new JoystickButton(driveController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton rBumper = new JoystickButton(
+        driveController, 
+        XboxController.Button.kRightBumper.value
+    );
 
     @Override
     public double getForwardPower() {
@@ -36,35 +34,43 @@ public class XboxDriveController extends BaseDriveController {
         return -driveController.getRightX();
     }
 
-    public JoystickButton getFieldResetButton() {
-        return driveAButton;
+    @Override
+    public JoystickButton getDriverHeadingResetButton() {
+        return aButton;
     }
 
+    @Override
     public JoystickButton getLeftBumper() {
-        return driveLBumper;
+        return lBumper;
     }
 
+    @Override
     public JoystickButton getRightBumper() {
-        return driveRBumper;
+        return rBumper;
     }
 
+    @Override
     public Boolean getRelativeMode() {
         return driveController.getRightTriggerAxis() > .1;
     }
 
+    @Override
     public JoystickButton getAmpAlign() {
-        return driveXButton;
+        return xButton;
     }
 
+    @Override
     public JoystickButton getNoteAlign() {
-        return driveYButton;
+        return yButton;
     }
 
+    @Override
     public JoystickButton getSwerveStop() {
-        return driveBButton;
+        return bButton;
     }
 
-    public Boolean getTurnMode(){
+    @Override
+    public Boolean getSwerveAimMode() {
         return null;
     }
 }
