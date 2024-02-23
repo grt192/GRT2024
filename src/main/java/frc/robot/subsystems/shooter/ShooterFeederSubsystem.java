@@ -24,7 +24,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     private final ColorSensorV3 shooterSensor; //distance sensor
 
     /** Constructor to initialize motors and sensors. */
-    public ShooterFeederSubsystem(){
+    public ShooterFeederSubsystem() {
         //motors
         feederMotor = new TalonFX(ShooterConstants.FEEDER_MOTOR_ID);
         feederMotor.setInverted(true);
@@ -37,22 +37,21 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     }
 
     /** Sets speed of shooting motors. */
-    public void setFeederMotorSpeed(double speed){
+    public void setFeederMotorSpeed(double speed) {
         feederMotor.set(TalonFXControlMode.PercentOutput, speed);
-        TalonFXControlMode
         //feederMotor2.set(TalonSRXControlMode.PercentOutput, speed*FEEDER_MOTOR_RESISTANCE);
         System.out.println("feeding motor speed is: " + feederMotor.getMotorOutputPercent());
 
     }
 
     /** Gets red value of anything in front of color sensor. */
-    public int getRed(){
+    public int getRed() {
         // System.out.println("proximity: " + shooterSensor.getProximity());
         return shooterSensor.getRed();
     }
 
     /** Returns color sensor as an object. */
-    public ColorSensorV3 getSensor(){
+    public ColorSensorV3 getSensor() {
         System.out.println("returning shooter sensor");
         return shooterSensor;
     }
