@@ -112,7 +112,7 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_ONE_ID = 13;
     public static final int SHOOTER_MOTOR_TWO_ID = 14;
 
-    public static final int FEEDER_MOTOR_ID = 15;
+        public static final int FEEDER_MOTOR_ID = 15;
     //public static final int FEEDER_MOTOR_2_ID = 43; //CHANGE THIS
 
     public static final double FEED_ANGLE = Units.degreesToRadians(70);

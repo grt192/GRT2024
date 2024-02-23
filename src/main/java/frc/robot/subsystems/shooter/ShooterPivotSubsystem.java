@@ -4,18 +4,16 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
 import frc.robot.util.Util;
 
-import static frc.robot.Constants.ShooterConstants.*;
-
-
+/** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
 
     //final vars
@@ -37,7 +35,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private static final double ANGLE_P = 0.5;
     private static final double ANGLE_I = 0.001;
     private static final double ANGLE_D = 15;
-    private static final double ANGLE_FF = -.5;
 
     //field
     private boolean alliance; //true equals red alliance 
@@ -47,15 +44,16 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private Pose2dSupplier poseSupplier; //new Pose2d();
 
     //center of red speaker: (652.73 218.42)
-    double RED_X = Units.inchesToMeters(652.73 + 9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+    double RED_X = Units.inchesToMeters(652.73 + 9.05);
     double RED_Y = Units.inchesToMeters(218.42);
 
     //center of blue speaker: (-1.50 218.42)
-    double BLUE_X = Units.inchesToMeters(-1.5+9.05); //9.05 is half of 18.1 which is length of overhang of speaker-- we want halfway point
+    double BLUE_X = Units.inchesToMeters(-1.5+9.05);
     double BLUE_Y = Units.inchesToMeters(218.42);
 
     private final Timer timer = new Timer();
 
+    /** Inits motors and pose field. Also inits PID stuff. */
     public ShooterPivotSubsystem(boolean alliance, Pose2dSupplier poseSupplier){
 
         timer.start();
@@ -63,7 +61,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         this.poseSupplier = poseSupplier;
 
         //motors
-        pivotMotor = new CANSparkMax(PIVOT_MOTOR_ID, MotorType.kBrushless); 
+        pivotMotor = new CANSparkMax(ShooterConstants.PIVOT_MOTOR_ID, MotorType.kBrushless); 
         pivotMotor.setInverted(true);
 
         //devices
@@ -85,67 +83,73 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
         rotationEncoder.setVelocityConversionFactor(CONVERSION_FACTOR * 60);
         //rotationEncoder.setInverted(true);
-        rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); //what does 0 do (slotID is from 0-3)
+        rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); 
 
         //field
         this.alliance = alliance;
         autoAim = false;
     }
-
-    //motor speed setting functions
-    public void setPivotMotorSpeed(double speed){
+    
+    /** motor speed setting functions. */
+    public void setPivotMotorSpeed(double speed) {
         pivotMotor.setVoltage(speed * 12);
         //System.out.println("flywheer motor speed is: " + pivotMotor.get());
     }
 
-
-    public void setAngle(double angle){ //check if it works 
+    /** Sets Angle of the pivot.*/
+    public void setAngle(double angle) { 
         rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
         System.out.println("setting angle to: " + angle);
        
     }
 
-    public double getAutoAimAngle(){
+    /** Gets correct Angle for pivot to turn to. */
+    public double getAutoAimAngle() {
         double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if(alliance){ //true = red
-            double xLength = Math.pow(currentField.getX()-RED_X, 2);
-            double yLength = Math.pow(currentField.getY()-RED_Y, 2);
+        if (alliance) {  //true = red
+            double xLength = Math.pow(currentField.getX() - RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - RED_Y, 2);
             //System.out.println("alliance red:" + alliance);
             currentDistance = Math.sqrt(xLength + yLength);
 
         } else {
-            double xLength = Math.pow(currentField.getX()-BLUE_X, 2);
-            double yLength = Math.pow(currentField.getY()-BLUE_Y, 2);
+            double xLength = Math.pow(currentField.getX() - BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         } 
 
-        return Math.pi - Math.atan(speakerHeight/currentDistance);
+        return Math.PI - Math.atan(speakerHeight / currentDistance);
     }
 
-    public void printCurrentAngle(){
-        // System.out.println("radians: " + rotationEncoder.getPosition() + "  degrees: " + rotationEncoder.getPosition() * 57.29);
+    /** Prints pivot current angle. */
+    public void printCurrentAngle() {
+        // System.out.println("radians: " + rotationEncoder.getPosition());
         // System.out.println(pivotMotor.get());
         // System.out.println(rotationPIDController.getFF());
     }
 
-    public double getPosition(){
+    /** Gets position of encoder. */
+    public double getPosition() {
         //System.out.println("rotation encoder position: " + rotationEncoder.getPosition());
         return rotationEncoder.getPosition();
     }
 
-    public double getCurrentAngle(){
+    /** Gets encoder's current angle. */
+    public double getCurrentAngle() {
         return currentEncoderAngle;
     }
 
-    public void setAutoAimBoolean(boolean red){
+    /** Sets whether Auto-aim should be on or off. */
+    public void setAutoAimBoolean(boolean red) { 
         autoAim = red;
     }
 
-    public void periodic(){
+    @Override
+    public void periodic() {
         //resets relative encoder every time robot starts again
         //(check if encoder prints zero when run)
         // if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
@@ -153,11 +157,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //     // System.out.println(rotationEncoder.getPosition()); //should print 0
         // }
 
-        if(autoAim){
+        if (autoAim) {
             setAngle(getAutoAimAngle());
         }
 
-        if(timer.advanceIfElapsed(.2)){ 
+        if (timer.advanceIfElapsed(.2)) { 
             printCurrentAngle();
             System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
         }
