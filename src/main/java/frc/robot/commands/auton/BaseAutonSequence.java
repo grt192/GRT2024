@@ -10,7 +10,6 @@ import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.sequences.ShootModeSequence;
-import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -30,7 +29,6 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
     private final IntakePivotSubsystem intakePivotSubsystem;
     private final IntakeRollersSubsystem intakeRollersSubsystem;
-    private final ShooterFeederSubsystem shooterFeederSubsystem; 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -49,7 +47,6 @@ public class BaseAutonSequence extends SequentialCommandGroup{
                              LEDSubsystem ledSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollersSubsystem = intakeRollersSubsystem;
-        this.shooterFeederSubsystem = shooterFeederSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;

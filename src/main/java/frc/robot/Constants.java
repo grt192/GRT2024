@@ -109,8 +109,8 @@ public final class Constants {
     public static final int LIMIT_SWITCH_ID = 1;
     public static final int PIVOT_MOTOR_ID = 12;
 
-    public static final int SHOOTER_MOTOR_ONE_ID = 13;
-    public static final int SHOOTER_MOTOR_TWO_ID = 14;
+    public static final int SHOOTER_MOTOR_TOP_ID = 13;
+    public static final int SHOOTER_MOTOR_BOTTOM_ID = 14;
 
         public static final int FEEDER_MOTOR_ID = 15;
     //public static final int FEEDER_MOTOR_2_ID = 43; //CHANGE THIS

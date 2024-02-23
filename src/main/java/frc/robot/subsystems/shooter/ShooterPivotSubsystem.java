@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -11,13 +12,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
-import frc.robot.util.Util;
 
 /** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
 
     //final vars
-    public final double PIVOT_SPEED = 0.1;
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final double ERRORTOLERANCE = Math.toRadians(2); //error tolerance for pid
     final int LIMIT_SWITCH_ID = 4; //placeholder
@@ -28,6 +27,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     //devices
     private RelativeEncoder rotationEncoder;
+    private AbsoluteEncoder absoluteEncoder;
     private SparkPIDController rotationPIDController;
     private final DigitalInput limitSwitch;
 
@@ -161,9 +161,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             setAngle(getAutoAimAngle());
         }
 
+
         if (timer.advanceIfElapsed(.2)) { 
-            printCurrentAngle();
-            System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
+            //printCurrentAngle();
+            //System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
+            System.out.println(absoluteEncoder.getPosition());
         }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());

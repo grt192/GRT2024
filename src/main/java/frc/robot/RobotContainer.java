@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.NotePosition;
@@ -47,6 +46,7 @@ import java.util.function.BooleanSupplier;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -74,12 +74,11 @@ public class RobotContainer {
     private final IntakeRollersSubsystem intakeRollerSubsystem = new IntakeRollersSubsystem();
 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
-    private final ShooterFeederSubsystem shooterFeederSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    private final ClimbSubsystem climbSubsystem;
+    // private final ClimbSubsystem climbSubsystem;
 
-    private final ElevatorSubsystem elevatorSubsystem;
+    //private final ElevatorSubsystem elevatorSubsystem;
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
@@ -151,9 +150,8 @@ public class RobotContainer {
         // construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-      baseSwerveSubsystem = new SwerveSubsystem();
-      intakePivotSubsystem = new IntakePivotSubsystem();
-      shooterFeederSubsystem = new ShooterFeederSubsystem();
+        // baseSwerveSubsystem = new SwerveSubsystem();
+        // intakePivotSubsystem = new IntakePivotSubsystem();
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 

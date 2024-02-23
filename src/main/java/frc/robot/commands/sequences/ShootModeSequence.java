@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
-import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -37,10 +36,9 @@ public class ShootModeSequence extends SequentialCommandGroup {
      *                    FINISH
      */
 
-    public ShootModeSequence( 
+    public ShootModeSequence ( 
         IntakeRollersSubsystem intakeRollerSubsystem,
         ElevatorSubsystem elevatorSubsystem,
-        ShooterFeederSubsystem shooterFeederSubsystem,
         ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
         ShooterPivotSubsystem shooterPivotSubsystem,
         LEDSubsystem ledSubsystem
