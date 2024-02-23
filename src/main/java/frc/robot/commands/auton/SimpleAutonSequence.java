@@ -16,7 +16,18 @@ public class SimpleAutonSequence extends BaseAutonSequence{
     private ChoreoTrajectory preloadedtraj;
     private ChoreoTrajectory intaketraj;
     private ChoreoTrajectory speakertraj;
-   
+
+    /**
+     * Starts with robot in front of speaker, shoots preloaded note, intake/shoot speaker note, goes to intake/shoot amp note
+     * @param intakePivotSubsystem
+     * @param intakeRollersSubsystem
+     * @param shooterFeederSubsystem
+     * @param shooterFlywheelSubsystem
+     * @param shooterPivotSubsystem
+     * @param elevatorSubsystem
+     * @param swerveSubsystem
+     * @param ledSubsystem
+     */
     public SimpleAutonSequence(IntakePivotSubsystem intakePivotSubsystem, 
                                                 IntakeRollersSubsystem intakeRollersSubsystem, 
                                                 ShooterFeederSubsystem shooterFeederSubsystem, 

@@ -7,7 +7,10 @@ public class DriveForwardCommand extends Command{
     private final SwerveSubsystem swerve;
     private double xpower = .3;
 
-
+    /**
+     * Drives forward
+     * @param swerve
+     */
     public DriveForwardCommand(SwerveSubsystem swerve){
         this.swerve = swerve;
         addRequirements(swerve);

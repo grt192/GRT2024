@@ -42,7 +42,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private PIDController yPID;
     private boolean isRed;
     private int driveforwardtime;
-    
+
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem,
             ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem,
             ShooterPivotSubsystem shooterPivotSubsystem,
@@ -70,7 +70,11 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     }
     
     
-    
+    /**
+     * Follows the choreo path.
+     * @param traj
+     * @return
+     */
     public Command followPath(ChoreoTrajectory traj) {
         Command swerveCommand = Choreo.choreoSwerveCommand(
                 traj,
@@ -92,6 +96,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     
     /** 
+     * Follows trajectory, extends pivot and moves forward, intakes note, retracts pivot
      * @param intaketraj
      * @return SequentialCommandGroup
      */
@@ -108,6 +113,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     }
 
     /** 
+     * Follows trajectory and then shoots note
      * @param shoottraj
      * @return SequentialCommandGroup
      */
