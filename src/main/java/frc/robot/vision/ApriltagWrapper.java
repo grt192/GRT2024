@@ -1,12 +1,6 @@
 package frc.robot.vision;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import static frc.robot.Constants.VisionConstants.VISION_TABLE_KEY;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,12 +14,16 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.Filesystem;
-
-import static frc.robot.Constants.VisionConstants.*;
+import java.io.IOException;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /**
- * The ApriltagWrapper class gets robot pose estimates from a given camera and publishes robot pose estimations over
- * NetworkTables.
+ * Gets robot pose estimates from a given camera over PhotonVision and (optionally) publishes robot pose estimations
+ * over NetworkTables.
  */
 public class ApriltagWrapper {
     private final PhotonPoseEstimator poseEstimator;
@@ -38,6 +36,7 @@ public class ApriltagWrapper {
 
     /**
      * Constructs a PhotonVision connection to the coprocessor.
+     *
      * @param camera The PhotonVision camera object.
      * @param cameraPose The camera's 3d transformation relative to the robot.
      */
@@ -68,7 +67,7 @@ public class ApriltagWrapper {
         DoubleTopic xPosTopic = visionTable.getDoubleTopic("xPos" + name);
         DoubleTopic yPosTopic = visionTable.getDoubleTopic("yPos" + name);
         DoubleTopic headingTopic = visionTable.getDoubleTopic("heading" + name);
-
+        
         this.debugEnabled = debugEnabledTopic.subscribe(false);
         this.xPosPub = xPosTopic.publish(PubSubOption.keepDuplicates(true));
         this.yPosPub = yPosTopic.publish(PubSubOption.keepDuplicates(true));
@@ -76,7 +75,8 @@ public class ApriltagWrapper {
     }
 
     /**
-     * Get the estimated robot pose from a single photon pose estimator.
+     * Gets the estimated robot pose from a single photon pose estimator.
+     *
      * @param prevEstimatedRobotPose The last aggregate robot pose estimate.
      * @return The optional vision-estimated pose.
      */
@@ -84,14 +84,16 @@ public class ApriltagWrapper {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);
         Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
 
-        if (robotPose.isPresent() && debugEnabled.get())
+        if (robotPose.isPresent() && debugEnabled.get()) {
             updateNetworkTables(robotPose.get().estimatedPose.toPose2d());
+        }
 
         return robotPose;
     }
 
     /**
      * Updates the camera's NetworkTables topics with a pose estimate.
+     *
      * @param robotPose The robot pose to update NetworkTables with.
      */
     private void updateNetworkTables(Pose2d robotPose) {
