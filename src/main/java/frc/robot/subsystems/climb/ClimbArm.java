@@ -25,7 +25,7 @@ public class ClimbArm {
             sparkMax.setInverted(false);
 
             extensionEncoder = sparkMax.getEncoder();
-            extensionEncoder.setPositionConversionFactor(AXLE_PERIMETER_METERS / WINCH_REDUCTION);
+            extensionEncoder.setPositionConversionFactor(AXLE_PERIMETER_METERS / 1); //replace 1 with WINCH_REDUCTION
             extensionEncoder.setPosition(0);
 
             sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) EXTENSION_LIMIT_METERS);

@@ -10,13 +10,11 @@ import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.sequences.ShootModeSequence;
-import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -30,7 +28,6 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
     private final IntakePivotSubsystem intakePivotSubsystem;
     private final IntakeRollersSubsystem intakeRollersSubsystem;
-    private final ShooterFeederSubsystem shooterFeederSubsystem; 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -43,13 +40,12 @@ public class BaseAutonSequence extends SequentialCommandGroup{
     private int driveforwardtime;
 
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
-                             ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
+                             ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                              ElevatorSubsystem elevatorSubsystem, 
                              SwerveSubsystem swerveSubsystem,
                              LEDSubsystem ledSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollersSubsystem = intakeRollersSubsystem;
-        this.shooterFeederSubsystem = shooterFeederSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -97,8 +93,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){
         return followPath(shoottraj)
-        .andThen(new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, ledSubsystem))
-        .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
+        .andThen(new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, ledSubsystem))
         .andThen(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
     }
 

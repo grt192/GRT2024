@@ -109,10 +109,11 @@ public final class Constants {
     public static final int LIMIT_SWITCH_ID = 1;
     public static final int PIVOT_MOTOR_ID = 12;
 
-    public static final int SHOOTER_MOTOR_ONE_ID = 13;
-    public static final int SHOOTER_MOTOR_TWO_ID = 14;
+    public static final int SHOOTER_MOTOR_TOP_ID = 13;
+    public static final int SHOOTER_MOTOR_BOTTOM_ID = 14;
 
-    public static final int FEEDER_MOTOR_ID = 15;
+        public static final int FEEDER_MOTOR_ID = 15;
+    //public static final int FEEDER_MOTOR_2_ID = 43; //CHANGE THIS
 
     public static final double FEED_ANGLE = Units.degreesToRadians(70);
   }
@@ -124,7 +125,7 @@ public final class Constants {
     public static final int RIGHT_WINCH_MOTOR_ID = 9;
     public static final int RIGHT_ZERO_LIMIT_ID = 1;
    
-    public static final double WINCH_REDUCTION = 9.49;
+    public static final double INCH_REDUCTION = 9.49;
     public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289) ;
     
     public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(39);
