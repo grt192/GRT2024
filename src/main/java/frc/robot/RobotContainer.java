@@ -183,7 +183,9 @@ public class RobotContainer {
                 ledSubsystem).andThen(
                         new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1)));
 
-        leftBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.8), intakePivotSubsystem));
+        rightBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem));
+
+        leftBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem));
         // aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
         //         new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).andThen(
         //                 new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1))));

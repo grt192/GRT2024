@@ -15,7 +15,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     private final DigitalInput retractedlimitswitch;
     private final Encoder intakeencoder;
     private PositionVoltage request = new PositionVoltage(0).withSlot(0);
-    private final double P = 0;
+    private final double P = 1;
     private final double I = 0;
     private final double D = 0;
     private final double CONVERSION_FACTOR = 0.2142; // TODO tune
@@ -45,7 +45,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
      */
 
     public void setPosition(double position) {
-        pivotMotor.setControl(request.withPosition(position * CONVERSION_FACTOR));
+        pivotMotor.setControl(request.withPosition((position - OFFSET) / CONVERSION_FACTOR));
 
     }
 
@@ -96,6 +96,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR + OFFSET);
+        System.out.println(pivotMotor.getClosedLoopReference());
     }
 }
