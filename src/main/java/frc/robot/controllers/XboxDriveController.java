@@ -18,6 +18,9 @@ public class XboxDriveController extends BaseDriveController {
         driveController, 
         XboxController.Button.kRightBumper.value
     );
+    private final JoystickButton driveLStickButton = new JoystickButton(
+        driveController, XboxController.Button.kLeftStick.value
+    );
 
     @Override
     public double getForwardPower() {
@@ -71,6 +74,6 @@ public class XboxDriveController extends BaseDriveController {
 
     @Override
     public Boolean getSwerveAimMode() {
-        return null;
+        return driveLStickButton.getAsBoolean();
     }
 }

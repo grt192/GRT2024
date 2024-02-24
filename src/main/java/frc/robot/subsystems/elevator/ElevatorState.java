@@ -7,11 +7,10 @@ import frc.robot.Constants;
     States of the elevator.
 */
 public enum ElevatorState {
-    GROUND(Constants.ElevatorConstants.GROUND_POSITION),
+    ZERO(Constants.ElevatorConstants.ZERO_POSITION),
+    INTAKE(Constants.ElevatorConstants.INTAKE_POSITION),
     AMP(Constants.ElevatorConstants.AMP_POSITION),
-    CHUTE(Constants.ElevatorConstants.CHUTE_POSITION),
-    TRAP(Constants.ElevatorConstants.TRAP_POSITION),
-    START(Constants.ElevatorConstants.START_POSITION);
+    TRAP(Constants.ElevatorConstants.TRAP_POSITION);
 
     private final double extendDistanceMeters;
 

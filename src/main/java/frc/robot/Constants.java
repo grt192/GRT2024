@@ -29,21 +29,19 @@ public final class Constants {
 
         public static final float EXTENSION_LIMIT_METERS = 0;
 
-        public static final int ZERO_LIMIT_ID = 3;
+        public static final int ZERO_LIMIT_ID = 7;
 
-        public static final double GROUND_POSITION = Units.inchesToMeters(1.5);
-        public static final double SPEAKER_POSITION = 0;
-        public static final double AMP_POSITION = Units.inchesToMeters(29);
-        public static final double CHUTE_POSITION = Units.inchesToMeters(1.5);
-        public static final double TRAP_POSITION = Units.inchesToMeters(30);
-        public static final double START_POSITION = 0;
+        public static final double ZERO_POSITION = 0;
+        public static final double INTAKE_POSITION = .05;
+        public static final double AMP_POSITION = .83;
+        public static final double TRAP_POSITION = 1.;
 
-        public static final double EXTENSION_P = 3.5;
+        public static final double EXTENSION_P = 1.5;
         public static final double EXTENSION_I = 0;
-        public static final double EXTENSION_D = 0;
+        public static final double EXTENSION_D = 4;
         public static final double EXTENSION_TOLERANCE = 0.3;
 
-        public static final double POSITION_CONVERSION_FACTOR = Units.inchesToMeters(30.) / 63.5;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / 27.785; // Units.inchesToMeters(30.)/63.5;
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
     }
 

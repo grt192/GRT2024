@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorToGroundCommand extends Command {
+public class ElevatorToZeroCommand extends Command {
     private ElevatorSubsystem elevatorSubsystem;
     private NetworkTableInstance nt;
     private NetworkTable table;
@@ -17,7 +17,7 @@ public class ElevatorToGroundCommand extends Command {
 
      * @param elevatorSubsystem the current elevatorSubsystem instance.
      */
-    public ElevatorToGroundCommand(ElevatorSubsystem elevatorSubsystem) {
+    public ElevatorToZeroCommand(ElevatorSubsystem elevatorSubsystem) {
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -42,7 +42,7 @@ public class ElevatorToGroundCommand extends Command {
 
     @Override
     public void execute() {
-        elevatorSubsystem.setTargetState(ElevatorState.GROUND);
+        elevatorSubsystem.setTargetState(ElevatorState.ZERO);
     }
 
     @Override

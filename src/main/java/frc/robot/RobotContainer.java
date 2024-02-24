@@ -18,14 +18,16 @@ import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
+import frc.robot.commands.elevator.ElevatorSetManualCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
-import frc.robot.commands.elevator.ElevatorToChuteCommand;
-import frc.robot.commands.elevator.ElevatorToGroundCommand;
+import frc.robot.commands.elevator.ElevatorToIntakeCommand;
+import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
@@ -53,6 +55,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -101,7 +104,7 @@ public class RobotContainer {
     private final JoystickButton rightBumper = new JoystickButton(mechController,
             XboxController.Button.kRightBumper.value);
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
-    // private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+    private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton redButton = new JoystickButton(switchboard, 5);
@@ -176,28 +179,58 @@ public class RobotContainer {
 
     private void configureBindings() {
 
+
+        //SHOOTER PIVOT TEST
+
+        // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)));
+
+        // leftBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(60)));
+
+
+        //ElEVATOR TEST
+
+        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
+
+        leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+
+
+        //INTAKE TEST
+
         // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3), intakePivotSubsystem));
 
         // rightBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem));
 
         // leftBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem));
 
-        aButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem).alongWith(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.2)
-            ));
 
-        bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem,
-                elevatorSubsystem,
-                shooterPivotSubsystem, shooterFlywheelSubsystem,
-                climbSubsystem, ledSubsystem));
+        //NORMAL BINDS
 
-        leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
-                elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
-                ledSubsystem).andThen(
-                        new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-                            new IntakeRollerFeedCommand(intakeRollerSubsystem)
-                        )));
+        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
+
+        leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+
+        aButton.onTrue(new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+            new InstantCommand(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem).alongWith(
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                    // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1)
+                )
+            )
+        );
+
+        bButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem).alongWith(
+            new InstantCommand(() -> {}, intakeRollerSubsystem)
+        ));
+
+        yButton.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)).alongWith(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem)
+        ));
+
+        // leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
+        //         elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
+        //         ledSubsystem).andThen(
+        //                 new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+        //                     new IntakeRollerFeedCommand(intakeRollerSubsystem)
+        //                 )));
 
         // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
         //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
@@ -205,8 +238,12 @@ public class RobotContainer {
         //         new IntakeRollerOutakeCommand(intakeRollerSubsystem),
         //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))));
 
-        xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3), intakePivotSubsystem).andThen(
-                new IntakeRollerOuttakeCommand(intakeRollerSubsystem)));
+        intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            double power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
+            intakeRollerSubsystem.setAllRollSpeed(power, power);
+        }, intakeRollerSubsystem));
+
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
 
         if (baseSwerveSubsystem instanceof SwerveSubsystem) {
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

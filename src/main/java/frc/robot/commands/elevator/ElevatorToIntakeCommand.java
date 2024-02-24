@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorToChuteCommand extends Command{
+public class ElevatorToIntakeCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorToChuteCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorToIntakeCommand(ElevatorSubsystem elevatorSubsystem){
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }
@@ -18,11 +18,11 @@ public class ElevatorToChuteCommand extends Command{
 
     @Override
     public void execute(){
-        this.elevatorSubsystem.setTargetState(ElevatorState.CHUTE);
+        this.elevatorSubsystem.setTargetState(ElevatorState.INTAKE);
     }
 
     @Override
     public boolean isFinished(){
-        return elevatorSubsystem.atState(ElevatorState.CHUTE);
+        return elevatorSubsystem.atState(ElevatorState.INTAKE);
     }
 }

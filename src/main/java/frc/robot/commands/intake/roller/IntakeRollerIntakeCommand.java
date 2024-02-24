@@ -31,7 +31,7 @@ public class IntakeRollerIntakeCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(rollerscounterclockwise); 
+        intakeSubsystem.setRollSpeed(.7); 
     }
 
     @Override

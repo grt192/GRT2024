@@ -24,8 +24,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private volatile boolean isManual = false;
     private double manualPower = 0;
     
-    private ElevatorState state = ElevatorState.GROUND;
-    private ElevatorState targetState = ElevatorState.GROUND;
+    private ElevatorState state = ElevatorState.ZERO;
+    private ElevatorState targetState = ElevatorState.ZERO;
 
     private final CANSparkMax extensionMotor;
     private RelativeEncoder extensionEncoder;
@@ -57,7 +57,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 System.out.println(message);
                 if (message.equals("GROUND")) {
                     System.out.println("Setting Target to Ground");
-                    this.setTargetState(ElevatorState.GROUND);
+                    this.setTargetState(ElevatorState.ZERO);
                 } else if (message.equals("SPEAKER")) {
                     System.out.println("Setting Target to TRAP");
                     this.setTargetState(ElevatorState.TRAP);
@@ -70,7 +70,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 ElevatorState currentTargetState = this.getTargetState();
                 if (currentTargetState.equals(ElevatorState.AMP)) {
                     System.out.println("New target state is AMP!");
-                } else if (currentTargetState.equals(ElevatorState.GROUND)) {
+                } else if (currentTargetState.equals(ElevatorState.ZERO)) {
                     System.out.println("New target state is GROUND!");
                 } else if (currentTargetState.equals(ElevatorState.TRAP)) {
                     System.out.println("New target state is TRAP!");
@@ -99,7 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionPidController.setI(ElevatorConstants.EXTENSION_I);
         extensionPidController.setD(ElevatorConstants.EXTENSION_D);
         extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
-        extensionPidController.setOutputRange(-0.7, 1);
+        extensionPidController.setOutputRange(-0.3, 1);
     }
 
     @Override 
@@ -108,15 +108,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         // if(timer.advanceIfElapsed(.2)){
         //     System.out.println(zeroLimitSwitch.get());
         // }
+
+        
+        // System.out.println(extensionEncoder.getPosition()); 
         
         //System.out.println(this.getTargetState());
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
-            return;
         }
          
-        if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
+        if (zeroLimitSwitch != null && !zeroLimitSwitch.get()) {
             // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
