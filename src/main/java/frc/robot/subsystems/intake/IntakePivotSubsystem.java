@@ -18,7 +18,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
     private final double P = 0;
     private final double I = 0;
     private final double D = 0;
-    private final double CONVERSION_FACTOR = 1; // TODO tune
+    private final double CONVERSION_FACTOR = 0.2142; // TODO tune
+    private final double OFFSET = 0.9495;
 
     
      /**
@@ -91,5 +92,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void periodic() {
+        System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR + OFFSET);
     }
 }
