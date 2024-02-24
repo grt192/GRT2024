@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -20,21 +21,20 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     final double GEARBOX_RATIO = 18.16; //ask cadders
     public final double ERRORTOLERANCE = Math.toRadians(2); //error tolerance for pid
     final int LIMIT_SWITCH_ID = 4; //placeholder
-    final double CONVERSION_FACTOR = Math.PI/(2.*4.57);
+    final double CONVERSION_FACTOR = Units.degreesToRadians(44) / 6.33;
 
     //motors
     private final CANSparkMax pivotMotor;
 
     //devices
     private RelativeEncoder rotationEncoder;
-    private AbsoluteEncoder absoluteEncoder;
     private SparkPIDController rotationPIDController;
     private final DigitalInput limitSwitch;
 
-    //angle PID (CHANGE LATER)
-    private static final double ANGLE_P = 0.5;
-    private static final double ANGLE_I = 0.001;
-    private static final double ANGLE_D = 15;
+    //angle PID (CHANGE LATER
+    private static final double ANGLE_P = 1;
+    private static final double ANGLE_I = 0;
+    private static final double ANGLE_D = 0;
 
     //field
     private boolean alliance; //true equals red alliance 
@@ -62,7 +62,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         //motors
         pivotMotor = new CANSparkMax(ShooterConstants.PIVOT_MOTOR_ID, MotorType.kBrushless); 
-        pivotMotor.setInverted(true);
+        pivotMotor.setIdleMode(IdleMode.kBrake);
+        pivotMotor.setInverted(false);
 
         //devices
         rotationEncoder = pivotMotor.getEncoder();
@@ -82,8 +83,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //encoder stuff
         rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
         rotationEncoder.setVelocityConversionFactor(CONVERSION_FACTOR * 60);
-        //rotationEncoder.setInverted(true);
+        rotationEncoder.setPosition(Units.degreesToRadians(18));
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); 
+
+        //pivot soft limits
+        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(62));
+        pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Units.degreesToRadians(18));
+        pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+        pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
         //field
         this.alliance = alliance;
@@ -165,7 +172,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if (timer.advanceIfElapsed(.2)) { 
             //printCurrentAngle();
             //System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
-            System.out.println(absoluteEncoder.getPosition());
+            System.out.println(rotationEncoder.getPosition());
         }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());

@@ -33,6 +33,9 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
         shooterMotorBottom = new TalonFX(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID);
 
+        shooterMotorTop.setInverted(true);
+        shooterMotorBottom.setInverted(true);
+
         shooterMotorTop.setNeutralMode(NeutralModeValue.Coast);
         shooterMotorBottom.setNeutralMode(NeutralModeValue.Coast);
         
@@ -52,15 +55,15 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets shooting motor speed.  */
     public void setShooterMotorSpeed(double topSpeed, double bottomSpeed) {
-        shooterMotorTop.setVoltage(-topSpeed * 12);
-        shooterMotorBottom.setVoltage(-bottomSpeed * 12);
+        shooterMotorTop.setVoltage(topSpeed * 12);
+        shooterMotorBottom.setVoltage(bottomSpeed * 12);
 
         //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
     public void setShooterMotorSpeed(double speed) {
-        shooterMotorBottom.setVoltage(-speed * 12);
+        shooterMotorBottom.setVoltage(speed * 12);
         shooterMotorTop.setVoltage(speed * 12);
     }
 
