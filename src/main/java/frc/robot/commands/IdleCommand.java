@@ -31,6 +31,7 @@ public class IdleCommand extends ParallelCommandGroup{
         addCommands(new InstantCommand(() -> intakeRollersSubsystem.setAllRollSpeed(0, 0), intakeRollersSubsystem),
                     new ElevatorToGroundCommand(elevatorSubsystem),
                     new ShooterFlywheelStopCommand(shooterFlywheelSubsystem),
+                    new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem),
                     new InstantCommand(() -> {
                         if(intakeRollersSubsystem.sensorNow()){
                             ledSubsystem.setNoteMode(NotePosition.INTAKE_HOLDING);

@@ -25,14 +25,14 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(rollerscounterclockwise, rollersclockwise);
+        intakeSubsystem.setAllRollSpeed(.6, .6);
         timer.reset();
     }
 
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        if (intakeSubsystem.sensorNow() == false && timer.hasStarted()==false){
+        if (intakeSubsystem.sensorNow() == false && timer.hasStarted() == false) {
             timer.start();
         }
     }
