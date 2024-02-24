@@ -4,26 +4,28 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.NotePosition;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
+import frc.robot.commands.IdleCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
+import frc.robot.commands.elevator.ElevatorToChuteCommand;
 import frc.robot.commands.elevator.ElevatorToGroundCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
 import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
-import frc.robot.commands.shooter.feed.ShooterFeedLoadCommand;
-import frc.robot.commands.shooter.feed.ShooterFeedShootCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
@@ -53,6 +55,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -76,9 +80,9 @@ public class RobotContainer {
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    // private final ClimbSubsystem climbSubsystem;
+    private final ClimbSubsystem climbSubsystem;
 
-    //private final ElevatorSubsystem elevatorSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
@@ -114,6 +118,8 @@ public class RobotContainer {
 
     private final ShuffleboardTab swerveCrauton;
 
+    private final BooleanSupplier isRed;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -121,11 +127,11 @@ public class RobotContainer {
         // construct Test
         // module = new SwerveModule(6, 7, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
+        isRed = () -> false; // DriverStation.getAlliance() == new Optional<Alliance> ;
         baseSwerveSubsystem = new SwerveSubsystem();
         intakePivotSubsystem = new IntakePivotSubsystem();
-        shooterFeederSubsystem = new ShooterFeederSubsystem();
 
-        shooterPivotSubsystem = new ShooterPivotSubsystem(false);
+        shooterPivotSubsystem = new ShooterPivotSubsystem(isRed.getAsBoolean(), baseSwerveSubsystem::getRobotPosition);
         shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
         climbSubsystem = new ClimbSubsystem();
@@ -173,15 +179,13 @@ public class RobotContainer {
 
         bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem,
                 elevatorSubsystem,
-                shooterPivotSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem,
+                shooterPivotSubsystem, shooterFlywheelSubsystem,
                 climbSubsystem, ledSubsystem));
 
         leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
-                elevatorSubsystem,
-                shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
+                elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
                 ledSubsystem).andThen(
-                        new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-                                new ShooterFeedShootCommand(shooterFeederSubsystem))));
+                        new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1)));
 
         rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
                 new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
@@ -267,26 +271,10 @@ public class RobotContainer {
 
             driveController.getFieldResetButton().onTrue(new InstantCommand(() -> {
                 swerveSubsystem.toggletoRun();
-            }));
+            }));};
 
         }
-        ));
         
-      } else if(baseSwerveSubsystem instanceof TestSingleModuleSwerveSubsystem){
-        final TestSingleModuleSwerveSubsystem testSwerveSubsystem = (TestSingleModuleSwerveSubsystem) baseSwerveSubsystem;
-      // LBumper.onTrue(new InstantCommand(() -> {
-      //   testSwerveSubsystem.decrementTest();
-      //   System.out.println(testSwerveSubsystem.getTest());
-      // }
-      // ));
-
-        redButton.onTrue(new RunCommand(() -> {
-            ledSubsystem.setRainbow(true);
-        }, ledSubsystem));
-        redButton.onFalse(new RunCommand(() -> {
-            ledSubsystem.setRainbow(false);
-        }, ledSubsystem));
-    }
 
     public Command getAutonomousCommand() {
         if (baseSwerveSubsystem instanceof SwerveSubsystem) {
@@ -295,8 +283,6 @@ public class RobotContainer {
             thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
 
             swerveSubsystem.resetPose(traj.getInitialPose());
-
-            BooleanSupplier isRed = () -> false; // DriverStation.getAlliance() == new Optional<Alliance> ;
 
             Command swerveCommand = Choreo.choreoSwerveCommand(
                     traj,

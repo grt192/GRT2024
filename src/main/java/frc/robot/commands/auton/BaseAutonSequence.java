@@ -15,7 +15,6 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -41,7 +40,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
     private int driveforwardtime;
 
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
-                             ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
+                             ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                              ElevatorSubsystem elevatorSubsystem, 
                              SwerveSubsystem swerveSubsystem,
                              LEDSubsystem ledSubsystem){
@@ -94,8 +93,7 @@ public class BaseAutonSequence extends SequentialCommandGroup{
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){
         return followPath(shoottraj)
-        .andThen(new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, ledSubsystem))
-        .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
+        .andThen(new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, ledSubsystem))
         .andThen(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
     }
 
