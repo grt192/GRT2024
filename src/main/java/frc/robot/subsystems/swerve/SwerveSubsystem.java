@@ -74,7 +74,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
     private final SwerveDrivePoseEstimator poseEstimator;
     private final SwerveDriveKinematics kinematics;
-    private final ApriltagWrapper apriltagWrapper;
+    private final ApriltagWrapper[] apriltagWrappers = {
+        new ApriltagWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE)
+    };
 
     //heading lock controller
     private final PIDController thetaController;
@@ -162,7 +164,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
 
-        apriltagWrapper = new ApriltagWrapper(FRONT_CAMERA, FRONT_CAMERA_POSE);
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
@@ -219,17 +220,19 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         // BRsteer.setValue(backRightModule.getSteerAmpDraws());
         // BRdrive.setValue(backRightModule.getDriveAmpDraws());
         
-        Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
-            new Pose3d(field.getRobotPose())
-        );
-
-        if (visionEstimate.isPresent()) {
-            poseEstimator.addVisionMeasurement(
-                visionEstimate.get().estimatedPose.toPose2d(),
-                visionEstimate.get().timestampSeconds
+        for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
+            Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
+                new Pose3d(field.getRobotPose())
             );
-        }
 
+            if (visionEstimate.isPresent()) {
+                poseEstimator.addVisionMeasurement(
+                    visionEstimate.get().estimatedPose.toPose2d(),
+                    visionEstimate.get().timestampSeconds
+                );
+            }
+        }
+        
         Rotation2d gyroAngle = getGyroHeading();
         Pose2d estimate = poseEstimator.update(
             gyroAngle,
