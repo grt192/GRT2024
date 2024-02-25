@@ -3,11 +3,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import static frc.robot.Constants.ShooterConstants;
 
-public class ShooterFlywheelReadyCommand extends Command{
+/** Readies the motors for flywheel. */
+public class ShooterFlywheelReadyCommand extends Command {
 
     ShooterFlywheelSubsystem shooterSubsystem;
 
-    public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem){
+    /** Constructor for this command. */
+    public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }
