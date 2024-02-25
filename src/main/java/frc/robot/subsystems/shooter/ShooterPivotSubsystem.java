@@ -17,12 +17,6 @@ import frc.robot.util.Pose2dSupplier;
 /** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
 
-    //final vars
-    final double GEARBOX_RATIO = 18.16; //ask cadders
-    public final double ERRORTOLERANCE = Math.toRadians(2); //error tolerance for pid
-    final int LIMIT_SWITCH_ID = 4; //placeholder
-    final double CONVERSION_FACTOR = Units.degreesToRadians(44) / 6.33;
-
     //motors
     private final CANSparkMax pivotMotor;
 
@@ -43,21 +37,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double currentDistance;
     private Pose2dSupplier poseSupplier; //new Pose2d();
 
-    //center of red speaker: (652.73 218.42)
-    double RED_X = Units.inchesToMeters(652.73 + 9.05);
-    double RED_Y = Units.inchesToMeters(218.42);
-
-    //center of blue speaker: (-1.50 218.42)
-    double BLUE_X = Units.inchesToMeters(-1.5+9.05);
-    double BLUE_Y = Units.inchesToMeters(218.42);
-
     private final Timer timer = new Timer();
 
     /** Inits motors and pose field. Also inits PID stuff. */
     public ShooterPivotSubsystem(boolean alliance, Pose2dSupplier poseSupplier){
 
         timer.start();
-
         this.poseSupplier = poseSupplier;
 
         //motors
@@ -70,7 +55,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationEncoder.setPosition(0); 
         rotationPIDController = pivotMotor.getPIDController();
         rotationPIDController.setOutputRange(-.4, 0.07);
-        limitSwitch = new DigitalInput(LIMIT_SWITCH_ID);
+        limitSwitch = new DigitalInput(ShooterConstants.LIMIT_SWITCH_ID);
 
 
         //setting PID vars
@@ -81,10 +66,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         System.out.println(rotationPIDController.getFF());
 
         //encoder stuff
-        rotationEncoder.setPositionConversionFactor(CONVERSION_FACTOR);
-        rotationEncoder.setVelocityConversionFactor(CONVERSION_FACTOR * 60);
+        rotationEncoder.setPositionConversionFactor(ShooterConstants.CONVERSION_FACTOR);
+        rotationEncoder.setVelocityConversionFactor(ShooterConstants.CONVERSION_FACTOR * 60);
         rotationEncoder.setPosition(Units.degreesToRadians(18));
-        rotationPIDController.setSmartMotionAllowedClosedLoopError(ERRORTOLERANCE, 0); 
+        rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //pivot soft limits
         pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(62));
@@ -117,14 +102,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (alliance) {  //true = red
-            double xLength = Math.pow(currentField.getX() - RED_X, 2);
-            double yLength = Math.pow(currentField.getY() - RED_Y, 2);
-            //System.out.println("alliance red:" + alliance);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
             currentDistance = Math.sqrt(xLength + yLength);
 
         } else {
-            double xLength = Math.pow(currentField.getX() - BLUE_X, 2);
-            double yLength = Math.pow(currentField.getY() - BLUE_Y, 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         } 

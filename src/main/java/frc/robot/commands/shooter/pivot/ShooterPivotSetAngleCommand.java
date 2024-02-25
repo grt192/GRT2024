@@ -22,7 +22,7 @@ public class ShooterPivotSetAngleCommand extends Command{
     @Override
     public boolean isFinished() {
         System.out.println("NOT FINISHED" + Math.abs(pivotSubsystem.getPosition() - angle));
-        return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.ERRORTOLERANCE);
+        return (Math.abs(pivotSubsystem.getPosition() - angle) < pivotSubsystem.PID_ERROR_TOLERANCE);
     }
 
     public void end(boolean interrupted) {

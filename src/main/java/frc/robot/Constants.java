@@ -121,16 +121,29 @@ public final class Constants {
 
     /** Constants for Shooter Subsystem. */
     public static class ShooterConstants {
-        public static final int LIMIT_SWITCH_ID = 1;
+        //pivot constants
+        public static final int LIMIT_SWITCH_ID = 4;
         public static final int PIVOT_MOTOR_ID = 12;
+        public static final double CONVERSION_FACTOR = Units.degreesToRadians(44) / 6.33;
+        public static final double PID_ERROR_TOLERANCE = Math.toRadians(2); //error tolerance for pid
 
+        //flywheel constants
         public static final int SHOOTER_MOTOR_TOP_ID = 13;
         public static final int SHOOTER_MOTOR_BOTTOM_ID = 14;
+        public static final double SHOOTER_MOTOR_SPEED = 1;
 
-        public static final int FEEDER_MOTOR_ID = 15;
-        // public static final int FEEDER_MOTOR_2_ID = 43; //CHANGE THIS
+        //field constants
+        //center of red speaker: (652.73 218.42)
+        public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
+        public static final double RED_Y = Units.inchesToMeters(218.42);
 
-        public static final double FEED_ANGLE = Units.degreesToRadians(70);
+        //center of blue speaker: (-1.50 218.42)
+        public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
+        public static final double BLUE_Y = Units.inchesToMeters(218.42);
+
+        
+
+
     }
 
     /** Constants for Climb Subsystem. */
