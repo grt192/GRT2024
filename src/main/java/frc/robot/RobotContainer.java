@@ -173,8 +173,17 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+
+        // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3), intakePivotSubsystem));
+
+        // rightBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem));
+
+        // leftBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem));
+
         aButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem).alongWith(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)));
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.2)
+            ));
 
         bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem,
                 elevatorSubsystem,

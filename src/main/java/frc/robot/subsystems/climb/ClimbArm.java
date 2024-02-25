@@ -42,7 +42,7 @@ public class ClimbArm {
             resetEncoder();
 
         if (extensionEncoder.getPosition() == 0 && !zeroLimitSwitch.get())
-            System.out.println(this.toString() + "encoder uncalibrated!");
+            // System.out.println(this.toString() + "encoder uncalibrated!");
 
         if (isAtExtension())
             winchMotor.set(0);

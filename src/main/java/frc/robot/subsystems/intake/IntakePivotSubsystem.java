@@ -13,13 +13,13 @@ public class IntakePivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor;
     // private final DigitalInput extendedlimitswitch;
     // private final DigitalInput retractedlimitswitch;
-    private final Encoder intakeencoder;
+    // private final Encoder intakeencoder;
     private PositionVoltage request = new PositionVoltage(0).withSlot(0);
     private final double P = 1;
     private final double I = 0;
     private final double D = 0;
     private final double CONVERSION_FACTOR = 0.2142; // TODO tune
-    private final double OFFSET = 0.9495;
+    private final double OFFSET = 0;// 0.9495;
 
     
      /**
@@ -27,7 +27,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
       */
     public IntakePivotSubsystem() {
         pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
-        intakeencoder = new Encoder(1, 2);
+        // intakeencoder = new Encoder(1, 2);
         // extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
         // retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
         Slot0Configs slot0Configs = new Slot0Configs();
@@ -37,6 +37,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
         slot0Configs.kD = D;
 
         pivotMotor.getConfigurator().apply(slot0Configs);
+        pivotMotor.setPosition(0);
     }
 
     /**
@@ -53,14 +54,14 @@ public class IntakePivotSubsystem extends SubsystemBase {
      * resets encoder to zero.
      */
     public void resetEncoder() {
-        intakeencoder.reset();
+        // pivotMotor.reset();
     }
 
     /**
      * returns the encoder position.
      */
     public double encoderPosition() {
-        return intakeencoder.get();
+        return pivotMotor.get();
     }
 
     /**
@@ -96,6 +97,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(pivotMotor.getClosedLoopReference());
+        // System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR);
     }
 }

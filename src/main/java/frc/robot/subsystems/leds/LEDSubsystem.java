@@ -107,8 +107,6 @@ public class LEDSubsystem extends SubsystemBase {
 
         OpacityColor noteColor = pieceSeen ? crossFadeWithTime(NOTE_COLOR, TRANSPARENT_COLOR, 1) : NOTE_COLOR;
 
-        System.out.println(notePosition);
-
         switch (notePosition) {
             case NONE:
                 noteLayer.fillColor(pieceSeen ? noteColor : new OpacityColor());

@@ -156,7 +156,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if (timer.advanceIfElapsed(.2)) { 
             //printCurrentAngle();
             //System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
-            System.out.println(rotationEncoder.getPosition());
+            // System.out.println(rotationEncoder.getPosition());
         }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());
