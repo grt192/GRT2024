@@ -189,6 +189,18 @@ public final class Constants {
                 new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
                 new Rotation3d(Math.PI, Units.degreesToRadians(16), 0));
 
+        public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
+        public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
+            new Translation3d(Units.inchesToMeters(+9.7), Units.inchesToMeters(-14.2), Units.inchesToMeters(+25.9)),
+            new Rotation3d(0, Units.degreesToRadians(+20), Units.degreesToRadians(-20))
+        );
+
+        public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
+        public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
+            new Translation3d(Units.inchesToMeters(+3.9), Units.inchesToMeters(+14.5), Units.inchesToMeters(+26.3)),
+            new Rotation3d(0, Units.degreesToRadians(+30), Units.degreesToRadians(+150))
+        );
+
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
         public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
     }
