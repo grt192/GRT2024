@@ -1,6 +1,7 @@
 package frc.robot.commands.shooter.pivot;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterPivotVerticalCommand extends Command{
     ShooterPivotSubsystem pivotSubsystem;
@@ -18,7 +19,7 @@ public class ShooterPivotVerticalCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(pivotSubsystem.getPosition()) < pivotSubsystem.PID_ERROR_TOLERANCE);
+        return (Math.abs(pivotSubsystem.getPosition()) < ShooterConstants.PID_ERROR_TOLERANCE);
     }
 
     @Override
