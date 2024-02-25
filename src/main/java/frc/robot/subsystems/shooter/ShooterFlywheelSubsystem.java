@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /** Inits motors and state enums for shooter subsystem. */
 public class ShooterFlywheelSubsystem extends SubsystemBase {
 
-    int IDNUMBER = 10; //so I remember to change them later
     public final double SHOOTER_MOTOR_SPEED = 1;
 
     //motors
