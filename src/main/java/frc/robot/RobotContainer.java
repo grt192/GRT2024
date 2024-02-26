@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -28,11 +29,13 @@ import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
+import frc.robot.subsystems.TestMotorSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
@@ -86,7 +89,9 @@ public class RobotContainer {
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    private final ClimbSubsystem climbSubsystem;
+    private final TestMotorSubsystem testClimbLeft;
+    private final TestMotorSubsystem testClimbRight;
+    // private final ClimbSubsystem climbSubsystem;
 
     private final ElevatorSubsystem elevatorSubsystem;
 
@@ -105,6 +110,7 @@ public class RobotContainer {
             XboxController.Button.kRightBumper.value);
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton redButton = new JoystickButton(switchboard, 5);
@@ -130,7 +136,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // construct Test
-        // module = new SwerveModule(6, 7, 0);
+        // module = new SwerveModule(20, 1, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
         isRed = () -> false; // DriverStation.getAlliance() == new Optional<Alliance> ;
         baseSwerveSubsystem = new SwerveSubsystem();
@@ -139,9 +145,12 @@ public class RobotContainer {
         shooterPivotSubsystem = new ShooterPivotSubsystem(isRed.getAsBoolean(), baseSwerveSubsystem::getRobotPosition);
         shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
 
-        climbSubsystem = new ClimbSubsystem();
+        // climbSubsystem = new ClimbSubsystem();
 
         elevatorSubsystem = new ElevatorSubsystem();
+
+        testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID, true, ClimbConstants.LEFT_ZERO_LIMIT_PORT);
+        testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID, false, ClimbConstants.RIGHT_ZERO_LIMIT_PORT);
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
@@ -175,6 +184,8 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureBindings();
+
+        
     }
 
     private void configureBindings() {
@@ -182,16 +193,16 @@ public class RobotContainer {
 
         //SHOOTER PIVOT TEST
 
-        // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)));
+        // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(18)));
 
         // leftBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(60)));
 
 
         //ElEVATOR TEST
 
-        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
+        // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
 
-        leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+        // leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
 
 
         //INTAKE TEST
@@ -204,6 +215,14 @@ public class RobotContainer {
 
 
         //NORMAL BINDS
+
+        testClimbLeft.setDefaultCommand(new RunCommand(() -> {
+            testClimbLeft.setMotorSpeed(mechController.getLeftY());
+        }, testClimbLeft));
+
+        testClimbRight.setDefaultCommand(new RunCommand(() -> {
+            testClimbRight.setMotorSpeed(mechController.getRightY());
+        }, testClimbRight));
 
         rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
 
@@ -221,9 +240,12 @@ public class RobotContainer {
             new InstantCommand(() -> {}, intakeRollerSubsystem)
         ));
 
-        yButton.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)).alongWith(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem)
-        ));
+        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem));
+
+        yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+
+
+        // UNUSED RN
 
         // leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
         //         elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
@@ -246,6 +268,11 @@ public class RobotContainer {
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
 
         if (baseSwerveSubsystem instanceof SwerveSubsystem) {
+
+            driveController.getTurnModeButton().onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true), shooterPivotSubsystem ));
+            
+            driveController.getTurnModeButton().onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem ));
+
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
             swerveCrauton.add("AUTO ALIGN BLUE AMP",
                     AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));

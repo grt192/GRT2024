@@ -31,13 +31,13 @@ public class IntakeRollerIntakeCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(.7); 
+        intakeSubsystem.setAllRollSpeed(.7, .7);
     }
 
     @Override
-    public void end(boolean interrupted){
+    public void end(boolean interrupted) {
         // TODO Auto-generated method stub
-        intakeSubsystem.setRollSpeed(0); 
+        intakeSubsystem.setAllRollSpeed(0, 0); 
         ledSubsystem.setNoteMode(intakeSubsystem.sensorNow() ? NotePosition.INTAKE_HOLDING : NotePosition.NONE);
     }
 

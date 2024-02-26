@@ -67,6 +67,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     public static final double MAX_OMEGA = MAX_VEL / FL_POS.getNorm();
     public static final double MAX_ALPHA = 8; //STUB
 
+    public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
+
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
@@ -125,7 +127,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         
         kinematics = new SwerveDriveKinematics(FL_POS, FR_POS, BL_POS, BR_POS);
 
-        thetaController = new PIDController(3.5, 0, 0);
+        thetaController = new PIDController(4, 0, 0);
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
@@ -388,11 +390,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         double xDistance = getXFromSpeaker(isRed);
         double yDistance = getYFromSpeaker();
 
-        double rawAngle = Math.atan2(yDistance, xDistance);
+        double rawAngle = Math.atan2(yDistance, xDistance) + Math.PI;
 
         /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
          the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
-        return rawAngle; 
+        return rawAngle + ANGLE_OFFSET_FOR_AUTO_AIM; 
     }
 
     /** Gets the Y distance from the speaker.

@@ -72,4 +72,6 @@ public abstract class BaseDriveController {
      * @return true if swerveAim should be active, false otherwise.
      */
     public abstract Boolean getSwerveAimMode();
+
+    public abstract JoystickButton getTurnModeButton();
 }

@@ -15,12 +15,13 @@ public class ClimbRaiseCommand extends Command {
     @Override
     public void initialize() {
         System.out.println("RAISING CLIMB...");
-        climbSubsystem.goToExtension(EXTENSION_LIMIT_METERS);
+        // climbSubsystem.goToExtension(EXTENSION_LIMIT_METERS);
     }
 
     @Override
     public boolean isFinished() {
-        return climbSubsystem.isAtExtension();
+        return true; //STUB
+        // return climbSubsystem.isAtExtension();
     }
 
     @Override

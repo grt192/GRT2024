@@ -19,7 +19,8 @@ public class ClimbLowerCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return climbSubsystem.isAtExtension();
+        return true; //STUB
+        // return climbSubsystem.isAtExtension();
     }
 
     @Override

@@ -76,4 +76,8 @@ public class XboxDriveController extends BaseDriveController {
     public Boolean getSwerveAimMode() {
         return driveLStickButton.getAsBoolean();
     }
+
+    public JoystickButton getTurnModeButton(){
+        return driveLStickButton;
+    }
 }

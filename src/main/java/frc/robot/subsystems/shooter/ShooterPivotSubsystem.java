@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
+import frc.robot.util.Util;
 
 /** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -52,9 +54,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         //devices
         rotationEncoder = pivotMotor.getEncoder();
-        rotationEncoder.setPosition(0); 
         rotationPIDController = pivotMotor.getPIDController();
-        rotationPIDController.setOutputRange(-.4, 0.07);
+        rotationPIDController.setOutputRange(-.3, 0.6);
         limitSwitch = new DigitalInput(ShooterConstants.LIMIT_SWITCH_ID);
 
 
@@ -62,8 +63,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setP(ANGLE_P);
         rotationPIDController.setI(ANGLE_I);
         rotationPIDController.setD(ANGLE_D);
-        rotationPIDController.setFF(0);
-        System.out.println(rotationPIDController.getFF());
+        rotationPIDController.setFF(0); 
+        rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //encoder stuff
         rotationEncoder.setPositionConversionFactor(ShooterConstants.CONVERSION_FACTOR);
@@ -77,9 +78,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
+        
+
         //field
         this.alliance = alliance;
         autoAim = false;
+
+        rotationPIDController.setReference(Units.degreesToRadians(18), ControlType.kPosition);
     }
     
     /** motor speed setting functions. */
@@ -111,9 +116,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
-        } 
 
-        return Math.PI - Math.atan(speakerHeight / currentDistance);
+            System.out.println(currentDistance);
+        }
+        
+        if (currentDistance < 1.75) {
+            return Units.degreesToRadians(62);
+        }
+
+        return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
     }
 
     /** Prints pivot current angle. */
@@ -135,8 +146,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     /** Sets whether Auto-aim should be on or off. */
-    public void setAutoAimBoolean(boolean red) { 
-        autoAim = red;
+    public void setAutoAimBoolean(boolean autonAim) { 
+        this.autoAim = autonAim;
     }
 
     @Override
@@ -156,7 +167,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if (timer.advanceIfElapsed(.2)) { 
             //printCurrentAngle();
             //System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
-            // System.out.println(rotationEncoder.getPosition());
+            // System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
         }
 
         // System.out.println("current pos" + rotationEncoder.getPosition());

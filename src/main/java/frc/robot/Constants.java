@@ -59,19 +59,19 @@ public final class Constants {
     public static class SwerveConstants {
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
-        public static final double FL_OFFSET = 3.36 + Math.PI * 5.0 / 4.;
+        public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = 3.02 + Math.PI * 3.0 / 4;
+        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = 2.83 + Math.PI * 7.0 / 4;
+        public static final double BL_OFFSET = 2.816 + Math.PI * 7.0 / 4;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
-        public static final double BR_OFFSET = 2.66 + Math.PI * 1.0 / 4.0;
+        public static final double BR_OFFSET = 2.44 + Math.PI * 1.0 / 4.0;
 
         public static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
         public static final Translation2d FL_POS = new Translation2d(MODULE_DIST, MODULE_DIST);
@@ -101,7 +101,7 @@ public final class Constants {
         public static final double encodermiddle = 1;
         public static final double rollersclockwise = 1;
         public static final double rollerscounterclockwise = 1;
-        public static final double sensorreached = .3;
+        public static final double sensorreached = .05;
         public static final double pivotclockwise = 1;
         public static final double pivotcounterclockwise = -1;
         public static final double pastsensortime = 3;
@@ -136,19 +136,16 @@ public final class Constants {
 
     /** Constants for Climb Subsystem. */
     public static class ClimbConstants {
+        public static final int LEFT_SOLENOID_LATCH_PORT = 1;
         public static final int LEFT_WINCH_MOTOR_ID = 8;
-        public static final int LEFT_ZERO_LIMIT_ID = 0;
+        public static final int LEFT_ZERO_LIMIT_PORT = 8;
 
+        public static final int RIGHT_SOLENOID_LATCH_PORT = 0;
         public static final int RIGHT_WINCH_MOTOR_ID = 9;
-        public static final int RIGHT_ZERO_LIMIT_ID = 1;
-
-        public static final double WINCH_REDUCTION = 9.49;
-        public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289);
-
-        public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(39);
-        public static final double EXTENSION_TOLERANCE_METERS = 0.01;
-
-        public static final double MAX_WINCH_POWER = 0.6;
+        public static final int RIGHT_ZERO_LIMIT_PORT = 3;
+        
+        public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(24);
+        public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(0);
     }
 
     /** Constants for auto-aligning. */
@@ -206,7 +203,7 @@ public final class Constants {
         public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
         public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(Units.inchesToMeters(+9.7), Units.inchesToMeters(-14.2), Units.inchesToMeters(+25.9)),
-            new Rotation3d(Units.degreesToRadians(+0.3), Units.degreesToRadians(-16.0), Units.degreesToRadians(-20.2))
+            new Rotation3d(Units.degreesToRadians(.3), Units.degreesToRadians(-16), Units.degreesToRadians(-20.2))
         );
 
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
