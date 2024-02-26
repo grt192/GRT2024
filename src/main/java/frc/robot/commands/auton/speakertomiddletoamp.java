@@ -6,6 +6,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -18,8 +19,11 @@ public class speakertomiddletoamp extends BaseAutonSequence{
     private ChoreoTrajectory ampnoteintaketraj;
     private ChoreoTrajectory shootampnotetraj;
    
-    public speakertomiddletoamp(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
-        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem);
+    public speakertomiddletoamp(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
+                                ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
+                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
+
+        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
         
         middlenoteintaketraj = Choreo.getTrajectory("Turn90");
         ampnoteintaketraj = Choreo.getTrajectory("speakermiddlenotetoampnote");
@@ -30,6 +34,7 @@ public class speakertomiddletoamp extends BaseAutonSequence{
         System.out.println("Y:" + middlenoteintaketraj.getInitialPose().getY());
 
         addCommands(
+
             //shoot(), 
             followPath(middlenoteintaketraj)
             //shoot(),
