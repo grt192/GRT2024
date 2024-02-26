@@ -3,6 +3,7 @@ package frc.robot.commands.auton;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,13 +84,12 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    
-    /** 
-     * Follows trajectory, extends pivot and moves forward, intakes note, retracts pivot
-     * @param intaketraj
-     * @return SequentialCommandGroup
-     */
-    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj) {
+    // public Command setAngle(double xpower, double ypower, Rotation2d angle){
+    //     Command setDrivePowerswithHeadingLock = swerveSubsystem.setDrivePowerswithHeadingLock(xpower, ypower, angle);
+    //     return setDrivePowerswithHeadingLock;
+    // }
+
+    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj){
         return followPath(intaketraj)
                 //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
