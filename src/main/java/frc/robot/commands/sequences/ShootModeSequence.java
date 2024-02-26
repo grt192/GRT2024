@@ -42,7 +42,7 @@ public class ShootModeSequence extends SequentialCommandGroup {
             ShooterPivotSubsystem shooterPivotSubsystem,
             LEDSubsystem ledSubsystem) {
         addCommands(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
-                new ElevatorToGroundCommand(elevatorSubsystem),
+                // new ElevatorToGroundCommand(elevatorSubsystem),
                 new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)) // STUB FOR AUTOAIM
         ));
     }

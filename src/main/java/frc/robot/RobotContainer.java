@@ -173,9 +173,17 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        aButton.onTrue(new ElevatorToChuteCommand(elevatorSubsystem).andThen(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).andThen(
-                        new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1))));
+
+        // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3), intakePivotSubsystem));
+
+        // rightBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem));
+
+        // leftBumper.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem));
+
+        aButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.85), intakePivotSubsystem).alongWith(
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.2)
+            ));
 
         bButton.onTrue(new IdleCommand(intakePivotSubsystem, intakeRollerSubsystem,
                 elevatorSubsystem,
@@ -185,16 +193,18 @@ public class RobotContainer {
         leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
                 elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
                 ledSubsystem).andThen(
-                        new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1)));
+                        new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
+                            new IntakeRollerFeedCommand(intakeRollerSubsystem)
+                        )));
 
-        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
-                new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
-                new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1),
-                new IntakeRollerOutakeCommand(intakeRollerSubsystem),
-                new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))));
+        // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
+        //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
+        //         new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1),
+        //         new IntakeRollerOutakeCommand(intakeRollerSubsystem),
+        //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))));
 
-        xButton.onTrue(new IntakeRollerOutakeCommand(intakeRollerSubsystem).andThen(
-                new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))));
+        xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3), intakePivotSubsystem).andThen(
+                new IntakeRollerOutakeCommand(intakeRollerSubsystem)));
 
         if (baseSwerveSubsystem instanceof SwerveSubsystem) {
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;

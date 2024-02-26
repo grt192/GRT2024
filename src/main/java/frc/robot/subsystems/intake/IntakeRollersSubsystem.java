@@ -10,11 +10,15 @@ import static frc.robot.Constants.IntakeConstants.*;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeRollersSubsystem extends SubsystemBase {
-    private final TalonSRX frontMotors;
+    private final CANSparkMax frontMotors;
     private final TalonSRX integrationMotor;
     private final AnalogPotentiometer sensor;
 
@@ -23,7 +27,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      */
     public IntakeRollersSubsystem() {
         integrationMotor = new TalonSRX(INTEGRATION_MOTOR_ID);
-        frontMotors = new TalonSRX(FRONT_MOTOR_ID);
+        frontMotors = new CANSparkMax(FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
         sensor = new AnalogPotentiometer(sensorID);
     }
@@ -44,7 +48,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      * @param frontspeed
      */
     public void setRollSpeed(double frontspeed) {
-        frontMotors.set(TalonSRXControlMode.PercentOutput, frontspeed);
+        frontMotors.set(frontspeed);
     }
 
     /**
@@ -53,7 +57,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      * @param integrationspeed
      */
     public void setAllRollSpeed(double frontspeed, double integrationspeed) {
-        frontMotors.set(TalonSRXControlMode.PercentOutput, frontspeed);
+        frontMotors.set(frontspeed);
         integrationMotor.set(TalonSRXControlMode.PercentOutput, integrationspeed);
     }
 
@@ -63,7 +67,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      */
     public void setRollersOutwards(Boolean pressedA) {
         if (pressedA == true)
-            frontMotors.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+            frontMotors.set(rollersclockwise);
 
     }
 
@@ -73,7 +77,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      */
     public void setRollersInwards(Boolean pressedB) {
         if (pressedB == true)
-            frontMotors.set(TalonSRXControlMode.PercentOutput, rollersclockwise);
+            frontMotors.set(rollersclockwise);
 
     }
 

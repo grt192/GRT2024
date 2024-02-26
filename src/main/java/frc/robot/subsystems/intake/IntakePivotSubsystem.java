@@ -11,14 +11,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivotSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor;
-    private final DigitalInput extendedlimitswitch;
-    private final DigitalInput retractedlimitswitch;
-    private final Encoder intakeencoder;
+    // private final DigitalInput extendedlimitswitch;
+    // private final DigitalInput retractedlimitswitch;
+    // private final Encoder intakeencoder;
     private PositionVoltage request = new PositionVoltage(0).withSlot(0);
-    private final double P = 0;
+    private final double P = 1;
     private final double I = 0;
     private final double D = 0;
-    private final double CONVERSION_FACTOR = 1; // TODO tune
+    private final double CONVERSION_FACTOR = 0.2142; // TODO tune
+    private final double OFFSET = 0;// 0.9495;
 
     
      /**
@@ -26,9 +27,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
       */
     public IntakePivotSubsystem() {
         pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
-        intakeencoder = new Encoder(1, 2);
-        extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
-        retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
+        // intakeencoder = new Encoder(1, 2);
+        // extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
+        // retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
         Slot0Configs slot0Configs = new Slot0Configs();
 
         slot0Configs.kP = P;
@@ -36,6 +37,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
         slot0Configs.kD = D;
 
         pivotMotor.getConfigurator().apply(slot0Configs);
+        pivotMotor.setPosition(0);
     }
 
     /**
@@ -44,7 +46,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
      */
 
     public void setPosition(double position) {
-        pivotMotor.setControl(request.withPosition(position * CONVERSION_FACTOR));
+        pivotMotor.setControl(request.withPosition((position - OFFSET) / CONVERSION_FACTOR));
 
     }
 
@@ -52,14 +54,14 @@ public class IntakePivotSubsystem extends SubsystemBase {
      * resets encoder to zero.
      */
     public void resetEncoder() {
-        intakeencoder.reset();
+        // pivotMotor.reset();
     }
 
     /**
      * returns the encoder position.
      */
     public double encoderPosition() {
-        return intakeencoder.get();
+        return pivotMotor.get();
     }
 
     /**
@@ -74,22 +76,27 @@ public class IntakePivotSubsystem extends SubsystemBase {
      * If pivot is extended (true) or not
      * @return if the pivot is extended. 
      */
-    public boolean pivotisextended() {
-        if (extendedlimitswitch.get()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public boolean pivotisextended() {
+    //     if (extendedlimitswitch.get()) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     /**
      * returns if pivot is retracted (true) or not
      */
-    public boolean pivotisretracted() {
-        if (retractedlimitswitch.get()) {
-            return true;
-        } else {
-            return false;
-        }
+    // public boolean pivotisretracted() {
+    //     if (retractedlimitswitch.get()) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    @Override
+    public void periodic() {
+        // System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR);
     }
 }

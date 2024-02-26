@@ -36,6 +36,7 @@ public class IntakePivotExtendedCommand extends Command{
     @Override
     public boolean isFinished() {
         // TODO Auto-generated method stub
-        return pivotSubsystem.pivotisextended();
+        return true; // STUB FOR NOW
+        // return pivotSubsystem.pivotisextended();
     }
 }
