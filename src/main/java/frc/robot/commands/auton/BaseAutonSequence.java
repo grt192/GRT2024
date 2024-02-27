@@ -84,11 +84,6 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    // public Command setAngle(double xpower, double ypower, Rotation2d angle){
-    //     Command setDrivePowerswithHeadingLock = swerveSubsystem.setDrivePowerswithHeadingLock(xpower, ypower, angle);
-    //     return setDrivePowerswithHeadingLock;
-    // }
-
     public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj){
         return followPath(intaketraj)
                 //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
@@ -116,6 +111,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){
         return followPath(shoottraj)
+        .andThen(new SetAngleCommand(swerveSubsystem))
         .andThen(shoot());
     }
 

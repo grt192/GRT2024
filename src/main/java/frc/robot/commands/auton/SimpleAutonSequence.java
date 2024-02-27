@@ -2,6 +2,7 @@ package frc.robot.commands.auton;
 
 import com.choreo.lib.ChoreoTrajectory;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -15,6 +16,8 @@ public class SimpleAutonSequence extends BaseAutonSequence{
     private ChoreoTrajectory preloadedtraj;
     private ChoreoTrajectory intaketraj;
     private ChoreoTrajectory speakertraj;
+    private Rotation2d shootangle1;
+    private Rotation2d shootangle2;
    
     public SimpleAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
