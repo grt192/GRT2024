@@ -7,6 +7,8 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.ShooterConstants;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +22,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     //devices
     private ShooterState currentState; //an enum state thing
+    private VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
     /** Motors assigned. */
     public ShooterFlywheelSubsystem(){
@@ -32,9 +35,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         shooterMotorTop.setNeutralMode(NeutralModeValue.Coast);
         shooterMotorBottom.setNeutralMode(NeutralModeValue.Coast);
-        
-        //enums
-        setShooterState(ShooterState.VERTICAL);
+
+        Slot0Configs configs = new Slot0Configs();
+
+        configs.kP = 1;
+        configs.kI = 0;
+        configs.kD = 0;
+        configs.kV = .12;
     }
 
     /** Gets current state of shooter. */
@@ -49,16 +56,23 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets shooting motor speed.  */
     public void setShooterMotorSpeed(double topSpeed, double bottomSpeed) {
-        shooterMotorTop.setVoltage(topSpeed * 12);
-        shooterMotorBottom.setVoltage(bottomSpeed * 12);
+        double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
+        double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
+
+        shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
+        shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
 
         //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
     public void setShooterMotorSpeed(double speed) {
-        shooterMotorBottom.setVoltage(speed * 12);
-        shooterMotorTop.setVoltage(speed * 12);
+        setShooterMotorSpeed(speed, speed);
+    }
+
+    public boolean atSpeed() {
+        return shooterMotorTop.getClosedLoopError().getValueAsDouble() < 10.0
+            && shooterMotorBottom.getClosedLoopError().getValueAsDouble() < 10.0;
     }
 
 }

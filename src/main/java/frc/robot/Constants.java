@@ -132,7 +132,7 @@ public final class Constants {
         public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
         public static final double BLUE_Y = Units.inchesToMeters(218.42);
 
-        
+        public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
 
 
     }
