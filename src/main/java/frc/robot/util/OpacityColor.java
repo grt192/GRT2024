@@ -37,7 +37,7 @@ public class OpacityColor extends Color {
     }
 
     public Color getScaledColor(){
-        return Util.scaleColor(this, opacity);
+        return GRTUtil.scaleColor(this, opacity);
     }
 
     public OpacityColor withOpacity(double opacity){

@@ -20,7 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeRollersSubsystem extends SubsystemBase {
     private final CANSparkMax frontMotors;
     private final TalonSRX integrationMotor;
-    private final AnalogPotentiometer sensor;
+    private final AnalogPotentiometer frontSensor;
+    private final AnalogPotentiometer backSensor;
 
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake
@@ -29,18 +30,23 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         integrationMotor = new TalonSRX(INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
-        sensor = new AnalogPotentiometer(sensorID);
+        frontSensor = new AnalogPotentiometer(frontSensorID);
+        backSensor = new AnalogPotentiometer(backSensorID);
     }
 
     /**
      * if the sensor is reached (true) or not
      */
-    public boolean sensorNow() {
-        if (sensor.get() >= sensorreached) {
+    public boolean frontSensorNow() {
+        if (frontSensor.get() >= frontSensorReached) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean backSensorNow() {
+        return backSensor.get() > BACK_SENSOR_REACHED;
     }
 
     /**

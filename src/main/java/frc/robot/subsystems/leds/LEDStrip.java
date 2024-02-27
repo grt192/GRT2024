@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.util.OpacityColor;
-import frc.robot.util.Util;
+import frc.robot.util.GRTUtil;
 
 /** An LEDStrip which you can add ledLayers to. */
 public class LEDStrip {
@@ -37,7 +37,7 @@ public class LEDStrip {
      */
     public void setBuffer(double brightnessFactor) {
         for (int i = 0; i < ledLength; i++) {
-            ledBuffer.setLED(i, Util.scaleColor(ledBuffer.getLED(i), brightnessFactor));
+            ledBuffer.setLED(i, GRTUtil.scaleColor(ledBuffer.getLED(i), brightnessFactor));
         }
         led.setData(ledBuffer);
     }

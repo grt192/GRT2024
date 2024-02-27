@@ -93,7 +93,8 @@ public final class Constants {
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
 
-        public static final int sensorID = 0;
+        public static final int frontSensorID = 0;
+        public static final int backSensorID = 1;
         public static final int extendedlimitswitchID = 5;
         public static final int retractedlimitswitchID = 6;
         public static final int intakeencoderID = 3;
@@ -101,7 +102,8 @@ public final class Constants {
         public static final double encodermiddle = 1;
         public static final double rollersclockwise = 1;
         public static final double rollerscounterclockwise = 1;
-        public static final double sensorreached = .05;
+        public static final double frontSensorReached = .05;
+        public static final double BACK_SENSOR_REACHED = .05;
         public static final double pivotclockwise = 1;
         public static final double pivotcounterclockwise = -1;
         public static final double pastsensortime = 3;
@@ -118,7 +120,8 @@ public final class Constants {
         //flywheel constants
         public static final int SHOOTER_MOTOR_TOP_ID = 13;
         public static final int SHOOTER_MOTOR_BOTTOM_ID = 14;
-        public static final double SHOOTER_MOTOR_SPEED = 1;
+        public static final double TOP_SHOOTER_MOTOR_SPEED = 1;
+        public static final double BOTTOM_SHOOTER_MOTOR_SPEED = 1;
 
         //field constants
         //center of red speaker: (652.73 218.42)

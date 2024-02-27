@@ -38,11 +38,11 @@ public class IntakeRollerIntakeCommand extends Command{
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
         intakeSubsystem.setAllRollSpeed(0, 0); 
-        ledSubsystem.setNoteMode(intakeSubsystem.sensorNow() ? NotePosition.INTAKE_HOLDING : NotePosition.NONE);
+        ledSubsystem.setNoteMode(intakeSubsystem.frontSensorNow() ? NotePosition.INTAKE_HOLDING : NotePosition.NONE);
     }
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.sensorNow();
+        return intakeSubsystem.frontSensorNow();
     }
 }

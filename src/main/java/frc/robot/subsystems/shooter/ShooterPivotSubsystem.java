@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
-import frc.robot.util.Util;
+import frc.robot.util.GRTUtil;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 /** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -39,10 +41,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double currentDistance;
     private Pose2dSupplier poseSupplier; //new Pose2d();
 
+    private LinearInterpolator lerp;
+    private PolynomialSplineFunction spline;
+
     private final Timer timer = new Timer();
 
     /** Inits motors and pose field. Also inits PID stuff. */
-    public ShooterPivotSubsystem(boolean alliance, Pose2dSupplier poseSupplier){
+    public ShooterPivotSubsystem(boolean alliance, Pose2dSupplier poseSupplier) {
 
         timer.start();
         this.poseSupplier = poseSupplier;
@@ -78,7 +83,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        
+        double[] distances = {1, 2, 3, 4, 5, 6, 7, 8};
+        double[] angles = {1.12, .796, .598, .473, .388, .328, .284, .250};
+
+        // X = distances, Y = angles in rads
+        lerp = new LinearInterpolator();
+        spline = lerp.interpolate(distances, angles);
 
         //field
         this.alliance = alliance;
@@ -116,15 +126,18 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
-
-            System.out.println(currentDistance);
         }
+
+        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
+                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(spline.value(currentDistance))));
         
-        if (currentDistance < 1.75) {
-            return Units.degreesToRadians(62);
-        }
+        // if (currentDistance < 1.75) {
+        //     return Units.degreesToRadians(62);
+        // }
 
-        return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
+        // return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
+
+        return spline.value(currentDistance);
     }
 
     /** Prints pivot current angle. */

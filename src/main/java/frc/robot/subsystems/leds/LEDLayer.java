@@ -1,7 +1,7 @@
 package frc.robot.subsystems.leds;
 
 import frc.robot.util.OpacityColor;
-import frc.robot.util.Util;
+import frc.robot.util.GRTUtil;
 
 /** One layer of the LED strip subsystem. */
 public class LEDLayer {
@@ -112,7 +112,7 @@ public class LEDLayer {
      */
     public void scale(double factor) {
         for (int i = 0; i < colorArray.length; i++) {
-            setLED(i, Util.scaleColor(getLEDColor(i), factor));
+            setLED(i, GRTUtil.scaleColor(getLEDColor(i), factor));
         }
     }
 }

@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -22,7 +23,9 @@ import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorSetManualCommand;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
+import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
+import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
@@ -37,6 +40,7 @@ import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.subsystems.TestMotorSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SingleModuleSwerveSubsystem;
@@ -44,6 +48,7 @@ import frc.robot.subsystems.swerve.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.swerve.TestSingleModuleSwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+import frc.robot.util.GRTUtil;
 import frc.robot.vision.NoteDetectionWrapper;
 
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
@@ -131,6 +136,8 @@ public class RobotContainer {
 
     private final BooleanSupplier isRed;
 
+    private double shooterPivotOffset = Units.degreesToRadians(18);
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -191,12 +198,24 @@ public class RobotContainer {
     private void configureBindings() {
 
 
-        //SHOOTER PIVOT TEST
+        // SHOOTER PIVOT TEST
 
         // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(18)));
 
         // leftBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(60)));
 
+        // SHOOTER PIVOT TUNE
+
+        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            shooterPivotSubsystem.setAngle(shooterPivotOffset);
+            if (mechController.getPOV() == 0) {
+                shooterPivotOffset += .001;
+            } else if (mechController.getPOV() == 180) {
+                shooterPivotOffset -= .001;
+            }
+            shooterPivotSubsystem.getAutoAimAngle();
+        }, shooterPivotSubsystem
+        ));
 
         //ElEVATOR TEST
 
@@ -224,23 +243,43 @@ public class RobotContainer {
             testClimbRight.setMotorSpeed(mechController.getRightY());
         }, testClimbRight));
 
-        rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
 
-        leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
-
-        aButton.onTrue(new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-            new InstantCommand(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem).alongWith(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
-                    // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1)
-                )
-            )
-        );
-
-        bButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem).alongWith(
-            new InstantCommand(() -> {}, intakeRollerSubsystem)
+        // TOGGLES THE ELEVATOR FOR AMP
+        rightBumper.onTrue(GRTUtil.getBinaryCommandChoice(
+            () -> elevatorSubsystem.getExtensionPercent() >= ElevatorConstants.AMP_POSITION - .05,
+            new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                new ElevatorToAMPCommand(elevatorSubsystem),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+            ),
+            new ElevatorToZeroCommand(elevatorSubsystem)
         ));
 
-        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem));
+
+        leftBumper.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
+
+        aButton.onTrue(
+            GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow, 
+                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+                        new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                            // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
+                            // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+                        ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
+                    ).until(intakeRollerSubsystem::backSensorNow),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                    new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+                    // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
+                    // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+                )
+            ).unless(intakeRollerSubsystem::backSensorNow)
+        );
+
+        bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
+        );
+
+        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+            new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+        ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 

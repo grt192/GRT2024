@@ -12,14 +12,16 @@ import frc.robot.subsystems.intake.IntakePivotSubsystem;
 
 public class IntakePivotMiddleCommand  extends Command{
     private final IntakePivotSubsystem pivotSubsystem;
+    private double position;
 
 
     /**
      * sets the intake pivot to a middle position
      * @param pivotSubsystem
      */
-    public IntakePivotMiddleCommand (IntakePivotSubsystem pivotSubsystem){
+    public IntakePivotMiddleCommand (IntakePivotSubsystem pivotSubsystem, double position){
         this.pivotSubsystem = pivotSubsystem;
+        this.position = position;
     }
     @Override
     public void initialize() {
@@ -40,7 +42,7 @@ public class IntakePivotMiddleCommand  extends Command{
 
     @Override
     public boolean isFinished() {
-        return pivotSubsystem.encoderPosition() == encodermiddle;
+        return (pivotSubsystem.encoderPosition() - position) < .03;
         // TODO Auto-generated method stub
        
     }

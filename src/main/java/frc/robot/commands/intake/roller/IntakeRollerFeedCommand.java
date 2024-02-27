@@ -33,7 +33,7 @@ public class IntakeRollerFeedCommand extends Command{
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        if (intakeSubsystem.sensorNow() == false && timer.hasStarted() == false) {
+        if (intakeSubsystem.frontSensorNow() == false && timer.hasStarted() == false) {
             timer.start();
         }
     }

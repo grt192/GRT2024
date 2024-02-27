@@ -146,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return boolean (if the elevator is at this state)
      */
     public boolean atState(ElevatorState state) {
-        double distance = Math.abs(this.getExtensionMeters() - state.getExtendDistanceMeters());
+        double distance = Math.abs(this.getExtensionPercent() - state.getExtendDistanceMeters());
         if (distance < ElevatorConstants.EXTENSION_TOLERANCE) {
             return true;
         } else {
@@ -197,7 +197,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
      * @return position in doubles.
      */
-    public double getExtensionMeters() { 
+    public double getExtensionPercent() { 
         return extensionEncoder.getPosition();
     }
 
