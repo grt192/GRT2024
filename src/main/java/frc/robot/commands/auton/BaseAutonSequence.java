@@ -45,6 +45,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private boolean isRed;
     private double driveforwardtime = 1;
     private double intaketime = 3;
+    
 
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
@@ -84,16 +85,27 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj){
-        return followPath(intaketraj)
-                //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
-                .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
-                //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
-                //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
+    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
+        
+        if (extendwhilemoving){
+            return followPath(intaketraj)
+            //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
+            .alongWith(new IntakePivotExtendedCommand(intakePivotSubsystem))
+            .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
+            //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
+            //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem))        
+        }
+        else {
+            return followPath(intaketraj) 
+            //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
+            .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
+            .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
+            //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
+            //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem))
+        }
     }
 
-    public SequentialCommandGroup goIntakeNoOvershoot(ChoreoTrajectory intaketraj){
+    public SequentialCommandGroup goIntakeNoOvershoot(ChoreoTrajectory intaketraj ){
         return followPath(intaketraj)
                 //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
                 .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))

@@ -25,8 +25,8 @@ public class SimpleAutonSequence extends BaseAutonSequence{
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
 
         addCommands(
-            goShoot(preloadedtraj), 
-            goIntake(intaketraj),
+            goShoot(preloadedtraj),
+            goIntake(intaketraj, false),
             goShoot(speakertraj)
         );
     }
