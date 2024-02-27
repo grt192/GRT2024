@@ -26,23 +26,28 @@ public class IntakePivotMiddleCommand  extends Command{
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        pivotSubsystem.setPosition(encodermiddle);
+        pivotSubsystem.setPosition(position);
     }
     @Override
     public void execute() {
+        System.out.println("PIVOT MOVING" + pivotSubsystem.encoderPosition());
         //TODO Auto-generated method stub
     }
 
     @Override
     public void end(boolean interrupted) {
         //TODO Auto-generated method stub
+        System.out.println("PIVOT FINISHED");
+        if (interrupted) {
+            System.out.println("PIVOT InTERRUPTED");
+        }
         pivotSubsystem.movePivot(0);
         
     }
 
     @Override
     public boolean isFinished() {
-        return (pivotSubsystem.encoderPosition() - position) < .03;
+        return Math.abs(pivotSubsystem.encoderPosition() - position) < .03;
         // TODO Auto-generated method stub
        
     }

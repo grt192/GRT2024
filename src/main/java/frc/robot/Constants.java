@@ -103,7 +103,7 @@ public final class Constants {
         public static final double rollersclockwise = 1;
         public static final double rollerscounterclockwise = 1;
         public static final double frontSensorReached = .05;
-        public static final double BACK_SENSOR_REACHED = .05;
+        public static final double BACK_SENSOR_REACHED = .6;
         public static final double pivotclockwise = 1;
         public static final double pivotcounterclockwise = -1;
         public static final double pastsensortime = 3;

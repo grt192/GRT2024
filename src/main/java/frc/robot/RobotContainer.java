@@ -206,16 +206,16 @@ public class RobotContainer {
 
         // SHOOTER PIVOT TUNE
 
-        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            shooterPivotSubsystem.setAngle(shooterPivotOffset);
-            if (mechController.getPOV() == 0) {
-                shooterPivotOffset += .001;
-            } else if (mechController.getPOV() == 180) {
-                shooterPivotOffset -= .001;
-            }
-            shooterPivotSubsystem.getAutoAimAngle();
-        }, shooterPivotSubsystem
-        ));
+        // shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     shooterPivotSubsystem.setAngle(shooterPivotOffset);
+        //     if (mechController.getPOV() == 0) {
+        //         shooterPivotOffset += .001;
+        //     } else if (mechController.getPOV() == 180) {
+        //         shooterPivotOffset -= .001;
+        //     }
+        //     shooterPivotSubsystem.getAutoAimAngle();
+        // }, shooterPivotSubsystem
+        // ));
 
         //ElEVATOR TEST
 
@@ -248,6 +248,7 @@ public class RobotContainer {
         rightBumper.onTrue(GRTUtil.getBinaryCommandChoice(
             () -> elevatorSubsystem.getExtensionPercent() >= ElevatorConstants.AMP_POSITION - .05,
             new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
                 new ElevatorToAMPCommand(elevatorSubsystem),
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
             ),
@@ -258,20 +259,29 @@ public class RobotContainer {
         leftBumper.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
 
         aButton.onTrue(
-            GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow, 
-                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-                        new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
-                            // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
-                            // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
-                        ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
-                    ).until(intakeRollerSubsystem::backSensorNow),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                    new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
-                    // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
-                    // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
-                )
-            ).unless(intakeRollerSubsystem::backSensorNow)
+            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                        new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+                        // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+                    ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
+                ).until(intakeRollerSubsystem::backSensorNow)
+
+
+            // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow, 
+            //     new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+            //         new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+            //             new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+            //                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+            //                 // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+            //             ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
+            //         ).until(intakeRollerSubsystem::backSensorNow),
+            //     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+            //         new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+            //         // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
+            //         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+            //     )
+            // ).unless(intakeRollerSubsystem::backSensorNow)
         );
 
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
@@ -302,6 +312,14 @@ public class RobotContainer {
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
             double power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
             intakeRollerSubsystem.setAllRollSpeed(power, power);
+            GRTUtil.getBinaryCommandChoice(
+                () -> elevatorSubsystem.getExtensionPercent() >= ElevatorConstants.AMP_POSITION - .05,
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                    new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
+                    new ElevatorToAMPCommand(elevatorSubsystem),
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                ),
+            new ElevatorToZeroCommand(elevatorSubsystem));
         }, intakeRollerSubsystem));
 
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));

@@ -89,7 +89,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println("intake distance sensor: " + sensor.get());
+        // System.out.println("intake distance sensor: " + backSensor.get());
         // This method will be called once per scheduler run
     }
 

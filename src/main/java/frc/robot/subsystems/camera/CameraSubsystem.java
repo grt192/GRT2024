@@ -17,57 +17,56 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class CameraSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
-  private UsbCamera camera1;
-  private UsbCamera camera2;
-  private MjpegServer mjpegServer1;
-  private double currentCameraID;
-  private NetworkTableInstance cameraNetworkTableInstance;
-  private NetworkTable cameraNetworkTable;
-  public CameraSubsystem() {
-    camera1 = new UsbCamera("camera1", 0);
-    camera1.setFPS(60);
-    camera1.setResolution(Constants.CameraConstants.resolutionX, Constants.CameraConstants.resolutionY);
-    camera1.setBrightness(45);
+    /** Creates a new ExampleSubsystem. */
+    private UsbCamera camera1;
+    private UsbCamera camera2;
+    private MjpegServer mjpegServer1;
+    private double currentCameraID;
+    private NetworkTableInstance cameraNetworkTableInstance;
+    private NetworkTable cameraNetworkTable;
 
-    camera2 = new UsbCamera("camera2", 1);
-    camera2.setFPS(60);
-    camera2.setResolution(Constants.CameraConstants.resolutionX, Constants.CameraConstants.resolutionY);
-    camera2.setBrightness(45);
+    public CameraSubsystem() {
+        camera1 = new UsbCamera("camera1", 0);
+        camera1.setFPS(60);
+        camera1.setResolution(Constants.CameraConstants.resolutionX, Constants.CameraConstants.resolutionY);
+        camera1.setBrightness(45);
 
-    mjpegServer1 = new MjpegServer("m1", 1181);
-    mjpegServer1.setSource(camera1);
-    currentCameraID = 1.;
-    cameraNetworkTableInstance = NetworkTableInstance.getDefault();
+        camera2 = new UsbCamera("camera2", 1);
+        camera2.setFPS(60);
+        camera2.setResolution(Constants.CameraConstants.resolutionX, Constants.CameraConstants.resolutionY);
+        camera2.setBrightness(45);
+
+        mjpegServer1 = new MjpegServer("m1", 1181);
+        mjpegServer1.setSource(camera1);
+        currentCameraID = 1.;
+        cameraNetworkTableInstance = NetworkTableInstance.getDefault();
         cameraNetworkTable = cameraNetworkTableInstance.getTable("camera");
         cameraNetworkTable.addListener("id",
-        EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-        (NetworkTable table, String key, NetworkTableEvent event) -> {
-            double message = event.valueData.value.getDouble();
-            System.out.println(message);
-            if(message == currentCameraID){
-              // System.out.print("Still the same"); 
-            }
-            else if(message == 1.0){ 
-              // System.out.println("Set to cam1");
-              switchTo(1);
-            }
-            else{
-              // System.out.println("Set to cam2");
-              switchTo(2);
-            }
-        });
-  }
-  public void switchTo(int cameraID){
-    if(cameraID == 1){
-      currentCameraID = 1;
-      mjpegServer1.setSource(camera1);
-      currentCameraID = 1;
+                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
+                (NetworkTable table, String key, NetworkTableEvent event) -> {
+                    double message = event.valueData.value.getDouble();
+                    System.out.println(message);
+                    if (message == currentCameraID) {
+                        // System.out.print("Still the same");
+                    } else if (message == 1.0) {
+                        // System.out.println("Set to cam1");
+                        switchTo(1);
+                    } else {
+                        // System.out.println("Set to cam2");
+                        switchTo(2);
+                    }
+                });
     }
-    else if(cameraID == 2){
-      mjpegServer1.setSource(camera2);
-      currentCameraID = 2;
+
+    public void switchTo(int cameraID) {
+        if (cameraID == 1) {
+            currentCameraID = 1;
+            mjpegServer1.setSource(camera1);
+            currentCameraID = 1;
+        } else if (cameraID == 2) {
+            mjpegServer1.setSource(camera2);
+            currentCameraID = 2;
+        }
+        return;
     }
-    return;
-  }
 }

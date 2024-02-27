@@ -72,7 +72,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     public boolean atSpeed() {
         return shooterMotorTop.getClosedLoopError().getValueAsDouble() < 10.0
-            && shooterMotorBottom.getClosedLoopError().getValueAsDouble() < 10.0;
+            && shooterMotorBottom.getClosedLoopError().getValueAsDouble() < 10.0
+            && Math.abs(shooterMotorTop.get()) > .01;
     }
 
 }

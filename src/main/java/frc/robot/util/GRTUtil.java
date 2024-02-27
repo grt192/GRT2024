@@ -19,6 +19,7 @@ public class GRTUtil {
     }
 
     public static Command getBinaryCommandChoice(BooleanSupplier supplier, Command commandA, Command commandB) {
+        System.out.println(supplier.getAsBoolean());
         return supplier.getAsBoolean() ? commandB : commandA;
     }
 }

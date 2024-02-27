@@ -122,6 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
+
+        System.out.println(getExtensionPercent());
         
         //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
         //this through overun when no motor connected.
@@ -227,4 +229,5 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setManualPower(double power) {
         this.manualPower = power;
     } 
+
 }
