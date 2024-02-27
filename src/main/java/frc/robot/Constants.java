@@ -13,26 +13,16 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import org.photonvision.PhotonCamera;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes)
- * wherever the
- * constants are needed, to reduce verbosity.
- */
+/** Store the constants for the robot. */
 public final class Constants {
 
-    /** Constants for Camera stuff.  */
+    /** Constants for the cameras. */
     public static class CameraConstants {
         public static final int resolutionX = 176;
         public static final int resolutionY = 144;
     }
 
-    /** Constants for Elevator Class.  */
+    /** Constants for the elevator subsystem. */
     public static class ElevatorConstants {
         public static final int EXTENSION_ID = 10;
         public static final int EXTENSION_FOLLOW_ID = 11;
@@ -57,18 +47,18 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
     }
 
-    /** Contants for Operator.  */
+    /** Constants for the driver station. */
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
     }
 
-    /** Constants for Swerve testing. */
+    /** Constants for the test single module swerve subsystem. */
     public static class TestSingleModuleSwerveConstants {
-        public static final double TURNGAP = 2;
+        public static final double TURN_GAP = 2;
     }
 
-    /** More constants for Swerve. */
-    public static class SwerveConstants { // ADD 90 degrees to all
+    /** Constants for the swerve subsystem. */
+    public static class SwerveConstants {
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
         public static final double FL_OFFSET = 3.36 + Math.PI * 5.0 / 4.;
@@ -98,7 +88,7 @@ public final class Constants {
         public static final double SPEAKER_TO_SPEAKER = Units.inchesToMeters(651.23);
     }
 
-    /** Constants for Intake Subsystem. */
+    /** Constants for the intake subsystems. */
     public static class IntakeConstants {
         public static final int INTEGRATION_MOTOR_ID = 19;
         public static final int FRONT_MOTOR_ID = 17;
@@ -154,7 +144,7 @@ public final class Constants {
         public static final int RIGHT_WINCH_MOTOR_ID = 9;
         public static final int RIGHT_ZERO_LIMIT_ID = 1;
 
-        public static final double INCH_REDUCTION = 9.49;
+        public static final double WINCH_REDUCTION = 9.49;
         public static final double AXLE_PERIMETER_METERS = 6 * Units.inchesToMeters(.289);
 
         public static final double EXTENSION_LIMIT_METERS = Units.inchesToMeters(39);
@@ -163,7 +153,7 @@ public final class Constants {
         public static final double MAX_WINCH_POWER = 0.6;
     }
 
-    /** Constants for Auto-align. */
+    /** Constants for auto-aligning. */
     public static class AutoAlignConstants {
 
         public static final double robotRadius = 30 / 2;
@@ -199,14 +189,14 @@ public final class Constants {
                 Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(270));
     }
 
-    /** Constants for LEDs. */
+    /** Constants for the LED subsystem. */
     public static class LEDConstants {
         public static final int LED_LENGTH = 140;
         public static final int LED_PWM_PORT = 0;
         public static final double BRIGHTNESS_SCALE_FACTOR = .6;
     }
 
-    /** Constants for Vision. */
+    /** Constants for vision. */
     public static final class VisionConstants {
         public static final String VISION_TABLE_KEY = "Vision";
 
@@ -214,6 +204,18 @@ public final class Constants {
         public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(
                 new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
                 new Rotation3d(Math.PI, Units.degreesToRadians(16), 0));
+
+        public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
+        public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
+            new Translation3d(Units.inchesToMeters(+9.7), Units.inchesToMeters(-14.2), Units.inchesToMeters(+25.9)),
+            new Rotation3d(Units.degreesToRadians(+0.3), Units.degreesToRadians(-16.0), Units.degreesToRadians(-20.2))
+        );
+
+        public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
+        public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
+            new Translation3d(Units.inchesToMeters(+3.9), Units.inchesToMeters(+14.5), Units.inchesToMeters(+26.3)),
+            new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-16.0), Units.degreesToRadians(+160.0))
+        );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
         public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();

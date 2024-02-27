@@ -1,0 +1,32 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "ahrs",
+        "apriltag",
+        "AUTOAIM",
+        "Auton",
+        "autons",
+        "Brushless",
+        "choreo",
+        "Crauton",
+        "crimer",
+        "crimor",
+        "DEADBAND",
+        "drivemotors",
+        "Holonomic",
+        "intaking",
+        "mechs",
+        "mjpeg",
+        "mjpg",
+        "rishay",
+        "roborio",
+        "Setpoint",
+        "setpoints",
+        "SUBWOOFER"
+    ],
+    "ignoreWords": [],
+    "import": []
+}

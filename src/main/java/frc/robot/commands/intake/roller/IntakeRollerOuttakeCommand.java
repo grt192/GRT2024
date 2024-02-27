@@ -9,15 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.util.TrackingTimer;
 
-public class IntakeRollerOutakeCommand extends Command{
+public class IntakeRollerOuttakeCommand extends Command{
     private final IntakeRollersSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
-    /**
-     * sets all the rollers outwards to outake
-     * @param intakeSubsystem
-     */
-    public IntakeRollerOutakeCommand(IntakeRollersSubsystem intakeSubsystem){
+    public IntakeRollerOuttakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
         addRequirements(intakeSubsystem);

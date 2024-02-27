@@ -15,8 +15,9 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.NotePosition;
 
-import static frc.robot.Constants.ShooterConstants.*;
-
+/**
+ *  The command sequence to move the note within the robot into a shooting position and prepare the shooter to shoot.
+ */
 public class ShootModeSequence extends SequentialCommandGroup {
 
     /*

@@ -1,12 +1,11 @@
 package frc.robot.subsystems.swerve;
 
-import static frc.robot.Constants.TestSingleModuleSwerveConstants.*;
+import static frc.robot.Constants.TestSingleModuleSwerveConstants;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.util.Util;
 
+/** Runs tests for individual swerve modules. */
 public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem {
 
     
@@ -24,7 +23,11 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     private Timer crimor;
 
-    public TestSingleModuleSwerveSubsystem(SwerveModule module){
+    /** Makes a swerve subsystem for running tests on one module.
+     *
+     * @param module The module to run tests on.
+     */
+    public TestSingleModuleSwerveSubsystem(SwerveModule module) {
         super(module);
 
         testCase = 1;
@@ -42,12 +45,8 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
 
     @Override
     public void periodic() {
-        // if (crimor.advanceIfElapsed(.1)){
-        //     System.out.print("test case: " + testCase);
-        //     // System.out.print(" error " + twoDecimals(module.getError()));
-        //     System.out.println(" target " + twoDecimals(Math.toDegrees(MathUtil.angleModulus(steer))));
-        // }
-        if(DriverStation.isDisabled()){  
+
+        if (DriverStation.isDisabled()) {  
             System.out.println(module.getWrappedAngle().getRadians() * -1 + Math.PI / 2);
         }
 
@@ -57,11 +56,11 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
         }
 
         // These are the different test cases as requested by Alex
-        switch(testCase) {
+        switch (testCase) {
             
             case 0:
                 //WEAR IN GEARS
-                if(crimer.advanceIfElapsed(crime)){
+                if (crimer.advanceIfElapsed(crime)) {
                     drive = DRIVE_POWER * (Math.floor(Math.random() * 2) * 2 - 1); //Either 1 or -1
                     steer = STEER_POWER * (Math.floor(Math.random() * 2) * 2 - 1);
                     
@@ -121,47 +120,61 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
             case 11:
                 //INCREMENT 45
                 drive = 0;
-                if (crimer.advanceIfElapsed(TURNGAP)){
-                    steer += Math.PI/2;
+                if (crimer.advanceIfElapsed(TestSingleModuleSwerveConstants.TURN_GAP)) {
+                    steer += Math.PI / 2;
                     steer = steer % (2 * Math.PI);
                 }
                 break;
             case 12:
                 //INCREMENT 180
                 drive = 0;
-                if (crimer.advanceIfElapsed(TURNGAP)){
+                if (crimer.advanceIfElapsed(TestSingleModuleSwerveConstants.TURN_GAP)) {
                     steer += Math.PI;
                     steer = steer % (2 * Math.PI);
                 }
                 break;
+            default:
+                drive = 0;
+                steer = 0;
         }
-        if (testCase > 8){
-            super.setRawPowersWithAngle(drive, steer);
-        }
-        else{
-            super.setRawPowers(drive, steer);
+
+        if (testCase > 8) {
+            setRawPowersWithAngle(drive, steer);
+        } else {
+            setRawPowers(drive, steer);
         }
     }
 
-    public void incrementTest(){
+    /** Increase the test number by 1. */
+    public void incrementTest() {
         testCase = (testCase == 12) ? 0 : testCase + 1;
         crime = 0;
     }
 
-    public void decrementTest(){
+    /** Decrease the test number by 1. */
+    public void decrementTest() {
         testCase = (testCase == 0) ? 12 : testCase - 1;
         crime = 0;
     }
 
-    public int getTest(){
+    /** Get the selected test number.
+     *
+     * @return The test number
+     */
+    public int getTest() {
         return testCase;
     }
 
-    public boolean getRunning(){
+    /** Return if the module is running.
+     *
+     * @return Whether the module is running.
+     */
+    public boolean getRunning() {
         return toRun;
     }
 
-    public void toggletoRun(){
+    /** Toggle if the module is running. */
+    public void toggleToRun() {
         toRun = !toRun;
         System.out.println(toRun);
     }
