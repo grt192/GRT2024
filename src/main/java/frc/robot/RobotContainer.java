@@ -176,10 +176,10 @@ public class RobotContainer {
 
         xError = swerveCrauton.add("xError", 0).withPosition(8, 0).getEntry();
         yError = swerveCrauton.add("yError", 0).withPosition(9, 0).getEntry();
-        if (DriverStation.getJoystickName(0).equals("Cyborg V.1")) {
-            driveController = new DualJoystickDriveController();
-        } else {
+        if (DriverStation.getJoystickName(0).equals("Controller (Xbox One For Windows)")) {
             driveController = new XboxDriveController();
+        } else {
+            driveController = new DualJoystickDriveController();
         }
         // private final SwerveModule module;
         // construct Test
@@ -205,7 +205,6 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
 
-        
     }
 
     private void configureBindings() {
