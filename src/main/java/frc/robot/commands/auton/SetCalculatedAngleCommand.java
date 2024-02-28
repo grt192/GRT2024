@@ -16,7 +16,7 @@ public class SetCalculatedAngleCommand extends Command{
 
     @Override
     public void initialize() {
-        swerve.setAimMode(0,0);
+        swerve.setSwerveAimDrivePowers(0,0);
     }
 
     @Override

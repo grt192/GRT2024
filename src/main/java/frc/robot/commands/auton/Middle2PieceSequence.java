@@ -13,14 +13,19 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class MiddlePreloadedSequence extends BaseAutonSequence{
+public class Middle2PieceSequence extends BaseAutonSequence{
+
+    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakernote");
    
-    public MiddlePreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
+    public Middle2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-
+        ((SwerveSubsystem) swerveSubsystem).resetPose(starttopiece1.getInitialPose());
+        
         addCommands(
+            shoot(),
+            goIntake(starttopiece1, true),
             shoot()
         );
     }

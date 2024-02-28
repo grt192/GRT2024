@@ -55,11 +55,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.vision.ApriltagWrapper;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.util.Util;
+import frc.robot.util.GRTUtil;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.vision.PhotonWrapper;
 
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.VisionConstants.*;
@@ -216,7 +215,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     @Override
     public void periodic() {
 
-        robotPos.setValue(Util.twoDecimals(getRobotPosition().getX()));
+        robotPos.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -231,16 +230,16 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         SwerveModulePosition[] modulePos = getModulePositions(); 
     
-        FLsteer.setValue(Util.twoDecimals(modulePos[0].angle.getDegrees()));
+        FLsteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
         // FLdrive.setValue(Util.twoDecimals(modulePos[0].distanceMeters));
 
-        FRsteer.setValue(Util.twoDecimals(modulePos[1].angle.getDegrees()));
+        FRsteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
         // FRdrive.setValue(Util.twoDecimals(modulePos[1].distanceMeters));
 
-        BLsteer.setValue(Util.twoDecimals(modulePos[2].angle.getDegrees()));
+        BLsteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
         // BLdrive.setValue(Util.twoDecimals(modulePos[2].distanceMeters));
 
-        BRsteer.setValue(Util.twoDecimals(modulePos[3].angle.getDegrees()));
+        BRsteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
         // BRdrive.setValue(Util.twoDecimals(modulePos[3].distanceMeters));
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
@@ -272,7 +271,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         
 
-        field.setRobotPose(new Pose2d(Util.twoDecimals(estimate.getX() + 1), estimate.getY() + .3, estimate.getRotation()));
+        field.setRobotPose(new Pose2d(GRTUtil.twoDecimals(estimate.getX() + 1), estimate.getY() + .3, estimate.getRotation()));
         
         for (int i = 0; i < 4; i++) {
             angles[i].set(states[i].angle.getRadians());

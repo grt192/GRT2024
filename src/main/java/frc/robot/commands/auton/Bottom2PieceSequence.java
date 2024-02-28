@@ -1,5 +1,6 @@
 package frc.robot.commands.auton;
 
+import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,18 +15,23 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class BottomPreloadedSequence extends BaseAutonSequence{
+public class Bottom2PieceSequence extends BaseAutonSequence{
 
     private double targetRads = SwerveConstants.IS_RED ? Math.PI + 2.19 : 2.19;
     private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
+    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("BD1-BottomStartToBottomNote");
    
-    public BottomPreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
+    public Bottom2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-
+        ((SwerveSubsystem) swerveSubsystem).resetPose(starttopiece1.getInitialPose());
+        
         addCommands(
             new SetHardAngleCommand(swerveSubsystem, preloadedShootAngle),
+            shoot(),
+            goIntake(starttopiece1, true),
+            new SetCalculatedAngleCommand(swerveSubsystem),
             shoot()
         );
     }

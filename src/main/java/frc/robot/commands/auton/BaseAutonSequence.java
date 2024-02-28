@@ -9,21 +9,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.elevator.ElevatorToChuteCommand;
+import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.intake.pivot.IntakePivotExtendedCommand;
+import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
 import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
-import frc.robot.commands.intake.roller.IntakeRollerOutakeCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.shooter.ShooterFeederSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.util.ConditionalWaitCommand;
 
 /** 
  * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
@@ -32,8 +34,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 public class BaseAutonSequence extends SequentialCommandGroup {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollersSubsystem intakeRollersSubsystem;
-    private final ShooterFeederSubsystem shooterFeederSubsystem;
+    private final IntakeRollersSubsystem intakeRollerSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -44,12 +45,13 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private PIDController yPID;
     private boolean isRed;
     private double driveforwardtime = 1;
+    private double shortdriveforwardtime = .5;
     private double intaketime = 3;
     
 
-    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFeederSubsystem shooterFeederSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem){
+    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
-        this.intakeRollersSubsystem = intakeRollersSubsystem;
+        this.intakeRollerSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
@@ -85,40 +87,60 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    public SequentialCommandGroup goIntake(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
+    public Command goIntake(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
         
         if (extendwhilemoving){
-            return followPath(intaketraj)
-            //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
-            .alongWith(new IntakePivotExtendedCommand(intakePivotSubsystem))
-            .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
-            //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
-            //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem))        
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+                )
+            ).andThen(
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                );
         }
         else {
-            return followPath(intaketraj) 
-            //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
-            .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-            .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)));
-            //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
-            //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem))
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem)
+            ).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                );
         }
     }
 
-    public SequentialCommandGroup goIntakeNoOvershoot(ChoreoTrajectory intaketraj ){
-        return followPath(intaketraj)
-                //.andThen(new ElevatorToChuteCommand(elevatorSubsystem))
-                .andThen(new IntakePivotExtendedCommand(intakePivotSubsystem))
-                .andThen(new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).withTimeout(intaketime));
-                //.andThen(new IntakeRollerFeedCommand(intakeRollersSubsystem));
-                //.andThen(new IntakePivotVerticalCommand(intakePivotSubsystem));
+    public Command goIntakeNoOvershoot(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
+        if (extendwhilemoving){
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+                )
+            ).andThen(
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                );
+        }
+        else {
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem)
+            ).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                );
+        }
     }
 
      public SequentialCommandGroup shoot(){
-        return new SequentialCommandGroup(null);
-        // return new ShootModeSequence(intakeRollersSubsystem, elevatorSubsystem, shooterFeederSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem)
-        // .andThen(new ShooterFeedShootCommand(shooterFeederSubsystem))
-        // .andThen(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+        return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem), //wait to hit max speed?
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3)
+        ) ;
     }
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shoottraj){

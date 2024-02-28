@@ -16,7 +16,7 @@ public class SetHardAngleCommand extends Command{
 
     @Override
     public void initialize() {
-        swerve.setDrivePowerswithHeadingLock(0,0, targetAngle);
+        swerve.setDrivePowersWithHeadingLock(0,0, targetAngle);
     }
 
     @Override
