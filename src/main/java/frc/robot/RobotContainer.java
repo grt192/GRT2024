@@ -18,6 +18,7 @@ import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
+import frc.robot.commands.auton.AutonFactoryFunction;
 import frc.robot.commands.auton.speakertomiddletoamp;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
@@ -112,6 +113,8 @@ public class RobotContainer {
 
     private final NoteDetectionWrapper noteDetector;
 
+    private final SendableChooser<AutonFactoryFunction> autonPathChooser;
+
     // Configure the trigger bindings
 
     private final XboxController mechController = new XboxController(2);
@@ -172,8 +175,6 @@ public class RobotContainer {
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
 
-        trajectory = Choreo.getTrajectory("2mLine");
-
         swerveCrauton = Shuffleboard.getTab("Auton");
 
         xError = swerveCrauton.add("xError", 0).withPosition(8, 0).getEntry();
@@ -203,6 +204,10 @@ public class RobotContainer {
         // camera1.setResolution(32, 24);
         // mjpegServer1 = new MjpegServer("m1", 1181);
         // mjpegServer1.setSource(camera1);
+
+        autonPathChooser = new SendableChooser<>();
+        autonPathChooser.setDefaultOption(null, null); //TODO make default paths
+        autonPathChooser.addOption(null, null);
 
         // Configure the trigger bindings
         configureBindings();

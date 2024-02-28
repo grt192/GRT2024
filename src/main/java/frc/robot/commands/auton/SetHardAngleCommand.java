@@ -4,19 +4,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class SetAngleCommand extends Command{
+public class SetHardAngleCommand extends Command{
     private final SwerveSubsystem swerve; 
-    
-
+    private final Rotation2d targetAngle;
    
-    public SetAngleCommand(SwerveSubsystem swerve){
+    public SetHardAngleCommand(SwerveSubsystem swerve, Rotation2d targetAngle){
         this.swerve = swerve;
+        this.targetAngle = targetAngle;
         addRequirements(swerve);
     } 
 
     @Override
     public void initialize() {
-        swerve.setAimMode(0,0);
+        swerve.setDrivePowerswithHeadingLock(0,0, targetAngle);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Math.abs(swerve.getRobotPosition().getRotation().minus(new Rotation2d(swerve.getShootAngle(false))).getDegrees()) < 2;
     }
 
     @Override
