@@ -38,7 +38,7 @@ import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
-import frc.robot.subsystems.TestMotorSubsystem;
+import frc.robot.subsystems.climb.ManualClimbSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -94,8 +94,7 @@ public class RobotContainer {
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    private final TestMotorSubsystem testClimbLeft;
-    private final TestMotorSubsystem testClimbRight;
+    private final ManualClimbSubsystem climbSubsystem;
     // private final ClimbSubsystem climbSubsystem;
 
     private final ElevatorSubsystem elevatorSubsystem;
@@ -156,8 +155,7 @@ public class RobotContainer {
 
         elevatorSubsystem = new ElevatorSubsystem();
 
-        testClimbLeft = new TestMotorSubsystem(ClimbConstants.LEFT_WINCH_MOTOR_ID, true, ClimbConstants.LEFT_ZERO_LIMIT_PORT);
-        testClimbRight = new TestMotorSubsystem(ClimbConstants.RIGHT_WINCH_MOTOR_ID, false, ClimbConstants.RIGHT_ZERO_LIMIT_PORT);
+        climbSubsystem = new ManualClimbSubsystem();
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
@@ -235,14 +233,9 @@ public class RobotContainer {
 
         //NORMAL BINDS
 
-        testClimbLeft.setDefaultCommand(new RunCommand(() -> {
-            testClimbLeft.setMotorSpeed(mechController.getLeftY());
-        }, testClimbLeft));
-
-        testClimbRight.setDefaultCommand(new RunCommand(() -> {
-            testClimbRight.setMotorSpeed(mechController.getRightY());
-        }, testClimbRight));
-
+        climbSubsystem.setDefaultCommand(new RunCommand(() -> {
+            climbSubsystem.setSpeeds(mechController.getLeftY(), mechController.getRightY());
+        }, climbSubsystem));
 
         // TOGGLES THE ELEVATOR FOR AMP
         rightBumper.onTrue(GRTUtil.getBinaryCommandChoice(

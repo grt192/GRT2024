@@ -76,8 +76,10 @@ public class ClimbSubsystem extends SubsystemBase {
      * Returns whether or not both climb arms are correctly zeroed (and currently at position zero).
      */
     public boolean isZeroedAndAtZero() {
-        boolean leftArmZeroedAndAtZero = leftClimbArm.isLimitSwitchPressed() && leftClimbArm.getCurrentExtension() == 0;
-        boolean rightArmZeroedAndAtZero = rightClimbArm.isLimitSwitchPressed() && rightClimbArm.getCurrentExtension() == 0;
+        boolean leftArmZeroedAndAtZero = leftClimbArm.isLimitSwitchPressed() 
+                                      && leftClimbArm.getCurrentExtension() == 0;
+        boolean rightArmZeroedAndAtZero = rightClimbArm.isLimitSwitchPressed()
+                                       && rightClimbArm.getCurrentExtension() == 0;
 
         return leftArmZeroedAndAtZero && rightArmZeroedAndAtZero;
     }

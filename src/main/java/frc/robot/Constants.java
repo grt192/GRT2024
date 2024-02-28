@@ -139,6 +139,8 @@ public final class Constants {
 
     /** Constants for Climb Subsystem. */
     public static class ClimbConstants {
+        public static final boolean CLIMB_IS_MANUAL = true;
+
         public static final int LEFT_SOLENOID_LATCH_PORT = 1;
         public static final int LEFT_WINCH_MOTOR_ID = 8;
         public static final int LEFT_ZERO_LIMIT_PORT = 8;
@@ -147,8 +149,9 @@ public final class Constants {
         public static final int RIGHT_WINCH_MOTOR_ID = 9;
         public static final int RIGHT_ZERO_LIMIT_PORT = 3;
         
-        public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(24);
+        public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(0);
         public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(0);
+        public static final double EXTENSION_METERS_PER_ROTATION = 1 / 224.55; /* Find through empirical testing. */
     }
 
     /** Constants for auto-aligning. */
