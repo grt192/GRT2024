@@ -64,10 +64,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        double[] topSpeeds = {.4, 1, 1, 1, 1, 1, 1, 1};
-        double[] bottomSpeeds = {.5, 1, 1, 1, 1, 1, 1, 1};
+        double[] topSpeeds = {.4, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        double[] bottomSpeeds = {.5, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);

@@ -32,7 +32,7 @@ public class ShooterFlywheelReadyCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return true; //STUB
+        return shooterSubsystem.atSpeed();
     }
 
     //pivot: vertical, auto-aim

@@ -88,10 +88,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         double[] angles = {Units.degreesToRadians(62), 
                            Units.degreesToRadians(50), 
-                           .598, .473, .388, .328, .284, .250};
+                           .598, .473, .388, .328, .284, .250, .250, .250};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
