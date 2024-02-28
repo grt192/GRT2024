@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import org.photonvision.PhotonCamera;
 
 /** Store the constants for the robot. */
@@ -33,7 +35,7 @@ public final class Constants {
 
         public static final double ZERO_POSITION = 0;
         public static final double INTAKE_POSITION = .05;
-        public static final double AMP_POSITION = .83;
+        public static final double AMP_POSITION = .9;
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 1.5;
@@ -57,6 +59,8 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
+        public static boolean IS_RED = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
         public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
@@ -103,7 +107,7 @@ public final class Constants {
         public static final double rollersclockwise = 1;
         public static final double rollerscounterclockwise = 1;
         public static final double frontSensorReached = .05;
-        public static final double BACK_SENSOR_REACHED = .6;
+        public static final double BACK_SENSOR_REACHED = .5;
         public static final double pivotclockwise = 1;
         public static final double pivotcounterclockwise = -1;
         public static final double pastsensortime = 3;
@@ -133,6 +137,8 @@ public final class Constants {
         public static final double BLUE_Y = Units.inchesToMeters(218.42);
 
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
+        public static final double MIN_SHOOTER_DISTANCE = 1.08;
+        public static final double MAX_SHOOTER_DISTANCE = 8;
 
 
     }
@@ -154,7 +160,7 @@ public final class Constants {
     /** Constants for auto-aligning. */
     public static class AutoAlignConstants {
 
-        public static final double robotRadius = 30 / 2;
+        public static final double robotRadius = (30 / 2) + 3.5;
 
         // X: APRILTAG_POS + SUBWOOFER_OFFSET + ROBOT_X_CENTER
         // ROT: rotated 180 deg from Apriltag pos since robots shoots from back
@@ -167,7 +173,7 @@ public final class Constants {
                 Units.inchesToMeters(9.68), Rotation2d.fromDegrees(120));
 
         public static final Pose2d BLUE_AMP_POSE = new Pose2d(Units.inchesToMeters(72.5),
-                Units.inchesToMeters(323.00 - robotRadius - 6.2), Rotation2d.fromDegrees(90));
+                Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(90));
         // public static final Pose2d BLUE_AMP_POSE = new
         // Pose2d(Units.inchesToMeters(323.00 - robotRadius - 11.0),
         // Units.inchesToMeters(72.5), Rotation2d.fromDegrees(90));

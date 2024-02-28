@@ -123,7 +123,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             extensionEncoder.setPosition(0); 
         }
 
-        System.out.println(getExtensionPercent());
+        // System.out.println(getTargetState());
         
         //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
         //this through overun when no motor connected.
@@ -175,6 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionPidController.setReference(
             targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut
         );
+        this.targetState = targetState;
         return;
     }
 

@@ -8,15 +8,26 @@ public class ShooterFlywheelReadyCommand extends Command {
 
     ShooterFlywheelSubsystem shooterSubsystem;
 
+    private double topSpeed = ShooterConstants.TOP_SHOOTER_MOTOR_SPEED;
+    private double bottomSpeed = ShooterConstants.BOTTOM_SHOOTER_MOTOR_SPEED;
+
     /** Constructor for this command. */
     public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
+        topSpeed = shooterSubsystem.getTopSpeed();
+        bottomSpeed = shooterSubsystem.getBottomSpeed();
+    }
+
+    public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem, double topSpeed, double bottomSpeed) {
+        this(shooterSubsystem);
+        this.topSpeed = topSpeed;
+        this.bottomSpeed = bottomSpeed;
     }
 
     @Override
     public void initialize() {
-        shooterSubsystem.setShooterMotorSpeed(ShooterConstants.TOP_SHOOTER_MOTOR_SPEED, ShooterConstants.BOTTOM_SHOOTER_MOTOR_SPEED);
+        shooterSubsystem.setShooterMotorSpeed(topSpeed, bottomSpeed);
     }
 
     @Override

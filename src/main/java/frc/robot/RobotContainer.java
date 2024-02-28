@@ -59,12 +59,17 @@ import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -72,6 +77,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -137,6 +143,8 @@ public class RobotContainer {
     private final BooleanSupplier isRed;
 
     private double shooterPivotOffset = Units.degreesToRadians(18);
+    private double shooterTopSpeed = .1;
+    private double shooterBotSpeed = .1;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -149,8 +157,8 @@ public class RobotContainer {
         baseSwerveSubsystem = new SwerveSubsystem();
         intakePivotSubsystem = new IntakePivotSubsystem();
 
-        shooterPivotSubsystem = new ShooterPivotSubsystem(isRed.getAsBoolean(), baseSwerveSubsystem::getRobotPosition);
-        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem();
+        shooterPivotSubsystem = new ShooterPivotSubsystem(baseSwerveSubsystem::getRobotPosition);
+        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem(baseSwerveSubsystem::getRobotPosition);
 
         // climbSubsystem = new ClimbSubsystem();
 
@@ -182,12 +190,17 @@ public class RobotContainer {
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        camera1 = new UsbCamera("camera1", 0);
-        camera1.setFPS(60);
-        camera1.setBrightness(45);
-        camera1.setResolution(176, 144);
-        mjpegServer1 = new MjpegServer("m1", 1181);
-        mjpegServer1.setSource(camera1);
+        UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        camera.setExposureManual(5);
+        camera.setFPS(60);
+        camera.setBrightness(45);
+        // camera1 = new UsbCamera("camera1", 0);
+        
+        // camera1.setFPS(30);
+        // camera1.setBrightness(45);
+        // camera1.setResolution(32, 24);
+        // mjpegServer1 = new MjpegServer("m1", 1181);
+        // mjpegServer1.setSource(camera1);
 
         // Configure the trigger bindings
         configureBindings();
@@ -206,16 +219,28 @@ public class RobotContainer {
 
         // SHOOTER PIVOT TUNE
 
-        // shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        //     shooterPivotSubsystem.setAngle(shooterPivotOffset);
-        //     if (mechController.getPOV() == 0) {
-        //         shooterPivotOffset += .001;
-        //     } else if (mechController.getPOV() == 180) {
-        //         shooterPivotOffset -= .001;
-        //     }
-        //     shooterPivotSubsystem.getAutoAimAngle();
-        // }, shooterPivotSubsystem
-        // ));
+        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            shooterPivotSubsystem.setAngle(shooterPivotOffset);
+            if (mechController.getPOV() == 0) {
+                shooterPivotOffset += .01;
+            } else if (mechController.getPOV() == 180) {
+                shooterPivotOffset -= .01;
+            } else if (mechController.getPOV() == 45) {
+                shooterTopSpeed += .001;
+            } else if (mechController.getPOV() == 315) {
+                shooterTopSpeed -= .001;
+            } else if (mechController.getPOV() == 135) {
+                shooterBotSpeed += .001;
+            } else if (mechController.getPOV() == 225) {
+                shooterBotSpeed -= .001;
+            }
+            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
+
+            shooterPivotSubsystem.getAutoAimAngle();
+
+
+        }, shooterPivotSubsystem
+        ));
 
         //ElEVATOR TEST
 
@@ -245,18 +270,49 @@ public class RobotContainer {
 
 
         // TOGGLES THE ELEVATOR FOR AMP
-        rightBumper.onTrue(GRTUtil.getBinaryCommandChoice(
-            () -> elevatorSubsystem.getExtensionPercent() >= ElevatorConstants.AMP_POSITION - .05,
+        rightBumper.onTrue(
+            new ConditionalCommand(
+                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
+                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
+            )), 
             new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
+                new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
                 new ElevatorToAMPCommand(elevatorSubsystem),
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-            ),
-            new ElevatorToZeroCommand(elevatorSubsystem)
-        ));
+            ), 
+            () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        );
+            
+
+            
+        // GRTUtil.getBinaryCommandChoice(
+            
+        //     () -> elevatorSubsystem.getTargetState() != ElevatorState.ZERO || elevatorSubsystem.getTargetState() != ElevatorState.INTAKE,
+        //     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+        //         new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
+        //         new ElevatorToAMPCommand(elevatorSubsystem),
+        //         new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+        //     ),
+        //     new ElevatorToZeroCommand(elevatorSubsystem)
+        // ));
 
 
-        leftBumper.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
+        leftBumper.onTrue(
+            new ConditionalCommand(
+                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
+                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
+                )), 
+                    new ElevatorToTrapCommand(elevatorSubsystem), 
+            () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        );
+
+        
+            
+        // GRTUtil.getBinaryCommandChoice(
+
+        //     () -> elevatorSubsystem.getTargetState() == ElevatorState.TRAP,
+        //     new ElevatorToTrapCommand(elevatorSubsystem),
+        //     new ElevatorToZeroCommand(elevatorSubsystem)));
 
         aButton.onTrue(
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
@@ -287,8 +343,18 @@ public class RobotContainer {
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
         );
 
+        // shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     if (yButton.getAsBoolean()) {
+        //         shooterFlywheelSubsystem.setShooterMotorSpeed();
+        //     } else {
+        //         shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+        //     }
+        // }, shooterFlywheelSubsystem
+
+        // ));
+
         yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
-            new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+            // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
         ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
@@ -312,14 +378,6 @@ public class RobotContainer {
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
             double power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
             intakeRollerSubsystem.setAllRollSpeed(power, power);
-            GRTUtil.getBinaryCommandChoice(
-                () -> elevatorSubsystem.getExtensionPercent() >= ElevatorConstants.AMP_POSITION - .05,
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                    new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
-                    new ElevatorToAMPCommand(elevatorSubsystem),
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                ),
-            new ElevatorToZeroCommand(elevatorSubsystem));
         }, intakeRollerSubsystem));
 
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));

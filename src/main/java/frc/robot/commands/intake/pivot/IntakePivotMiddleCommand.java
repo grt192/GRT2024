@@ -47,7 +47,7 @@ public class IntakePivotMiddleCommand  extends Command{
 
     @Override
     public boolean isFinished() {
-        return Math.abs(pivotSubsystem.encoderPosition() - position) < .03;
+        return Math.abs(pivotSubsystem.encoderPosition() - position) < .1;
         // TODO Auto-generated method stub
        
     }

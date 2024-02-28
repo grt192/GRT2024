@@ -45,8 +45,16 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         }
     }
 
+    public double getFrontSensor() {
+        return frontSensor.get();
+    }
+
     public boolean backSensorNow() {
         return backSensor.get() > BACK_SENSOR_REACHED;
+    }
+
+    public double getBackSensor() {
+        return backSensor.get();
     }
 
     /**
