@@ -11,10 +11,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -35,6 +37,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private ShooterState currentState; //an enum state thing
     private VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
+    //Network Tables
+    private NetworkTableInstance ntInstance;
+    private NetworkTable ntTable;
+    private BooleanPublisher ntPublisher;
     /** Motors assigned. */
 
     private double topSpeed;
@@ -72,6 +78,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         configs.kV = .12;
 
         this.poseSupplier = poseSupplier;
+        //nts
+        ntInstance = NetworkTableInstance.getDefault();
+        ntTable = ntInstance.getTable("RobotStatus");
+        ntPublisher = ntTable.getBooleanTopic("shooterReady").publish();
     }
 
     /** Gets current state of shooter. */
@@ -141,4 +151,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
     }
 
+    @Override
+    public void periodic() {
+        ntPublisher.set(atSpeed());
+    }
 }
