@@ -90,8 +90,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         double[] angles = {Units.degreesToRadians(62), 
-                           Units.degreesToRadians(50), 
-                           .598, .473, .388, .328, .284, .250, .250, .250};
+                           Units.degreesToRadians(52), 
+                           Units.degreesToRadians(38.5), .473, .388, .328, .284, .250, .250, .250};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
@@ -139,7 +139,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     /** Gets correct Angle for pivot to turn to. */
     public double getAutoAimAngle() {
         
-
+        currentDistance = getShootingDistance();
 
         System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
                            " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))

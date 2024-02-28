@@ -342,19 +342,19 @@ public class RobotContainer {
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
         );
 
-        // shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        //     if (yButton.getAsBoolean()) {
-        //         shooterFlywheelSubsystem.setShooterMotorSpeed();
-        //     } else {
-        //         shooterFlywheelSubsystem.setShooterMotorSpeed(0);
-        //     }
-        // }, shooterFlywheelSubsystem
+        shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            if (yButton.getAsBoolean()) {
+                shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
+            } else {
+                shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+            }
+        }, shooterFlywheelSubsystem
 
-        // ));
-
-        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
-            // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
         ));
+
+        // yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+        //     // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+        // ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 

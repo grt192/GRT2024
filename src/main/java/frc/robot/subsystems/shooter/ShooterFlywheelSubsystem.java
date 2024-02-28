@@ -66,16 +66,20 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        double[] topSpeeds = {.4, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        double[] bottomSpeeds = {.5, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        double[] topSpeeds = {.4, .5, .57, 1, 1, 1, 1, 1, 1, 1};
+        double[] bottomSpeeds = {.5, .5, .57, 1, 1, 1, 1, 1, 1, 1};
 
+        akima = new AkimaSplineInterpolator();
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
 
-        configs.kP = 1;
+        configs.kP = .4;
         configs.kI = 0;
         configs.kD = 0;
         configs.kV = .12;
+
+        shooterMotorBottom.getConfigurator().apply(configs);
+        shooterMotorTop.getConfigurator().apply(configs);
 
         this.poseSupplier = poseSupplier;
         //nts
@@ -99,7 +103,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetBottomRPS + " CURRENT " + shooterMotorTop.getVelocity());
+        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
