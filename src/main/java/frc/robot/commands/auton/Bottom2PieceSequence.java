@@ -17,7 +17,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Bottom2PieceSequence extends BaseAutonSequence{
 
-    private double targetRads = SwerveConstants.IS_RED ? Math.PI + 2.19 : 2.19;
+    private double targetRads = SwerveConstants.IS_RED ? Math.PI -.95 : -.95;
     private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
     private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("B1-BottomStartToBottomNote");
    
