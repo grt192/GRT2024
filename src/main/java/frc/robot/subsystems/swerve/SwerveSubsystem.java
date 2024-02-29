@@ -20,6 +20,8 @@ import static frc.robot.Constants.SwerveConstants.FR_STEER;
 import static frc.robot.Constants.SwerveConstants.RED_SPEAKER_POS;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA_POSE;
+import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
+import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA_POSE;
 import static frc.robot.Constants.VisionConstants.FRONT_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.FRONT_RIGHT_CAMERA_POSE;
 
@@ -80,7 +82,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final SwerveDriveKinematics kinematics;
     private final ApriltagWrapper[] apriltagWrappers = {
         new ApriltagWrapper(FRONT_RIGHT_CAMERA, FRONT_RIGHT_CAMERA_POSE),
-        new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE)
+        new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE),
+        new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
     };
 
     //heading lock controller

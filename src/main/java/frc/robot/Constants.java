@@ -221,6 +221,12 @@ public final class Constants {
             new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-16.0), Units.degreesToRadians(+160.0))
         );
 
+        public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");
+        public static final Transform3d  BACK_RIGHT_CAMERA_POSE = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-5.1), Units.inchesToMeters(-11.6), Units.inchesToMeters(+22.3)),
+            new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-170.0))
+        );
+
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
         public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
     }
