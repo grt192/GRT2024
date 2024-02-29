@@ -39,7 +39,7 @@ public class ManualClimbArm {
 
         extensionEncoder = winchMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor(EXTENSION_METERS_PER_ROTATION);
-        extensionEncoder.setPosition(RAISE_LIMIT_METERS); /* The arm starts extended */
+        extensionEncoder.setPosition(LOWER_LIMIT_METERS); /* The arm starts lowered */
     }
 
     /**

@@ -149,9 +149,12 @@ public final class Constants {
         public static final int RIGHT_WINCH_MOTOR_ID = 9;
         public static final int RIGHT_ZERO_LIMIT_PORT = 3;
         
-        public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(0);
-        public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(0);
-        public static final double EXTENSION_METERS_PER_ROTATION = 1 / 224.55; /* Find through empirical testing. */
+        /* As measured from bottom of base frame. */
+        public static final double RAISE_LIMIT_METERS = Units.inchesToMeters(28);
+        public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(2);
+
+        /* Find through empirical testing. */
+        public static final double EXTENSION_METERS_PER_ROTATION = 1 / 224.55;
     }
 
     /** Constants for auto-aligning. */
