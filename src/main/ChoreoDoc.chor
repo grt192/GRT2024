@@ -13,7 +13,7 @@
         "wheelRadius": 0.050799972568014815
     },
     "paths": {
-        "A1-speakerstarttomiddlenote": {
+        "A1-SpeakerStartToSpeakerNote": {
             "waypoints": [
                 {
                     "x": 1.43,
@@ -145,7 +145,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "A2-speakermiddlenotetoampnote": {
+        "A2-SpeakerMiddleNoteToAmpNote": {
             "waypoints": [
                 {
                     "x": 2.937,
@@ -1282,7 +1282,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "BD1-BottomNoteIntake": {
+        "B1-BottomNoteStartToBottomNote": {
             "waypoints": [
                 {
                     "x": 1.43,
@@ -1414,7 +1414,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "B2-BottomNotetoBottomCenter": {
+        "B2-BottomNoteToBottomCenterNote": {
             "waypoints": [
                 {
                     "x": 2.259,
@@ -1834,7 +1834,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "B3-ShootCenterNote": {
+        "B3-BottomShootCenterNote": {
             "waypoints": [
                 {
                     "x": 8.288,
@@ -2074,7 +2074,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "C1-ToAmpNote": {
+        "C1-AmpStartToAmpNote": {
             "waypoints": [
                 {
                     "x": 1.43,
@@ -2206,7 +2206,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "C2-ToptoSpeakerNote": {
+        "C2-AmpNoteToSpeakerNote": {
             "waypoints": [
                 {
                     "x": 2.891,
@@ -2428,7 +2428,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "C3-SpeakerNotetoBottomNote": {
+        "C3-SpeakerNoteToBottomNote": {
             "waypoints": [
                 {
                     "x": 2.891,
@@ -2659,7 +2659,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "D2-BottomNotetoSpeakerNote": {
+        "D2-BottomNoteToSpeakerNote": {
             "waypoints": [
                 {
                     "x": 2.259,
@@ -2899,7 +2899,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "D3-SpeakernotetoAmpnote": {
+        "D3-SpeakerNoteToAmpNote": {
             "waypoints": [
                 {
                     "x": 2.9,
