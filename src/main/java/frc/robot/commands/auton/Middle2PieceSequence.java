@@ -25,7 +25,7 @@ public class Middle2PieceSequence extends BaseAutonSequence{
 
         addCommands(
             shoot(),
-            goIntake(starttopiece1, true),
+            goIntakeNoOvershoot(starttopiece1, true),
             shoot()
         );
     }
