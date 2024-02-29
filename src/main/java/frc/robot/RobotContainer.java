@@ -125,6 +125,8 @@ public class RobotContainer {
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton redButton = new JoystickButton(switchboard, 5);
+    private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
+    private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
 
     private UsbCamera camera1;
     private MjpegServer mjpegServer1;
@@ -142,10 +144,9 @@ public class RobotContainer {
 
     private final BooleanSupplier isRed;
 
-    private double shooterPivotOffset = Units.degreesToRadians(18);
+    private double shooterPivotSetPosition = Units.degreesToRadians(18);
     private double shooterTopSpeed = .1;
     private double shooterBotSpeed = .1;
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -191,7 +192,7 @@ public class RobotContainer {
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
         UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        camera.setExposureManual(5);
+        camera.setExposureManual(3);
         camera.setFPS(60);
         camera.setBrightness(45);
         // camera1 = new UsbCamera("camera1", 0);
@@ -219,11 +220,11 @@ public class RobotContainer {
         // SHOOTER PIVOT TUNE
 
         shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            shooterPivotSubsystem.setAngle(shooterPivotOffset);
+            shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
             if (mechController.getPOV() == 0) {
-                shooterPivotOffset += .01;
+                shooterPivotSetPosition += .003;
             } else if (mechController.getPOV() == 180) {
-                shooterPivotOffset -= .01;
+                shooterPivotSetPosition -= .003;
             } else if (mechController.getPOV() == 45) {
                 shooterTopSpeed += .001;
             } else if (mechController.getPOV() == 315) {
@@ -282,19 +283,6 @@ public class RobotContainer {
             () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
         );
             
-
-            
-        // GRTUtil.getBinaryCommandChoice(
-            
-        //     () -> elevatorSubsystem.getTargetState() != ElevatorState.ZERO || elevatorSubsystem.getTargetState() != ElevatorState.INTAKE,
-        //     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-        //         new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::frontSensorNow),
-        //         new ElevatorToAMPCommand(elevatorSubsystem),
-        //         new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-        //     ),
-        //     new ElevatorToZeroCommand(elevatorSubsystem)
-        // ));
-
 
         leftBumper.onTrue(
             new ConditionalCommand(
@@ -359,27 +347,30 @@ public class RobotContainer {
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
 
-        // UNUSED RN
-
-        // leftBumper.onTrue(new ShootModeSequence(intakeRollerSubsystem,
-        //         elevatorSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem,
-        //         ledSubsystem).andThen(
-        //                 new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1).andThen(
-        //                     new IntakeRollerFeedCommand(intakeRollerSubsystem)
-        //                 )));
-
-        // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem).andThen(
-        //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.INTAKE_READY_TO_SHOOT)),
-        //         new ConditionalWaitCommand(() -> mechController.getRightTriggerAxis() > .1),
-        //         new IntakeRollerOutakeCommand(intakeRollerSubsystem),
-        //         new InstantCommand(() -> ledSubsystem.setNoteMode(NotePosition.NONE))));
 
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            double power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
+            double power = 0; 
+            
+            if (intakeRollerSubsystem.backSensorNow()) {
+                if (shooterFlywheelSubsystem.atSpeed()) {
+                    power = mechController.getRightTriggerAxis() > .1 ? 1 : .7 * (- mechController.getLeftTriggerAxis());
+                } else {
+                    power = .7 * (- mechController.getLeftTriggerAxis());
+                }
+
+            } else {
+                power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
+            }
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
+
+        offsetUpButton.onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5))));
+        offsetUpButton.onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0))));
+
+        offsetDownButton.onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-5))));
+        offsetDownButton.onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0))));
 
         if (baseSwerveSubsystem instanceof SwerveSubsystem) {
 

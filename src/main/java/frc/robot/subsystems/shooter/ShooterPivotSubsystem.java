@@ -51,6 +51,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     private final Timer timer = new Timer();
 
+    private double angleOffset = 0;
+
     /** Inits motors and pose field. Also inits PID stuff. */
     public ShooterPivotSubsystem(Pose2dSupplier poseSupplier) {
 
@@ -88,10 +90,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
         double[] angles = {Units.degreesToRadians(62), 
                            Units.degreesToRadians(52), 
-                           Units.degreesToRadians(38.5), .473, .388, .328, .284, .250, .250, .250};
+                           Units.degreesToRadians(38.5), 
+                           Units.degreesToRadians(28),
+                           Units.degreesToRadians(24),
+                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(27)};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
@@ -111,7 +118,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     /** Sets Angle of the pivot.*/
     public void setAngle(double angle) { 
-        rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        rotationPIDController.setReference(angle + angleOffset, CANSparkMax.ControlType.kPosition);
         // System.out.println("setting angle to: " + angle);
        
     }
@@ -202,5 +209,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
         //     setShooterState(ShooterState.NO_NOTE);
         // }
+    }
+    
+    /** Sets the angle offset to a new value.
+     *
+     * @param angleOffset The value to set the offset to.
+     */
+
+    public void setAngleOffset(double angleOffset) {
+        this.angleOffset = angleOffset;
     }
 }

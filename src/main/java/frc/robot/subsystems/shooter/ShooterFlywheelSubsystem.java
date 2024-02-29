@@ -51,6 +51,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private AkimaSplineInterpolator akima;
     private PolynomialSplineFunction topFlywheelSpline;
     private PolynomialSplineFunction bottomFlywheelSpline;
+    private boolean atSpeed = false;
+
     public ShooterFlywheelSubsystem(Pose2dSupplier poseSupplier){
         //motors
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
@@ -64,17 +66,17 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
 
-        double[] topSpeeds = {.4, .5, .57, 1, 1, 1, 1, 1, 1, 1};
-        double[] bottomSpeeds = {.5, .5, .57, 1, 1, 1, 1, 1, 1, 1};
+        double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
+        double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
 
         akima = new AkimaSplineInterpolator();
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
 
-        configs.kP = .4;
-        configs.kI = 0;
+        configs.kP = .5;
+        configs.kI = 0.005;
         configs.kD = 0;
         configs.kV = .12;
 
@@ -103,11 +105,14 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity());
+        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
-
+        
+        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
+            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
+            && targetBottomRPS != 0;
         //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
@@ -121,9 +126,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     }
 
     public boolean atSpeed() {
-        return shooterMotorTop.getClosedLoopError().getValueAsDouble() < 10.0
-            && shooterMotorBottom.getClosedLoopError().getValueAsDouble() < 10.0
-            && Math.abs(shooterMotorTop.get()) > .01;
+        return atSpeed;
     }
 
     public double getTopSpeed() {
