@@ -19,14 +19,14 @@ public class Bottom2PieceSequence extends BaseAutonSequence{
 
     private double targetRads = SwerveConstants.IS_RED ? Math.PI + 2.19 : 2.19;
     private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
-    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("BD1-BottomStartToBottomNote");
+    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("B1-BottomStartToBottomNote");
    
     public Bottom2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
         ((SwerveSubsystem) swerveSubsystem).resetPose(starttopiece1.getInitialPose());
-        
+
         addCommands(
             new SetHardAngleCommand(swerveSubsystem, preloadedShootAngle),
             shoot(),

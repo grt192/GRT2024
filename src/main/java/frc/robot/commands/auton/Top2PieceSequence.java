@@ -19,7 +19,7 @@ public class Top2PieceSequence extends BaseAutonSequence{
     private double targetRads = SwerveConstants.IS_RED ? Math.PI - 2.18 : -2.18;
     private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
 
-    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("C1AmpStartoAmpnote");
+    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("C1-AmpStartToAmpNote");
    
     public Top2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
