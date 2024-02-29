@@ -8,13 +8,14 @@ import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 @FunctionalInterface
 public interface AutonFactoryFunction {
     Command create(
         IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
         ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
-        ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, 
+        ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, 
         LEDSubsystem ledSubsystem
     );
 }

@@ -19,6 +19,12 @@ import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
 import frc.robot.commands.auton.AutonFactoryFunction;
+import frc.robot.commands.auton.Bottom2PieceSequence;
+import frc.robot.commands.auton.BottomPreloadedSequence;
+import frc.robot.commands.auton.Middle2PieceSequence;
+import frc.robot.commands.auton.MiddlePreloadedSequence;
+import frc.robot.commands.auton.Top2PieceSequence;
+import frc.robot.commands.auton.TopPreloadedSequence;
 import frc.robot.commands.auton.speakertomiddletoamp;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
@@ -206,8 +212,12 @@ public class RobotContainer {
         // mjpegServer1.setSource(camera1);
 
         autonPathChooser = new SendableChooser<>();
-        autonPathChooser.setDefaultOption(null, null); //TODO make default paths
-        autonPathChooser.addOption(null, null);
+        autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new); 
+        autonPathChooser.addOption("TOP2Piece", Top2PieceSequence::new); 
+        autonPathChooser.addOption("MIDDLEShootPreloaded", MiddlePreloadedSequence::new); 
+        autonPathChooser.addOption("MIDDLE2Piece", Middle2PieceSequence::new); 
+        autonPathChooser.addOption("BOTTOMShootPreloaded", BottomPreloadedSequence::new); 
+        autonPathChooser.addOption("BOTTOM2Piece", Bottom2PieceSequence::new); 
 
         // Configure the trigger bindings
         configureBindings();
@@ -469,37 +479,9 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        if (baseSwerveSubsystem instanceof SwerveSubsystem) {
-            final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-            PIDController thetacontroller = new PIDController(4, 0, 0); // TODO: tune
-            thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
-
-            swerveSubsystem.resetPose(trajectory.getInitialPose());
-
-            Command swerveCommand = Choreo.choreoSwerveCommand(
-                    trajectory,
-                    swerveSubsystem::getRobotPosition,
-                    xPID, // X TODO: tune
-                    yPID, // Y TODO: tune
-                    thetacontroller,
-                    ((ChassisSpeeds speeds) -> {
-                        swerveSubsystem.setChassisSpeeds(
-                                speeds.vxMetersPerSecond,
-                                speeds.vyMetersPerSecond,
-                                speeds.omegaRadiansPerSecond);
-                        System.out.println(speeds.vxMetersPerSecond);
-                    }),
-                    isRed,
-                    swerveSubsystem);
-
-            return Commands.sequence(
-                    // ahrs not resetting on own
-                    // Commands.runOnce(() -> swerveSubsystem.resetAhrs()),
-                    Commands.runOnce(() -> swerveSubsystem.resetPose(trajectory.getInitialPose())),
-                    swerveCommand);
-        } else {
-            return null;
-        }
+        if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
+        
+        return autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }
