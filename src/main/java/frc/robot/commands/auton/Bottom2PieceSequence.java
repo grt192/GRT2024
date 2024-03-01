@@ -33,7 +33,7 @@ public class Bottom2PieceSequence extends BaseAutonSequence{
         addCommands(
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
-            goIntake(starttopiece1, true),
+            goIntakeNoOvershoot(starttopiece1, true),
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot()
         );
