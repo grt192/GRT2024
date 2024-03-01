@@ -372,8 +372,8 @@ public class RobotContainer {
             driveController.getTurnModeButton().onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem ));
 
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-            swerveCrauton.add("AUTO ALIGN BLUE AMP",
-                    AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
+            swerveCrauton.add("AUTO ALIGN AMP",
+                    AlignCommand.getAmpAlignCommand(swerveSubsystem, isRed.getAsBoolean()));
 
             ledSubsystem.setDefaultCommand(new RunCommand(() -> {
                 ledSubsystem.setDriverHeading(
