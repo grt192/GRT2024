@@ -232,9 +232,9 @@ public class RobotContainer {
             } else if (mechController.getPOV() == 225) {
                 shooterBotSpeed -= .001;
             }
-            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
+            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
 
-            shooterPivotSubsystem.getAutoAimAngle();
+            // shooterPivotSubsystem.getAutoAimAngle();
 
 
         }, shooterPivotSubsystem
@@ -259,7 +259,7 @@ public class RobotContainer {
         //NORMAL BINDS
 
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
-            climbSubsystem.setSpeeds(mechController.getLeftY(), mechController.getRightY());
+            climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
 
         // TOGGLES THE ELEVATOR FOR AMP

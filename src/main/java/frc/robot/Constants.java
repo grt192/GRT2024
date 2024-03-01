@@ -160,7 +160,7 @@ public final class Constants {
         public static final double LOWER_LIMIT_METERS = Units.inchesToMeters(2);
 
         /* Find through empirical testing. */
-        public static final double EXTENSION_METERS_PER_ROTATION = 1 / 224.55;
+        public static final double EXTENSION_METERS_PER_ROTATION = 0.60 / 103.2;
     }
 
     /** Constants for auto-aligning. */

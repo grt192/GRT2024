@@ -16,8 +16,8 @@ public class ManualClimbSubsystem extends SubsystemBase {
      * Constructs a new {@link ClimbSubsystem}.
      */
     public ManualClimbSubsystem() {
-        leftClimbArm = new ManualClimbArm(LEFT_WINCH_MOTOR_ID, false);
-        rightClimbArm = new ManualClimbArm(RIGHT_WINCH_MOTOR_ID, true);
+        leftClimbArm = new ManualClimbArm(LEFT_WINCH_MOTOR_ID, true);
+        rightClimbArm = new ManualClimbArm(RIGHT_WINCH_MOTOR_ID, false);
 
     }
 
