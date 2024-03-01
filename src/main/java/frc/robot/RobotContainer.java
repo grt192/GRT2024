@@ -18,6 +18,16 @@ import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
+import frc.robot.commands.auton.AutonFactoryFunction;
+import frc.robot.commands.auton.Bottom2PieceSequence;
+import frc.robot.commands.auton.BottomPreloadedSequence;
+import frc.robot.commands.auton.Middle2PieceSequence;
+import frc.robot.commands.auton.Middle3PieceSequence;
+import frc.robot.commands.auton.Middle4PieceSequence;
+import frc.robot.commands.auton.MiddlePreloadedSequence;
+import frc.robot.commands.auton.Top2PieceSequence;
+import frc.robot.commands.auton.TopPreloadedSequence;
+import frc.robot.commands.auton.speakertomiddletoamp;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorSetManualCommand;
@@ -75,6 +85,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -83,6 +95,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.util.PixelFormat;
 import static frc.robot.Constants.SwerveConstants.*;
 
 import edu.wpi.first.cscore.MjpegServer;
@@ -108,6 +121,8 @@ public class RobotContainer {
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
     private final NoteDetectionWrapper noteDetector;
+
+    private final SendableChooser<AutonFactoryFunction> autonPathChooser;
 
     // Configure the trigger bindings
 
@@ -169,8 +184,6 @@ public class RobotContainer {
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
 
-        trajectory = Choreo.getTrajectory("2mLine");
-
         swerveCrauton = Shuffleboard.getTab("Auton");
 
         xError = swerveCrauton.add("xError", 0).withPosition(8, 0).getEntry();
@@ -189,17 +202,28 @@ public class RobotContainer {
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        camera.setExposureManual(3);
-        camera.setFPS(60);
-        camera.setBrightness(45);
+        UsbCamera camera1 = new UsbCamera("fisheye", 0);
+        // UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        // camera.setExposureManual(30);
+        // camera.setFPS(60);
+        // camera.setBrightness(45);
         // camera1 = new UsbCamera("camera1", 0);
         
-        // camera1.setFPS(30);
-        // camera1.setBrightness(45);
-        // camera1.setResolution(32, 24);
-        // mjpegServer1 = new MjpegServer("m1", 1181);
-        // mjpegServer1.setSource(camera1);
+        // camera1.setFPS(60);
+        // camera1.setBrightness(3);
+        // camera1.setResolution(320, 240);
+        // camera1.setVideoMode()
+        camera1.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
+        mjpegServer1 = new MjpegServer("m1", 1181);
+        mjpegServer1.setSource(camera1);
+
+        autonPathChooser = new SendableChooser<>();
+        autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new); 
+        autonPathChooser.addOption("TOP2Piece", Top2PieceSequence::new); 
+        autonPathChooser.addOption("MIDDLEShootPreloaded", MiddlePreloadedSequence::new); 
+        autonPathChooser.addOption("MIDDLE2Piece", Middle2PieceSequence::new); 
+        autonPathChooser.addOption("BOTTOMShootPreloaded", BottomPreloadedSequence::new); 
+        autonPathChooser.addOption("BOTTOM2Piece", Bottom2PieceSequence::new); 
 
         // Configure the trigger bindings
         configureBindings();
@@ -218,7 +242,7 @@ public class RobotContainer {
         // SHOOTER PIVOT TUNE
 
         shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
+            // shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
             if (mechController.getPOV() == 0) {
                 shooterPivotSetPosition += .003;
             } else if (mechController.getPOV() == 180) {
@@ -461,37 +485,9 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        if (baseSwerveSubsystem instanceof SwerveSubsystem) {
-            final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-            PIDController thetacontroller = new PIDController(4, 0, 0); // TODO: tune
-            thetacontroller.enableContinuousInput(-Math.PI, Math.PI);
-
-            swerveSubsystem.resetPose(trajectory.getInitialPose());
-
-            Command swerveCommand = Choreo.choreoSwerveCommand(
-                    trajectory,
-                    swerveSubsystem::getRobotPosition,
-                    xPID, // X TODO: tune
-                    yPID, // Y TODO: tune
-                    thetacontroller,
-                    ((ChassisSpeeds speeds) -> {
-                        swerveSubsystem.setChassisSpeeds(
-                                speeds.vxMetersPerSecond,
-                                speeds.vyMetersPerSecond,
-                                speeds.omegaRadiansPerSecond);
-                        System.out.println(speeds.vxMetersPerSecond);
-                    }),
-                    isRed,
-                    swerveSubsystem);
-
-            return Commands.sequence(
-                    // ahrs not resetting on own
-                    // Commands.runOnce(() -> swerveSubsystem.resetAhrs()),
-                    Commands.runOnce(() -> swerveSubsystem.resetPose(trajectory.getInitialPose())),
-                    swerveCommand);
-        } else {
-            return null;
-        }
+        if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
+        
+        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }

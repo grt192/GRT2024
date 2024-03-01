@@ -3,6 +3,8 @@ package frc.robot.commands.auton;
 import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -11,23 +13,19 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class SimpleAutonSequence extends BaseAutonSequence{
+public class TopPreloadedSequence extends BaseAutonSequence{
 
-    private ChoreoTrajectory preloadedtraj;
-    private ChoreoTrajectory intaketraj;
-    private ChoreoTrajectory speakertraj;
-    private Rotation2d shootangle1;
-    private Rotation2d shootangle2;
+    private double targetRads = SwerveConstants.IS_RED ? Math.PI - 2.18 : -2.18;
+    private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
    
-    public SimpleAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
-                               ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
+    public TopPreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
+                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
 
         addCommands(
-            goShoot(preloadedtraj),
-            goIntake(intaketraj, false),
-            goShoot(speakertraj)
+            new SetHardAngleCommand(swerveSubsystem, preloadedShootAngle),
+            shoot()
         );
     }
 }
