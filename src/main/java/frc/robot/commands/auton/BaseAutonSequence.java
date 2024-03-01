@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
@@ -16,6 +17,7 @@ import frc.robot.commands.intake.pivot.IntakePivotVerticalCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -97,7 +99,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
             ).andThen(
                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
         else {
@@ -107,7 +110,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
     }
@@ -119,9 +123,12 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
                 )
             ).andThen(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
+                new ParallelDeadlineGroup(
+                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).withTimeout(3),
+                    new DriveForwardCommand(swerveSubsystem)),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
         else {
@@ -131,15 +138,17 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakePivotVerticalCommand(intakePivotSubsystem)
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
     }
 
      public SequentialCommandGroup shoot(){
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem), //wait to hit max speed?
-            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3)
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(2), //wait to hit max speed?
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         ) ;
     }
 

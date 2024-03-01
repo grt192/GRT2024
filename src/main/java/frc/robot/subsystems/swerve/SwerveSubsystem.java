@@ -94,7 +94,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final ApriltagWrapper[] apriltagWrappers = {
         new ApriltagWrapper(FRONT_RIGHT_CAMERA, FRONT_RIGHT_CAMERA_POSE),
         new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE),
-        new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
+        // new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
     };
 
     //heading lock controller
@@ -216,6 +216,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     public void periodic() {
 
         robotPos.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
+        System.out.println(thetaController.getPositionError());
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
         // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
@@ -341,6 +342,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         SwerveDriveKinematics.desaturateWheelSpeeds(
             states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
+    }
+
+    public double getAngleError(){
+        return thetaController.getPositionError();
     }
 
     /** Gets the current chassis speeds relative to the robot.

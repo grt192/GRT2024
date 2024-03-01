@@ -22,6 +22,8 @@ import frc.robot.commands.auton.AutonFactoryFunction;
 import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
+import frc.robot.commands.auton.Middle3PieceSequence;
+import frc.robot.commands.auton.Middle4PieceSequence;
 import frc.robot.commands.auton.MiddlePreloadedSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
@@ -93,6 +95,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.util.PixelFormat;
 import static frc.robot.Constants.SwerveConstants.*;
 
 import edu.wpi.first.cscore.MjpegServer;
@@ -199,17 +202,20 @@ public class RobotContainer {
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        camera.setExposureManual(3);
-        camera.setFPS(60);
-        camera.setBrightness(45);
+        UsbCamera camera1 = new UsbCamera("fisheye", 0);
+        // UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        // camera.setExposureManual(30);
+        // camera.setFPS(60);
+        // camera.setBrightness(45);
         // camera1 = new UsbCamera("camera1", 0);
         
-        // camera1.setFPS(30);
-        // camera1.setBrightness(45);
-        // camera1.setResolution(32, 24);
-        // mjpegServer1 = new MjpegServer("m1", 1181);
-        // mjpegServer1.setSource(camera1);
+        // camera1.setFPS(60);
+        // camera1.setBrightness(3);
+        // camera1.setResolution(320, 240);
+        // camera1.setVideoMode()
+        camera1.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
+        mjpegServer1 = new MjpegServer("m1", 1181);
+        mjpegServer1.setSource(camera1);
 
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new); 
@@ -236,7 +242,7 @@ public class RobotContainer {
         // SHOOTER PIVOT TUNE
 
         shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
+            // shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
             if (mechController.getPOV() == 0) {
                 shooterPivotSetPosition += .003;
             } else if (mechController.getPOV() == 180) {
@@ -250,9 +256,9 @@ public class RobotContainer {
             } else if (mechController.getPOV() == 225) {
                 shooterBotSpeed -= .001;
             }
-            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
+            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
 
-            shooterPivotSubsystem.getAutoAimAngle();
+            // shooterPivotSubsystem.getAutoAimAngle();
 
 
         }, shooterPivotSubsystem
@@ -481,7 +487,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }

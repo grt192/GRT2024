@@ -1,6 +1,7 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -15,13 +16,13 @@ public class SetCalculatedAngleCommand extends Command{
     } 
 
     @Override
-    public void initialize() {
+    public void execute() {
         swerve.setSwerveAimDrivePowers(0,0);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(swerve.getRobotPosition().getRotation().minus(new Rotation2d(swerve.getShootAngle(false))).getDegrees()) < 2;
+        return Math.abs(swerve.getAngleError()) < Units.degreesToRadians(3);
     }
 
     @Override

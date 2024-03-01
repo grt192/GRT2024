@@ -15,13 +15,13 @@ public class SetHardAngleCommand extends Command{
     } 
 
     @Override
-    public void initialize() {
+    public void execute() {
         swerve.setDrivePowersWithHeadingLock(0,0, targetAngle);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(swerve.getRobotPosition().getRotation().minus(new Rotation2d(swerve.getShootAngle(false))).getDegrees()) < 2;
+        return Math.abs(swerve.getRobotPosition().getRotation().minus(targetAngle).getDegrees()) < 2;
     }
 
     @Override
