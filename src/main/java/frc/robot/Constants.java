@@ -124,8 +124,8 @@ public final class Constants {
         //flywheel constants
         public static final int SHOOTER_MOTOR_TOP_ID = 13;
         public static final int SHOOTER_MOTOR_BOTTOM_ID = 14;
-        public static final double TOP_SHOOTER_MOTOR_SPEED = 1;
-        public static final double BOTTOM_SHOOTER_MOTOR_SPEED = 1;
+        public static final double TOP_SHOOTER_MOTOR_SPEED = .6;
+        public static final double BOTTOM_SHOOTER_MOTOR_SPEED = .64;
 
         //field constants
         //center of red speaker: (652.73 218.42)
