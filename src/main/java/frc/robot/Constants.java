@@ -196,7 +196,7 @@ public final class Constants {
                 Rotation2d.fromDegrees(60));
 
         public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77),
-                Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(270));
+                Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(90));
     }
 
     /** Constants for the LED subsystem. */

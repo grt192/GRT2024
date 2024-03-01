@@ -168,7 +168,7 @@ public class RobotContainer {
         // construct Test
         // module = new SwerveModule(20, 1, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-        isRed = () -> false; // DriverStation.getAlliance() == new Optional<Alliance> ;
+        isRed = () -> IS_RED; // DriverStation.getAlliance() == new Optional<Alliance> ;
         baseSwerveSubsystem = new SwerveSubsystem();
         intakePivotSubsystem = new IntakePivotSubsystem();
 
@@ -396,8 +396,8 @@ public class RobotContainer {
             driveController.getTurnModeButton().onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem ));
 
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-            swerveCrauton.add("AUTO ALIGN BLUE AMP",
-                    AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem));
+            swerveCrauton.add("AUTO ALIGN AMP",
+                    AlignCommand.getAmpAlignCommand(swerveSubsystem, isRed.getAsBoolean()));
 
             ledSubsystem.setDefaultCommand(new RunCommand(() -> {
                 ledSubsystem.setDriverHeading(
