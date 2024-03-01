@@ -153,7 +153,7 @@ public class RobotContainer {
         // construct Test
         // module = new SwerveModule(20, 1, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
-        isRed = () -> false; // DriverStation.getAlliance() == new Optional<Alliance> ;
+        isRed = () -> IS_RED; // DriverStation.getAlliance() == new Optional<Alliance> ;
         baseSwerveSubsystem = new SwerveSubsystem();
         intakePivotSubsystem = new IntakePivotSubsystem();
 
