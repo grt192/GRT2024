@@ -14,6 +14,7 @@ import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -108,32 +109,60 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
                 )
             ).andThen(
-                new ParallelDeadlineGroup(
-                    new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow).withTimeout(3),
-                    new DriveForwardCommand(swerveSubsystem)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15)
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
+        }
+        else {
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem)
+            ).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                );
+        }
     }
 
-    /**
-     * Shoots at calculated robot angle and shooter angle.
-     * 
-     * @return shoot command
-     */
-
-    public Command shoot() {
-        return new ShooterPivotAimCommand(shooterPivotSubsystem)
-            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)
-            .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.5))
-        );
+    public Command goIntakeNoOvershoot(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
+        if (extendwhilemoving){
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+                )
+            ).andThen(
+                new ParallelDeadlineGroup(
+                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).withTimeout(3),
+                    new DriveForwardCommand(swerveSubsystem)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                );
+        }
+        else {
+            return followPath(intaketraj).alongWith(
+                new ElevatorToIntakeCommand(elevatorSubsystem)
+            ).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                );
+        }
     }
 
-    /**
-     * Follows trajectory and then shoots at calculated robot angle and shooter angle.
-     * 
-     * @param shoottraj ChoreoTrajectory
-     * @return goShoot command
-     */
+     public SequentialCommandGroup shoot(){
+        return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(2), //wait to hit max speed?
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+        ) ;
+    }
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory){
         return followPath(shootTrajectory)
