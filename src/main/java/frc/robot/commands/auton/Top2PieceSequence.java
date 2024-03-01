@@ -18,21 +18,22 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Top2PieceSequence extends BaseAutonSequence{
 
-    private double targetRads = SwerveConstants.IS_RED ? Math.PI - 2.18 : -2.18;
-    private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
+    // private double targetRads = SwerveConstants.IS_RED ? Math.PI - 2.18 : -2.18;
+    // private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
 
+    private Pose2d initPose = SwerveConstants.IS_RED ? new Pose2d(new Translation2d(15.11, 7.01), new Rotation2d(Math.PI)) : new Pose2d(new Translation2d(1.43, 7.01), new Rotation2d(0));
     private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("C1-AmpStartToAmpNote");
    
     public Top2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-        ((SwerveSubsystem) swerveSubsystem).resetPose(new Pose2d(new Translation2d(1.43, 7.01), new Rotation2d(0)));
+        ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
-            goIntake(starttopiece1, true),
+            goIntakeNoOvershoot(starttopiece1, true),
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot()
         );

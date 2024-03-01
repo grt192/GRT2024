@@ -129,7 +129,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final GenericEntry FLsteer, FRsteer, BLsteer, BRsteer;
     private final GenericEntry robotPos;
 
-    private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    // private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     /** Constructs a swerve subsystem. */
     public SwerveSubsystem() {
@@ -398,7 +398,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
      * @param yPower The power in the y direction.
      */
     public void setSwerveAimDrivePowers(double xPower, double yPower) {
-        double shootAngleRadians = getShootAngle(isRed);
+        double shootAngleRadians = getShootAngle(IS_RED);
 
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }

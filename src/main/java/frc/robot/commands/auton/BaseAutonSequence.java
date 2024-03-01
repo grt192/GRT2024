@@ -1,5 +1,7 @@
 package frc.robot.commands.auton;
 
+import static frc.robot.Constants.SwerveConstants.IS_RED;
+
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
@@ -62,7 +64,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
-        isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        // isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
@@ -83,7 +85,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                 speeds.omegaRadiansPerSecond
                 );
             }),
-            () -> isRed,
+            () -> IS_RED,
             swerveSubsystem
             );
         return swerveCommand;

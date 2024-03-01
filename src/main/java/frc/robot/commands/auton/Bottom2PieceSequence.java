@@ -3,7 +3,9 @@ package frc.robot.commands.auton;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.sequences.ShootModeSequence;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
@@ -17,20 +19,21 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Bottom2PieceSequence extends BaseAutonSequence{
 
-    private double targetRads = SwerveConstants.IS_RED ? Math.PI -.95 : -.95;
-    private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
+    // private double targetRads = SwerveConstants.IS_RED ? Math.PI -.95 : -.95;
+    // private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
     private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("B1-BottomStartToBottomNote");
-   
+    private Pose2d initPose = SwerveConstants.IS_RED ? new Pose2d(new Translation2d(15.11, 4.11), new Rotation2d(Math.PI)) : new Pose2d(new Translation2d(1.43, 4.11), new Rotation2d(0));
+
     public Bottom2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-        ((SwerveSubsystem) swerveSubsystem).resetPose(starttopiece1.getInitialPose());
+        ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
-            new SetHardAngleCommand(swerveSubsystem, preloadedShootAngle),
+            new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
-            goIntake(starttopiece1, true),
+            goIntakeNoOvershoot(starttopiece1, true),
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot()
         );
