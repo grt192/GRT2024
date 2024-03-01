@@ -29,12 +29,12 @@ public class Top2PieceSequence extends BaseAutonSequence{
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-        ((SwerveSubsystem) swerveSubsystem).resetPose(new Pose2d(new Translation2d(1.43, 7.01), new Rotation2d(0)));
+        ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
-            goIntake(starttopiece1, true),
+            goIntakeNoOvershoot(starttopiece1, true),
             new SetCalculatedAngleCommand(swerveSubsystem),
             shoot()
         );

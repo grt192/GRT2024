@@ -30,8 +30,8 @@ public class TopPreloadedSequence extends BaseAutonSequence{
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
-            shoot(),
-            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+            new SetCalculatedAngleCommand(swerveSubsystem),
+            shoot()
         );
     }
 }

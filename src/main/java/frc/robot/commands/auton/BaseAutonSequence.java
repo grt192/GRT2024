@@ -58,6 +58,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
+        // isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
         thetaController = new PIDController(3.5, 0, 0);
