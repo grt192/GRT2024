@@ -74,4 +74,6 @@ public abstract class BaseDriveController {
     public abstract Boolean getSwerveAimMode();
 
     public abstract JoystickButton getTurnModeButton();
+
+    public abstract JoystickButton getLockButton();
 }

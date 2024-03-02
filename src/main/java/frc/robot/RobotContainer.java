@@ -43,6 +43,7 @@ import frc.robot.commands.sequences.AutoIntakeSequence;
 import frc.robot.commands.sequences.ShootModeSequence;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
@@ -163,6 +164,8 @@ public class RobotContainer {
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
     private double shooterTopSpeed = .1;
     private double shooterBotSpeed = .1;
+
+    private double elevatorOffset = 0;
 
     private boolean shot = false;
     /**
@@ -298,10 +301,12 @@ public class RobotContainer {
         // TOGGLES THE ELEVATOR FOR AMP
         rightBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
-            )), 
+                new InstantCommand(() -> elevatorOffset = 0).alongWith(
+                new ElevatorToZeroCommand(elevatorSubsystem),
+                new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+            ), 
             new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                new InstantCommand(() -> elevatorOffset = 0),
                 new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).until(() -> intakeRollerSubsystem.getFrontSensor() > .3),
                 new ElevatorToAMPCommand(elevatorSubsystem),
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
@@ -312,10 +317,12 @@ public class RobotContainer {
 
         leftBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
-                )), 
-                    new ElevatorToTrapCommand(elevatorSubsystem), 
+                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
+                    new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                ), 
+                new ElevatorToTrapCommand(elevatorSubsystem).alongWith(
+                    new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                ), 
             () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
         );
 
@@ -368,11 +375,21 @@ public class RobotContainer {
         // ));
 
         yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+            new ShooterPivotAimCommand(shooterPivotSubsystem)
             // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
         ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
+        
+        elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            if (mechController.getPOV() == 0) {
+                elevatorOffset += .001;
+            } else if (mechController.getPOV() == 180) {
+                elevatorOffset -= .001;
+            }
+        }, elevatorSubsystem));
+        
 
 
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -447,6 +464,7 @@ public class RobotContainer {
                             ledSubsystem)
                             .unless(() -> noteDetector.getNote().isEmpty()),
                     new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())));
+                    
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
             swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
@@ -517,7 +535,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return new Middle2PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new Middle3PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }
