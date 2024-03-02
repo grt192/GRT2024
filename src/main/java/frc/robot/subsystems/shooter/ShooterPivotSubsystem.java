@@ -90,10 +90,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 4, 5, 6, 7, 8};
         double[] angles = {Units.degreesToRadians(62), 
-                           Units.degreesToRadians(52), 
-                           Units.degreesToRadians(38.5), 
+                           Units.degreesToRadians(50), 
+                           Units.degreesToRadians(38), 
                            Units.degreesToRadians(28),
                            Units.degreesToRadians(24),
                            Units.degreesToRadians(27),
@@ -123,10 +123,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
        
     }
 
-    private double getShootingDistance() {
+    public double getShootingDistance() {
         double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
-        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
+        // System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (SwerveConstants.IS_RED) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
@@ -148,9 +148,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         currentDistance = getShootingDistance();
 
-        // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
-        //                    " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
-        //                    + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
+        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
+                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+                           + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);

@@ -13,6 +13,8 @@ public class IntakeRollerFeedCommand extends Command{
     private final IntakeRollersSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
+    private double speed = .6;
+
     /**
      * Sets all the rollers inwards to pass note into shooter
      * @param intakeSubsystem
@@ -23,10 +25,15 @@ public class IntakeRollerFeedCommand extends Command{
         addRequirements(intakeSubsystem);
     }
 
+    public IntakeRollerFeedCommand(IntakeRollersSubsystem intakeSubsystem, double speed){
+        this(intakeSubsystem);
+        this.speed = speed;
+    }
+
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(.6, .6);
+        intakeSubsystem.setAllRollSpeed(speed, speed);
         timer.reset();
     }
 

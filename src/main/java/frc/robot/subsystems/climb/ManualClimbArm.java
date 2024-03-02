@@ -31,10 +31,10 @@ public class ManualClimbArm {
             sparkMax.setIdleMode(IdleMode.kBrake); 
             sparkMax.setInverted(isInverted);
 
-            sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
-            sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
-            sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+            // sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
+            // sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+            // sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
+            // sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
         });
 
         extensionEncoder = winchMotor.getEncoder();

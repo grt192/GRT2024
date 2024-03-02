@@ -35,7 +35,7 @@ public final class Constants {
 
         public static final double ZERO_POSITION = 0;
         public static final double INTAKE_POSITION = .05;
-        public static final double AMP_POSITION = .9;
+        public static final double AMP_POSITION = .98;
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 1.5;
@@ -59,7 +59,7 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static boolean IS_RED = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        public static boolean IS_RED = false;//DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
@@ -106,7 +106,7 @@ public final class Constants {
         public static final double encodermiddle = 1;
         public static final double rollersclockwise = 1;
         public static final double rollerscounterclockwise = 1;
-        public static final double frontSensorReached = .05;
+        public static final double frontSensorReached = .2;
         public static final double BACK_SENSOR_REACHED = .5;
         public static final double pivotclockwise = 1;
         public static final double pivotcounterclockwise = -1;
@@ -137,7 +137,7 @@ public final class Constants {
         public static final double BLUE_Y = Units.inchesToMeters(218.42);
 
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
-        public static final double MIN_SHOOTER_DISTANCE = 1.08;
+        public static final double MIN_SHOOTER_DISTANCE = 1.33;
         public static final double MAX_SHOOTER_DISTANCE = 8;
 
 

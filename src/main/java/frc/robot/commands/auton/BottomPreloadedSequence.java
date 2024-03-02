@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.sequences.ShootModeSequence;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -32,7 +33,8 @@ public class BottomPreloadedSequence extends BaseAutonSequence{
 
         addCommands(
             new SetCalculatedAngleCommand(swerveSubsystem),
-            shoot()
+            shoot(),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 }

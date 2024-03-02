@@ -83,6 +83,7 @@ import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -161,6 +162,8 @@ public class RobotContainer {
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
     private double shooterTopSpeed = .1;
     private double shooterBotSpeed = .1;
+
+    private boolean shot = false;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -228,6 +231,8 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
 
+
+
     }
 
     private void configureBindings() {
@@ -293,7 +298,7 @@ public class RobotContainer {
                 () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
             )), 
             new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
+                new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).until(() -> intakeRollerSubsystem.getFrontSensor() > .3),
                 new ElevatorToAMPCommand(elevatorSubsystem),
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
             ), 
@@ -322,10 +327,11 @@ public class RobotContainer {
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
                     new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
-                        new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
-                        // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
+                        new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                        new IntakeRollerFeedCommand(intakeRollerSubsystem, 0.4).withTimeout(.24)
+                        // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: BAD
                     ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
-                ).until(intakeRollerSubsystem::backSensorNow)
+                )
 
 
             // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow, 
@@ -347,19 +353,19 @@ public class RobotContainer {
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
         );
 
-        shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            if (yButton.getAsBoolean()) {
-                shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
-            } else {
-                shooterFlywheelSubsystem.setShooterMotorSpeed(0);
-            }
-        }, shooterFlywheelSubsystem
+        // shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     if (yButton.getAsBoolean()) {
+        //         shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
+        //     } else {
+        //         shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+        //     }
+        // }, shooterFlywheelSubsystem
 
-        ));
-
-        // yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
-        //     // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
         // ));
+
+        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+            // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+        ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
@@ -369,19 +375,38 @@ public class RobotContainer {
             double power = 0; 
             
             if (intakeRollerSubsystem.backSensorNow()) {
-                if (shooterFlywheelSubsystem.atSpeed()) {
-                    power = mechController.getRightTriggerAxis() > .1 ? 1 : .7 * (- mechController.getLeftTriggerAxis());
+                if (shooterFlywheelSubsystem.atSpeed() || mechController.getPOV() == 90) {
+                    power = mechController.getRightTriggerAxis() > .1 ? 1 : 0;
+                    if (mechController.getRightTriggerAxis() > .1) {
+                        if(!shot){
+                            System.out.println(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed) + 
+                        " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getCurrentAngle()) + " Dist: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getShootingDistance()));
+                        }
+                        shot = true;
+                    }
                 } else {
-                    power = .7 * (- mechController.getLeftTriggerAxis());
+                    power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
+                    shot = false;
                 }
 
+            } else if (elevatorSubsystem.getExtensionPercent() > .2) {
+                shot = false;
+                power =  .7 * (-mechController.getLeftTriggerAxis()); 
             } else {
+                shot = false;
                 power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
             }
+
+        
+            mechController.setRumble(RumbleType.kBothRumble, shooterFlywheelSubsystem.atSpeed() ? .6 : 0);
+
+            
+
+
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
-        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(intakePivotSubsystem.getPosition() < .5 ? 1 : 0), intakePivotSubsystem));
 
         offsetUpButton.onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5))));
         offsetUpButton.onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0))));
@@ -409,8 +434,9 @@ public class RobotContainer {
             }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
-                    AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem),
-                    new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())));
+                AlignCommand.getAmpAlignCommand(swerveSubsystem, DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)),
+                new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
+            ));
 
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
                     new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector,
@@ -487,7 +513,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new Middle2PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }

@@ -13,16 +13,32 @@ public class IntakeRollerOuttakeCommand extends Command{
     private final IntakeRollersSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
+    private double speed = -1;
+    private double integrationSpeed = -1;
+
     public IntakeRollerOuttakeCommand(IntakeRollersSubsystem intakeSubsystem){
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
         addRequirements(intakeSubsystem);
     }
 
+    public IntakeRollerOuttakeCommand(IntakeRollersSubsystem intakeSubsystem, double speed) {
+        this(intakeSubsystem);
+        this.speed = -speed;
+        integrationSpeed = -speed;
+    }
+
+    public IntakeRollerOuttakeCommand(IntakeRollersSubsystem intakeSubsystem, double mainSpeed, double integrationSpeed){
+        this(intakeSubsystem);
+        this.speed = -mainSpeed;
+        this.integrationSpeed = -integrationSpeed;
+
+    }
+
     @Override
     public void initialize() {
         timer.reset();
-        intakeSubsystem.setAllRollSpeed(-1,-1); 
+        intakeSubsystem.setAllRollSpeed(speed, integrationSpeed); 
     }
 
     @Override

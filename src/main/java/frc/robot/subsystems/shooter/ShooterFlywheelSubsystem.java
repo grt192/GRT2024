@@ -66,16 +66,16 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 4, 5, 6, 7, 8};
 
-        double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
-        double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
+        double[] topSpeeds = {.4, .4, .4, .4, .4, .4, .4, .4};
+        double[] bottomSpeeds = {.4, .5, .5, .5, .5, .5, .5, .5};
 
         akima = new AkimaSplineInterpolator();
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
 
-        configs.kP = .5;
+        configs.kP = 1.3;
         configs.kI = 0.005;
         configs.kD = 0;
         configs.kV = .12;
@@ -105,13 +105,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+        System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
         
-        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
-            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
+        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 2
+            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 2
             && targetBottomRPS != 0;
         //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
@@ -119,6 +119,12 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     /** Sets shooting motor speed for only one speed. */
     public void setShooterMotorSpeed(double speed) {
         setShooterMotorSpeed(speed, speed);
+    }
+
+    public void stopShooter(){
+        shooterMotorTop.set(0);
+        shooterMotorBottom.set(0);
+        atSpeed = false;
     }
 
     public void setShooterMotorSpeed(){

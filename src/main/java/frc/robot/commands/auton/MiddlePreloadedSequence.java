@@ -4,6 +4,7 @@ import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -21,7 +22,8 @@ public class MiddlePreloadedSequence extends BaseAutonSequence{
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
 
         addCommands(
-            shoot()
+            shoot(),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 }
