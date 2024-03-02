@@ -32,7 +32,7 @@ public class ManualClimbArm {
             sparkMax.setInverted(isInverted);
 
             sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
-            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
+            // sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
         });
 
         this.enableSoftLimits(true);
@@ -72,6 +72,6 @@ public class ManualClimbArm {
      */
     public void enableSoftLimits(boolean enable) {
         winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
-        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
+        // winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, enable);
     }
 }

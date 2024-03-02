@@ -76,7 +76,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final Timer ahrsTimer;
 
     private final Timer lockTimer;
-    private static final double LOCK_TIMEOUT_SECONDS = 1.0; // The elapsed idle time to wait before locking
+    private static final double LOCK_TIMEOUT_SECONDS = .6; // The elapsed idle time to wait before locking
 
     public static final double MAX_VEL = 4.172; //calculated
     public static final double MAX_ACCEL = 3; //STUB

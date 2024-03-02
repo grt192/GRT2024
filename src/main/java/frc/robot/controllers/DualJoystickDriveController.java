@@ -15,6 +15,7 @@ public class DualJoystickDriveController extends BaseDriveController {
     private final JoystickButton leftMiddleButton = new JoystickButton(leftJoystick, 2);
     private final JoystickButton leftTopLeftButton = new JoystickButton(leftJoystick, 3);
     private final JoystickButton leftTopRightButton = new JoystickButton(leftJoystick, 4);
+    private final JoystickButton leftBotMidRightButton = new JoystickButton(leftJoystick, 6);
 
     private final Joystick rightJoystick = new Joystick(1);
     private final JoystickButton rightTrigger = new JoystickButton(rightJoystick, 1);
@@ -86,7 +87,7 @@ public class DualJoystickDriveController extends BaseDriveController {
 
     @Override
     public JoystickButton getNoteAlign() {
-        return leftMiddleButton;
+        return leftBotMidRightButton;
     }
 
     @Override
@@ -102,4 +103,8 @@ public class DualJoystickDriveController extends BaseDriveController {
     public JoystickButton getTurnModeButton(){
         return leftTopRightButton;
     }   
+
+    public JoystickButton getLockButton(){
+        return leftMiddleButton;
+    }
 }   

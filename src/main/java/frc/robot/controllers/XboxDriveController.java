@@ -80,4 +80,8 @@ public class XboxDriveController extends BaseDriveController {
     public JoystickButton getTurnModeButton(){
         return driveLStickButton;
     }
+
+    public JoystickButton getLockButton(){
+        return rBumper;
+    }
 }
