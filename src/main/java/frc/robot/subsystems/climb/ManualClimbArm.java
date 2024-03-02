@@ -31,11 +31,11 @@ public class ManualClimbArm {
             sparkMax.setIdleMode(IdleMode.kBrake); 
             sparkMax.setInverted(isInverted);
 
-            // sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
-            // sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-            // sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
-            // sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+            sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
+            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
         });
+
+        this.enableSoftLimits(true);
 
         extensionEncoder = winchMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor(EXTENSION_METERS_PER_ROTATION);
@@ -63,5 +63,15 @@ public class ManualClimbArm {
      */
     public double getCurrentExtension() {
         return extensionEncoder.getPosition();
+    }
+
+    /**
+     * Enables/disables this climb arm's motor position limits.
+     *
+     * @param enable True to enable, false to disable.
+     */
+    public void enableSoftLimits(boolean enable) {
+        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
+        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
     }
 }

@@ -37,4 +37,14 @@ public class ManualClimbSubsystem extends SubsystemBase {
         leftClimbArm.setSpeed(leftArmSpeed);
         rightClimbArm.setSpeed(rightArmSpeed);
     }
+
+    /**
+     * Enables/disables the climb arms' motor position limits.
+     *
+     * @param enable True to enable, false to disable.
+     */
+    public void enableSoftLimits(boolean enable) {
+        leftClimbArm.enableSoftLimits(enable);
+        rightClimbArm.enableSoftLimits(enable);
+    }
 }
