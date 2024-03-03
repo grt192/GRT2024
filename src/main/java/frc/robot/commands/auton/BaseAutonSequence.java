@@ -71,7 +71,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         thetaController = new PIDController(3.5, 0, 0);
 
         addCommands(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(3)
+            // new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(3)
         );
     }
 

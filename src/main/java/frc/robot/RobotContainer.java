@@ -19,6 +19,7 @@ import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
 import frc.robot.commands.auton.AutonFactoryFunction;
+import frc.robot.commands.auton.BottomPlayoffsSequence;
 import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
@@ -540,7 +541,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return new MiddlePreloadedSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new BottomPlayoffsSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }
