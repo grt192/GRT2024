@@ -145,7 +145,7 @@ public class RobotContainer {
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
     private final JoystickButton toggleClimbLimitsButton = new JoystickButton(switchboard, 9);
 
-    private UsbCamera camera1;
+    // private UsbCamera camera1;
     private MjpegServer mjpegServer1;
 
     ChoreoTrajectory trajectory;
@@ -173,7 +173,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // construct Test
-        // module = new SwerveModule(20, 1, 0);
+        // module = new SwerveModule(2, 3, 0);
         // baseSwerveSubsystem = new TestSingleModuleSwerveSubsystem(module);
         isRed = () -> IS_RED; // DriverStation.getAlliance() == new Optional<Alliance> ;
         baseSwerveSubsystem = new SwerveSubsystem();
@@ -209,7 +209,7 @@ public class RobotContainer {
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        UsbCamera camera1 = new UsbCamera("fisheye", 0);
+        // UsbCamera camera1 = new UsbCamera("fisheye", 0);
         // UsbCamera camera = CameraServer.startAutomaticCapture(0);
         // camera.setExposureManual(30);
         // camera.setFPS(60);
@@ -220,9 +220,9 @@ public class RobotContainer {
         // camera1.setBrightness(3);
         // camera1.setResolution(320, 240);
         // camera1.setVideoMode()
-        camera1.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
+        // camera1.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
         mjpegServer1 = new MjpegServer("m1", 1181);
-        mjpegServer1.setSource(camera1);
+        // mjpegServer1.setSource(camera1);
 
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new); 
@@ -265,9 +265,9 @@ public class RobotContainer {
             } else if (mechController.getPOV() == 225) {
                 shooterBotSpeed -= .001;
             }
-            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
+            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed));
 
-            // shooterPivotSubsystem.getAutoAimAngle();
+            shooterPivotSubsystem.getAutoAimAngle();
 
 
         }, shooterPivotSubsystem
@@ -308,23 +308,24 @@ public class RobotContainer {
             new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
                 new InstantCommand(() -> elevatorOffset = 0),
                 new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).until(() -> intakeRollerSubsystem.getFrontSensor() > .3),
+                new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).withTimeout(.1),
                 new ElevatorToAMPCommand(elevatorSubsystem),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0) //set to .2
             ), 
             () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
         );
             
 
-        leftBumper.onTrue(
-            new ConditionalCommand(
-                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
-                    new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
-                ), 
-                new ElevatorToTrapCommand(elevatorSubsystem).alongWith(
-                    new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
-                ), 
-            () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
-        );
+        // leftBumper.onTrue(
+        //     new ConditionalCommand(
+        //             new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
+        //             new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+        //         ), 
+        //         new ElevatorToTrapCommand(elevatorSubsystem).alongWith(
+        //             new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+        //         ), 
+        //     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        // );
 
         
             
@@ -358,8 +359,11 @@ public class RobotContainer {
             //         // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
             //         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS 
             //     )
+
             // ).unless(intakeRollerSubsystem::backSensorNow)
         );
+
+        // aButton.onFalse(new IntakePivotMiddleCommand(intakePivotSubsystem, 0));
 
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem)
         );
@@ -374,12 +378,12 @@ public class RobotContainer {
 
         // ));
 
-        yButton.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+        leftBumper.onTrue(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
             new ShooterPivotAimCommand(shooterPivotSubsystem)
             // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
         ));
 
-        yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+        leftBumper.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
         
         elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -535,7 +539,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return new Middle3PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }

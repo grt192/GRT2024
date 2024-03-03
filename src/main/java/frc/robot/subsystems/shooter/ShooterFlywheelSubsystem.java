@@ -68,8 +68,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 4, 5, 6, 7, 8};
 
-        double[] topSpeeds = {.4, .4, .4, .4, .4, .4, .4, .4};
-        double[] bottomSpeeds = {.4, .5, .5, .5, .5, .5, .5, .5};
+        double[] topSpeeds = {.5, .4, .4, .4, .4, .4, .4, .4};
+        double[] bottomSpeeds = {.6, .5, .5, .5, .5, .5, .5, .5};
 
         akima = new AkimaSplineInterpolator();
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);

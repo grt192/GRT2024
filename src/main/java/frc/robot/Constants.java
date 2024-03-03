@@ -34,8 +34,8 @@ public final class Constants {
         public static final int ZERO_LIMIT_ID = 7;
 
         public static final double ZERO_POSITION = 0;
-        public static final double INTAKE_POSITION = .05;
-        public static final double AMP_POSITION = .98;
+        public static final double INTAKE_POSITION = .1;
+        public static final double AMP_POSITION = 1;
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 1.5;
@@ -43,7 +43,7 @@ public final class Constants {
         public static final double EXTENSION_D = 4;
         public static final double EXTENSION_TOLERANCE = 0.3;
 
-        public static final double POSITION_CONVERSION_FACTOR = 1 / 27.785; // Units.inchesToMeters(30.)/63.5;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / 27.785;// * 12.8 / 13.5; // Units.inchesToMeters(30.)/63.5;
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
     }
 
@@ -59,7 +59,7 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static boolean IS_RED = true;//DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        public static boolean IS_RED = false;//DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
@@ -67,7 +67,7 @@ public final class Constants {
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4;
+        public static final double FR_OFFSET = -.1718 + Math.PI * 3.0 / 4;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;

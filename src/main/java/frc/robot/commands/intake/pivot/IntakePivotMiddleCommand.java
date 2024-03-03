@@ -22,6 +22,8 @@ public class IntakePivotMiddleCommand  extends Command{
     public IntakePivotMiddleCommand (IntakePivotSubsystem pivotSubsystem, double position){
         this.pivotSubsystem = pivotSubsystem;
         this.position = position;
+
+        System.out.println("Intake to position " + position);
     }
     @Override
     public void initialize() {
@@ -41,7 +43,7 @@ public class IntakePivotMiddleCommand  extends Command{
         if (interrupted) {
             System.out.println("PIVOT InTERRUPTED");
         }
-        pivotSubsystem.movePivot(0);
+        // pivotSubsystem.movePivot(0);
         
     }
 

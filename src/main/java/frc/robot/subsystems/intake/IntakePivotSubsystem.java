@@ -21,6 +21,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
     private final double CONVERSION_FACTOR = 0.2142; // TODO tune
     private final double OFFSET = 0;// 0.9495;
 
+    private double setPos = 0;
+
     
      /**
       * Subsystem for controlling the pivot on the intake.
@@ -47,7 +49,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     public void setPosition(double position) {
         pivotMotor.setControl(request.withPosition((position - OFFSET) / CONVERSION_FACTOR));
-
+        setPos = position;
     }
 
     /**
@@ -97,6 +99,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        pivotMotor.setControl(request.withPosition((setPos - OFFSET) / CONVERSION_FACTOR));
         // System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR);
     }
 }

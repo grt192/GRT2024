@@ -85,13 +85,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //pivot soft limits
-        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(62));
+        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(70));
         pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Units.degreesToRadians(18));
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
         double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 4, 5, 6, 7, 8};
-        double[] angles = {Units.degreesToRadians(62), 
+        double[] angles = {Units.degreesToRadians(70), 
                            Units.degreesToRadians(50), 
                            Units.degreesToRadians(38), 
                            Units.degreesToRadians(28),
@@ -148,9 +148,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         currentDistance = getShootingDistance();
 
-        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
-                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
-                           + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
+        // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
+        //                    " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+        //                    + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);
@@ -163,9 +163,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     /** Prints pivot current angle. */
     public void printCurrentAngle() {
-        // System.out.println("radians: " + rotationEncoder.getPosition());
-        // System.out.println(pivotMotor.get());
-        // System.out.println(rotationPIDController.getFF());
+        System.out.println("radians: " + rotationEncoder.getPosition());
+        System.out.println(pivotMotor.get());
+        System.out.println(rotationPIDController.getFF());
     }
 
     /** Gets position of encoder. */
