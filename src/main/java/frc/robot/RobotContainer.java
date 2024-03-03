@@ -209,7 +209,7 @@ public class RobotContainer {
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        // UsbCamera camera1 = new UsbCamera("fisheye", 0);
+        UsbCamera camera1 = new UsbCamera("fisheye", 0);
         // UsbCamera camera = CameraServer.startAutomaticCapture(0);
         // camera.setExposureManual(30);
         // camera.setFPS(60);
@@ -220,9 +220,9 @@ public class RobotContainer {
         // camera1.setBrightness(3);
         // camera1.setResolution(320, 240);
         // camera1.setVideoMode()
-        // camera1.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
+        camera1.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
         mjpegServer1 = new MjpegServer("m1", 1181);
-        // mjpegServer1.setSource(camera1);
+        mjpegServer1.setSource(camera1);
 
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new); 
@@ -310,22 +310,22 @@ public class RobotContainer {
                 new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).until(() -> intakeRollerSubsystem.getFrontSensor() > .3),
                 new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .3, .6).withTimeout(.1),
                 new ElevatorToAMPCommand(elevatorSubsystem),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0) //set to .2
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2) //set to .2
             ), 
             () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
         );
             
 
-        // leftBumper.onTrue(
-        //     new ConditionalCommand(
-        //             new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
-        //             new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
-        //         ), 
-        //         new ElevatorToTrapCommand(elevatorSubsystem).alongWith(
-        //             new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
-        //         ), 
-        //     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
-        // );
+        yButton.onTrue(
+            new ConditionalCommand(
+                    new ElevatorToZeroCommand(elevatorSubsystem)//.alongWith(
+                    // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                , 
+                new ElevatorToTrapCommand(elevatorSubsystem)//.alongWith(
+                    // new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                , 
+            () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        );
 
         
             
@@ -335,15 +335,16 @@ public class RobotContainer {
         //     new ElevatorToTrapCommand(elevatorSubsystem),
         //     new ElevatorToZeroCommand(elevatorSubsystem)));
 
-        aButton.onTrue(
-            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
-                        new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                        new IntakeRollerFeedCommand(intakeRollerSubsystem, 0.4).withTimeout(.24)
-                        // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: BAD
-                    ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
-                )
+        aButton.onTrue(new IntakePivotMiddleCommand(intakePivotSubsystem, 0));
+            // new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+            //     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+            //         new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).andThen(
+            //             new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .2).withTimeout(.15))
+            //             // new IntakeRollerFeedCommand(intakeRollerSubsystem, 0.4).withTimeout(.24)
+            //             // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: BAD
+            //         ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO OUTTAKE
+            //     )
+
 
 
             // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow, 
@@ -361,7 +362,7 @@ public class RobotContainer {
             //     )
 
             // ).unless(intakeRollerSubsystem::backSensorNow)
-        );
+        // );
 
         // aButton.onFalse(new IntakePivotMiddleCommand(intakePivotSubsystem, 0));
 
@@ -416,7 +417,7 @@ public class RobotContainer {
 
             } else if (elevatorSubsystem.getExtensionPercent() > .2) {
                 shot = false;
-                power =  .7 * (-mechController.getLeftTriggerAxis()); 
+                power =  .7 * (mechController.getRightTriggerAxis() - 5 * mechController.getLeftTriggerAxis()); 
             } else {
                 shot = false;
                 power =  .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis()); 
@@ -431,7 +432,7 @@ public class RobotContainer {
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
-        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(intakePivotSubsystem.getPosition() < .5 ? 1 : 0), intakePivotSubsystem));
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(intakePivotSubsystem.getPosition() < .5 ? 1 : .2), intakePivotSubsystem));
 
         offsetUpButton.onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5))));
         offsetUpButton.onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0))));
@@ -539,7 +540,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         if (!(baseSwerveSubsystem instanceof SwerveSubsystem)) return null;
         
-        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
+        return new MiddlePreloadedSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);//autonPathChooser.getSelected().create(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);
     }
 
 }

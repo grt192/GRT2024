@@ -15,14 +15,18 @@ import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class MiddlePreloadedSequence extends BaseAutonSequence{
+    private final ChoreoTrajectory traj = Choreo.getTrajectory("REAL2M");
    
     public MiddlePreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
+        ((SwerveSubsystem) swerveSubsystem).resetPose(traj.getInitialPose());
+
 
         addCommands(
-            shoot(),
+            followPath(traj),
+            //shoot(),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }

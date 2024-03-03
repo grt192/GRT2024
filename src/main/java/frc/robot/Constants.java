@@ -59,7 +59,7 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static boolean IS_RED = false;//DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        public static boolean IS_RED = true;//DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
