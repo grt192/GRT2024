@@ -8,18 +8,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
+/** Contains functions to create auto-alignment commands. */
 public class AlignCommand {
 
     /**
-     * Create a PathPlanner align command using PathPlanner's pathfindToPose() and autoBuilder.
+     * Creates a PathPlanner align command using PathPlanner's pathfindToPose() and autoBuilder.
      *
      * @param targetPose The desired position for the robot at the end of the align command
      * @param swerveSubsystem The robot swerve subsystem to control
-     * 
      * @return Pathfinding Command that pathfinds and aligns the robot
-     * 
      */
-    public static Command getAlignCommand(Pose2d targetPose, SwerveSubsystem swerveSubsystem){
+    public static Command getAlignCommand(Pose2d targetPose, SwerveSubsystem swerveSubsystem) {
         Command command = AutoBuilder.pathfindToPose(
             targetPose, 
             new PathConstraints(
@@ -36,13 +35,11 @@ public class AlignCommand {
     }
 
     /**
-     * Create a PathPlanner align command using PathPlanner's pathfindToPose() and autoBuilder.
+     * Creates a PathPlanner align command using PathPlanner's pathfindToPose() and autoBuilder.
      *
      * @param swerveSubsystem The robot swerve subsystem to control
      * @param isRed Whether or not we have a red alliance
-     * 
      * @return Pathfinding Command that pathfinds and aligns the robot
-     * 
      */
     public static Command getAmpAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed) {
         
@@ -68,5 +65,4 @@ public class AlignCommand {
         
         return command;
     }
-
 }
