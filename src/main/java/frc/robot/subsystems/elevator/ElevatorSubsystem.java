@@ -48,35 +48,35 @@ public class ElevatorSubsystem extends SubsystemBase {
         timer.start();
         
         zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
-        elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
-        elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
-        elevatorNetworkTable.addListener("target_position",
-            EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-            (NetworkTable table, String key, NetworkTableEvent event) -> {
-                String message = event.valueData.value.getString();
-                System.out.println(message);
-                if (message.equals("GROUND")) {
-                    System.out.println("Setting Target to Ground");
-                    this.setTargetState(ElevatorState.ZERO);
-                } else if (message.equals("SPEAKER")) {
-                    System.out.println("Setting Target to TRAP");
-                    this.setTargetState(ElevatorState.TRAP);
-                } else if (message.equals("AMP")) {
-                    System.out.println("Setting Target to AMP");
-                    this.setTargetState(ElevatorState.AMP);
-                } else {
-                    return;
-                }
-                ElevatorState currentTargetState = this.getTargetState();
-                if (currentTargetState.equals(ElevatorState.AMP)) {
-                    System.out.println("New target state is AMP!");
-                } else if (currentTargetState.equals(ElevatorState.ZERO)) {
-                    System.out.println("New target state is GROUND!");
-                } else if (currentTargetState.equals(ElevatorState.TRAP)) {
-                    System.out.println("New target state is TRAP!");
-                }
-            }
-        );
+        // elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
+        // elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
+        // elevatorNetworkTable.addListener("target_position",
+        //     EnumSet.of(NetworkTableEvent.Kind.kValueAll),
+        //     (NetworkTable table, String key, NetworkTableEvent event) -> {
+        //         String message = event.valueData.value.getString();
+        //         System.out.println(message);
+        //         if (message.equals("GROUND")) {
+        //             System.out.println("Setting Target to Ground");
+        //             this.setTargetState(ElevatorState.ZERO);
+        //         } else if (message.equals("SPEAKER")) {
+        //             System.out.println("Setting Target to TRAP");
+        //             this.setTargetState(ElevatorState.TRAP);
+        //         } else if (message.equals("AMP")) {
+        //             System.out.println("Setting Target to AMP");
+        //             this.setTargetState(ElevatorState.AMP);
+        //         } else {
+        //             return;
+        //         }
+        //         ElevatorState currentTargetState = this.getTargetState();
+        //         if (currentTargetState.equals(ElevatorState.AMP)) {
+        //             System.out.println("New target state is AMP!");
+        //         } else if (currentTargetState.equals(ElevatorState.ZERO)) {
+        //             System.out.println("New target state is GROUND!");
+        //         } else if (currentTargetState.equals(ElevatorState.TRAP)) {
+        //             System.out.println("New target state is TRAP!");
+        //         }
+        //     }
+        // );
         //this entry is working!
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
@@ -122,6 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
+
+        // System.out.println(getTargetState());
         
         //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
         //this through overun when no motor connected.
@@ -173,6 +175,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionPidController.setReference(
             targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut
         );
+        this.targetState = targetState;
         return;
     }
 
@@ -227,4 +230,5 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setManualPower(double power) {
         this.manualPower = power;
     } 
+
 }

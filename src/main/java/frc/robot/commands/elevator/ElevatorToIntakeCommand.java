@@ -18,6 +18,7 @@ public class ElevatorToIntakeCommand extends Command{
 
     @Override
     public void execute(){
+        System.out.println("ELEVATOR RUNNING");
         this.elevatorSubsystem.setTargetState(ElevatorState.INTAKE);
     }
 

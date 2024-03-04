@@ -61,7 +61,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
      * returns the encoder position.
      */
     public double encoderPosition() {
-        return pivotMotor.get() * CONVERSION_FACTOR + OFFSET;
+        return pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR + OFFSET;
     }
 
     /**

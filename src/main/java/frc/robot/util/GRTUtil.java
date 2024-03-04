@@ -17,8 +17,4 @@ public class GRTUtil {
     public static OpacityColor scaleColor(OpacityColor color, double scale){
         return OpacityColor.blendColors(color, new OpacityColor(), scale);
     }
-
-    public static Command getBinaryCommandChoice(BooleanSupplier supplier, Command commandA, Command commandB) {
-        return supplier.getAsBoolean() ? commandB : commandA;
-    }
 }

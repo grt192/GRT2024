@@ -7,9 +7,24 @@ package frc.robot.subsystems.shooter;
 
 import static frc.robot.Constants.ShooterConstants;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.util.Pose2dSupplier;
+
+import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 /** Inits motors and state enums for shooter subsystem. */
 public class ShooterFlywheelSubsystem extends SubsystemBase {
@@ -20,9 +35,25 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     //devices
     private ShooterState currentState; //an enum state thing
+    private VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
+    //Network Tables
+    private NetworkTableInstance ntInstance;
+    private NetworkTable ntTable;
+    private BooleanPublisher ntPublisher;
     /** Motors assigned. */
-    public ShooterFlywheelSubsystem(){
+
+    private double topSpeed;
+    private double bottomSpeed;
+
+    private Pose2dSupplier poseSupplier;
+
+    private AkimaSplineInterpolator akima;
+    private PolynomialSplineFunction topFlywheelSpline;
+    private PolynomialSplineFunction bottomFlywheelSpline;
+    private boolean atSpeed = false;
+
+    public ShooterFlywheelSubsystem(Pose2dSupplier poseSupplier){
         //motors
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
         shooterMotorBottom = new TalonFX(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID);
@@ -32,9 +63,31 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         shooterMotorTop.setNeutralMode(NeutralModeValue.Coast);
         shooterMotorBottom.setNeutralMode(NeutralModeValue.Coast);
-        
-        //enums
-        setShooterState(ShooterState.VERTICAL);
+
+        Slot0Configs configs = new Slot0Configs();
+
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+
+        double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
+        double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
+
+        akima = new AkimaSplineInterpolator();
+        topFlywheelSpline = akima.interpolate(distances, topSpeeds);
+        bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
+
+        configs.kP = .5;
+        configs.kI = 0.005;
+        configs.kD = 0;
+        configs.kV = .12;
+
+        shooterMotorBottom.getConfigurator().apply(configs);
+        shooterMotorTop.getConfigurator().apply(configs);
+
+        this.poseSupplier = poseSupplier;
+        //nts
+        ntInstance = NetworkTableInstance.getDefault();
+        ntTable = ntInstance.getTable("RobotStatus");
+        ntPublisher = ntTable.getBooleanTopic("shooterReady").publish();
     }
 
     /** Gets current state of shooter. */
@@ -49,16 +102,64 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets shooting motor speed.  */
     public void setShooterMotorSpeed(double topSpeed, double bottomSpeed) {
-        shooterMotorTop.setVoltage(topSpeed * 12);
-        shooterMotorBottom.setVoltage(bottomSpeed * 12);
+        double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
+        double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
+        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+
+        shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
+        shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
+        
+        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
+            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
+            && targetBottomRPS != 0;
         //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
     public void setShooterMotorSpeed(double speed) {
-        shooterMotorBottom.setVoltage(speed * 12);
-        shooterMotorTop.setVoltage(speed * 12);
+        setShooterMotorSpeed(speed, speed);
     }
 
+    public void setShooterMotorSpeed(){
+        setShooterMotorSpeed(getTopSpeed(), getBottomSpeed());
+    }
+
+    public boolean atSpeed() {
+        return atSpeed;
+    }
+
+    public double getTopSpeed() {
+        return topFlywheelSpline.value(getShootingDistance());
+    }
+
+    public double getBottomSpeed() {
+        return bottomFlywheelSpline.value(getShootingDistance());
+    }
+
+    private double getShootingDistance() {
+        double currentDistance;
+        double speakerHeight = Units.inchesToMeters(80.51);
+        Pose2d currentField = poseSupplier.getPose2d();
+        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
+
+        if (SwerveConstants.IS_RED) {  //true = red
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
+            currentDistance = Math.sqrt(xLength + yLength);
+
+        } else {
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
+
+            currentDistance = Math.sqrt(xLength + yLength);
+        }
+
+        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+    }
+
+    @Override
+    public void periodic() {
+        ntPublisher.set(atSpeed());
+    }
 }

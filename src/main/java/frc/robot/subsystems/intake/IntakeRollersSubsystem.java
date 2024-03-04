@@ -16,6 +16,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class IntakeRollersSubsystem extends SubsystemBase {
     private final CANSparkMax frontMotors;
@@ -23,6 +26,10 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     private final AnalogPotentiometer frontSensor;
     private final AnalogPotentiometer backSensor;
 
+    private NetworkTableInstance ntInstance;
+    private NetworkTable ntTable;
+    private BooleanPublisher ntFrontPublisher;
+    private BooleanPublisher ntBackPublisher;
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake
      */
@@ -32,6 +39,11 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         frontMotors.setInverted(true);
         frontSensor = new AnalogPotentiometer(frontSensorID);
         backSensor = new AnalogPotentiometer(backSensorID);
+    
+        ntInstance = NetworkTableInstance.getDefault();
+        ntTable = ntInstance.getTable("RobotStatus");
+        ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
+        ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
     }
 
     /**
@@ -45,8 +57,16 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         }
     }
 
+    public double getFrontSensor() {
+        return frontSensor.get();
+    }
+
     public boolean backSensorNow() {
         return backSensor.get() > BACK_SENSOR_REACHED;
+    }
+
+    public double getBackSensor() {
+        return backSensor.get();
     }
 
     /**
@@ -89,8 +109,10 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println("intake distance sensor: " + sensor.get());
+        // System.out.println("intake distance sensor: " + backSensor.get());
         // This method will be called once per scheduler run
+        ntFrontPublisher.set(frontSensorNow());
+        ntBackPublisher.set(backSensorNow());
     }
 
     @Override

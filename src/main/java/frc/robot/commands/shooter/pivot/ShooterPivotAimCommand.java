@@ -9,7 +9,7 @@ public class ShooterPivotAimCommand extends Command {
     
     ShooterPivotSubsystem shooterPivotSubsystem;
 
-    public ShooterPivotAimCommand(ShooterPivotSubsystem pivotSubsystem){
+    public ShooterPivotAimCommand(ShooterPivotSubsystem pivotSubsystem) {
         this.shooterPivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
     }

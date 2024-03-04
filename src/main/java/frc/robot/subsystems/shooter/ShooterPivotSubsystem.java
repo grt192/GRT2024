@@ -7,14 +7,19 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
 import frc.robot.util.GRTUtil;
+
+import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
@@ -41,13 +46,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double currentDistance;
     private Pose2dSupplier poseSupplier; //new Pose2d();
 
-    private LinearInterpolator lerp;
-    private PolynomialSplineFunction spline;
+    private AkimaSplineInterpolator akima;
+    private PolynomialSplineFunction angleSpline;
 
     private final Timer timer = new Timer();
 
+    private double angleOffset = 0;
+
     /** Inits motors and pose field. Also inits PID stuff. */
-    public ShooterPivotSubsystem(boolean alliance, Pose2dSupplier poseSupplier) {
+    public ShooterPivotSubsystem(Pose2dSupplier poseSupplier) {
 
         timer.start();
         this.poseSupplier = poseSupplier;
@@ -83,15 +90,21 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1, 2, 3, 4, 5, 6, 7, 8};
-        double[] angles = {1.12, .796, .598, .473, .388, .328, .284, .250};
+        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] angles = {Units.degreesToRadians(62), 
+                           Units.degreesToRadians(52), 
+                           Units.degreesToRadians(38.5), 
+                           Units.degreesToRadians(28),
+                           Units.degreesToRadians(24),
+                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(27)};
 
         // X = distances, Y = angles in rads
-        lerp = new LinearInterpolator();
-        spline = lerp.interpolate(distances, angles);
+        akima = new AkimaSplineInterpolator();
+        angleSpline = akima.interpolate(distances, angles);
 
         //field
-        this.alliance = alliance;
         autoAim = false;
 
         rotationPIDController.setReference(Units.degreesToRadians(18), ControlType.kPosition);
@@ -105,18 +118,17 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     /** Sets Angle of the pivot.*/
     public void setAngle(double angle) { 
-        rotationPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
-        System.out.println("setting angle to: " + angle);
+        rotationPIDController.setReference(angle + angleOffset, CANSparkMax.ControlType.kPosition);
+        // System.out.println("setting angle to: " + angle);
        
     }
 
-    /** Gets correct Angle for pivot to turn to. */
-    public double getAutoAimAngle() {
+    private double getShootingDistance() {
         double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if (alliance) {  //true = red
+        if (SwerveConstants.IS_RED) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
             double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
             currentDistance = Math.sqrt(xLength + yLength);
@@ -128,8 +140,17 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             currentDistance = Math.sqrt(xLength + yLength);
         }
 
-        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
-                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(spline.value(currentDistance))));
+        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+    }
+
+    /** Gets correct Angle for pivot to turn to. */
+    public double getAutoAimAngle() {
+        
+        currentDistance = getShootingDistance();
+
+        // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
+        //                    " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+        //                    + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);
@@ -137,7 +158,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
         // return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
 
-        return spline.value(currentDistance);
+        return angleSpline.value(getShootingDistance());
     }
 
     /** Prints pivot current angle. */
@@ -188,5 +209,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
         //     setShooterState(ShooterState.NO_NOTE);
         // }
+    }
+    
+    /** Sets the angle offset to a new value.
+     *
+     * @param angleOffset The value to set the offset to.
+     */
+
+    public void setAngleOffset(double angleOffset) {
+        this.angleOffset = angleOffset;
     }
 }
