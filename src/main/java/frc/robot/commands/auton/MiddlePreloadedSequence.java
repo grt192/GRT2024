@@ -25,9 +25,9 @@ public class MiddlePreloadedSequence extends BaseAutonSequence{
 
 
         addCommands(
-            followPath(traj),
+            followPath(traj)
             //shoot(),
-            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+            // new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 }

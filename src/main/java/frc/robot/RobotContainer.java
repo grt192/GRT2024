@@ -19,8 +19,8 @@ import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.commands.IdleCommand;
 import frc.robot.commands.auton.AutonFactoryFunction;
-import frc.robot.commands.auton.BottomPlayoffsSequence;
 import frc.robot.commands.auton.Bottom2PieceSequence;
+import frc.robot.commands.auton.BottomPlayoffsSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
 import frc.robot.commands.auton.Middle3PieceSequence;
@@ -336,10 +336,10 @@ public class RobotContainer {
         //     new ElevatorToTrapCommand(elevatorSubsystem),
         //     new ElevatorToZeroCommand(elevatorSubsystem)));
 
-        aButton.onTrue(new IntakePivotMiddleCommand(intakePivotSubsystem, 0));
+        // aButton.onTrue(new IntakePivotMiddleCommand(intakePivotSubsystem, 0));
             // new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
             //     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-            //         new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).andThen(
+            //         new IntakeRollerIntakeCcommand(intakeRollerSubsystem, ledSubsystem).andThen(
             //             new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .2).withTimeout(.15))
             //             // new IntakeRollerFeedCommand(intakeRollerSubsystem, 0.4).withTimeout(.24)
             //             // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: BAD
