@@ -141,6 +141,7 @@ public class RobotContainer {
     private final JoystickButton redButton = new JoystickButton(switchboard, 5);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
+    private final JoystickButton toggleClimbLimitsButton = new JoystickButton(switchboard, 9);
 
     private UsbCamera camera1;
     private MjpegServer mjpegServer1;
@@ -285,6 +286,9 @@ public class RobotContainer {
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
             climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
+
+        toggleClimbLimitsButton.onTrue(new InstantCommand(() -> climbSubsystem.enableSoftLimits(false)));
+        toggleClimbLimitsButton.onFalse(new InstantCommand(() -> climbSubsystem.enableSoftLimits(true)));
 
         // TOGGLES THE ELEVATOR FOR AMP
         rightBumper.onTrue(
