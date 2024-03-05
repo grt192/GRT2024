@@ -17,27 +17,21 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class Top2PieceSequence extends BaseAutonSequence{
-
-    // private double targetRads = SwerveConstants.IS_RED ? Math.PI - 2.18 : -2.18;
-    // private Rotation2d preloadedShootAngle = new Rotation2d(targetRads);
-
-    private Pose2d initPose = SwerveConstants.IS_RED ? new Pose2d(new Translation2d(15.11, 7.01), new Rotation2d(Math.PI)) : new Pose2d(new Translation2d(1.43, 7.01), new Rotation2d(0));
-    private final ChoreoTrajectory starttopiece1 = Choreo.getTrajectory("C1-AmpStartToAmpNote");
+public class BottomPlayoffsSequence extends BaseAutonSequence{
+    private final ChoreoTrajectory traj = Choreo.getTrajectory("BottomPLAYOFFS");
+    private final Pose2d initPose = !SwerveConstants.IS_RED ? new Pose2d(new Translation2d(1.403, 1.569), new Rotation2d(0)) : new Pose2d(new Translation2d(15.137, 1.569), new Rotation2d(Math.PI));
    
-    public Top2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
+    public BottomPlayoffsSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
                                ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
-        ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
+        ((SwerveSubsystem) swerveSubsystem).resetPose(traj.getInitialPose());
+
 
         addCommands(
-            new SetCalculatedAngleCommand(swerveSubsystem),
-            shoot(),
-            goIntakeNoOvershoot(starttopiece1, true),
-            new SetCalculatedAngleCommand(swerveSubsystem),
-            shoot(),
-            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+            followPath(traj)
+            //shoot(),
+            //new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 }

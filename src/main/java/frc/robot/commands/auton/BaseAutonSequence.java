@@ -69,6 +69,10 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
         thetaController = new PIDController(3.5, 0, 0);
+
+        addCommands(
+            // new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(3)
+        );
     }
 
     public Command followPath(ChoreoTrajectory traj){
@@ -129,8 +133,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem).withTimeout(3),
                     new DriveForwardCommand(swerveSubsystem)),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15)
+                // new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
         else {
@@ -148,9 +152,9 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
      public SequentialCommandGroup shoot(){
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(2), //wait to hit max speed?
-            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
-            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+            // new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(2), //wait to hit max speed?
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.5)
+            // new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         ) ;
     }
 
