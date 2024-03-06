@@ -48,7 +48,7 @@ import frc.robot.commands.shooter.pivot.ShooterPivotVerticalCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
-import frc.robot.subsystems.AllianceSubsystem;
+import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.climb.ManualClimbSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
@@ -121,7 +121,7 @@ public class RobotContainer {
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
-    private final AllianceSubsystem allianceSubsystem = new AllianceSubsystem();
+    private final FieldManagementSubsystem allianceSubsystem = new FieldManagementSubsystem();
 
     private final NoteDetectionWrapper noteDetector;
 
