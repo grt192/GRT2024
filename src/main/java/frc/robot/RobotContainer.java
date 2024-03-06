@@ -27,6 +27,7 @@ import frc.robot.commands.auton.AutonFactoryFunction;
 import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
+import frc.robot.commands.auton.Middle4PieceSequence;
 import frc.robot.commands.auton.TaxiSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
@@ -391,6 +392,7 @@ public class RobotContainer {
             swerveSubsystem.resetDriverHeading();
         }));
     }
+        
 
     /**
      * Returns the autonomous command.
@@ -398,10 +400,15 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonPathChooser.getSelected().create(
-            intakePivotSubsystem, intakeRollerSubsystem, 
-            shooterFlywheelSubsystem, shooterPivotSubsystem, 
-            elevatorSubsystem, swerveSubsystem, lightBarSubsystem
-        );
+        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
+                shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) swerveSubsystem, lightBarSubsystem);
+        // autonPathChooser.getSelected().create(intakePivotSubsystem,
+        // intakeRollerSubsystem,
+        // shooterFlywheelSubsystem,
+        // shooterPivotSubsystem,
+        // elevatorSubsystem,
+        // (SwerveSubsystem)
+        // baseSwerveSubsystem,
+        // ledSubsystem);
     }
 }
