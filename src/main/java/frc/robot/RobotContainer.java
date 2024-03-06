@@ -57,6 +57,7 @@ import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+import frc.robot.util.GRTUtil;
 
 
 /** The robot container. */
@@ -143,7 +144,6 @@ public class RobotContainer {
 
         driverCamera = new UsbCamera("fisheye", 0);
         driverCamera.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
-
         driverCameraServer = new MjpegServer("m1", 1181);
         driverCameraServer.setSource(driverCamera);
 
@@ -200,10 +200,11 @@ public class RobotContainer {
                     break;
             }
             
-            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " +
-            // GRTUtil.twoDecimals(shooterBotSpeed));
+            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
+                           + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
+            );
 
-            // shooterPivotSubsystem.getAutoAimAngle();
+            shooterPivotSubsystem.getAutoAimAngle();
         }, shooterPivotSubsystem));
 
         /* ElEVATOR TEST */
@@ -236,16 +237,17 @@ public class RobotContainer {
 
         /* Elevator controls -- */ //TODO: explain how these work
         rightBumper.onTrue(
-                new ConditionalCommand(
-                        new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
-                        new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                                new IntakeRollerOuttakeCommand(intakeRollerSubsystem)
-                                        .until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
-                                new ElevatorToAMPCommand(elevatorSubsystem),
-                                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)),
-                        () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
-                                || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
+            new ConditionalCommand(
+                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
+                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                    new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(
+                        () -> intakeRollerSubsystem.getFrontSensor() > .12),
+                    new ElevatorToAMPCommand(elevatorSubsystem),
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0)),
+                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
+                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        );
 
         leftBumper.onTrue(
                 new ConditionalCommand(
@@ -319,10 +321,12 @@ public class RobotContainer {
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
         );
 
-        offsetDownButton
-                .onTrue(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-5))));
-        offsetDownButton
-                .onFalse(new InstantCommand(() -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0))));
+        offsetDownButton.onTrue(new InstantCommand(
+            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-5)))
+        );
+        offsetDownButton.onFalse(new InstantCommand(
+            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
+        );
 
         /* SWERVE BINDINGS */
 
@@ -368,15 +372,13 @@ public class RobotContainer {
             } else {
                 if (driveController.getSwerveAimMode()) {
                     swerveSubsystem.setSwerveAimDrivePowers(
-                        driveController.getForwardPower(), 
-                        driveController.getLeftPower()
-                    );
+                            driveController.getForwardPower(),
+                            driveController.getLeftPower());
                 } else {
                     swerveSubsystem.setDrivePowers(
-                        driveController.getForwardPower(), 
-                        driveController.getLeftPower(), 
-                        driveController.getRotatePower()
-                    );
+                            driveController.getForwardPower(),
+                            driveController.getLeftPower(),
+                            driveController.getRotatePower());
                 }
             }
 

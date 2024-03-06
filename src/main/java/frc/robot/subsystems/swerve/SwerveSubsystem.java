@@ -17,6 +17,7 @@ import static frc.robot.Constants.SwerveConstants.FR_DRIVE;
 import static frc.robot.Constants.SwerveConstants.FR_OFFSET;
 import static frc.robot.Constants.SwerveConstants.FR_POS;
 import static frc.robot.Constants.SwerveConstants.FR_STEER;
+import static frc.robot.Constants.SwerveConstants.IS_RED;
 import static frc.robot.Constants.SwerveConstants.RED_SPEAKER_POS;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA_POSE;
@@ -53,18 +54,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import frc.robot.vision.ApriltagWrapper;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.util.GRTUtil;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
-import static frc.robot.Constants.SwerveConstants.*;
-import static frc.robot.Constants.VisionConstants.*;
-import static frc.robot.Constants.AutoAlignConstants.*;
-
-import java.security.GeneralSecurityException;
+import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
@@ -76,9 +67,9 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final Timer ahrsTimer;
 
     public static final double MAX_VEL = 4.172; //calculated
-    public static final double MAX_ACCEL = 3; //STUB
+    public static final double MAX_ACCEL = 3;
     public static final double MAX_OMEGA = MAX_VEL / FL_POS.getNorm();
-    public static final double MAX_ALPHA = 8; //STUB
+    public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
 
@@ -94,10 +85,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final ApriltagWrapper[] apriltagWrappers = {
         new ApriltagWrapper(FRONT_RIGHT_CAMERA, FRONT_RIGHT_CAMERA_POSE),
         new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE),
-        // new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
+        new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
     };
 
-    //heading lock controller
+    /* Heading Lock Controller */
     private final PIDController thetaController;
 
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -123,15 +114,15 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     };
 
     public final ShuffleboardTab choreoTab;
-    private final Field2d field;
+    private final Field2d fieldVisualization;
 
-    // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
-    private final GenericEntry FLsteer, FRsteer, BLsteer, BRsteer;
-    private final GenericEntry robotPos;
+    private final GenericEntry frontLeftSteer;
+    private final GenericEntry frontRightSteer;
+    private final GenericEntry backLeftSteer;
+    private final GenericEntry backRightSteer;
+    private final GenericEntry robotPosEntry;
 
-    // private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
-    /** Constructs a swerve subsystem. */
+    /** Constructs a {@link SwerveSubsystem}. */
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -154,24 +145,17 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         ahrsTimer.start();
 
         choreoTab = Shuffleboard.getTab("Auton");
-        field = new Field2d();
-        choreoTab.add("Field", field)
+        fieldVisualization = new Field2d();
+        choreoTab.add("Field", fieldVisualization)
             .withPosition(0, 0)
             .withSize(6, 4);
 
-        robotPos = choreoTab.add("position", 0.).withPosition(7, 0).getEntry();
+        robotPosEntry = choreoTab.add("position", 0.).withPosition(7, 0).getEntry();
 
-        FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
-        // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
-        
-        FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
-        // FRdrive = choreoTab.add("FRdrive", 0.).withPosition(1, 1).getEntry();
-        
-        BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
-        // BLdrive = choreoTab.add("BLdrive", 0.).withPosition(2, 1).getEntry();
-        
-        BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
-        // BRdrive = choreoTab.add("BRdrive", 0.).withPosition(3, 1).getEntry();
+        frontLeftSteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
+        frontRightSteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
+        backLeftSteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();     
+        backRightSteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
 
         poseEstimator = new SwerveDrivePoseEstimator(
             kinematics, 
@@ -215,7 +199,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     @Override
     public void periodic() {
 
-        robotPos.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
+        robotPosEntry.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
         // System.out.println(thetaController.getPositionError());
         // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
         // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
@@ -231,21 +215,14 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         SwerveModulePosition[] modulePos = getModulePositions(); 
     
-        FLsteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
-        // FLdrive.setValue(Util.twoDecimals(modulePos[0].distanceMeters));
-
-        FRsteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
-        // FRdrive.setValue(Util.twoDecimals(modulePos[1].distanceMeters));
-
-        BLsteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
-        // BLdrive.setValue(Util.twoDecimals(modulePos[2].distanceMeters));
-
-        BRsteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
-        // BRdrive.setValue(Util.twoDecimals(modulePos[3].distanceMeters));
+        frontLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
+        frontRightSteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
+        backLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
+        backRightSteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
             Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
-                new Pose3d(field.getRobotPose())
+                new Pose3d(fieldVisualization.getRobotPose())
             );
 
             if (visionEstimate.isPresent()) {
@@ -270,9 +247,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         //     ahrsTimer.stop();
         // }
 
-        
-
-        field.setRobotPose(new Pose2d(GRTUtil.twoDecimals(estimate.getX() + 1), estimate.getY() + .3, estimate.getRotation()));
+        fieldVisualization.setRobotPose(new Pose2d(
+            GRTUtil.twoDecimals(estimate.getX() + 1),
+            estimate.getY() + .3,
+            estimate.getRotation())
+        );
         
         for (int i = 0; i < 4; i++) {
             angles[i].set(states[i].angle.getRadians());
@@ -286,7 +265,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
     }
 
-    /** Sets the powers of the drivetrain through PIDs. Relative to the driver heading on the field.
+    /**
+     * Sets the powers of the drivetrain through PIDs. Relative to the driver heading on the field.
      *
      * @param xPower [-1, 1] The forward power.
      * @param yPower [-1, 1] The left power.
@@ -306,7 +286,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    /** Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
+    /**
+     * Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
      *
      * @param xPower [-1, 1] The forward power.
      * @param yPower [-1, 1] The left power.
@@ -326,7 +307,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    /** Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
+    /**
+     * Sets the power of the drivetrain through PIDs. Relative to the robot with the intake in the front.
      *
      * @param robotRelativeSpeeds The speeds of the chassis to set to.
      */
@@ -344,11 +326,13 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    public double getAngleError(){
+    /** Returns the PID error for the rotation controller. */
+    public double getAngleError() {
         return thetaController.getPositionError();
     }
 
-    /** Gets the current chassis speeds relative to the robot.
+    /**
+     * Gets the current chassis speeds relative to the robot.
      *
      * @return The robot relative chassis speeds.
      */
@@ -360,7 +344,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         return robotRelativeSpeeds;
     }
 
-    /** Sets the chassis speeds.
+    /**
+     * Sets the chassis speeds.
      *
      * @param xSpeed x direction speed in meters/second.
      * @param ySpeed y direction speed in meters/second.
@@ -378,7 +363,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    /** Sets the drive powers with a heading lock. Field relative.
+    /**
+     * Sets the drive powers with a heading lock. Field relative.
      *
      * @param xPower [-1, 1] The x direction power (forward).
      * @param yPower [-1, 1] The y direction power (left).
@@ -392,7 +378,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    /** Sets the drive powers while aiming at the speaker.
+    /**
+     * Sets the drive powers while aiming at the speaker.
      *
      * @param xPower The power in x direction.
      * @param yPower The power in the y direction.
@@ -403,7 +390,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
 
-    /** Gets the correct angle to aim the swerve at to point at the speaker.
+    /**
+     * Gets the correct angle to aim the swerve at to point at the speaker.
      *
      * @param isRed Whether the team is red or not.
      * @return The angle to point at.
@@ -414,12 +402,11 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
         double rawAngle = Math.atan2(yDistance, xDistance) + Math.PI;
 
-        /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
-         the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
         return rawAngle + ANGLE_OFFSET_FOR_AUTO_AIM; 
     }
 
-    /** Gets the Y distance from the speaker.
+    /**
+     * Gets the Y distance from the speaker.
      *
      * @return The Y distance from the speaker in meters.
      */
@@ -427,7 +414,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
     }
 
-    /** Gets the X distance from the speaker.
+    /**
+     * Gets the X distance from the speaker.
      *
      * @param isRed Whether the current team is red or not.
      * @return The X distance from the speaker in meters.
@@ -436,7 +424,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
     }
 
-    /** Gets the current speaker position.
+    /**
+     * Gets the current speaker position.
      *
      * @param isRed If our team is red or not.
      * @return The translation 2d of the speaker.
@@ -450,7 +439,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     }
 
 
-    /** Sets the states of the swerve modules.
+    /**
+     * Sets the states of the swerve modules.
      *
      * @param states The array of swerve modules states
      */
@@ -458,7 +448,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         this.states = states;
     }
 
-    /** Get the module positions.
+    /**
+     * Gets the module positions.
      *
      * @return The array of module positions.
      */
@@ -471,7 +462,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         };
     }
 
-    /** Get the kinematics object.
+    /**
+     * Gets the kinematics object.
      *
      * @return The kinematics object.
      */
@@ -479,7 +471,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         return kinematics;
     }
 
-    /** Get the current robot pose.
+    /**
+     * Gets the current robot pose.
      *
      * @return The robot Pose2d.
      */
@@ -489,7 +482,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
 
     }
 
-    /** Reset the robot pose.
+    /**
+     * Resets the robot pose.
      *
      * @param currentPose The pose to reset to.
      */
@@ -502,12 +496,13 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         );
     }
 
-    /** Reset the pose to 0,0,0. */
+    /** Resets the pose to 0,0,0. */
     public void resetPose() {
         resetPose(new Pose2d());
     }
 
-    /** Reset the driver heading.
+    /**
+     * Resets the driver heading.
      *
      * @param currentRotation The new driver heading.
      */
@@ -515,17 +510,18 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         driverHeadingOffset = getGyroHeading().minus(currentRotation);
     }
 
-    /** Reset the driver heading to 0. */
+    /** Resets the driver heading to 0. */
     public void resetDriverHeading() {
         resetDriverHeading(new Rotation2d());
     }
 
-    /** Get the gyro heading. TODO: uninvert because it is right side up now. */
+    /** Gets the gyro heading. TODO: uninvert because it is right side up now. */
     private Rotation2d getGyroHeading() {
         return Rotation2d.fromDegrees(-ahrs.getAngle());
     }
 
-    /** Get the driver heading.
+    /**
+     * Gets the driver heading.
      *
      * @return The angle of the robot relative to the driver heading.
      */
@@ -538,9 +534,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         return robotHeading.minus(driverHeadingOffset);
     }
 
-    /** Reset the ahrs on the navX. */
+    /** Resets the ahrs on the navX. */
     public void resetAhrs() {
         ahrs.zeroYaw();
     }
-
 }

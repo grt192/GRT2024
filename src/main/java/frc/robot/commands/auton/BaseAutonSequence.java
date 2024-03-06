@@ -26,9 +26,8 @@ import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
-/** 
- * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
- * between autons
+/** The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
+ * between autons.
  */
 public class BaseAutonSequence extends SequentialCommandGroup {
 
