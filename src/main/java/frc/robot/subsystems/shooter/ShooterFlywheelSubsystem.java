@@ -18,6 +18,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
@@ -143,7 +144,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return bottomFlywheelSpline.value(getShootingDistance());
     }
 
-    /** Get the actual speed of the top shooter motor.
+    /**
+     * Gets the actual speed of the top shooter motor.
      *
      * @return the actual speed in rotations per second
      */
@@ -151,7 +153,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return shooterMotorTop.getVelocity().getValueAsDouble();
     }
     
-    /** Get the actual speed of the bottom shooter motor.
+    /**
+     * Gets the actual speed of the bottom shooter motor.
      *
      * @return the actual speed in rotations per second
      */
@@ -159,7 +162,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return shooterMotorBottom.getVelocity().getValueAsDouble();
     }
 
-    /** Get the setpoint speed of the top shooter motor.
+    /**
+     * Gets the setpoint speed of the top shooter motor.
      *
      * @return the target speed in rotations per second
      */
@@ -167,7 +171,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return targetTopRPS;
     }
 
-    /** Get the setpoint speed of the bottom shooter motor.
+    /**
+     * Gets the setpoint speed of the bottom shooter motor.
      *
      * @return the target speed in rotations per second
      */
@@ -182,18 +187,20 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (SwerveConstants.IS_RED) {  //true = red
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
+            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
             currentDistance = Math.sqrt(xLength + yLength);
 
         } else {
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
+            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }
 
-        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+        return MathUtil.clamp(currentDistance,
+            ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE
+        );
     }
 
     @Override

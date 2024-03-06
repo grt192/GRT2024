@@ -5,7 +5,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class ElevatorSetAutoCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorSetAutoCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorSetAutoCommand(ElevatorSubsystem elevatorSubsystem) {
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
     }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
@@ -85,7 +86,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //pivot soft limits
-        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(62));
+        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(66));
         pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Units.degreesToRadians(18));
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
@@ -129,13 +130,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (SwerveConstants.IS_RED) {  //true = red
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
+            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
             currentDistance = Math.sqrt(xLength + yLength);
 
         } else {
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
+            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }
@@ -148,9 +149,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         currentDistance = getShootingDistance();
 
-        // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
-        //                    " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
-        //                    + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
+        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
+                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+                           + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);

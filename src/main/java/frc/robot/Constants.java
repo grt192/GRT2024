@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-
 import org.photonvision.PhotonCamera;
 
 /** Store the constants for the robot. */
@@ -34,7 +33,7 @@ public final class Constants {
         public static final int ZERO_LIMIT_ID = 7;
 
         public static final double ZERO_POSITION = 0;
-        public static final double INTAKE_POSITION = .05;
+        public static final double INTAKE_POSITION = .1;
         public static final double AMP_POSITION = .9;
         public static final double TRAP_POSITION = 1.;
 
@@ -127,20 +126,9 @@ public final class Constants {
         public static final double TOP_SHOOTER_MOTOR_SPEED = .6;
         public static final double BOTTOM_SHOOTER_MOTOR_SPEED = .64;
 
-        //field constants
-        //center of red speaker: (652.73 218.42)
-        public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
-        public static final double RED_Y = Units.inchesToMeters(218.42);
-
-        //center of blue speaker: (-1.50 218.42)
-        public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
-        public static final double BLUE_Y = Units.inchesToMeters(218.42);
-
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
         public static final double MIN_SHOOTER_DISTANCE = 1.08;
         public static final double MAX_SHOOTER_DISTANCE = 8;
-
-
     }
 
     /** Constants for Climb Subsystem. */

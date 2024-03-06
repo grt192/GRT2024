@@ -107,6 +107,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
      */
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
         return followPath(intakeTrajectory).alongWith(
+<<<<<<< HEAD
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
             )
@@ -116,10 +117,34 @@ public class BaseAutonSequence extends SequentialCommandGroup {
             new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
             new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+=======
+                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+                )
+            ).andThen(
+                new ParallelDeadlineGroup(
+                    new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow).withTimeout(3),
+                    new DriveForwardCommand(swerveSubsystem)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15)
+                );
+    }
+
+    /**
+     * Shoots at calculated robot angle and shooter angle.
+     *
+     * @return shoot command
+     */
+
+    public Command shoot() {
+        return new ShooterPivotAimCommand(shooterPivotSubsystem)
+            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)
+            .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.5))
+>>>>>>> 4d23828 (testing changes)
         );
     }
 
     /**
+<<<<<<< HEAD
      * Shoots at calculated robot angle and shooter angle.
      *
      * @return shoot command
@@ -131,6 +156,18 @@ public class BaseAutonSequence extends SequentialCommandGroup {
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
+=======
+     * Follows trajectory and then shoots at calculated robot angle and shooter angle.
+     *
+     * @param shootTrajectory ChoreoTrajectory
+     * @return goShoot command
+     */
+
+    public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory) {
+        return followPath(shootTrajectory)
+        .andThen(new SetCalculatedAngleCommand(swerveSubsystem))
+        .andThen(shoot());
+>>>>>>> 4d23828 (testing changes)
     }
 
     /**
