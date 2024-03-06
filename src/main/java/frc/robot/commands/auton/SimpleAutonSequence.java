@@ -26,7 +26,7 @@ public class SimpleAutonSequence extends BaseAutonSequence{
 
         addCommands(
             goShoot(preloadedtraj),
-            goIntake(intaketraj, false),
+            goIntake(intaketraj),
             goShoot(speakertraj)
         );
     }

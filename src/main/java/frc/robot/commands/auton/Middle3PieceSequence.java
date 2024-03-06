@@ -31,10 +31,9 @@ public class Middle3PieceSequence extends BaseAutonSequence{
 
         addCommands(
             shoot(),
-            goIntakeNoOvershoot(starttopiece1, true),
+            goIntake(starttopiece1),
             shoot(),
-            goIntakeNoOvershoot(piece1topiece2, true),
-            new SetCalculatedAngleCommand(swerveSubsystem),
+            goIntake(piece1topiece2),
             shoot(),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );

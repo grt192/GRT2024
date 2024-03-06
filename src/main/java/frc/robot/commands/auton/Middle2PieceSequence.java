@@ -30,7 +30,7 @@ public class Middle2PieceSequence extends BaseAutonSequence{
 
         addCommands(
             shoot(),
-            goIntakeNoOvershoot(starttopiece1, true),
+            goIntake(starttopiece1),
             shoot(),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );

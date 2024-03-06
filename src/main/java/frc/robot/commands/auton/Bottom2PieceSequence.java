@@ -32,10 +32,8 @@ public class Bottom2PieceSequence extends BaseAutonSequence{
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
-            new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
-            goIntakeNoOvershoot(starttopiece1, true),
-            new SetCalculatedAngleCommand(swerveSubsystem),
+            goIntake(starttopiece1),
             shoot(),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );

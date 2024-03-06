@@ -32,7 +32,6 @@ public class BottomPreloadedSequence extends BaseAutonSequence{
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
-            new SetCalculatedAngleCommand(swerveSubsystem),
             shoot(),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
