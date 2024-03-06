@@ -415,8 +415,9 @@ public class RobotContainer {
             }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
-                    AlignCommand.getAlignCommand(AutoAlignConstants.BLUE_AMP_POSE, swerveSubsystem),
-                    new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())));
+                AlignCommand.getAmpAlignCommand(swerveSubsystem, allianceSubsystem.isRedAlliance()),
+                new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
+            ));
 
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
                     new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector,
