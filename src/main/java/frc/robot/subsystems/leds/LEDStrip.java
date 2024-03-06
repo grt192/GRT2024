@@ -3,8 +3,8 @@ package frc.robot.subsystems.leds;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.util.OpacityColor;
 import frc.robot.util.GRTUtil;
+import frc.robot.util.OpacityColor;
 
 /** An LEDStrip which you can add ledLayers to. */
 public class LEDStrip {

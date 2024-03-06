@@ -77,7 +77,7 @@ public class XboxDriveController extends BaseDriveController {
         return driveLStickButton.getAsBoolean();
     }
 
-    public JoystickButton getTurnModeButton(){
+    public JoystickButton getShooterAimButton(){
         return driveLStickButton;
     }
 }

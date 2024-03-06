@@ -168,23 +168,18 @@ public class LEDSubsystem extends SubsystemBase {
         ledStrip.setBuffer(LEDConstants.BRIGHTNESS_SCALE_FACTOR);
     }
 
-    /**
-     * Toggles whether drivers are manually controlling the color of the LEDs.
-     */
+    /** Toggles whether drivers are manually controlling the color of the LEDs. */
     public void setRainbow(boolean rainbow) {
         this.rainbow = rainbow;
     }
 
-    /**
-     * Displays that an AprilTag has been detected by sending a pulse down the LEDs.
-     */
+    /** Displays that an AprilTag has been detected by sending a pulse down the LEDs. */
     public void displayTagDetected() {
         aprilBlinkTimer.start();
         aprilBlinkTimer.advanceIfElapsed(APRIL_BLINK_DURATION_SECONDS * BLINK_OFF_TO_ON_RATIO);
     }
 
-    /**
-     * Cross-fades between two colors using a sinusoidal scaling function.
+    /** Cross-fades between two colors using a sinusoidal scaling function.
      *
      * @param color The OpacityColor to crossFade with time.
      * @param currentTimeSeconds The current elapsed time of fading.

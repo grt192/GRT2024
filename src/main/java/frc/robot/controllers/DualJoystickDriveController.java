@@ -99,7 +99,7 @@ public class DualJoystickDriveController extends BaseDriveController {
         return leftTopRightButton.getAsBoolean();
     }
     
-    public JoystickButton getTurnModeButton(){
+    public JoystickButton getShooterAimButton(){
         return leftTopRightButton;
     }   
 }   

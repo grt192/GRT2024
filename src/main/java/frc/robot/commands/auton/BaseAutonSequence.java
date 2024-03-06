@@ -97,38 +97,29 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    /**
-     * Follows trajectory to intake.
-     * 
-     *@param intakeTrajectory ChoreoTrajectory
-     *
-     *@return goIntake Command
-     */
+    public Command goIntake(ChoreoTrajectory intakeTraj){
+        return followPath(intakeTraj).alongWith(
+            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+            )
+        ).andThen(
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+            new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+        );
+    }
 
-    public Command goIntake(ChoreoTrajectory intakeTrajectory){
-        return followPath(intakeTrajectory).alongWith(
-                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
-                )
-            ).andThen(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                );
-        }
-
-     public SequentialCommandGroup shoot(){
+    public SequentialCommandGroup shoot() {
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(2), //wait to hit max speed?
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
-        ) ;
+        );
     }
 
-    public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory){
+    public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory) {
         return followPath(shootTrajectory)
         .andThen(shoot());
     }
-
 }
