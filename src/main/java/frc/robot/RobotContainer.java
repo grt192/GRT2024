@@ -299,16 +299,16 @@ public class RobotContainer {
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
             double power = 0;
 
-            if (intakeRollerSubsystem.backSensorNow()) {
-                if (shooterFlywheelSubsystem.atSpeed()) {
-                    power = mechController.getRightTriggerAxis() > .1 ? 1 : .7 * (-mechController.getLeftTriggerAxis());
-                } else {
-                    power = .7 * (-mechController.getLeftTriggerAxis());
-                }
+            // if (intakeRollerSubsystem.backSensorNow()) {
+            //     if (shooterFlywheelSubsystem.atSpeed()) {
+            //         power = mechController.getRightTriggerAxis() > .1 ? 1 : .7 * (-mechController.getLeftTriggerAxis());
+            //     } else {
+            //         power = .7 * (-mechController.getLeftTriggerAxis());
+            //     }
 
-            } else {
+            // } else {
                 power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
-            }
+            // }
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
@@ -392,7 +392,6 @@ public class RobotContainer {
             swerveSubsystem.resetDriverHeading();
         }));
     }
-        
 
     /**
      * Returns the autonomous command.
