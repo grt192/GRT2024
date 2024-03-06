@@ -7,7 +7,6 @@ import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
@@ -26,8 +25,9 @@ import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
-/** The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
- * between autons.
+/** 
+ * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
+ * between autons
  */
 public class BaseAutonSequence extends SequentialCommandGroup {
 
@@ -41,12 +41,16 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private final PIDController thetaController;
     private PIDController xPID;
     private PIDController yPID;
-    private double driveforwardtime = 1;
-    private double shortdriveforwardtime = .5;
-    private double intaketime = 3;
-    
+    private double driveForwardTime = 1;
 
-    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LightBarSubsystem lightBarSubsystem){
+    /** Constructs a {@link BaseAutonSequence}. */
+    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem,
+                             IntakeRollersSubsystem intakeRollersSubsystem,
+                             ShooterFlywheelSubsystem shooterFlywheelSubsystem,
+                             ShooterPivotSubsystem shooterPivotSubsystem,
+                             ElevatorSubsystem elevatorSubsystem,
+                             BaseSwerveSubsystem swerveSubsystem,
+                             LightBarSubsystem lightBarSubsystem) {
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollerSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
@@ -72,7 +76,6 @@ public class BaseAutonSequence extends SequentialCommandGroup {
      * Follows trajectory.
      *
      * @param trajectory ChoreoTrajectory
-     * 
      * @return followPath command
      */
     public Command followPath(ChoreoTrajectory trajectory) {
@@ -96,27 +99,43 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         return swerveCommand;
     }
 
-    public Command goIntake(ChoreoTrajectory intakeTraj){
-        return followPath(intakeTraj).alongWith(
+    /**
+     * Follows trajectory to intake.
+     *
+     * @param intakeTrajectory ChoreoTrajectory
+     * @return goIntake Command
+     */
+    public Command goIntake(ChoreoTrajectory intakeTrajectory) {
+        return followPath(intakeTrajectory).alongWith(
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
             )
         ).andThen(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+                .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveForwardTime)),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
             new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
         );
     }
 
+    /**
+     * Shoots at calculated robot angle and shooter angle.
+     *
+     * @return shoot command
+     */
     public SequentialCommandGroup shoot() {
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(2), //wait to hit max speed?
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem)
+                .withTimeout(2), //wait to hit max speed?
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 
+    /**
+     * Follows a trajectory and then shoots.
+     */
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory) {
         return followPath(shootTrajectory)
         .andThen(shoot());
