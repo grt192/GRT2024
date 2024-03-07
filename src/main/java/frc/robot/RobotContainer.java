@@ -334,7 +334,7 @@ public class RobotContainer {
         aButton.onTrue(
                 new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
                         new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-                                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+                                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
                                                 .until(intakeRollerSubsystem::backSensorNow)
                         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
@@ -365,6 +365,7 @@ public class RobotContainer {
 
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
+                lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
                 shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
             } else {
                 shooterFlywheelSubsystem.setShooterMotorSpeed(0);
@@ -427,14 +428,14 @@ public class RobotContainer {
                 ledSubsystem.setNoteSeen(noteDetector.getNote().isPresent());
             }, ledSubsystem));
 
-            driveController.getAmpAlign().onTrue(new ParallelRaceGroup(
+            driveController.getAmpAlign().onTrue(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN)).andThen(new ParallelRaceGroup(
                 AlignCommand.getAmpAlignCommand(swerveSubsystem, allianceSubsystem.isRedAlliance()),
                 new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
-            ));
+            )));
 
             driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
                     new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector,
-                            ledSubsystem)
+                            lightBarSubsystem)
                             .unless(() -> noteDetector.getNote().isEmpty()),
                     new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())));
             driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
@@ -508,7 +509,7 @@ public class RobotContainer {
             return null;
 
         return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
-                shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, ledSubsystem);// autonPathChooser.getSelected().create(intakePivotSubsystem,
+                shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) baseSwerveSubsystem, lightBarSubsystem);// autonPathChooser.getSelected().create(intakePivotSubsystem,
                                                                                                                // intakeRollerSubsystem,
                                                                                                                // shooterFlywheelSubsystem,
                                                                                                                // shooterPivotSubsystem,

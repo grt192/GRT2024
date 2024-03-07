@@ -8,7 +8,7 @@ import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.vision.NoteDetectionWrapper;
 
@@ -24,19 +24,19 @@ public class AutoIntakeSequence extends SequentialCommandGroup {
      * @param intakeRollersSubsystem The subsystem to intake the note.
      * @param swerveSubsystem The subsystem to move the robot to the note.
      * @param noteDetector The note detector that will be used to identify and locate the note.
-     * @param ledSubsystem The subsystem to display that the intake is active.
+     * @param lightBarSubsystem The subsystem to display that the intake is active.
      */
     public AutoIntakeSequence(
         ElevatorSubsystem elevatorSubsystem, 
         IntakeRollersSubsystem intakeRollersSubsystem,
         SwerveSubsystem swerveSubsystem,
         NoteDetectionWrapper noteDetector,
-        LEDSubsystem ledSubsystem
+        LightBarSubsystem lightBarSubsystem
     ){
         addCommands(new ElevatorToZeroCommand(elevatorSubsystem)
         .andThen(new NoteAlignCommand(swerveSubsystem, noteDetector))
         .andThen(new ParallelDeadlineGroup(
-            new IntakeRollerIntakeCommand(intakeRollersSubsystem, ledSubsystem).withTimeout(3),
+            new IntakeRollerIntakeCommand(intakeRollersSubsystem, lightBarSubsystem).withTimeout(3),
             new DriveForwardCommand(swerveSubsystem)))
         );
     }

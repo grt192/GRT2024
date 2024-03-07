@@ -1,31 +1,30 @@
 package frc.robot.commands.intake.roller;
 
-import static frc.robot.Constants.IntakeConstants.rollerscounterclockwise;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.superstructure.NotePosition;
+import frc.robot.subsystems.leds.LightBarSubsystem;
+import frc.robot.subsystems.superstructure.LightBarStatus;
 
-public class IntakeRollerIntakeCommand extends Command{
+public class IntakeRollerIntakeCommand extends Command {
     private final IntakeRollersSubsystem intakeSubsystem;
-    private final LEDSubsystem ledSubsystem;
+    private final LightBarSubsystem lightBarSubsystem;
 
     /**
      * intakes note
-     * @param intakeSubsystem
-     * @param ledSubsystem
+     * 
+     * @param intakeSubsystem intake subsystem
+     * @param lightBarSubsystem LED light bar subsystem
      */
-    public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem, LEDSubsystem ledSubsystem){
+    public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem, LightBarSubsystem lightBarSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        this.ledSubsystem = ledSubsystem;
+        this.lightBarSubsystem = lightBarSubsystem;
         addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        ledSubsystem.setNoteMode(NotePosition.INTAKING);
-        System.out.println("SLDKJFHDSFLJKHDSFKHJDSFLKJKJLD");
+        lightBarSubsystem.setLightBarStatus(LightBarStatus.INTAKING);
+        System.out.println("IntakeRollerIntakeCommand initialized."); // better than the previous keyboard mash
     }
 
     @Override
@@ -37,8 +36,9 @@ public class IntakeRollerIntakeCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(0, 0); 
-        ledSubsystem.setNoteMode(intakeSubsystem.frontSensorNow() ? NotePosition.INTAKE_HOLDING : NotePosition.NONE);
+        intakeSubsystem.setAllRollSpeed(0, 0);
+        lightBarSubsystem.setLightBarStatus(
+                intakeSubsystem.frontSensorNow() ? LightBarStatus.HOLDING_NOTE : LightBarStatus.DORMANT);
     }
 
     @Override

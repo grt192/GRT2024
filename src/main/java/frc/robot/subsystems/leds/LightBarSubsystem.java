@@ -31,7 +31,9 @@ public class LightBarSubsystem extends SubsystemBase {
     private static final OpacityColor BLUE_COLOR = new OpacityColor(0, 0, 255); // used for auto-align indicator
     private static final OpacityColor WHITE_COLOR = new OpacityColor(255, 255, 255);
     
-
+    /** Subsystem to manage a short strip of LEDs on the robot, used for robot->driver and driver->HP signaling
+     * 
+     */
     public LightBarSubsystem() {
 
         ledStrip = new LEDStrip(LEDConstants.LED_PWM_PORT, LEDConstants.LED_LENGTH);
@@ -50,6 +52,9 @@ public class LightBarSubsystem extends SubsystemBase {
         ledTimer.start();
     }
 
+    /** Periodic loop of subsystem.
+     * 
+     */
     public void periodic() {
         
         baseLayer.fillColor(TRANSPARENT_COLOR);
