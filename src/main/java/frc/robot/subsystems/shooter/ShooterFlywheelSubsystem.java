@@ -112,7 +112,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+        System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));

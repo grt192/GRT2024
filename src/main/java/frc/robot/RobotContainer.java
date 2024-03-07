@@ -14,6 +14,7 @@ import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -110,8 +111,8 @@ public class RobotContainer {
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
-    private double shooterTopSpeed = .1;
-    private double shooterBotSpeed = .1;
+    private double shooterTopSpeed = .6;
+    private double shooterBotSpeed = .7;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -265,7 +266,7 @@ public class RobotContainer {
 
         aButton.onTrue(
                 new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                        new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0).alongWith(
                                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
                                                 .until(intakeRollerSubsystem::backSensorNow)
@@ -283,6 +284,12 @@ public class RobotContainer {
                 shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
             } else {
                 shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+            }
+
+            if(shooterFlywheelSubsystem.atSpeed()){
+                mechController.setRumble(RumbleType.kBothRumble, .4);
+            } else {
+                mechController.setRumble(RumbleType.kBothRumble, 0);
             }
         }, shooterFlywheelSubsystem
 
