@@ -1,9 +1,6 @@
 package frc.robot.subsystems.leds;
 
-<<<<<<< HEAD
 import frc.robot.Constants.LEDConstants;
-=======
->>>>>>> f66f190 (robot container formatting)
 import frc.robot.util.GRTUtil;
 import frc.robot.util.OpacityColor;
 

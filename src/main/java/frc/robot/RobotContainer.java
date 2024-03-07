@@ -199,15 +199,10 @@ public class RobotContainer {
                 default:
                     break;
             }
-<<<<<<< HEAD
             
             System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
                            + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
             );
-=======
-            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed) + " Bot: " 
-                + GRTUtil.twoDecimals(shooterBotSpeed));
->>>>>>> 4d23828 (testing changes)
 
             shooterPivotSubsystem.getAutoAimAngle();
         }, shooterPivotSubsystem));
@@ -270,13 +265,8 @@ public class RobotContainer {
 
         aButton.onTrue(
                 new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-<<<<<<< HEAD
                         new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
                                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-=======
-                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0).alongWith( //TODO: UNDO THE 0
-                                new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
->>>>>>> 4d23828 (testing changes)
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
                                                 .until(intakeRollerSubsystem::backSensorNow)
                         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
@@ -409,7 +399,6 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-<<<<<<< HEAD
         return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
                 shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
                 
@@ -421,18 +410,6 @@ public class RobotContainer {
             // (SwerveSubsystem)
             // baseSwerveSubsystem,
             // ledSubsystem);
-=======
-        if (!(swerveSubsystem instanceof SwerveSubsystem))
-            return null;
-
-        return autonPathChooser.getSelected().create(
-            intakePivotSubsystem, intakeRollerSubsystem, 
-            shooterFlywheelSubsystem, shooterPivotSubsystem, 
-            elevatorSubsystem, swerveSubsystem, ledSubsystem);
-
-        // return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
-        //         shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) swerveSubsystem, ledSubsystem);
->>>>>>> 4d23828 (testing changes)
     }
 
 }
