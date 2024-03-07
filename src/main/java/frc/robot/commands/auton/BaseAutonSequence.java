@@ -137,7 +137,6 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory){
         return followPath(shootTrajectory)
-        .andThen(new SetCalculatedAngleCommand(swerveSubsystem))
         .andThen(shoot());
     }
 
