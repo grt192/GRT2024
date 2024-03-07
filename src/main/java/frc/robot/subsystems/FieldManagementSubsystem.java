@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.MatchStatus;
 
-public class FieldManagementSubsystem extends SubsystemBase{
+public class FieldManagementSubsystem extends SubsystemBase {
 
     private boolean isRed;
     private boolean connectedToFMS;

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.leds;
 
 import frc.robot.util.OpacityColor;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.util.GRTUtil;
 
 /** One layer of the LED strip subsystem. */
@@ -35,6 +36,36 @@ public class LEDLayer {
         return colorArray[i];
     }
 
+    /** Sets this layer to a rainbow.
+     *
+     * @param offset The offset of the rainbow. Used to make it spin.
+     */
+    public void setRainbow(int offset) {
+        for (int i = 0; i < colorArray.length; i++) {
+            setLED(i + offset, OpacityColor.fromHSV(
+                (int) (((double) i) * 180.0 / colorArray.length),
+                (int) 255,
+                (int) (255 * LEDConstants.BRIGHTNESS_SCALE_FACTOR),
+                1.
+            ));
+        }
+    }
+
+    /** Sets this layer to a bounce effect.
+
+     * @param color The primary color of the bounce effect.
+     * @param peakColor The color to use for the 'peak' of the bounce.
+     * @param offset The offset of the bounce effect.
+     */
+    public void setBounce(OpacityColor color, OpacityColor peakColor, int offset) {
+        for (int i = 0; i < colorArray.length; i++) {
+            
+            int distance = Math.abs(i - offset);
+
+            setLED(i, OpacityColor.blendColors(color, peakColor, (distance / colorArray.length)));
+        }
+
+    }
 
     /** Moves the leds up by an increment.
      *

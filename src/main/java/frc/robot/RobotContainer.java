@@ -10,10 +10,13 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+import frc.robot.subsystems.superstructure.LightBarStatus;
+import frc.robot.subsystems.superstructure.MatchStatus;
 import frc.robot.subsystems.superstructure.NotePosition;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
@@ -122,6 +125,7 @@ public class RobotContainer {
     private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
     private final FieldManagementSubsystem allianceSubsystem = new FieldManagementSubsystem();
+    private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
 
     private final NoteDetectionWrapper noteDetector;
 
@@ -233,6 +237,15 @@ public class RobotContainer {
 
     private void configureBindings() {
 
+        // LED STATE BINDINGS
+        lightBarSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            if (allianceSubsystem.getMatchStatus() == MatchStatus.AUTON) {
+                lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTON);
+            } else if (allianceSubsystem.getMatchStatus() == MatchStatus.ENDGAME) { // at GRT shop, ENDGAME shouldn't light up during auton
+                lightBarSubsystem.setLightBarStatus(LightBarStatus.ENDGAME);
+            }
+        }));
+        
         // SHOOTER PIVOT TEST
 
         // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,

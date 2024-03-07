@@ -15,6 +15,11 @@ public class LightBarSubsystem extends SubsystemBase {
 
     private LightBarStatus status;
 
+    private int rainbowOffset;
+    private int inc;
+    private int bounceOffset;
+    private int bounceDirection;
+
     private final Timer ledTimer; // TODO: better naming
 
     private static final OpacityColor TRANSPARENT_COLOR = new OpacityColor();
@@ -24,6 +29,7 @@ public class LightBarSubsystem extends SubsystemBase {
     private static final OpacityColor RED_COLOR = new OpacityColor(192, 8, 254); // used for shooter spin-up
     private static final OpacityColor GREEN_COLOR = new OpacityColor(192, 8, 254); // used for shooter spin-up
     private static final OpacityColor BLUE_COLOR = new OpacityColor(0, 0, 255); // used for auto-align indicator
+    private static final OpacityColor WHITE_COLOR = new OpacityColor(255, 255, 255);
     
 
     public LightBarSubsystem() {
@@ -35,6 +41,11 @@ public class LightBarSubsystem extends SubsystemBase {
 
         status = LightBarStatus.DORMANT;
 
+        rainbowOffset = 0;
+        inc = 1;
+        bounceOffset = 0;
+        bounceDirection = 1;
+
         ledTimer = new Timer();
         ledTimer.start();
     }
@@ -42,32 +53,44 @@ public class LightBarSubsystem extends SubsystemBase {
     public void periodic() {
         
         baseLayer.fillColor(TRANSPARENT_COLOR);
+        
+        rainbowOffset += inc;
+        rainbowOffset = rainbowOffset % (LEDConstants.LED_LENGTH * 360);
+        
+        bounceOffset += (inc * bounceDirection);
+        if ((bounceOffset >= LEDConstants.LED_LENGTH) || (bounceOffset <= 0)) {
+            bounceOffset -= (inc * bounceDirection); // undo the increment that oversteps the array length
+            bounceDirection *= -1; // switch the bounce direction
+        }
 
         switch (status) {
             case DORMANT:
                 break;
             case AUTON:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.setRainbow(rainbowOffset);
                 break;
             case ENDGAME:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.setBounce(PURPLE_ENDGAME_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case INTAKING:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.setBounce(ORANGE_NOTE_COLOR, RED_COLOR, bounceOffset);
                 break;
             case HOLDING_NOTE:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.fillColor(ORANGE_NOTE_COLOR);
                 break;
             case AUTO_ALIGN:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.setBounce(BLUE_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case SHOOTER_SPIN_UP:
-                topLayer.fillColor(TRANSPARENT_COLOR);
+                topLayer.setBounce(GREEN_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             default:
                 topLayer.reset();
                 break;
         }
+
+        ledStrip.addLayer(baseLayer);
+        ledStrip.addLayer(topLayer);
 
     }
 
