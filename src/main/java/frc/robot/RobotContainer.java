@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
+
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -33,6 +35,7 @@ import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.swerve.AlignCommand;
+import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
@@ -50,7 +53,7 @@ import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
-
+import frc.robot.vision.NoteDetectionWrapper;
 
 /** The robot container. */
 public class RobotContainer {
@@ -73,6 +76,8 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autonPathChooser;
     private final AutonBuilder autonBuilder;
+
+    private final NoteDetectionWrapper noteDetector;
 
     /* MECH BUTTONS */
     private final XboxController mechController = new XboxController(2);
@@ -133,6 +138,8 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem();
 
         climbSubsystem = new ManualClimbSubsystem();
+
+        noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
@@ -425,11 +432,10 @@ public class RobotContainer {
         );
 
         /* Note align -- deprecated, new version in the works*/
-        // driveController.getNoteAlign().onTrue(new ParallelRaceGroup(
-        //         new AutoIntakeSequence(elevatorSubsystem, intakeRollerSubsystem, swerveSubsystem, noteDetector,
-        //                 lightBarSubsystem)
-        //                 .unless(() -> noteDetector.getNote().isEmpty()),
-        //         new ConditionalWaitCommand(() -> !driveController.getNoteAlign().getAsBoolean())));
+        driveController.getNoteAlign().onTrue(
+            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController)
+                .unless(() -> noteDetector.getNote().isEmpty())
+        );
     
         /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
         driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));

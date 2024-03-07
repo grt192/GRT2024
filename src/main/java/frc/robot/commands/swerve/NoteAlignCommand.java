@@ -1,7 +1,8 @@
 package frc.robot.commands.swerve;
 
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.controllers.BaseDriveController;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.vision.NoteDetectionWrapper;
 import java.util.NoSuchElementException;
@@ -12,10 +13,7 @@ import java.util.NoSuchElementException;
 public class NoteAlignCommand extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final NoteDetectionWrapper noteDetector;
-
-    private static final double MAX_ROTATION_POWER = 0.3;
-    private static final double ERROR_MULTIPLIER = 0.08;
-    private static final double ANGULAR_TOLERANCE_DEGREES = 1;
+    private final BaseDriveController driveController;
 
     private double noteYawOffsetDegrees;
 
@@ -25,9 +23,13 @@ public class NoteAlignCommand extends Command {
      * @param swerveSubsystem The swerve subsystem to rotate the robot with.
      * @param noteDetector The note detector that will be used to identify and locate the note.
      */
-    public NoteAlignCommand(SwerveSubsystem swerveSubsystem, NoteDetectionWrapper noteDetector) {
+    public NoteAlignCommand(SwerveSubsystem swerveSubsystem,
+                            NoteDetectionWrapper noteDetector,
+                            BaseDriveController driveController) {
+
         this.swerveSubsystem = swerveSubsystem;
         this.noteDetector = noteDetector;
+        this.driveController = driveController;
 
         this.addRequirements(swerveSubsystem);
     }
@@ -50,7 +52,7 @@ public class NoteAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(noteYawOffsetDegrees) < ANGULAR_TOLERANCE_DEGREES;
+        return !driveController.getNoteAlign().getAsBoolean();
     }
 
     @Override
@@ -63,14 +65,15 @@ public class NoteAlignCommand extends Command {
             is probably not worth logging. */
         }
 
-        swerveSubsystem.setRobotRelativeDrivePowers(0, 0, -MathUtil.clamp(
-            noteYawOffsetDegrees * ERROR_MULTIPLIER, -MAX_ROTATION_POWER, MAX_ROTATION_POWER)
+        swerveSubsystem.setDrivePowersWithHeadingLock(
+            driveController.getForwardPower(), driveController.getLeftPower(), 
+            swerveSubsystem.getRobotPosition().getRotation().plus(
+            Rotation2d.fromDegrees(noteYawOffsetDegrees))
         );
     }
 
     @Override
     public void end(boolean interrupted) {
-        swerveSubsystem.setRobotRelativeDrivePowers(0, 0, 0);
         System.out.println("Ended NoteAlignCommand");
     }
 
