@@ -17,17 +17,17 @@ public class TaxiSequence extends BaseAutonSequence {
 
     /** Robot taxis 2 meters backwards. */
     public TaxiSequence(IntakePivotSubsystem intakePivotSubsystem, 
-                                     IntakeRollersSubsystem intakeRollersSubsystem, 
-                                     ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
-                                     ShooterPivotSubsystem shooterPivotSubsystem, 
-                                     ElevatorSubsystem elevatorSubsystem, 
-                                     SwerveSubsystem swerveSubsystem, 
-                                     LightBarSubsystem lightBarSubsystem) {
+                        IntakeRollersSubsystem intakeRollersSubsystem, 
+                        ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
+                        ShooterPivotSubsystem shooterPivotSubsystem, 
+                        ElevatorSubsystem elevatorSubsystem, 
+                        SwerveSubsystem swerveSubsystem, 
+                        LightBarSubsystem lightBarSubsystem) {
 
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
-                  shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
+              shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
         
-        //reset robot start pose
+        // reset robot start pose
         ((SwerveSubsystem) swerveSubsystem).resetPose(trajectory.getInitialPose());
 
         addCommands(

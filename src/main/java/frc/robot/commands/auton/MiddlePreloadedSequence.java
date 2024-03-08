@@ -8,20 +8,20 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-/**Middle2PieceSequence.*/
+/** Middle2PieceSequence. */
 public class MiddlePreloadedSequence extends BaseAutonSequence {
 
-    /**Starts: right in front of subwoofer. Shoots preloaded, intakes middle note, shoots note.*/
+    /** Starts: right in front of subwoofer. Shoots preloaded, intakes middle note, shoots note. */
     public MiddlePreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, 
-                                                  IntakeRollersSubsystem intakeRollersSubsystem, 
-                                                  ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
-                                                  ShooterPivotSubsystem shooterPivotSubsystem, 
-                                                  ElevatorSubsystem elevatorSubsystem, 
-                                                  SwerveSubsystem swerveSubsystem, 
-                                                  LightBarSubsystem lightBarSubsystem) {
+                                   IntakeRollersSubsystem intakeRollersSubsystem, 
+                                   ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
+                                   ShooterPivotSubsystem shooterPivotSubsystem, 
+                                   ElevatorSubsystem elevatorSubsystem, 
+                                   SwerveSubsystem swerveSubsystem, 
+                                   LightBarSubsystem lightBarSubsystem) {
 
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
-                 shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
+              shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
 
         addCommands(
             shoot()

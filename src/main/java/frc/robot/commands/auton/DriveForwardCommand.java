@@ -3,7 +3,7 @@ package frc.robot.commands.auton;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-/** DriveForward Command.*/
+/** DriveForward Command. */
 public class DriveForwardCommand extends Command {
     private final SwerveSubsystem swerve;
     private double xPower = .15; 
@@ -23,5 +23,4 @@ public class DriveForwardCommand extends Command {
     public void end(boolean interrupted) {
         swerve.setRobotRelativeDrivePowers(0, 0, 0);
     }
-
 }

@@ -16,8 +16,8 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 public class BottomPreloadedSequence extends BaseAutonSequence {
 
     private Pose2d initPose = SwerveConstants.IS_RED 
-                                            ? new Pose2d(new Translation2d(15.11, 4.11), new Rotation2d(Math.PI))  
-                                            : new Pose2d(new Translation2d(1.43, 4.11), new Rotation2d(0));
+                                ? new Pose2d(new Translation2d(15.11, 4.11), new Rotation2d(Math.PI))  
+                                : new Pose2d(new Translation2d(1.43, 4.11), new Rotation2d(0));
 
     /** Starts: bottom (furthest from amp). Shoots preloaded note only.*/                                
     public BottomPreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, 
@@ -31,7 +31,7 @@ public class BottomPreloadedSequence extends BaseAutonSequence {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
                   shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
         
-        //reset robot start pose to resulting pose after preloaded shot
+        // reset robot start pose to resulting pose after preloaded shot
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(

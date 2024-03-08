@@ -35,7 +35,7 @@ public class Bottom2PieceSequence extends BaseAutonSequence {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
                   shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
 
-        //reset robot start pose to resulting pose after preloaded shot
+        // reset robot start pose to resulting pose after preloaded shot
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(

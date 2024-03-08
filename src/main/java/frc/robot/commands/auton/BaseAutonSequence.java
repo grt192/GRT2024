@@ -25,8 +25,10 @@ import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
-/** The base autonomous sequence that other autons extend. 
- * This class provides functions that abstract shared tasks between autons.*/
+/** 
+ * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks
+ * between autons.
+ */
 public class BaseAutonSequence extends SequentialCommandGroup {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
@@ -42,7 +44,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     private double driveForwardTime = 1;
 
-    /** Constructs a BaseAutonSequence with auton-abstracted functions.*/
+    /** Constructs a {@link BaseAutonSequence} with auton-abstracted functions. */
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem,
                              IntakeRollersSubsystem intakeRollersSubsystem,
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
@@ -78,7 +80,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
      * @return followPath command
      */
     public Command followPath(ChoreoTrajectory trajectory) {
-        //swerveSubsystem.resetPose(trajectory.getInitialPose());
+        // swerveSubsystem.resetPose(trajectory.getInitialPose());
         Command swerveCommand = Choreo.choreoSwerveCommand(
             trajectory,
             swerveSubsystem::getRobotPosition,
@@ -118,7 +120,8 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         );
     }
 
-    /**Shoots at calculated robot angle and shooter angle.
+    /** 
+     * Shoots at calculated robot angle and shooter angle.
      *
      * @return shoot command
      */

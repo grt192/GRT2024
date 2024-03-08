@@ -23,23 +23,25 @@ public class Middle4PieceSequence extends BaseAutonSequence {
     private final ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("D4-AmpToBottomNote");
 
     private Pose2d initPose = SwerveConstants.IS_RED 
-                                            ? new Pose2d(new Translation2d(15.151, 5.55), new Rotation2d(Math.PI)) 
-                                            : new Pose2d(new Translation2d(1.389, 5.55), new Rotation2d(0));
+                                ? new Pose2d(new Translation2d(15.151, 5.55), new Rotation2d(Math.PI)) 
+                                : new Pose2d(new Translation2d(1.389, 5.55), new Rotation2d(0));
 
-    /** Starts: right in front of subwoofer. Shoots preloaded note, intakes middle note, shoots, 
-     * intakes top note, shoots, intakes bottom note, shoot. */                                     
+    /**
+     * Starts: right in front of subwoofer. Shoots preloaded note, intakes middle note, shoots, 
+     * intakes top note, shoots, intakes bottom note, shoot.
+     */                                     
     public Middle4PieceSequence(IntakePivotSubsystem intakePivotSubsystem, 
-                                                  IntakeRollersSubsystem intakeRollersSubsystem, 
-                                                  ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
-                                                  ShooterPivotSubsystem shooterPivotSubsystem, 
-                                                  ElevatorSubsystem elevatorSubsystem, 
-                                                  SwerveSubsystem swerveSubsystem, 
-                                                  LightBarSubsystem lightBarSubsystem) {
+                                IntakeRollersSubsystem intakeRollersSubsystem, 
+                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
+                                ShooterPivotSubsystem shooterPivotSubsystem, 
+                                ElevatorSubsystem elevatorSubsystem, 
+                                SwerveSubsystem swerveSubsystem, 
+                                LightBarSubsystem lightBarSubsystem) {
 
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
-                shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
+              shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
 
-        //reset robot start pose to resulting pose after preloaded shot
+        // reset robot start pose to resulting pose after preloaded shot
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(

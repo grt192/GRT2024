@@ -15,15 +15,15 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-/**Middle2PieceSequence.*/
+/** Middle2PieceSequence. */
 public class Middle2PieceSequence extends BaseAutonSequence {
 
     private final ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
     private Pose2d initPose = SwerveConstants.IS_RED 
-                                            ? new Pose2d(new Translation2d(15.151, 5.55), new Rotation2d(Math.PI)) 
-                                            : new Pose2d(new Translation2d(1.389, 5.55), new Rotation2d(0));
+                                ? new Pose2d(new Translation2d(15.151, 5.55), new Rotation2d(Math.PI)) 
+                                : new Pose2d(new Translation2d(1.389, 5.55), new Rotation2d(0));
 
-    /**Starts: right in front of subwoofer. Shoots preloaded, intakes middle note, shoots note.*/
+    /** Starts: right in front of subwoofer. Shoots preloaded, intakes middle note, shoots note. */
     public Middle2PieceSequence(IntakePivotSubsystem intakePivotSubsystem, 
                                                   IntakeRollersSubsystem intakeRollersSubsystem, 
                                                   ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
@@ -35,7 +35,7 @@ public class Middle2PieceSequence extends BaseAutonSequence {
         super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
                  shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
         
-        //reset robot start pose to resulting pose after preloaded shot
+        // reset robot start pose to resulting pose after preloaded shot
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(

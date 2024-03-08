@@ -28,5 +28,4 @@ public class SetCalculatedAngleCommand extends Command {
     public void end(boolean interrupted) {
         swerve.setRobotRelativeDrivePowers(0, 0, 0);
     }
-
 }
