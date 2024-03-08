@@ -70,10 +70,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 4.8, 6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE}; //TODO: 1.2 as lowest
 
-        double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
-        double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
+        double[] topSpeeds = {.4, .5, .7, .75, .75, .6, .6, .6};
+        double[] bottomSpeeds = {.5, .5, .35, .4, .4, .64, .64, .64};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
@@ -112,7 +112,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
@@ -130,6 +130,11 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     public void setShooterMotorSpeed(){
         setShooterMotorSpeed(getTopSpeed(), getBottomSpeed());
+    }
+
+    public void stopShooter(){
+        shooterMotorTop.set(0);
+        shooterMotorBottom.set(0);
     }
 
     public boolean atSpeed() {

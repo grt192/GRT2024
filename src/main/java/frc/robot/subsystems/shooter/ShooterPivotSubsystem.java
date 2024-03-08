@@ -86,17 +86,17 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //pivot soft limits
-        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(66));
+        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(65.5));
         pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Units.degreesToRadians(18));
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
-        double[] angles = {Units.degreesToRadians(62), 
-                           Units.degreesToRadians(52), 
-                           Units.degreesToRadians(38.5), 
-                           Units.degreesToRadians(28),
-                           Units.degreesToRadians(24),
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 5, 6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE};
+        double[] angles = {Units.degreesToRadians(65.5), 
+                           Units.degreesToRadians(57.5), 
+                           Units.degreesToRadians(51), 
+                           Units.degreesToRadians(40),
+                           Units.degreesToRadians(36.5),
                            Units.degreesToRadians(27),
                            Units.degreesToRadians(27),
                            Units.degreesToRadians(27)};

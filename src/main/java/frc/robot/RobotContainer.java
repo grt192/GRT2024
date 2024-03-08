@@ -111,8 +111,8 @@ public class RobotContainer {
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
-    private double shooterTopSpeed = .6;
-    private double shooterBotSpeed = .7;
+    private double shooterTopSpeed = .5;
+    private double shooterBotSpeed = .6;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -283,7 +283,7 @@ public class RobotContainer {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
                 shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
             } else {
-                shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+                shooterFlywheelSubsystem.stopShooter();
             }
 
             if(shooterFlywheelSubsystem.atSpeed()){
@@ -296,9 +296,9 @@ public class RobotContainer {
         ));
 
         // yButton.onTrue(new
-        // ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+        //     ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
         // // new InstantCommand(() -> intakePivotSubsystem.setPosition(0),
-        // intakePivotSubsystem)
+        // // intakePivotSubsystem)
         // ));
 
         yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));

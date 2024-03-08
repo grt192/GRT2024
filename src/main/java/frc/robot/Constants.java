@@ -66,7 +66,7 @@ public final class Constants {
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4;
+        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4 - Math.PI;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
