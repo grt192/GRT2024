@@ -1,7 +1,8 @@
 package frc.robot.subsystems.leds;
 
-import frc.robot.util.OpacityColor;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.util.GRTUtil;
+import frc.robot.util.OpacityColor;
 
 /** One layer of the LED strip subsystem. */
 public class LEDLayer {
@@ -35,6 +36,57 @@ public class LEDLayer {
         return colorArray[i];
     }
 
+    /** Sets this layer to a rainbow.
+     *
+     * @param offset The offset of the rainbow. Used to make it spin.
+     */
+    public void setRainbow(int offset) {
+        for (int i = 0; i < colorArray.length; i++) {
+            setLED((i + offset) % colorArray.length, OpacityColor.fromHSV(
+                (int) (((double) i) * 180.0 / colorArray.length),
+                (int) 255,
+                (int) (255 * LEDConstants.BRIGHTNESS_SCALE_FACTOR),
+                1.
+            ));
+        }
+    }
+
+    /** Sets this layer to a bounce effect.
+
+     * @param baseColor The primary color of the bounce effect.
+     * @param peakColor The color to use for the 'peak' of the bounce.
+     * @param offset The offset of the bounce effect.
+     */
+    public void setBounce(OpacityColor baseColor, OpacityColor peakColor, int offset) {
+        for (int i = 0; i < colorArray.length; i++) {
+            
+            double distance = Math.abs(i - offset);
+
+            setLED(i, OpacityColor.blendColors(baseColor, peakColor, 0.3 * (distance / colorArray.length)));
+        }
+
+    }
+
+    /** Set the LED layer to display a progress bar. 
+     * Ex: Used to show the status of the flywheel when spinning up 
+     *
+     * @param baseColor The color for the background (not reached) portion of the progress bar.
+     * @param progressColor The color for the portion of the progress bar that has been covered.
+     * @param percentage The double [0.0, 1.0] representing the progress of the progress bar. 
+     */
+    public void setProgressBar(OpacityColor baseColor, OpacityColor progressColor, double percentage) {
+        
+        int cutoff = (int) (colorArray.length * percentage);
+        
+        for (int i = 0; i < colorArray.length; i++) {
+            if (i >= cutoff) {
+                setLED(i, baseColor);
+            } else {
+                setLED(i, progressColor);
+            }
+        }
+
+    }
 
     /** Moves the leds up by an increment.
      *

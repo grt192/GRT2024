@@ -11,6 +11,7 @@ import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.NotePosition;
@@ -41,8 +42,8 @@ public class ShootModeSequence extends SequentialCommandGroup {
             ElevatorSubsystem elevatorSubsystem,
             ShooterFlywheelSubsystem shooterFlywheelSubsystem,
             ShooterPivotSubsystem shooterPivotSubsystem,
-            LEDSubsystem ledSubsystem) {
-        addCommands(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+            LightBarSubsystem lightBarSubsystem) {
+        addCommands(new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
                 // new ElevatorToGroundCommand(elevatorSubsystem),
                 new ShooterPivotSetAngleCommand(shooterPivotSubsystem, Units.degreesToRadians(20)) // STUB FOR AUTOAIM
         ));

@@ -46,6 +46,9 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private double topSpeed;
     private double bottomSpeed;
 
+    private double targetTopRPS;
+    private double targetBottomRPS;
+
     private Pose2dSupplier poseSupplier;
 
     private AkimaSplineInterpolator akima;
@@ -70,6 +73,9 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
         double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
+
+        targetTopRPS = 0.0;
+        targetBottomRPS = 0.0; 
 
         akima = new AkimaSplineInterpolator();
         topFlywheelSpline = akima.interpolate(distances, topSpeeds);
@@ -102,8 +108,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets shooting motor speed.  */
     public void setShooterMotorSpeed(double topSpeed, double bottomSpeed) {
-        double targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
-        double targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
+        targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
+        targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
         // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
 
@@ -135,6 +141,38 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     public double getBottomSpeed() {
         return bottomFlywheelSpline.value(getShootingDistance());
+    }
+
+    /** Get the actual speed of the top shooter motor.
+     *
+     * @return the actual speed in rotations per second
+     */
+    public double getActualTopSpeed() {
+        return shooterMotorTop.getVelocity().getValueAsDouble();
+    }
+    
+    /** Get the actual speed of the bottom shooter motor.
+     *
+     * @return the actual speed in rotations per second
+     */
+    public double getActualBottomSpeed() {
+        return shooterMotorBottom.getVelocity().getValueAsDouble();
+    }
+
+    /** Get the setpoint speed of the top shooter motor.
+     *
+     * @return the target speed in rotations per second
+     */
+    public double getTargetTopRPS() {
+        return targetTopRPS;
+    }
+
+    /** Get the setpoint speed of the bottom shooter motor.
+     *
+     * @return the target speed in rotations per second
+     */
+    public double getTargetBottomRPS() {
+        return targetBottomRPS;
     }
 
     private double getShootingDistance() {

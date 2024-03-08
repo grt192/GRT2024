@@ -14,11 +14,12 @@ import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
@@ -36,7 +37,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    private final LEDSubsystem ledSubsystem;
+    private final LightBarSubsystem lightBarSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final PIDController thetaController;
     private PIDController xPID;
@@ -46,29 +47,31 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private double intaketime = 3;
     
 
-    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem){
+    public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, ElevatorSubsystem elevatorSubsystem, BaseSwerveSubsystem swerveSubsystem, LightBarSubsystem lightBarSubsystem){
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollerSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.ledSubsystem = ledSubsystem;
+        this.lightBarSubsystem = lightBarSubsystem;
         this.swerveSubsystem = (SwerveSubsystem) swerveSubsystem;
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
+
+        // isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
         thetaController = new PIDController(3.5, 0, 0);
 
         addCommands(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(3)//TODO: tune the timeout 
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(3)
         );
     }
 
     /**
      * Follows trajectory.
-     * 
+     *
      * @param trajectory ChoreoTrajectory
      * 
      * @return followPath command
@@ -108,32 +111,20 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
                 )
             ).andThen(
-                new ParallelDeadlineGroup(
-                    new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow).withTimeout(3),
-                    new DriveForwardCommand(swerveSubsystem)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15)
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
+                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
+        }
+
+     public SequentialCommandGroup shoot(){
+        return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(2), //wait to hit max speed?
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+        ) ;
     }
-
-    /**
-     * Shoots at calculated robot angle and shooter angle.
-     * 
-     * @return shoot command
-     */
-
-    public Command shoot() {
-        return new ShooterPivotAimCommand(shooterPivotSubsystem)
-            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)
-            .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.5))
-        );
-    }
-
-    /**
-     * Follows trajectory and then shoots at calculated robot angle and shooter angle.
-     * 
-     * @param shoottraj ChoreoTrajectory
-     * @return goShoot command
-     */
 
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory){
         return followPath(shootTrajectory)

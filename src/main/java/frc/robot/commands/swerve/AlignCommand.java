@@ -44,7 +44,7 @@ public class AlignCommand {
      * @return Pathfinding Command that pathfinds and aligns the robot
      * 
      */
-    public static Command getAmpAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed){
+    public static Command getAmpAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed) {
         
         Pose2d targetPose;
 

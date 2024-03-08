@@ -13,6 +13,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -27,13 +28,13 @@ public class BottomPreloadedSequence extends BaseAutonSequence{
    
     public BottomPreloadedSequence(IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
                                ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
-                               ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LEDSubsystem ledSubsystem) {
-        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, ledSubsystem);
+                               ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, LightBarSubsystem lightBarSubsystem) {
+        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
         ((SwerveSubsystem) swerveSubsystem).resetPose(initPose);
 
         addCommands(
-            shoot(),
-            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
+            new SetCalculatedAngleCommand(swerveSubsystem),
+            shoot()
         );
     }
 }
