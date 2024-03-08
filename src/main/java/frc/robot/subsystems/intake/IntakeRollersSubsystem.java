@@ -12,9 +12,12 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -25,13 +28,15 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     private final TalonSRX integrationMotor;
     private final AnalogPotentiometer frontSensor;
     private final AnalogPotentiometer backSensor;
+    private final ColorSensorV3 colorSensor;
 
     private NetworkTableInstance ntInstance;
     private NetworkTable ntTable;
     private BooleanPublisher ntFrontPublisher;
     private BooleanPublisher ntBackPublisher;
+
     /** 
-     * Subsystem controls the front, middle, and integration rollers for the intake
+     * Subsystem controls the front, middle, and integration rollers for the intake.
      */
     public IntakeRollersSubsystem() {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
@@ -39,6 +44,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         frontMotors.setInverted(true);
         frontSensor = new AnalogPotentiometer(IntakeConstants.FRONT_SENSOR_ID);
         backSensor = new AnalogPotentiometer(IntakeConstants.BACK_SENSOR_ID);
+        colorSensor = new ColorSensorV3(I2C.Port.kMXP);
     
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
@@ -67,6 +73,23 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
     public double getBackSensor() {
         return backSensor.get();
+    }
+
+    
+    /** Returns the color seen by the color sensor.
+     *
+     * @return the color seen by the color sensor.
+     */
+    public Color getColorSensor() {
+        return colorSensor.getColor();
+    }
+
+    /** Return whether the color sensor detects a note or not.
+     *
+     * @return whether the color sensor detects a note or not.
+     */
+    public boolean getNoteColorDetected() { 
+        return getColorSensor().red >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
     }
 
     /**
