@@ -111,8 +111,8 @@ public class RobotContainer {
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
-    private double shooterTopSpeed = .5;
-    private double shooterBotSpeed = .6;
+    private double shooterTopSpeed = .75;
+    private double shooterBotSpeed = .4;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -286,7 +286,7 @@ public class RobotContainer {
                 shooterFlywheelSubsystem.stopShooter();
             }
 
-            if(shooterFlywheelSubsystem.atSpeed()){
+            if (shooterFlywheelSubsystem.atSpeed()) {
                 mechController.setRumble(RumbleType.kBothRumble, .4);
             } else {
                 mechController.setRumble(RumbleType.kBothRumble, 0);
@@ -301,7 +301,7 @@ public class RobotContainer {
         // // intakePivotSubsystem)
         // ));
 
-        yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+        // yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
             double power = 0;

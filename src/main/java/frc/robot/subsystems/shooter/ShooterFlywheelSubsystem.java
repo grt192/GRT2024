@@ -70,10 +70,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 4.8, 6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE}; //TODO: 1.2 as lowest
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 4.8, 5.6, ShooterConstants.MAX_SHOOTER_DISTANCE}; //TODO: 1.2 as lowest
 
-        double[] topSpeeds = {.4, .5, .7, .75, .75, .6, .6, .6};
-        double[] bottomSpeeds = {.5, .5, .35, .4, .4, .64, .64, .64};
+        double[] topSpeeds = {.4, .5, .7, .75, .75, .75, .75};
+        double[] bottomSpeeds = {.5, .5, .35, .4, .4, .75, .75};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
@@ -112,7 +112,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+        // System.out.println("TARGET RPS " + targetBottomRPS + " CURRENT " + shooterMotorBottom.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
@@ -120,7 +120,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
             && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
             && targetBottomRPS != 0;
-        //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
+        // System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
@@ -135,6 +135,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     public void stopShooter(){
         shooterMotorTop.set(0);
         shooterMotorBottom.set(0);
+        atSpeed = false;
     }
 
     public boolean atSpeed() {

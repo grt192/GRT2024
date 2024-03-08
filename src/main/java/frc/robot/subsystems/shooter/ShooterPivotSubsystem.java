@@ -91,13 +91,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 5, 6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 5, 5.6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE};
         double[] angles = {Units.degreesToRadians(65.5), 
                            Units.degreesToRadians(57.5), 
                            Units.degreesToRadians(51), 
                            Units.degreesToRadians(40),
                            Units.degreesToRadians(36.5),
-                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(35),
                            Units.degreesToRadians(27),
                            Units.degreesToRadians(27)};
 
