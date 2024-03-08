@@ -4,6 +4,7 @@ import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -27,11 +28,11 @@ public class Middle3PieceSequence extends BaseAutonSequence{
 
         addCommands(
             shoot(),
-            goIntakeNoOvershoot(starttopiece1, true),
+            goIntake(starttopiece1),
             shoot(),
-            goIntakeNoOvershoot(piece1topiece2, true),
-            new SetCalculatedAngleCommand(swerveSubsystem),
-            shoot()
+            goIntake(piece1topiece2),
+            shoot(),
+            new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         );
     }
 }

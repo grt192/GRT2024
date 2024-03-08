@@ -117,46 +117,6 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                 );
         }
-        else {
-            return followPath(intaketraj).alongWith(
-                new ElevatorToIntakeCommand(elevatorSubsystem)
-            ).andThen(
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveforwardtime)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                );
-        }
-    }
-
-    public Command goIntakeNoOvershoot(ChoreoTrajectory intaketraj, Boolean extendwhilemoving){
-        if (extendwhilemoving){
-            return followPath(intaketraj).alongWith(
-                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
-                )
-            ).andThen(
-                new ParallelDeadlineGroup(
-                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).withTimeout(3),
-                    new DriveForwardCommand(swerveSubsystem)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                );
-        }
-        else {
-            return followPath(intaketraj).alongWith(
-                new ElevatorToIntakeCommand(elevatorSubsystem)
-            ).andThen(
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1),
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(shortdriveforwardtime)),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                );
-        }
-    }
 
      public SequentialCommandGroup shoot(){
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
