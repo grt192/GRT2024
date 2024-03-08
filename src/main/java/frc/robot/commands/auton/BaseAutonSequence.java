@@ -25,10 +25,8 @@ import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
-/** 
- * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks 
- * between autons
- */
+/** The base autonomous sequence that other autons extend. 
+ * This class provides functions that abstract shared tasks between autons.*/
 public class BaseAutonSequence extends SequentialCommandGroup {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
@@ -39,11 +37,12 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private final LightBarSubsystem lightBarSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final PIDController thetaController;
-    private PIDController xPID;
-    private PIDController yPID;
+    private final PIDController xPID;
+    private final PIDController yPID;
+
     private double driveForwardTime = 1;
 
-    /** Constructs a {@link BaseAutonSequence}. */
+    /** Constructs a BaseAutonSequence with auton-abstracted functions.*/
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem,
                              IntakeRollersSubsystem intakeRollersSubsystem,
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
@@ -119,8 +118,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         );
     }
 
-    /**
-     * Shoots at calculated robot angle and shooter angle.
+    /**Shoots at calculated robot angle and shooter angle.
      *
      * @return shoot command
      */
@@ -134,7 +132,10 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     }
 
     /**
-     * Follows a trajectory and then shoots.
+     * Follows trajectory and then shoots at calculated robot angle and shooter angle.
+     *
+     * @param shootTrajectory ChoreoTrajectory
+     * @return goShoot command
      */
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory) {
         return followPath(shootTrajectory)

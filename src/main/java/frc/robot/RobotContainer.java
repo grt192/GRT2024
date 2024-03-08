@@ -28,7 +28,7 @@ import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
 import frc.robot.commands.auton.Middle4PieceSequence;
-import frc.robot.commands.auton.MiddlePreloadedSequence;
+import frc.robot.commands.auton.TaxiSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
 import frc.robot.commands.elevator.ElevatorToAMPCommand;
@@ -150,7 +150,7 @@ public class RobotContainer {
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new);
         autonPathChooser.addOption("TOP2Piece", Top2PieceSequence::new);
-        autonPathChooser.addOption("MIDDLEShootPreloaded", MiddlePreloadedSequence::new);
+        autonPathChooser.addOption("MIDDLEShootPreloaded", TaxiSequence::new);
         autonPathChooser.addOption("MIDDLE2Piece", Middle2PieceSequence::new);
         autonPathChooser.addOption("BOTTOMShootPreloaded", BottomPreloadedSequence::new);
         autonPathChooser.addOption("BOTTOM2Piece", Bottom2PieceSequence::new);
@@ -399,17 +399,10 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
-                shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
-                
-        // autonPathChooser.getSelected().create(intakePivotSubsystem,
-            // intakeRollerSubsystem,
-            // shooterFlywheelSubsystem,
-            // shooterPivotSubsystem,
-            // elevatorSubsystem,
-            // (SwerveSubsystem)
-            // baseSwerveSubsystem,
-            // ledSubsystem);
+        return autonPathChooser.getSelected().create(
+            intakePivotSubsystem, intakeRollerSubsystem, 
+            shooterFlywheelSubsystem, shooterPivotSubsystem, 
+            elevatorSubsystem, swerveSubsystem, lightBarSubsystem
+        );
     }
-
 }
