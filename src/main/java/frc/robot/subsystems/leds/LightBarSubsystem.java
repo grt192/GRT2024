@@ -115,6 +115,7 @@ public class LightBarSubsystem extends SubsystemBase {
      */
     public void setLightBarStatus(LightBarStatus status) {
         this.status = status;
+        System.out.println(status);
     }
 
     /** Updates the coefficient storing the current percentage of shooter speed reached. 

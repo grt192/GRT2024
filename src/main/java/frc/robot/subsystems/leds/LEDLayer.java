@@ -42,7 +42,7 @@ public class LEDLayer {
      */
     public void setRainbow(int offset) {
         for (int i = 0; i < colorArray.length; i++) {
-            setLED(i + offset, OpacityColor.fromHSV(
+            setLED((i + offset) % colorArray.length, OpacityColor.fromHSV(
                 (int) (((double) i) * 180.0 / colorArray.length),
                 (int) 255,
                 (int) (255 * LEDConstants.BRIGHTNESS_SCALE_FACTOR),

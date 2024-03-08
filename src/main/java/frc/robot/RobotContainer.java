@@ -13,6 +13,7 @@ import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.subsystems.superstructure.MatchStatus;
 import frc.robot.subsystems.superstructure.NotePosition;
+import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
@@ -123,6 +124,8 @@ public class RobotContainer {
 
     private final FieldManagementSubsystem fmsSubsystem = new FieldManagementSubsystem();
     private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
+
+    private final SuperstructureSubsystem superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
 
     private final NoteDetectionWrapper noteDetector;
 
@@ -235,13 +238,6 @@ public class RobotContainer {
     private void configureBindings() {
 
         // LED STATE BINDINGS
-        lightBarSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            if (fmsSubsystem.getMatchStatus() == MatchStatus.AUTON) {
-                lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTON);
-            } else if (fmsSubsystem.getMatchStatus() == MatchStatus.ENDGAME) { // at GRT shop, ENDGAME shouldn't light up during auton
-                lightBarSubsystem.setLightBarStatus(LightBarStatus.ENDGAME);
-            }
-        }, lightBarSubsystem));
         
         // SHOOTER PIVOT TEST
 
