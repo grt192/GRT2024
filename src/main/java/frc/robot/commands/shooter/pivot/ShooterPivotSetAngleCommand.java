@@ -1,13 +1,21 @@
 package frc.robot.commands.shooter.pivot;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+
 import static frc.robot.Constants.ShooterConstants;
 
-public class ShooterPivotSetAngleCommand extends Command{
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
+
+/** Sets the shooter to aim at a given angle. */
+public class ShooterPivotSetAngleCommand extends Command {
     ShooterPivotSubsystem pivotSubsystem;
     double angle;
 
-    public ShooterPivotSetAngleCommand(ShooterPivotSubsystem pivotSubsystem, double angle){
+    /**
+     * Constructs a {@link ShooterPivotSetAngleCommand} using the specified pivot and angle.
+     *
+     * @param angle The target angle in degrees below the vertical.
+     */
+    public ShooterPivotSetAngleCommand(ShooterPivotSubsystem pivotSubsystem, double angle) {
         this.pivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
         this.angle = angle;
@@ -26,8 +34,9 @@ public class ShooterPivotSetAngleCommand extends Command{
         return (Math.abs(pivotSubsystem.getPosition() - angle) < ShooterConstants.PID_ERROR_TOLERANCE);
     }
 
+    @Override
     public void end(boolean interrupted) {
-        if(interrupted){
+        if (interrupted) {
             System.out.println("ANGLE INTERRUPTED");
         } else {
             System.out.println("ANGLE ARRIVED");

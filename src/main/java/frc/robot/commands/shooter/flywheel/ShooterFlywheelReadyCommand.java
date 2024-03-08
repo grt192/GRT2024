@@ -15,7 +15,7 @@ public class ShooterFlywheelReadyCommand extends Command {
     private double topSpeed = ShooterConstants.TOP_SHOOTER_MOTOR_SPEED;
     private double bottomSpeed = ShooterConstants.BOTTOM_SHOOTER_MOTOR_SPEED;
 
-    /** Constructor for this command. */
+    /** Constructor for this command using default flywheel speed values. */
     public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem, LightBarSubsystem lightBarSubsystem) {
         
         this.shooterSubsystem = shooterSubsystem;
@@ -68,6 +68,8 @@ public class ShooterFlywheelReadyCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("Ready Shooter has been interrupted.");
+        if (interrupted) {
+            System.out.println("Ready Shooter has been interrupted");
+        }
     }
 }

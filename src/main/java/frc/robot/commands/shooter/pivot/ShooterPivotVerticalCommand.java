@@ -1,12 +1,16 @@
 package frc.robot.commands.shooter.pivot;
+
+import static frc.robot.Constants.ShooterConstants;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
-import frc.robot.Constants.ShooterConstants;
 
-public class ShooterPivotVerticalCommand extends Command{
+/** Sets the shooter to face directly upwards. */
+public class ShooterPivotVerticalCommand extends Command {
     ShooterPivotSubsystem pivotSubsystem;
 
-    public ShooterPivotVerticalCommand(ShooterPivotSubsystem pivotSubsystem){
+    /** Constructs a {@link ShooterPivotVerticalCommand} using the specified pivot. */
+    public ShooterPivotVerticalCommand(ShooterPivotSubsystem pivotSubsystem) {
         this.pivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
     }
@@ -24,7 +28,7 @@ public class ShooterPivotVerticalCommand extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        if(interrupted){
+        if (interrupted) {
             System.out.println("VERTICAL INTERRUPTED");
         } else {
             System.out.println("VERTICAL ARRIVED");

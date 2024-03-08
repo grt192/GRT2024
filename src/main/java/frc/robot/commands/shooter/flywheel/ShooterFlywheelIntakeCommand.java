@@ -22,7 +22,7 @@ public class ShooterFlywheelIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return true; //STUB
+        return true;
     }
 
     @Override
