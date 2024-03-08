@@ -21,7 +21,5 @@ public class SuperstructureSubsystem extends SubsystemBase {
         } else if (fmsSubsystem.getMatchStatus() == MatchStatus.ENDGAME) {
             lightBarSubsystem.setLightBarStatus(LightBarStatus.ENDGAME);
         }
-
-        System.out.println("BING, BONG");
     }
 }
