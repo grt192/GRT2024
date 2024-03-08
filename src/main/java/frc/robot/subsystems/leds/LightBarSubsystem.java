@@ -118,6 +118,11 @@ public class LightBarSubsystem extends SubsystemBase {
         // System.out.println(status);
     }
 
+    public LightBarStatus getLightBarStatus() {
+        return this.status;
+        // System.out.println(status);
+    }
+
     /** Updates the coefficient storing the current percentage of shooter speed reached. 
      *  This is used to show the speed of the shooter as a 'progress bar' when we're spinning up the flywheel.
      *

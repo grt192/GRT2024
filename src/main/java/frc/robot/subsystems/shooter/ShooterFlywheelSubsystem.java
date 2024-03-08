@@ -83,7 +83,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
 
         configs.kP = .5;
-        configs.kI = 0.005;
+        configs.kI = 0.05;
         configs.kD = 0;
         configs.kV = .12;
 
@@ -117,8 +117,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
         
-        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
-            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
+        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 1
+            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 1
             && targetBottomRPS != 0;
         // System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
@@ -129,7 +129,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     }
 
     public void setShooterMotorSpeed(){
-        setShooterMotorSpeed(getTopSpeed(), getBottomSpeed());
+        setShooterMotorSpeed(getTopSetSpeed(), getBottomSetSpeed());
     }
 
     public void stopShooter(){
@@ -142,11 +142,11 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return atSpeed;
     }
 
-    public double getTopSpeed() {
+    public double getTopSetSpeed() {
         return topFlywheelSpline.value(getShootingDistance());
     }
 
-    public double getBottomSpeed() {
+    public double getBottomSetSpeed() {
         return bottomFlywheelSpline.value(getShootingDistance());
     }
 
@@ -155,7 +155,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @return the actual speed in rotations per second
      */
-    public double getActualTopSpeed() {
+    public double getTopSpeed() {
         return shooterMotorTop.getVelocity().getValueAsDouble();
     }
     
@@ -164,7 +164,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @return the actual speed in rotations per second
      */
-    public double getActualBottomSpeed() {
+    public double getBottomSpeed() {
         return shooterMotorBottom.getVelocity().getValueAsDouble();
     }
 

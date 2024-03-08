@@ -282,6 +282,8 @@ public class RobotContainer {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
                 shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
+                // shooterFlywheelSubsystem.setShooterMotorSpeed();
+                
             } else {
                 shooterFlywheelSubsystem.stopShooter();
             }
@@ -290,6 +292,14 @@ public class RobotContainer {
                 mechController.setRumble(RumbleType.kBothRumble, .4);
             } else {
                 mechController.setRumble(RumbleType.kBothRumble, 0);
+                if (lightBarSubsystem.getLightBarStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
+                    double top = shooterFlywheelSubsystem.getTopSpeed() / shooterFlywheelSubsystem.getTargetTopRPS();
+                    double bottom = shooterFlywheelSubsystem.getBottomSpeed() / shooterFlywheelSubsystem.getTargetBottomRPS();
+                    double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
+
+                    lightBarSubsystem.updateShooterSpeedPercentage(avg);
+                }
+                
             }
         }, shooterFlywheelSubsystem
 
