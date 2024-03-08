@@ -65,13 +65,13 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         thetaController = new PIDController(3.5, 0, 0);
 
         addCommands(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(3)//TODO: tune the timeout 
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(3)
         );
     }
 
     /**
      * Follows trajectory.
-     * 
+     *
      * @param trajectory ChoreoTrajectory
      * 
      * @return followPath command
@@ -120,7 +120,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
      public SequentialCommandGroup shoot(){
         return new ShooterPivotAimCommand(shooterPivotSubsystem).andThen(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).withTimeout(2), //wait to hit max speed?
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(2), //wait to hit max speed?
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.3),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)
         ) ;

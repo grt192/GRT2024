@@ -1,8 +1,8 @@
 package frc.robot.subsystems.leds;
 
-import frc.robot.util.OpacityColor;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.util.GRTUtil;
+import frc.robot.util.OpacityColor;
 
 /** One layer of the LED strip subsystem. */
 public class LEDLayer {
@@ -62,7 +62,28 @@ public class LEDLayer {
             
             double distance = Math.abs(i - offset);
 
-            setLED(i, OpacityColor.blendColors(baseColor, peakColor, (distance / colorArray.length)));
+            setLED(i, OpacityColor.blendColors(baseColor, peakColor, 0.3 * (distance / colorArray.length)));
+        }
+
+    }
+
+    /** Set the LED layer to display a progress bar. 
+     * Ex: Used to show the status of the flywheel when spinning up 
+     *
+     * @param baseColor The color for the background (not reached) portion of the progress bar.
+     * @param progressColor The color for the portion of the progress bar that has been covered.
+     * @param percentage The double [0.0, 1.0] representing the progress of the progress bar. 
+     */
+    public void setProgressBar(OpacityColor baseColor, OpacityColor progressColor, double percentage) {
+        
+        int cutoff = (int) (colorArray.length * percentage);
+        
+        for (int i = 0; i < colorArray.length; i++) {
+            if (i >= cutoff) {
+                setLED(i, baseColor);
+            } else {
+                setLED(i, progressColor);
+            }
         }
 
     }
