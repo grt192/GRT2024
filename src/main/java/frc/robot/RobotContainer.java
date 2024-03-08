@@ -27,11 +27,10 @@ import frc.robot.commands.auton.AutonFactoryFunction;
 import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
-import frc.robot.commands.auton.Middle4PieceSequence;
 import frc.robot.commands.auton.TaxiSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
-import frc.robot.commands.elevator.ElevatorToAMPCommand;
+import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
@@ -243,7 +242,7 @@ public class RobotContainer {
                 new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
                     new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(
                         () -> intakeRollerSubsystem.getFrontSensor() > .12),
-                    new ElevatorToAMPCommand(elevatorSubsystem),
+                    new ElevatorToAmpCommand(elevatorSubsystem),
                     new IntakePivotMiddleCommand(intakePivotSubsystem, 0)),
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)

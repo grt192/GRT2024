@@ -7,19 +7,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import java.util.EnumSet;
 
-
+/** Represents the elevator mechanism. */
 public class ElevatorSubsystem extends SubsystemBase {
-    private NetworkTableInstance elevatorNetworkTableInstance;
-    private NetworkTable elevatorNetworkTable;
+    // private NetworkTableInstance elevatorNetworkTableInstance;
+    // private NetworkTable elevatorNetworkTable;
 
     private volatile boolean isManual = false;
     private double manualPower = 0;
@@ -42,12 +38,13 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Initializes elevator subsystem.
      */
     public ElevatorSubsystem() {
-        //Print out current position for debug & measurement
-        //System.out.print(extensionEncoder.getPosition());
+        // Print out current position for debug & measurement
+        // System.out.print(extensionEncoder.getPosition());
 
         timer.start();
         
         zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
+        
         // elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
         // elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
         // elevatorNetworkTable.addListener("target_position",
@@ -77,7 +74,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         //         }
         //     }
         // );
-        //this entry is working!
+        // this entry is working!
+
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
         extensionMotor.setInverted(true);
@@ -104,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        //System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
+        // System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
         // if(timer.advanceIfElapsed(.2)){
         //     System.out.println(zeroLimitSwitch.get());
         // }
@@ -112,7 +110,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         
         // System.out.println(extensionEncoder.getPosition()); 
         
-        //System.out.println(this.getTargetState());
+        // System.out.println(this.getTargetState());
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
@@ -125,13 +123,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // System.out.println(getTargetState());
         
-        //extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-        //this through overun when no motor connected.
+        // extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        // this through overun when no motor connected.
     }
     
     /**
-     * If the elevator is touching the limit switch.
-
+     * Returns if the elevator is touching the limit switch.
+     *
      * @return true if the elevator is touching the limit switch, false if not.
      */
     public boolean atGround() {
@@ -141,9 +139,10 @@ public class ElevatorSubsystem extends SubsystemBase {
             return false;
         }
     }
-    /**
-     * Check if the elevator is at a certain state.
 
+    /**
+     * Checks if the elevator is at a certain state.
+     *
      * @param state if the elevator is at this state.
      * @return boolean (if the elevator is at this state)
      */
@@ -157,8 +156,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * Manually set the elevator's current state to the state inputted.
-
+     * Manually sets the elevator's current state to the state inputted.
+     *
      * @param state the state you want to set to
      */
     public void setState(ElevatorState state) {
@@ -167,8 +166,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     
     /**
-     * set the target state to the state inputted.
-
+     * Set the target state to the state inputted.
+     *
      * @param targetState the state you want to set to targetState.
      */
     public void setTargetState(ElevatorState targetState) {
@@ -180,7 +179,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * set the mode to manual mode.
+     * Sets the mode to manual mode.
      */
     public void setManual() {
         this.isManual = true;
@@ -188,7 +187,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * set the mode to auto.
+     * Sets the mode to automatic.
      */
     public void setAuto() {
         this.isManual = false;
@@ -196,8 +195,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     
     /**
-     * get the current position from the encoder in meters.
-
+     * Gets the current position from the encoder in meters.
+     *
      * @return position in doubles.
      */
     public double getExtensionPercent() { 
@@ -205,8 +204,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * get the current state of the elevator.
-
+     * Gets the current state of the elevator.
+     *
      * @return the current state of the elevator
      */
     public ElevatorState getState() {
@@ -214,8 +213,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /**
-     * get current target state.
-
+     * Gets current target state.
+     *
      * @return current target state.
      */
     public ElevatorState getTargetState() {
@@ -223,12 +222,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     
     /**
-     * set the power in manual mode to.
-
+     * Sets the power in manual mode to.
+     *
      * @param power the power you want to set to
      */
     public void setManualPower(double power) {
         this.manualPower = power;
     } 
-
 }

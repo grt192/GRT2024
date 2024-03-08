@@ -1,11 +1,8 @@
 package frc.robot.subsystems.elevator;
 
-
 import frc.robot.Constants;
 
-/**
-    States of the elevator.
-*/
+/** States of the elevator. */
 public enum ElevatorState {
     ZERO(Constants.ElevatorConstants.ZERO_POSITION),
     INTAKE(Constants.ElevatorConstants.INTAKE_POSITION),
@@ -19,8 +16,8 @@ public enum ElevatorState {
     }
 
     /**
-     * get the distance of a state in meters.
-
+     * Gets the distance of a state in meters.
+     *
      * @return meters in double.
      */
     public double getExtendDistanceMeters() {
