@@ -12,7 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.util.MotorUtil;
 
 /**
- * Represents a single manually controlled Climb arm.
+ * Represents a single manually controlled climb arm.
  */
 public class ManualClimbArm {
     private final CANSparkMax winchMotor;

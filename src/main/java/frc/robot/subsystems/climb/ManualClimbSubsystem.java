@@ -6,7 +6,7 @@ import static frc.robot.Constants.ClimbConstants.RIGHT_WINCH_MOTOR_ID;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Represents the Climb mechanism (both arms).
+ * Represents the climb mechanism (both arms).
  */
 public class ManualClimbSubsystem extends SubsystemBase {
     private final ManualClimbArm leftClimbArm;

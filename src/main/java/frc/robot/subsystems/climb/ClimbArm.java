@@ -1,3 +1,5 @@
+//TODO: Rewrite climb.
+
 package frc.robot.subsystems.climb;
 
 import static frc.robot.Constants.ClimbConstants.LOWER_LIMIT_METERS;
@@ -9,7 +11,6 @@ import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.util.MotorUtil;
 
 /**
- * Represents a single Climb arm.
+ * Represents a single climb arm.
  */
 public class ClimbArm {
     private static final double EXTENSION_TOLERANCE_METERS = 0.01;
@@ -104,7 +105,7 @@ public class ClimbArm {
         /* If the hook is latched in place, the motor can be safely un-powered to avoid stalling.*/
         if (hookIsLatched && !isZeroing) {
             winchMotor.set(0);
-        } else if (!isZeroing){
+        } else if (!isZeroing) {
             extensionPidController.setReference(targetExtension, ControlType.kPosition);
         }
     }
@@ -169,8 +170,8 @@ public class ClimbArm {
     }
 
     /**
-     * Enables/disables this Climb arm's zeroing mode.
-     * 
+     * Enables/disables this climb arm's zeroing mode.
+     *
      * @param enable Enables if true, disables if false..
      */
     public void enableZeroingMode(boolean enable) {
@@ -180,7 +181,7 @@ public class ClimbArm {
     }
 
     /**
-     * Returns whether or not this Climb arm's limit switch at position 0 is pressed.
+     * Returns whether or not this climb arm's limit switch at position 0 is pressed.
      */ 
     public boolean isLimitSwitchPressed() {
         return !zeroLimitSwitch.get();

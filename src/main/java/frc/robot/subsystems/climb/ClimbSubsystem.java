@@ -1,3 +1,5 @@
+//TODO: Rewrite climb.
+
 package frc.robot.subsystems.climb;
 
 import static frc.robot.Constants.ClimbConstants.LEFT_SOLENOID_LATCH_PORT;
@@ -10,7 +12,7 @@ import static frc.robot.Constants.ClimbConstants.RIGHT_ZERO_LIMIT_PORT;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Represents the Climb mechanism (both arms).
+ * Represents the climb mechanism (both arms).
  */
 public class ClimbSubsystem extends SubsystemBase {
     private final ClimbArm leftClimbArm;
@@ -37,7 +39,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the targeted extension height for both Climb arms.
+     * Sets the targeted extension height for both climb arms.
      *
      * @param height The extension target
      */
@@ -50,14 +52,14 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns true if both Climb arms are at their extension target, and false otherwise.
+     * Returns true if both climb arms are at their extension target, and false otherwise.
      */
     public boolean isAtTargetExtension() {
         return leftClimbArm.isAtTargetExtension() && rightClimbArm.isAtTargetExtension();
     }
 
     /**
-     * Starts zeroing both Climb arms.
+     * Starts zeroing both climb arms.
      */
     public void startZeroing() {
         leftClimbArm.enableZeroingMode(true);
