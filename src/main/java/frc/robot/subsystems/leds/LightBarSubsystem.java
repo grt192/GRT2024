@@ -57,7 +57,7 @@ public class LightBarSubsystem extends SubsystemBase {
      */
     public void periodic() {
         
-        baseLayer.fillColor(TRANSPARENT_COLOR);
+        // baseLayer.fillColor(TRANSPARENT_COLOR);
         
         rainbowOffset += inc;
         rainbowOffset = rainbowOffset % (LEDConstants.LED_LENGTH * 360);
@@ -70,6 +70,7 @@ public class LightBarSubsystem extends SubsystemBase {
 
         switch (status) {
             case DORMANT:
+                topLayer.setBounce(RED_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case AUTON:
                 topLayer.setRainbow(rainbowOffset);
@@ -90,12 +91,17 @@ public class LightBarSubsystem extends SubsystemBase {
                 topLayer.setBounce(GREEN_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             default:
-                topLayer.reset();
+                topLayer.fillColor(BLUE_COLOR);//(RED_COLOR, WHITE_COLOR, bounceOffset);
                 break;
         }
 
-        ledStrip.addLayer(baseLayer);
+        // topLayer.fillColor(BLUE_COLOR);
+
+        // System.out.println(status);
+
+        // ledStrip.addLayer(baseLayer);
         ledStrip.addLayer(topLayer);
+        ledStrip.setBuffer(1);
 
     }
 

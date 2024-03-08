@@ -121,7 +121,7 @@ public class RobotContainer {
 
     private final ElevatorSubsystem elevatorSubsystem;
 
-    private final FieldManagementSubsystem allianceSubsystem = new FieldManagementSubsystem();
+    private final FieldManagementSubsystem fmsSubsystem = new FieldManagementSubsystem();
     private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
 
     private final NoteDetectionWrapper noteDetector;
@@ -236,12 +236,12 @@ public class RobotContainer {
 
         // LED STATE BINDINGS
         lightBarSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            if (allianceSubsystem.getMatchStatus() == MatchStatus.AUTON) {
+            if (fmsSubsystem.getMatchStatus() == MatchStatus.AUTON) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTON);
-            } else if (allianceSubsystem.getMatchStatus() == MatchStatus.ENDGAME) { // at GRT shop, ENDGAME shouldn't light up during auton
+            } else if (fmsSubsystem.getMatchStatus() == MatchStatus.ENDGAME) { // at GRT shop, ENDGAME shouldn't light up during auton
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.ENDGAME);
             }
-        }));
+        }, lightBarSubsystem));
         
         // SHOOTER PIVOT TEST
 
@@ -418,7 +418,7 @@ public class RobotContainer {
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
 
             driveController.getAmpAlign().onTrue(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN)).andThen(new ParallelRaceGroup(
-                AlignCommand.getAmpAlignCommand(swerveSubsystem, allianceSubsystem.isRedAlliance()),
+                AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
                 new ConditionalWaitCommand(() -> !driveController.getAmpAlign().getAsBoolean())
             )));
 

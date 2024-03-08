@@ -53,16 +53,16 @@ public class LEDLayer {
 
     /** Sets this layer to a bounce effect.
 
-     * @param color The primary color of the bounce effect.
+     * @param baseColor The primary color of the bounce effect.
      * @param peakColor The color to use for the 'peak' of the bounce.
      * @param offset The offset of the bounce effect.
      */
-    public void setBounce(OpacityColor color, OpacityColor peakColor, int offset) {
+    public void setBounce(OpacityColor baseColor, OpacityColor peakColor, int offset) {
         for (int i = 0; i < colorArray.length; i++) {
             
-            int distance = Math.abs(i - offset);
+            double distance = Math.abs(i - offset);
 
-            setLED(i, OpacityColor.blendColors(color, peakColor, (distance / colorArray.length)));
+            setLED(i, OpacityColor.blendColors(baseColor, peakColor, (distance / colorArray.length)));
         }
 
     }
