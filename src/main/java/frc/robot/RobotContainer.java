@@ -15,7 +15,6 @@ import frc.robot.subsystems.superstructure.MatchStatus;
 import frc.robot.subsystems.superstructure.NotePosition;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
@@ -121,8 +120,6 @@ public class RobotContainer {
     // private final ClimbSubsystem climbSubsystem;
 
     private final ElevatorSubsystem elevatorSubsystem;
-
-    private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
     private final FieldManagementSubsystem allianceSubsystem = new FieldManagementSubsystem();
     private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
@@ -419,14 +416,6 @@ public class RobotContainer {
                     new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem));
 
             final SwerveSubsystem swerveSubsystem = (SwerveSubsystem) baseSwerveSubsystem;
-
-            ledSubsystem.setDefaultCommand(new RunCommand(() -> {
-                ledSubsystem.setDriverHeading(
-                        new Rotation2d(
-                                driveController.getRelativeMode() ? 0
-                                        : -swerveSubsystem.getDriverHeading().getRadians()));
-                ledSubsystem.setNoteSeen(noteDetector.getNote().isPresent());
-            }, ledSubsystem));
 
             driveController.getAmpAlign().onTrue(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN)).andThen(new ParallelRaceGroup(
                 AlignCommand.getAmpAlignCommand(swerveSubsystem, allianceSubsystem.isRedAlliance()),
