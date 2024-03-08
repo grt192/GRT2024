@@ -1,23 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import static frc.robot.Constants.SwerveConstants.BLUE_SPEAKER_POS;
-import static frc.robot.Constants.SwerveConstants.BL_DRIVE;
-import static frc.robot.Constants.SwerveConstants.BL_OFFSET;
-import static frc.robot.Constants.SwerveConstants.BL_POS;
-import static frc.robot.Constants.SwerveConstants.BL_STEER;
-import static frc.robot.Constants.SwerveConstants.BR_DRIVE;
-import static frc.robot.Constants.SwerveConstants.BR_OFFSET;
-import static frc.robot.Constants.SwerveConstants.BR_POS;
-import static frc.robot.Constants.SwerveConstants.BR_STEER;
-import static frc.robot.Constants.SwerveConstants.FL_DRIVE;
-import static frc.robot.Constants.SwerveConstants.FL_OFFSET;
-import static frc.robot.Constants.SwerveConstants.FL_POS;
-import static frc.robot.Constants.SwerveConstants.FL_STEER;
-import static frc.robot.Constants.SwerveConstants.FR_DRIVE;
-import static frc.robot.Constants.SwerveConstants.FR_OFFSET;
-import static frc.robot.Constants.SwerveConstants.FR_POS;
-import static frc.robot.Constants.SwerveConstants.FR_STEER;
-import static frc.robot.Constants.SwerveConstants.RED_SPEAKER_POS;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA_POSE;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
@@ -58,9 +40,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.FieldManagementSubsystem;
+import static frc.robot.Constants.SwerveConstants.*;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
+import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.photonvision.EstimatedRobotPose;
 
 /** The subsystem that controls the swerve drivetrain. */
@@ -123,13 +110,18 @@ public class SwerveSubsystem extends SubsystemBase {
     public final ShuffleboardTab choreoTab;
     private final Field2d fieldVisualization;
 
-    private final GenericEntry frontLeftSteer;
-    private final GenericEntry frontRightSteer;
-    private final GenericEntry backLeftSteer;
-    private final GenericEntry backRightSteer;
-    private final GenericEntry robotPosEntry;
-
     private boolean verbose = false;
+    // private final GenericEntry FLsteer, FLdrive, FRsteer, FRdrive, BLsteer, BLdrive, BRsteer, BRdrive;
+    // private final GenericEntry FLsteer, FRsteer, BLsteer, BRsteer;
+    private final GenericEntry robotPos, targetAngle, offsetAngle;
+
+    private AkimaSplineInterpolator akima;
+    private PolynomialSplineFunction offsetSpline;
+
+    private double currentDistance;
+
+    
+    // private boolean isRed = false; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
 
     private BooleanSupplier redSupplier;
 
@@ -163,12 +155,23 @@ public class SwerveSubsystem extends SubsystemBase {
             .withPosition(0, 0)
             .withSize(6, 4);
 
-        robotPosEntry = choreoTab.add("position", 0.).withPosition(7, 0).getEntry();
+        robotPos = choreoTab.add("position", 0.).withPosition(0, 0).getEntry();
 
-        frontLeftSteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
-        frontRightSteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
-        backLeftSteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();     
-        backRightSteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
+        targetAngle = choreoTab.add("target angle", 0.).withPosition(1,0).getEntry();
+
+        offsetAngle = choreoTab.add("offset angle", 0.).withPosition(2, 0).getEntry();
+
+        // FLsteer = choreoTab.add("FLsteer", 0.).withPosition(0, 0).getEntry();
+        // // FLdrive = choreoTab.add("FLdrive", 0.).withPosition(0, 1).getEntry();
+        
+        // FRsteer = choreoTab.add("FRsteer", 0.).withPosition(1, 0).getEntry();
+        // // FRdrive = choreoTab.add("FRdrive", 0.).withPosition(1, 1).getEntry();
+        
+        // BLsteer = choreoTab.add("BLsteer", 0.).withPosition(2, 0).getEntry();
+        // // BLdrive = choreoTab.add("BLdrive", 0.).withPosition(2, 1).getEntry();
+        
+        // BRsteer = choreoTab.add("BRsteer", 0.).withPosition(3, 0).getEntry();
+        // BRdrive = choreoTab.add("BRdrive", 0.).withPosition(3, 1).getEntry();
 
         poseEstimator = new SwerveDrivePoseEstimator(
             kinematics, 
@@ -201,18 +204,56 @@ public class SwerveSubsystem extends SubsystemBase {
             },
             this
         );
+        
+        double[] distances = {1, 2, 3, 4, 5, 6, 7, 8};
+        double[] angles = {Units.degreesToRadians(1), 
+                           Units.degreesToRadians(1), 
+                           Units.degreesToRadians(1), 
+                           Units.degreesToRadians(1),
+                           Units.degreesToRadians(1),
+                           Units.degreesToRadians(1),
+                           Units.degreesToRadians(1),
+                           Units.degreesToRadians(1)};
+
+        // X = distances, Y = angles in rads
+        akima = new AkimaSplineInterpolator();
+        offsetSpline = akima.interpolate(distances, angles);
     }
 
     @Override
     public void periodic() {
 
-        robotPosEntry.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
-        SwerveModulePosition[] modulePos = getModulePositions(); 
+        robotPos.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
+
+        targetAngle.setValue(GRTUtil.twoDecimals(Math.atan2(getYFromSpeaker(), getXFromSpeaker(redSupplier.getAsBoolean())) + Math.PI));
+
+        offsetAngle.setValue(getRobotPosition().getRotation().getRadians() - GRTUtil.twoDecimals(Math.atan2(getYFromSpeaker(), getXFromSpeaker(redSupplier.getAsBoolean())) + Math.PI));
+        // System.out.println(thetaController.getPositionError());
+        // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
+        // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
+        // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
     
-        frontLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
-        frontRightSteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
-        backLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
-        backRightSteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
+        
+        // System.out.println(frontLeftModule.getDriveSetpoint());
+
+        // if (crimer.advanceIfElapsed(.1)){
+        //     //System.out.println("BR : " + backRightModule.getRawAngle());
+        //     System.out.println("BL : " + backLeftModule.getRawAngle());
+        // }
+
+        // SwerveModulePosition[] modulePos = getModulePositions(); 
+    
+        // FLsteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
+        // // FLdrive.setValue(Util.twoDecimals(modulePos[0].distanceMeters));
+
+        // FRsteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
+        // // FRdrive.setValue(Util.twoDecimals(modulePos[1].distanceMeters));
+
+        // BLsteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
+        // // BLdrive.setValue(Util.twoDecimals(modulePos[2].distanceMeters));
+
+        // BRsteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
+        // BRdrive.setValue(Util.twoDecimals(modulePos[3].distanceMeters));
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
             Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
@@ -410,8 +451,27 @@ public class SwerveSubsystem extends SubsystemBase {
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
 
-    /**
-     * Gets the correct angle to aim the swerve at to point at the speaker.
+    public double getShootingDistance() {
+        Pose2d currentField = getRobotPosition();
+        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
+
+        if (redSupplier.getAsBoolean()) {  //true = red
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
+            currentDistance = Math.sqrt(xLength + yLength);
+
+        } else {
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
+
+            currentDistance = Math.sqrt(xLength + yLength);
+        }
+
+        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+    }
+
+
+    /** Gets the correct angle to aim the swerve at to point at the speaker.
      *
      * @param isRed Whether the team is red or not.
      * @return The angle to point at.
@@ -422,7 +482,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
         double rawAngle = Math.atan2(yDistance, xDistance) + Math.PI;
 
-        return rawAngle + ANGLE_OFFSET_FOR_AUTO_AIM; 
+        /* atan2() returns a value from -PI to PI, so the angle must be offset by 180 deg if the speaker is in
+         the negative x direction (such as when the robot is on the field and aiming at the blue speaker). */
+        return rawAngle + offsetSpline.value(getShootingDistance()); 
     }
 
     /**
