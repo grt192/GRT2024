@@ -201,7 +201,7 @@ public final class Constants {
 
     /** Constants for the LED subsystem. */
     public static class LEDConstants {
-        public static final int LED_LENGTH = 23;
+        public static final int LED_LENGTH = 22;
         public static final int LED_PWM_PORT = 0;
         public static final double BRIGHTNESS_SCALE_FACTOR = .6;
     }
