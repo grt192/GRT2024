@@ -81,22 +81,22 @@ public class LightBarSubsystem extends SubsystemBase {
                 topLayer.setRainbow(rainbowOffset);
                 break;
             case AUTON: // LEDs --> BOUNCING BLUE DURING AUTON
-                topLayer.setBounce(BLUE_COLOR.withOpacity(0.5), BLUE_COLOR, bounceOffset);
+                topLayer.setBounce(BLUE_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case ENDGAME: // LEDs --> BOUNCING PURPLE DURING TELEOP
-                topLayer.setBounce(PURPLE_ENDGAME_COLOR.withOpacity(0.5), PURPLE_ENDGAME_COLOR, bounceOffset);
+                topLayer.setBounce(PURPLE_ENDGAME_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case INTAKING: // LEDs --> BOUNCING ORANGE WHILE INTAKING
-                topLayer.setBounce(ORANGE_NOTE_COLOR.withOpacity(0.5), ORANGE_NOTE_COLOR, bounceOffset);
+                topLayer.setBounce(ORANGE_NOTE_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case HOLDING_NOTE: // LEDs --> BOUNCING GREEN WHEN HOLDING NOTE
-                topLayer.setBounce(GREEN_COLOR.withOpacity(0.5), GREEN_COLOR, bounceOffset);
+                topLayer.setBounce(GREEN_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case AUTO_ALIGN: // LEDs --> BOUNCING BLUE WHILE AUTONOMOUS
-                topLayer.setBounce(BLUE_COLOR.withOpacity(0.5), BLUE_COLOR, bounceOffset);
+                topLayer.setBounce(BLUE_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case SHOOTER_SPIN_UP: // LEDs --> PROGRESS BAR (GREEN ON BLUE) WHILE SHOOTER SPINS UP
-                topLayer.setProgressBar(BLUE_COLOR.withOpacity(0.5), GREEN_COLOR, shooterSpeedPercentage);
+                topLayer.setProgressBar(BLUE_COLOR, GREEN_COLOR, shooterSpeedPercentage);
                 break;
             default:
                 topLayer.fillColor(RED_COLOR); 
