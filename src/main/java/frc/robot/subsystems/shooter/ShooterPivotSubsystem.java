@@ -12,6 +12,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoAlignConstants;
@@ -125,11 +127,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     private double getShootingDistance() {
-        double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if (SwerveConstants.IS_RED) {  //true = red
+        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
             double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
             double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
             currentDistance = Math.sqrt(xLength + yLength);
@@ -141,7 +142,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             currentDistance = Math.sqrt(xLength + yLength);
         }
 
-        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+        return MathUtil.clamp(currentDistance, 
+                              ShooterConstants.MIN_SHOOTER_DISTANCE, 
+                              ShooterConstants.MAX_SHOOTER_DISTANCE);
     }
 
     /** Gets correct Angle for pivot to turn to. */

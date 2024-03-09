@@ -84,7 +84,8 @@ public class LightBarSubsystem extends SubsystemBase {
                 topLayer.setBounce(BLUE_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case ENDGAME: // LEDs --> BOUNCING PURPLE DURING TELEOP
-                topLayer.setBounce(PURPLE_ENDGAME_COLOR, WHITE_COLOR, bounceOffset);
+                topLayer.fillGrouped(4, 100, 16, WHITE_COLOR, PURPLE_ENDGAME_COLOR, bounceOffset + 10);
+                // topLayer.setBounce(PURPLE_ENDGAME_COLOR, WHITE_COLOR, bounceOffset);
                 break;
             case INTAKING: // LEDs --> BOUNCING ORANGE WHILE INTAKING
                 topLayer.setBounce(ORANGE_NOTE_COLOR, WHITE_COLOR, bounceOffset);

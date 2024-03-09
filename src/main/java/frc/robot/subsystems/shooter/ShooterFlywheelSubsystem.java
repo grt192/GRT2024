@@ -17,6 +17,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -188,15 +190,14 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     private double getShootingDistance() {
         double currentDistance;
-        double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if (SwerveConstants.IS_RED) {  //true = red
+        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
             double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
             double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
-            currentDistance = Math.sqrt(xLength + yLength);
 
+            currentDistance = Math.sqrt(xLength + yLength);
         } else {
             double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
             double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);

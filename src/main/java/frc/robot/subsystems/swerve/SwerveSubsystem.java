@@ -17,7 +17,6 @@ import static frc.robot.Constants.SwerveConstants.FR_DRIVE;
 import static frc.robot.Constants.SwerveConstants.FR_OFFSET;
 import static frc.robot.Constants.SwerveConstants.FR_POS;
 import static frc.robot.Constants.SwerveConstants.FR_STEER;
-import static frc.robot.Constants.SwerveConstants.IS_RED;
 import static frc.robot.Constants.SwerveConstants.RED_SPEAKER_POS;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA_POSE;
@@ -49,8 +48,10 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -385,7 +386,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
      * @param yPower The power in the y direction.
      */
     public void setSwerveAimDrivePowers(double xPower, double yPower) {
-        double shootAngleRadians = getShootAngle(IS_RED);
+        double shootAngleRadians = getShootAngle(DriverStation.getAlliance().get() == Alliance.Red);
 
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }

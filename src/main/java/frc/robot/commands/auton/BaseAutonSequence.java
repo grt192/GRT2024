@@ -1,7 +1,5 @@
 package frc.robot.commands.auton;
 
-import static frc.robot.Constants.SwerveConstants.IS_RED;
-
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,8 +34,9 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    private final LightBarSubsystem lightBarSubsystem;
     private final SwerveSubsystem swerveSubsystem;
+    private final LightBarSubsystem lightBarSubsystem;
+    private final FieldManagementSubsystem fmsSubsystem;
     private final PIDController thetaController;
     private final PIDController xPID;
     private final PIDController yPID;
@@ -58,8 +57,9 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.swerveSubsystem = swerveSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
-        this.swerveSubsystem = (SwerveSubsystem) swerveSubsystem;
+        this.fmsSubsystem = fmsSubsystem;
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
@@ -95,7 +95,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     speeds.omegaRadiansPerSecond
                 );
             }),
-            () -> IS_RED,
+            fmsSubsystem::isRedAlliance,
             swerveSubsystem
             );
         return swerveCommand;

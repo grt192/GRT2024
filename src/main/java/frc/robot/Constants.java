@@ -58,8 +58,6 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static boolean IS_RED = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
         public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
