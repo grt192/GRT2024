@@ -3,6 +3,7 @@ package frc.robot.commands.auton;
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
+import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -16,16 +17,18 @@ public class TaxiSequence extends BaseAutonSequence {
     private final ChoreoTrajectory trajectory = Choreo.getTrajectory("REAL2M");
 
     /** Robot taxis 2 meters backwards. */
-    public TaxiSequence(IntakePivotSubsystem intakePivotSubsystem, 
-                        IntakeRollersSubsystem intakeRollersSubsystem, 
-                        ShooterFlywheelSubsystem shooterFlywheelSubsystem, 
-                        ShooterPivotSubsystem shooterPivotSubsystem, 
-                        ElevatorSubsystem elevatorSubsystem, 
-                        SwerveSubsystem swerveSubsystem, 
-                        LightBarSubsystem lightBarSubsystem) {
+    public TaxiSequence(IntakePivotSubsystem intakePivotSubsystem,
+                        IntakeRollersSubsystem intakeRollersSubsystem,
+                        ShooterFlywheelSubsystem shooterFlywheelSubsystem,
+                        ShooterPivotSubsystem shooterPivotSubsystem,
+                        ElevatorSubsystem elevatorSubsystem,
+                        SwerveSubsystem swerveSubsystem,
+                        LightBarSubsystem lightBarSubsystem,
+                        FieldManagementSubsystem fmsSubsystem) {
+                                
+        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, shooterPivotSubsystem, 
+              elevatorSubsystem, swerveSubsystem, lightBarSubsystem, fmsSubsystem);
 
-        super(intakePivotSubsystem, intakeRollersSubsystem, shooterFlywheelSubsystem, 
-              shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem);
         
         // reset robot start pose
         ((SwerveSubsystem) swerveSubsystem).resetPose(trajectory.getInitialPose());

@@ -1,6 +1,7 @@
 package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
@@ -17,6 +18,6 @@ public interface AutonFactoryFunction {
         IntakePivotSubsystem intakePivotSubsystem, IntakeRollersSubsystem intakeRollersSubsystem, 
         ShooterFlywheelSubsystem shooterFlywheelSubsystem, ShooterPivotSubsystem shooterPivotSubsystem, 
         ElevatorSubsystem elevatorSubsystem, SwerveSubsystem swerveSubsystem, 
-        LightBarSubsystem lightBarSubsystem
+        LightBarSubsystem lightBarSubsystem, FieldManagementSubsystem fmsSubsystem
     );
 }

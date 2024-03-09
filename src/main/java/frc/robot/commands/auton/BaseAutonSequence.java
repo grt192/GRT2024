@@ -15,13 +15,13 @@ import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
+import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
-import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
@@ -50,8 +50,9 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                              ShooterPivotSubsystem shooterPivotSubsystem,
                              ElevatorSubsystem elevatorSubsystem,
-                             BaseSwerveSubsystem swerveSubsystem,
-                             LightBarSubsystem lightBarSubsystem) {
+                             SwerveSubsystem swerveSubsystem,
+                             LightBarSubsystem lightBarSubsystem,
+                             FieldManagementSubsystem fmsSubsystem) {
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollerSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;

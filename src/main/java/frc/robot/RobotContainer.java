@@ -13,8 +13,8 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -417,7 +417,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
-                shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) swerveSubsystem, lightBarSubsystem);
+                shooterPivotSubsystem, elevatorSubsystem, (SwerveSubsystem) swerveSubsystem, lightBarSubsystem, fmsSubsystem);
         // autonPathChooser.getSelected().create(intakePivotSubsystem,
         // intakeRollerSubsystem,
         // shooterFlywheelSubsystem,
