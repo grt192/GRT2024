@@ -28,7 +28,7 @@ public class IntakePivotMiddleCommand  extends Command{
     }
     @Override
     public void execute() {
-        System.out.println("PIVOT MOVING" + pivotSubsystem.encoderPosition());
+        System.out.println("PIVOT MOVING" + pivotSubsystem.getPosition());
         //TODO Auto-generated method stub
     }
 
@@ -45,7 +45,7 @@ public class IntakePivotMiddleCommand  extends Command{
 
     @Override
     public boolean isFinished() {
-        return Math.abs(pivotSubsystem.encoderPosition() - position) < .1;
+        return Math.abs(pivotSubsystem.getPosition() - position) < .1;
         // TODO Auto-generated method stub
        
     }
