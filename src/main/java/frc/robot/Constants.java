@@ -36,7 +36,7 @@ public final class Constants {
         public static final double AMP_POSITION = .9;
         public static final double TRAP_POSITION = 1.;
 
-        public static final double EXTENSION_P = 1.5;
+        public static final double EXTENSION_P = 2;
         public static final double EXTENSION_I = 0;
         public static final double EXTENSION_D = 4;
         public static final double EXTENSION_TOLERANCE = 0.3;
@@ -101,7 +101,7 @@ public final class Constants {
 
         public static final double FRONT_SENSOR_THRESHOLD = .05;
         public static final double BACK_SENSOR_THRESHOLD = .5;
-        public static final double COLOR_SENSOR_RED_THRESHOLD = 175;
+        public static final double COLOR_SENSOR_RED_THRESHOLD = .37;
     }
 
     /** Constants for Shooter Subsystem. */

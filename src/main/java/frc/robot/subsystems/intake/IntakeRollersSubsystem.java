@@ -112,7 +112,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println("intake distance sensor: " + backSensor.get());
+        System.out.println("intake color sensor: " + getColorSensor().red);
         // This method will be called once per scheduler run
         ntFrontPublisher.set(frontSensorNow());
         ntBackPublisher.set(backSensorNow());
