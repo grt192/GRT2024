@@ -78,7 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
-        extensionMotor.setInverted(true);
+        extensionMotor.setInverted(false);
         extensionMotor.setClosedLoopRampRate(0.3);
         
         
@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
         extensionFollow.setIdleMode(IdleMode.kBrake);
-        extensionFollow.setInverted(true);
+        extensionFollow.setInverted(false);
 
         extensionPidController = extensionMotor.getPIDController();
         extensionPidController.setP(ElevatorConstants.EXTENSION_P);

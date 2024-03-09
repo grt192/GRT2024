@@ -239,16 +239,15 @@ public class RobotContainer {
         /* Elevator controls -- */ //TODO: explain how these work
         rightBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                    new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(
-                        () -> intakeRollerSubsystem.getFrontSensor() > .12),
-                    new ElevatorToAmpCommand(elevatorSubsystem),
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0)),
-                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
-        );
+                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
+                            () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem)
+                                    .until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
+                            new ElevatorToAmpCommand(elevatorSubsystem),
+                            new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2)),
+                    () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
+                            || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
 
         leftBumper.onTrue(
                 new ConditionalCommand(

@@ -101,7 +101,7 @@ public final class Constants {
 
         public static final double FRONT_SENSOR_THRESHOLD = .05;
         public static final double BACK_SENSOR_THRESHOLD = .5;
-        public static final double COLOR_SENSOR_RED_THRESHOLD = .37;
+        public static final double COLOR_SENSOR_RED_THRESHOLD = .35;
     }
 
     /** Constants for Shooter Subsystem. */
