@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import org.photonvision.PhotonCamera;
 
 /** Store the constants for the robot. */
@@ -94,20 +93,14 @@ public final class Constants {
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
 
-        public static final int frontSensorID = 0;
-        public static final int backSensorID = 1;
-        public static final int extendedlimitswitchID = 5;
-        public static final int retractedlimitswitchID = 6;
-        public static final int intakeencoderID = 3;
+        public static final int FRONT_SENSOR_ID = 0;
+        public static final int BACK_SENSOR_ID = 1;
+        public static final int EXTENDED_LIMIT_SWITCH_ID = 5;
+        public static final int RETRACTED_LIMIT_SWITCH_ID = 6;
+        public static final int INTAKE_ENCODER_ID = 3;
 
-        public static final double encodermiddle = 1;
-        public static final double rollersclockwise = 1;
-        public static final double rollerscounterclockwise = 1;
-        public static final double frontSensorReached = .05;
-        public static final double BACK_SENSOR_REACHED = .5;
-        public static final double pivotclockwise = 1;
-        public static final double pivotcounterclockwise = -1;
-        public static final double pastsensortime = 3;
+        public static final double FRONT_SENSOR_THRESHOLD = .05;
+        public static final double BACK_SENSOR_THRESHOLD = .5;
     }
 
     /** Constants for Shooter Subsystem. */
