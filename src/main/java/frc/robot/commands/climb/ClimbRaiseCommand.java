@@ -17,20 +17,11 @@ public class ClimbRaiseCommand extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("RAISING CLIMB...");
         climbSubsystem.goToExtension(RAISE_LIMIT_METERS);
     }
 
     @Override
     public boolean isFinished() {
         return climbSubsystem.isAtTargetExtension();
-    }
-
-    @Override
-    public void execute() {}
-
-    @Override
-    public void end(boolean interrupted) {
-        System.out.println(interrupted ? "CLIMB RAISING INTERRUPTED!" : "CLIMB RAISED!");
     }
 }

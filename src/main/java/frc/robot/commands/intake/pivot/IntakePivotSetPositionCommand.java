@@ -27,16 +27,7 @@ public class IntakePivotSetPositionCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        System.out.println("PIVOT MOVING" + pivotSubsystem.getEncoderPosition());
-    }
-
-    @Override
     public void end(boolean interrupted) {
-        System.out.println("PIVOT FINISHED");
-        if (interrupted) {
-            System.out.println("PIVOT InTERRUPTED");
-        }
         pivotSubsystem.movePivot(0);
         
     }

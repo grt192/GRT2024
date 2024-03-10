@@ -55,21 +55,4 @@ public class ShooterFlywheelReadyCommand extends Command {
     public boolean isFinished() {
         return shooterSubsystem.atSpeed();
     }
-
-    // pivot: vertical, auto-aim
-    // feed: load, shoot
-    // shooter: stop, ready shooters
-
-    // load note
-    // shoot
-    // ready shooter
-    // vertical
-    // auto-angle
-
-    @Override
-    public void end(boolean interrupted) {
-        if (interrupted) {
-            System.out.println("Ready Shooter has been interrupted");
-        }
-    }
 }

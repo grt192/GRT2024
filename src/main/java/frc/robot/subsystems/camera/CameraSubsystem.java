@@ -44,14 +44,9 @@ public class CameraSubsystem extends SubsystemBase {
                 EnumSet.of(NetworkTableEvent.Kind.kValueAll),
                 (NetworkTable table, String key, NetworkTableEvent event) -> {
                     double message = event.valueData.value.getDouble();
-                    System.out.println(message);
-                    if (message == currentCameraID) {
-                        // System.out.print("Still the same");
-                    } else if (message == 1.0) {
-                        // System.out.println("Set to cam1");
+                    if (message != currentCameraID && message == 1.0) {
                         switchTo(1);
-                    } else {
-                        // System.out.println("Set to cam2");
+                    } else if (message != currentCameraID && message == 2.0) {
                         switchTo(2);
                     }
                 });

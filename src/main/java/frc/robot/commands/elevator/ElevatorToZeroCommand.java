@@ -22,22 +22,12 @@ public class ElevatorToZeroCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("TO GROUND FINISHED");
-        if (interrupted) {
-            System.out.println("TO GROUND INTERRUPTED");
-        }
-
         nt = NetworkTableInstance.getDefault();
         table = nt.getTable("elevator");
         entry = table.getEntry("position");
         entry.setInteger(0);
-        
-        return;
     }
-
-    @Override
-    public void initialize() {}
-
+    
     @Override
     public void execute() {
         elevatorSubsystem.setTargetState(ElevatorState.ZERO);
@@ -45,7 +35,6 @@ public class ElevatorToZeroCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("TO GROUND RUNNING");
         return elevatorSubsystem.atGround();
     }
 }

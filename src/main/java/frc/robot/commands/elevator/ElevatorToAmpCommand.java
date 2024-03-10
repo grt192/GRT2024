@@ -22,10 +22,6 @@ public class ElevatorToAmpCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("TO AMP FINISHED");
-        if (interrupted) {
-            System.out.println("TO AMP INTERUPTED");
-        }
 
         nt = NetworkTableInstance.getDefault();
         table = nt.getTable("elevator");

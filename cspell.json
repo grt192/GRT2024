@@ -20,6 +20,7 @@
         "drivemotors",
         "Holonomic",
         "intaking",
+        "leds",
         "mechs",
         "mjpeg",
         "mjpg",

@@ -114,19 +114,16 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     /** motor speed setting functions. */
     public void setPivotMotorSpeed(double speed) {
         pivotMotor.setVoltage(speed * 12);
-        //System.out.println("flywheer motor speed is: " + pivotMotor.get());
     }
 
     /** Sets Angle of the pivot.*/
     public void setAngle(double angle) { 
         rotationPIDController.setReference(angle + angleOffset, CANSparkMax.ControlType.kPosition);
-        // System.out.println("setting angle to: " + angle);
        
     }
 
     private double getShootingDistance() {
         Pose2d currentField = poseSupplier.getPose2d();
-        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
@@ -140,8 +137,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             currentDistance = Math.sqrt(xLength + yLength);
         }
 
-        System.out.println("DIST: " + currentDistance);
-
         return MathUtil.clamp(currentDistance, 
                               ShooterConstants.MIN_SHOOTER_DISTANCE, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE);
@@ -152,9 +147,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         currentDistance = getShootingDistance();
 
-        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) 
-            + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
-            + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
+        // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) 
+        //     + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+        //     + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);
@@ -163,13 +158,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         // return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
 
         return angleSpline.value(getShootingDistance());
-    }
-
-    /** Prints pivot current angle. */
-    public void printCurrentAngle() {
-        // System.out.println("radians: " + rotationEncoder.getPosition());
-        // System.out.println(pivotMotor.get());
-        // System.out.println(rotationPIDController.getFF());
     }
 
     /** Gets position of encoder. */
@@ -190,29 +178,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //resets relative encoder every time robot starts again
-        //(check if encoder prints zero when run)
-        // if(limitSwitch != null && limitSwitch.get()){ //false = limit switch is pressed
-        //     rotationEncoder.setPosition(0); 
-        //     // System.out.println(rotationEncoder.getPosition()); //should print 0
-        // }
-
         if (autoAim) {
             setAngle(getAutoAimAngle());
         }
-
-
-        if (timer.advanceIfElapsed(.2)) { 
-            //printCurrentAngle();
-            //System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
-            // System.out.println(Util.twoDecimals(Units.radiansToDegrees(getAutoAimAngle())));
-        }
-
-        // System.out.println("current pos" + rotationEncoder.getPosition());
-
-        // if(currentState == ShooterState.FIRING && (shooterSensor.getRed() < TOLERANCE)){  //when there is no note
-        //     setShooterState(ShooterState.NO_NOTE);
-        // }
     }
     
     /** Sets the angle offset to a new value.

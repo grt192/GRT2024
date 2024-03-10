@@ -25,7 +25,6 @@ public class IntakeRollerIntakeCommand extends Command {
     @Override
     public void initialize() {
         lightBarSubsystem.setLightBarStatus(LightBarStatus.INTAKING);
-        // System.out.println("IntakeRollerIntakeCommand initialized."); 
     }
 
     @Override

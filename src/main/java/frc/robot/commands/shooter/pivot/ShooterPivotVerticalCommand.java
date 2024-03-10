@@ -25,13 +25,4 @@ public class ShooterPivotVerticalCommand extends Command {
     public boolean isFinished() {
         return (Math.abs(pivotSubsystem.getPosition()) < ShooterConstants.PID_ERROR_TOLERANCE);
     }
-
-    @Override
-    public void end(boolean interrupted) {
-        if (interrupted) {
-            System.out.println("VERTICAL INTERRUPTED");
-        } else {
-            System.out.println("VERTICAL ARRIVED");
-        }
-    }
 }
