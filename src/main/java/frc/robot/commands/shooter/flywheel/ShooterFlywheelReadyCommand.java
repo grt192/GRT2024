@@ -22,8 +22,8 @@ public class ShooterFlywheelReadyCommand extends Command {
         this.lightBarSubsystem = lightBarSubsystem;
         addRequirements(shooterSubsystem, lightBarSubsystem);
 
-        topSpeed = shooterSubsystem.getTopSpeed();
-        bottomSpeed = shooterSubsystem.getBottomSpeed();
+        topSpeed = shooterSubsystem.getTopSetSpeed();
+        bottomSpeed = shooterSubsystem.getBottomSetSpeed();
     }
     
     /** Constructor for this command. */
@@ -44,8 +44,8 @@ public class ShooterFlywheelReadyCommand extends Command {
     @Override
     public void execute() {
 
-        double top = shooterSubsystem.getActualTopSpeed() / shooterSubsystem.getTargetTopRPS();
-        double bottom = shooterSubsystem.getActualBottomSpeed() / shooterSubsystem.getTargetBottomRPS();
+        double top = shooterSubsystem.getTopSpeed() / shooterSubsystem.getTargetTopRPS();
+        double bottom = shooterSubsystem.getBottomSpeed() / shooterSubsystem.getTargetBottomRPS();
         double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
 
         lightBarSubsystem.updateShooterSpeedPercentage(avg);

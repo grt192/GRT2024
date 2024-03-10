@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import org.photonvision.PhotonCamera;
 
 /** Store the constants for the robot. */
@@ -58,15 +57,13 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static boolean IS_RED = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
         public static final int FL_DRIVE = 20;
         public static final int FL_STEER = 1;
         public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4;
+        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4 - Math.PI;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
@@ -96,20 +93,14 @@ public final class Constants {
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
 
-        public static final int frontSensorID = 0;
-        public static final int backSensorID = 1;
-        public static final int extendedlimitswitchID = 5;
-        public static final int retractedlimitswitchID = 6;
-        public static final int intakeencoderID = 3;
+        public static final int FRONT_SENSOR_ID = 0;
+        public static final int BACK_SENSOR_ID = 1;
+        public static final int EXTENDED_LIMIT_SWITCH_ID = 5;
+        public static final int RETRACTED_LIMIT_SWITCH_ID = 6;
+        public static final int INTAKE_ENCODER_ID = 3;
 
-        public static final double encodermiddle = 1;
-        public static final double rollersclockwise = 1;
-        public static final double rollerscounterclockwise = 1;
-        public static final double frontSensorReached = .05;
-        public static final double BACK_SENSOR_REACHED = .5;
-        public static final double pivotclockwise = 1;
-        public static final double pivotcounterclockwise = -1;
-        public static final double pastsensortime = 3;
+        public static final double FRONT_SENSOR_THRESHOLD = .05;
+        public static final double BACK_SENSOR_THRESHOLD = .5;
     }
 
     /** Constants for Shooter Subsystem. */
@@ -129,6 +120,14 @@ public final class Constants {
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
         public static final double MIN_SHOOTER_DISTANCE = 1.08;
         public static final double MAX_SHOOTER_DISTANCE = 8;
+
+        //center of red speaker: (652.73 218.42)
+        public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
+        public static final double RED_Y = Units.inchesToMeters(218.42);
+
+        //center of blue speaker: (-1.50 218.42)
+        public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
+        public static final double BLUE_Y = Units.inchesToMeters(218.42);
     }
 
     /** Constants for Climb Subsystem. */

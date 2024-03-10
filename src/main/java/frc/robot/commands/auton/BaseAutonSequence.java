@@ -1,7 +1,5 @@
 package frc.robot.commands.auton;
 
-import static frc.robot.Constants.SwerveConstants.IS_RED;
-
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,13 +13,13 @@ import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
+import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollersSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
-import frc.robot.subsystems.swerve.BaseSwerveSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 
@@ -36,8 +34,9 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    private final LightBarSubsystem lightBarSubsystem;
     private final SwerveSubsystem swerveSubsystem;
+    private final LightBarSubsystem lightBarSubsystem;
+    private final FieldManagementSubsystem fmsSubsystem;
     private final PIDController thetaController;
     private final PIDController xPID;
     private final PIDController yPID;
@@ -50,15 +49,17 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                              ShooterPivotSubsystem shooterPivotSubsystem,
                              ElevatorSubsystem elevatorSubsystem,
-                             BaseSwerveSubsystem swerveSubsystem,
-                             LightBarSubsystem lightBarSubsystem) {
+                             SwerveSubsystem swerveSubsystem,
+                             LightBarSubsystem lightBarSubsystem,
+                             FieldManagementSubsystem fmsSubsystem) {
         this.intakePivotSubsystem = intakePivotSubsystem; 
         this.intakeRollerSubsystem = intakeRollersSubsystem;
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.swerveSubsystem = swerveSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
-        this.swerveSubsystem = (SwerveSubsystem) swerveSubsystem;
+        this.fmsSubsystem = fmsSubsystem;
 
         addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
 
@@ -94,7 +95,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
                     speeds.omegaRadiansPerSecond
                 );
             }),
-            () -> IS_RED,
+            fmsSubsystem::isRedAlliance,
             swerveSubsystem
             );
         return swerveCommand;

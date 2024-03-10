@@ -12,6 +12,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoAlignConstants;
@@ -86,20 +88,27 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationPIDController.setSmartMotionAllowedClosedLoopError(ShooterConstants.PID_ERROR_TOLERANCE, 0); 
 
         //pivot soft limits
-        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(66));
+        pivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Units.degreesToRadians(65.5));
         pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Units.degreesToRadians(18));
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
-        double[] angles = {Units.degreesToRadians(62), 
-                           Units.degreesToRadians(52), 
-                           Units.degreesToRadians(38.5), 
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 
+                              2, 
+                              3, 
+                              3.71, 
+                              5, 
+                              5.6, 
+                              7, 
+                              ShooterConstants.MAX_SHOOTER_DISTANCE};
+        double[] angles = {Units.degreesToRadians(65.5), 
+                           Units.degreesToRadians(53.5), 
+                           Units.degreesToRadians(45), 
+                           Units.degreesToRadians(36),
+                           Units.degreesToRadians(33.5),
+                           Units.degreesToRadians(32),
                            Units.degreesToRadians(28),
-                           Units.degreesToRadians(24),
-                           Units.degreesToRadians(27),
-                           Units.degreesToRadians(27),
-                           Units.degreesToRadians(27)};
+                           Units.degreesToRadians(28)};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
@@ -125,23 +134,26 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     private double getShootingDistance() {
-        double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if (SwerveConstants.IS_RED) {  //true = red
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
-            currentDistance = Math.sqrt(xLength + yLength);
+        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 
+            currentDistance = Math.sqrt(xLength + yLength);
         } else {
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }
 
-        return MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE);
+        System.out.println("DIST: " + currentDistance);
+
+        return MathUtil.clamp(currentDistance, 
+                              ShooterConstants.MIN_SHOOTER_DISTANCE, 
+                              ShooterConstants.MAX_SHOOTER_DISTANCE);
     }
 
     /** Gets correct Angle for pivot to turn to. */

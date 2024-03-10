@@ -17,6 +17,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -70,10 +72,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
         Slot0Configs configs = new Slot0Configs();
 
-        double[] distances = {1.08, 2, 3, 4, 5, 6, 7, 8};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 4.8, 5.6, ShooterConstants.MAX_SHOOTER_DISTANCE}; //TODO: 1.2 as lowest
 
-        double[] topSpeeds = {.3, .4, .44, .43, .6, .6, .6, .6};
-        double[] bottomSpeeds = {.36, .4, .44, .47, .64, .64, .64, .64};
+        double[] topSpeeds = {.4, .5, .7, .75, .75, .75, .75};
+        double[] bottomSpeeds = {.5, .5, .35, .4, .4, .75, .75};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
@@ -83,7 +85,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
 
         configs.kP = .5;
-        configs.kI = 0.005;
+        configs.kI = 0.05;
         configs.kD = 0;
         configs.kV = .12;
 
@@ -112,15 +114,15 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
         targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
 
-        // System.out.println("TARGET RPS " + targetTopRPS + " CURRENT " + shooterMotorTop.getVelocity().getValueAsDouble());
+        // System.out.println("TARGET RPS " + targetBottomRPS + " CURRENT " + shooterMotorBottom.getVelocity().getValueAsDouble());
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
         
-        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 5
-            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 5
+        atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 1
+            && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 1
             && targetBottomRPS != 0;
-        //System.out.println("shooter motor speed is: " + shooterMotorTop.get());
+        // System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
@@ -129,18 +131,24 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     }
 
     public void setShooterMotorSpeed(){
-        setShooterMotorSpeed(getTopSpeed(), getBottomSpeed());
+        setShooterMotorSpeed(getTopSetSpeed(), getBottomSetSpeed());
+    }
+
+    public void stopShooter(){
+        shooterMotorTop.set(0);
+        shooterMotorBottom.set(0);
+        atSpeed = false;
     }
 
     public boolean atSpeed() {
         return atSpeed;
     }
 
-    public double getTopSpeed() {
+    public double getTopSetSpeed() {
         return topFlywheelSpline.value(getShootingDistance());
     }
 
-    public double getBottomSpeed() {
+    public double getBottomSetSpeed() {
         return bottomFlywheelSpline.value(getShootingDistance());
     }
 
@@ -149,7 +157,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @return the actual speed in rotations per second
      */
-    public double getActualTopSpeed() {
+    public double getTopSpeed() {
         return shooterMotorTop.getVelocity().getValueAsDouble();
     }
     
@@ -158,7 +166,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @return the actual speed in rotations per second
      */
-    public double getActualBottomSpeed() {
+    public double getBottomSpeed() {
         return shooterMotorBottom.getVelocity().getValueAsDouble();
     }
 
@@ -182,18 +190,17 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     private double getShootingDistance() {
         double currentDistance;
-        double speakerHeight = Units.inchesToMeters(80.51);
         Pose2d currentField = poseSupplier.getPose2d();
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
-        if (SwerveConstants.IS_RED) {  //true = red
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
-            currentDistance = Math.sqrt(xLength + yLength);
+        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 
+            currentDistance = Math.sqrt(xLength + yLength);
         } else {
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }

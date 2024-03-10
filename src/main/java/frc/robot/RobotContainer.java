@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -27,6 +28,7 @@ import frc.robot.commands.auton.AutonFactoryFunction;
 import frc.robot.commands.auton.Bottom2PieceSequence;
 import frc.robot.commands.auton.BottomPreloadedSequence;
 import frc.robot.commands.auton.Middle2PieceSequence;
+import frc.robot.commands.auton.Middle4PieceSequence;
 import frc.robot.commands.auton.TaxiSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
@@ -38,7 +40,6 @@ import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
-import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.controllers.BaseDriveController;
@@ -56,7 +57,6 @@ import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
-import frc.robot.util.GRTUtil;
 
 
 /** The robot container. */
@@ -109,8 +109,8 @@ public class RobotContainer {
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
-    private double shooterTopSpeed = .1;
-    private double shooterBotSpeed = .1;
+    private double shooterTopSpeed = .75;
+    private double shooterBotSpeed = .4;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -170,6 +170,7 @@ public class RobotContainer {
 
         shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
             //TODO: switch to enum for dpad angles
+
             switch (mechController.getPOV()) {
                 case 0:
                     shooterPivotSetPosition += .003;
@@ -199,11 +200,12 @@ public class RobotContainer {
                     break;
             }
             
-            System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
-                           + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
-            );
+            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
+            //                + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
+            // );
 
-            shooterPivotSubsystem.getAutoAimAngle();
+            // shooterPivotSubsystem.getAutoAimAngle();
+            // shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
         }, shooterPivotSubsystem));
 
         /* ElEVATOR TEST */
@@ -279,39 +281,58 @@ public class RobotContainer {
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
-                shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed);
+                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); for tuning
+                shooterFlywheelSubsystem.setShooterMotorSpeed();
+                
             } else {
-                shooterFlywheelSubsystem.setShooterMotorSpeed(0);
+                shooterFlywheelSubsystem.stopShooter();
+            }
+
+            if (shooterFlywheelSubsystem.atSpeed()) {
+                mechController.setRumble(RumbleType.kBothRumble, .4);
+            } else {
+                mechController.setRumble(RumbleType.kBothRumble, 0);
+                if (lightBarSubsystem.getLightBarStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
+                    double top = shooterFlywheelSubsystem.getTopSpeed() / shooterFlywheelSubsystem.getTargetTopRPS();
+                    double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
+                                  / shooterFlywheelSubsystem.getTargetBottomRPS();
+                    double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
+
+                    lightBarSubsystem.updateShooterSpeedPercentage(avg);
+                }
+                
             }
         }, shooterFlywheelSubsystem
 
         ));
 
         // yButton.onTrue(new
-        // ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
+        //     ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
         // // new InstantCommand(() -> intakePivotSubsystem.setPosition(0),
-        // intakePivotSubsystem)
+        // // intakePivotSubsystem)
         // ));
 
-        yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
+        // yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
 
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
             double power = 0;
 
-            if (intakeRollerSubsystem.backSensorNow()) {
-                if (shooterFlywheelSubsystem.atSpeed()) {
-                    power = mechController.getRightTriggerAxis() > .1 ? 1 : .7 * (-mechController.getLeftTriggerAxis());
-                } else {
-                    power = .7 * (-mechController.getLeftTriggerAxis());
-                }
+            // if (intakeRollerSubsystem.backSensorNow()) {
+            //     if (shooterFlywheelSubsystem.atSpeed()) {
+            //         power = mechController.getRightTriggerAxis() > .1 
+            //                ? 1 : .7 * (-mechController.getLeftTriggerAxis());
+            //     } else {
+            //         power = .7 * (-mechController.getLeftTriggerAxis());
+            //     }
 
-            } else {
-                power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
-            }
+            // } else {
+            power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
+            // }
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
-        xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
+                    intakePivotSubsystem.encoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
 
         offsetUpButton.onTrue(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5)))
@@ -398,10 +419,15 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonPathChooser.getSelected().create(
-            intakePivotSubsystem, intakeRollerSubsystem, 
-            shooterFlywheelSubsystem, shooterPivotSubsystem, 
-            elevatorSubsystem, swerveSubsystem, lightBarSubsystem
-        );
+        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
+                shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem, fmsSubsystem);
+        // autonPathChooser.getSelected().create(intakePivotSubsystem,
+        // intakeRollerSubsystem,
+        // shooterFlywheelSubsystem,
+        // shooterPivotSubsystem,
+        // elevatorSubsystem,
+        // (SwerveSubsystem)
+        // baseSwerveSubsystem,
+        // ledSubsystem);
     }
 }

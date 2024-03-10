@@ -6,7 +6,7 @@
 
 package frc.robot.subsystems.intake;
 
-import static frc.robot.Constants.IntakeConstants.*;
+import static frc.robot.Constants.IntakeConstants;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -34,11 +34,11 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      * Subsystem controls the front, middle, and integration rollers for the intake
      */
     public IntakeRollersSubsystem() {
-        integrationMotor = new TalonSRX(INTEGRATION_MOTOR_ID);
-        frontMotors = new CANSparkMax(FRONT_MOTOR_ID, MotorType.kBrushless);
+        integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
+        frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
-        frontSensor = new AnalogPotentiometer(frontSensorID);
-        backSensor = new AnalogPotentiometer(backSensorID);
+        frontSensor = new AnalogPotentiometer(IntakeConstants.FRONT_SENSOR_ID);
+        backSensor = new AnalogPotentiometer(IntakeConstants.BACK_SENSOR_ID);
     
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
@@ -50,7 +50,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
      * if the sensor is reached (true) or not
      */
     public boolean frontSensorNow() {
-        if (frontSensor.get() >= frontSensorReached) {
+        if (frontSensor.get() >= IntakeConstants.FRONT_SENSOR_THRESHOLD) {
             return true;
         } else {
             return false;
@@ -62,7 +62,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     }
 
     public boolean backSensorNow() {
-        return backSensor.get() > BACK_SENSOR_REACHED;
+        return backSensor.get() > IntakeConstants.BACK_SENSOR_THRESHOLD;
     }
 
     public double getBackSensor() {
@@ -85,26 +85,6 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     public void setAllRollSpeed(double frontspeed, double integrationspeed) {
         frontMotors.set(frontspeed);
         integrationMotor.set(TalonSRXControlMode.PercentOutput, integrationspeed);
-    }
-
-    /**
-     * Sets the rollers to go outwards
-     * @param pressedA
-     */
-    public void setRollersOutwards(Boolean pressedA) {
-        if (pressedA == true)
-            frontMotors.set(rollersclockwise);
-
-    }
-
-    /**
-     * sets the rollers to go inwards (intake)
-     * @param pressedB
-     */
-    public void setRollersInwards(Boolean pressedB) {
-        if (pressedB == true)
-            frontMotors.set(rollersclockwise);
-
     }
 
     @Override
