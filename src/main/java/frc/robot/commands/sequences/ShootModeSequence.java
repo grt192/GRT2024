@@ -9,7 +9,7 @@ import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotSetAngleCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
@@ -38,7 +38,7 @@ public class ShootModeSequence extends SequentialCommandGroup {
      */
 
     public ShootModeSequence(
-            IntakeRollersSubsystem intakeRollerSubsystem,
+            IntakeRollerSubsystem intakeRollerSubsystem,
             ElevatorSubsystem elevatorSubsystem,
             ShooterFlywheelSubsystem shooterFlywheelSubsystem,
             ShooterPivotSubsystem shooterPivotSubsystem,

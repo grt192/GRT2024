@@ -49,7 +49,7 @@ import frc.robot.subsystems.climb.ManualClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -64,7 +64,7 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollersSubsystem intakeRollerSubsystem = new IntakeRollersSubsystem();
+    private final IntakeRollerSubsystem intakeRollerSubsystem = new IntakeRollerSubsystem();
 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
@@ -247,7 +247,7 @@ public class RobotContainer {
                     // if elevator is down
                     new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                             new IntakeRollerOuttakeCommand(intakeRollerSubsystem) // run rollers out to front sensor
-                                    .until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
+                                    .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
                             new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
                             new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2)), // angle intake for scoring
                     // check if the elevator is currently targeting one of the upper positions to choose what to do
@@ -317,7 +317,7 @@ public class RobotContainer {
 
             double power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
 
-            intakeRollerSubsystem.setAllRollSpeed(power, power);
+            intakeRollerSubsystem.setRollSpeeds(power, power);
         }, intakeRollerSubsystem));
 
         // Offset buttons to correct the shooter if needed

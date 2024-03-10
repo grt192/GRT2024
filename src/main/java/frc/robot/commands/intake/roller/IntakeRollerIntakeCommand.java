@@ -1,22 +1,22 @@
 package frc.robot.commands.intake.roller;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 
 /** Runs the rollers on the intake until a note is detected. */
 public class IntakeRollerIntakeCommand extends Command {
-    private final IntakeRollersSubsystem intakeSubsystem;
+    private final IntakeRollerSubsystem intakeSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
 
     /**
      * Runs the rollers on the intake until a note is detected.
      *
-     * @param intakeSubsystem The {@link IntakeRollersSubsystem} to run the rollers on
+     * @param intakeSubsystem The {@link IntakeRollerSubsystem} to run the rollers on
      * @param lightBarSubsystem The {@link LightBarSubsystem} to display the intaking on
      */
-    public IntakeRollerIntakeCommand(IntakeRollersSubsystem intakeSubsystem, LightBarSubsystem lightBarSubsystem) {
+    public IntakeRollerIntakeCommand(IntakeRollerSubsystem intakeSubsystem, LightBarSubsystem lightBarSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
         addRequirements(intakeSubsystem);
@@ -30,14 +30,14 @@ public class IntakeRollerIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        intakeSubsystem.setAllRollSpeed(.7, .7);
+        intakeSubsystem.setRollSpeeds(.7, .7);
     }
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.setAllRollSpeed(0, 0);
+        intakeSubsystem.setRollSpeeds(0, 0);
         lightBarSubsystem.setLightBarStatus(
-                intakeSubsystem.frontSensorNow() ? LightBarStatus.HOLDING_NOTE : LightBarStatus.DORMANT);
+                intakeSubsystem.getFrontSensorReached() ? LightBarStatus.HOLDING_NOTE : LightBarStatus.DORMANT);
     }
 
     @Override

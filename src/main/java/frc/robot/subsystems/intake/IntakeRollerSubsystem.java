@@ -10,20 +10,19 @@ import static frc.robot.Constants.IntakeConstants;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class IntakeRollersSubsystem extends SubsystemBase {
+/** The subsystem that controls the rollers on the intake. */
+public class IntakeRollerSubsystem extends SubsystemBase {
     private final CANSparkMax frontMotors;
     private final TalonSRX integrationMotor;
     private final AnalogPotentiometer frontSensor;
@@ -38,7 +37,7 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake.
      */
-    public IntakeRollersSubsystem() {
+    public IntakeRollerSubsystem() {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
@@ -53,9 +52,11 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     }
 
     /**
-     * if the sensor is reached (true) or not
+     * Gets whether a note is at the front sensor currently.
+     *
+     * @return Whether a note is at the front sensor currently.
      */
-    public boolean frontSensorNow() {
+    public boolean getFrontSensorReached() {
         if (frontSensor.get() >= IntakeConstants.FRONT_SENSOR_THRESHOLD) {
             return true;
         } else {
@@ -63,15 +64,30 @@ public class IntakeRollersSubsystem extends SubsystemBase {
         }
     }
 
-    public double getFrontSensor() {
+    /**
+     * Gets the front sensor value.
+     *
+     * @return The current measurement of the front sensor.
+     */
+    public double getFrontSensorValue() {
         return frontSensor.get();
     }
 
-    public boolean backSensorNow() {
+    /**
+     * Gets whether a note is at the back sensor currently.
+     *
+     * @return Whether a note is at the back sensor currently.
+     */
+    public boolean getBackSensorReached() {
         return backSensor.get() > IntakeConstants.BACK_SENSOR_THRESHOLD;
     }
 
-    public double getBackSensor() {
+    /**
+     * Gets the back sensor value.
+     *
+     * @return The current measurement of the back sensor.
+     */
+    public double getBackSensorValue() {
         return backSensor.get();
     }
 
@@ -93,33 +109,19 @@ public class IntakeRollersSubsystem extends SubsystemBase {
     }
 
     /**
-     * sets the speed for the front and middle rollers
-     * @param frontspeed
+     * sets the speed for the front and integration rollers.
+     *
+     * @param frontSpeed The speed for the front rollers.
+     * @param integrationSpeed The speed for the integration rollers.
      */
-    public void setRollSpeed(double frontspeed) {
-        frontMotors.set(frontspeed);
-    }
-
-    /**
-     * sets the speed for the front, middle, and integration rollers
-     * @param frontspeed
-     * @param integrationspeed
-     */
-    public void setAllRollSpeed(double frontspeed, double integrationspeed) {
-        frontMotors.set(frontspeed);
-        integrationMotor.set(TalonSRXControlMode.PercentOutput, integrationspeed);
+    public void setRollSpeeds(double frontSpeed, double integrationSpeed) {
+        frontMotors.set(frontSpeed);
+        integrationMotor.set(TalonSRXControlMode.PercentOutput, integrationSpeed);
     }
 
     @Override
     public void periodic() {
-        // System.out.println("intake color sensor: " + getColorSensor().red);
-        // This method will be called once per scheduler run
-        ntFrontPublisher.set(frontSensorNow());
-        ntBackPublisher.set(backSensorNow());
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
+        ntFrontPublisher.set(getFrontSensorReached());
+        ntBackPublisher.set(getBackSensorReached());
     }
 }

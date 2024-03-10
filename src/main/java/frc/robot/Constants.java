@@ -92,6 +92,11 @@ public final class Constants {
         public static final int FRONT_MOTOR_ID = 17;
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
+        
+        public static final double PIVOT_P = 1;
+        public static final double PIVOT_I = 0;
+        public static final double PIVOT_D = 0;
+        public static final double PIVOT_CONVERSION_FACTOR = 0.2142;
 
         public static final int FRONT_SENSOR_ID = 0;
         public static final int BACK_SENSOR_ID = 1;

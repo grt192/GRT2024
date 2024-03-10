@@ -7,7 +7,7 @@ import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.vision.NoteDetectionWrapper;
@@ -28,7 +28,7 @@ public class AutoIntakeSequence extends SequentialCommandGroup {
      */
     public AutoIntakeSequence(
         ElevatorSubsystem elevatorSubsystem, 
-        IntakeRollersSubsystem intakeRollersSubsystem,
+        IntakeRollerSubsystem intakeRollersSubsystem,
         SwerveSubsystem swerveSubsystem,
         NoteDetectionWrapper noteDetector,
         LightBarSubsystem lightBarSubsystem

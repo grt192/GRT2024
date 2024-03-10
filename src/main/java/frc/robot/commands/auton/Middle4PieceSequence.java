@@ -9,7 +9,7 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -29,7 +29,7 @@ public class Middle4PieceSequence extends BaseAutonSequence {
      * intakes top note, shoots, intakes bottom note, shoot.
      */                                     
     public Middle4PieceSequence(IntakePivotSubsystem intakePivotSubsystem,
-                                IntakeRollersSubsystem intakeRollersSubsystem,
+                                IntakeRollerSubsystem intakeRollersSubsystem,
                                 ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                                 ShooterPivotSubsystem shooterPivotSubsystem,
                                 ElevatorSubsystem elevatorSubsystem,

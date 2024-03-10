@@ -16,7 +16,7 @@ import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -30,7 +30,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 public class BaseAutonSequence extends SequentialCommandGroup {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollersSubsystem intakeRollerSubsystem;
+    private final IntakeRollerSubsystem intakeRollerSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
@@ -45,7 +45,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
 
     /** Constructs a {@link BaseAutonSequence} with auton-abstracted functions. */
     public BaseAutonSequence(IntakePivotSubsystem intakePivotSubsystem,
-                             IntakeRollersSubsystem intakeRollersSubsystem,
+                             IntakeRollerSubsystem intakeRollersSubsystem,
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                              ShooterPivotSubsystem shooterPivotSubsystem,
                              ElevatorSubsystem elevatorSubsystem,
@@ -115,7 +115,7 @@ public class BaseAutonSequence extends SequentialCommandGroup {
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
                 .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveForwardTime)),
-            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow),
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getBackSensorReached),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
             new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
         );

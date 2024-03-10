@@ -8,7 +8,7 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -29,7 +29,7 @@ public class IdleCommand extends ParallelCommandGroup {
      * @param ledSubsystem Resets the LEDs depending on where the note is.
      */
     public IdleCommand(IntakePivotSubsystem intakePivotSubsystem,
-                       IntakeRollersSubsystem intakeRollersSubsystem,
+                       IntakeRollerSubsystem intakeRollersSubsystem,
                        ElevatorSubsystem elevatorSubsystem,
                        ShooterPivotSubsystem shooterPivotSubsystem,
                        ShooterFlywheelSubsystem shooterFlywheelSubsystem,
@@ -41,12 +41,12 @@ public class IdleCommand extends ParallelCommandGroup {
         //                 climbSubsystem
         // );
 
-        addCommands(new InstantCommand(() -> intakeRollersSubsystem.setAllRollSpeed(0, 0), intakeRollersSubsystem),
+        addCommands(new InstantCommand(() -> intakeRollersSubsystem.setRollSpeeds(0, 0), intakeRollersSubsystem),
                     // new ElevatorToGroundCommand(elevatorSubsystem),
                     new ShooterFlywheelStopCommand(shooterFlywheelSubsystem),
                     new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem),
                     new InstantCommand(() -> {
-                        if (intakeRollersSubsystem.frontSensorNow()) {
+                        if (intakeRollersSubsystem.getFrontSensorReached()) {
                             ledSubsystem.setNoteMode(NotePosition.INTAKE_HOLDING);
                         } else {
                             ledSubsystem.setNoteMode(NotePosition.NONE);

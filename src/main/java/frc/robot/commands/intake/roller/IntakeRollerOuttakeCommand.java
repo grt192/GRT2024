@@ -3,14 +3,20 @@ package frc.robot.commands.intake.roller;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.util.TrackingTimer;
 
-public class IntakeRollerOuttakeCommand extends Command{
-    private final IntakeRollersSubsystem intakeSubsystem;
+/** Runs the rollers backwards infinitely. This means you must decorate the command with an end condition. */
+public class IntakeRollerOuttakeCommand extends Command {
+    private final IntakeRollerSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
-    public IntakeRollerOuttakeCommand(IntakeRollersSubsystem intakeSubsystem){
+    /**
+     * Runs the rollers outwards.
+     *
+     * @param intakeSubsystem The {@link IntakeRollerSubsystem} to outtake on.
+     */
+    public IntakeRollerOuttakeCommand(IntakeRollerSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         timer = new TrackingTimer();
         addRequirements(intakeSubsystem);
@@ -19,29 +25,18 @@ public class IntakeRollerOuttakeCommand extends Command{
     @Override
     public void initialize() {
         timer.reset();
-        intakeSubsystem.setAllRollSpeed(-1,-1); 
+        intakeSubsystem.setRollSpeeds(-1, -1); 
     }
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-       
-        if(intakeSubsystem.frontSensorNow()==false&& timer.hasStarted()==false ){
+        if (!intakeSubsystem.getFrontSensorReached() && !timer.hasStarted()) {
             timer.start();
         }
-
     }
 
     @Override
-    public void end(boolean interrupted){
-        // TODO Auto-generated method stub
-    
-        intakeSubsystem.setAllRollSpeed(0,0);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return timer.hasElapsed(2);
-       
+    public void end(boolean interrupted) {
+        intakeSubsystem.setRollSpeeds(0, 0);
     }
 }
