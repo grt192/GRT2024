@@ -17,20 +17,11 @@ public class ClimbLowerCommand extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("LOWERING CLIMB...");
         climbSubsystem.goToExtension(LOWER_LIMIT_METERS);
     }
 
     @Override
     public boolean isFinished() {
         return climbSubsystem.isAtTargetExtension();
-    }
-
-    @Override
-    public void execute() {}
-
-    @Override
-    public void end(boolean interrupted) {
-        System.out.println(interrupted ? "CLIMB LOWERING INTERRUPTED!" : "CLIMB LOWERED!");
     }
 }

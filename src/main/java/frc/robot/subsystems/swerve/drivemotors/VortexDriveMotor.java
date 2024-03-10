@@ -70,7 +70,6 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     @Override
     public void setPositionConversionFactor(double factor) {
         encoder.setPositionConversionFactor(factor);
-        System.out.println(" FACTOR " + factor);
     }
 
     @Override

@@ -66,8 +66,6 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        // System.out.println("asdf");
         // Number of leds to increment each continuous led layer by
         int inc = Math.min((int) Math.ceil(ledTimer.get() * LEDS_PER_SEC), LEDConstants.LED_LENGTH);
         ledTimer.reset();

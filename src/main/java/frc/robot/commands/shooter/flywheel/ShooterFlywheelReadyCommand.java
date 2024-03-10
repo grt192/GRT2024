@@ -22,8 +22,8 @@ public class ShooterFlywheelReadyCommand extends Command {
         this.lightBarSubsystem = lightBarSubsystem;
         addRequirements(shooterSubsystem, lightBarSubsystem);
 
-        topSpeed = shooterSubsystem.getTopSetSpeed();
-        bottomSpeed = shooterSubsystem.getBottomSetSpeed();
+        topSpeed = shooterSubsystem.getTopMotorSplineSpeed();
+        bottomSpeed = shooterSubsystem.getBottomMotorSplineSpeed();
     }
     
     /** Constructor for this command. */
@@ -54,22 +54,5 @@ public class ShooterFlywheelReadyCommand extends Command {
     @Override
     public boolean isFinished() {
         return shooterSubsystem.atSpeed();
-    }
-
-    // pivot: vertical, auto-aim
-    // feed: load, shoot
-    // shooter: stop, ready shooters
-
-    // load note
-    // shoot
-    // ready shooter
-    // vertical
-    // auto-angle
-
-    @Override
-    public void end(boolean interrupted) {
-        if (interrupted) {
-            System.out.println("Ready Shooter has been interrupted");
-        }
     }
 }

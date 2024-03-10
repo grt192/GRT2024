@@ -4,27 +4,26 @@
 
 package frc.robot.subsystems.camera;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.Constants;
-
-import java.util.EnumSet;
-
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import java.util.EnumSet;
 
+/** The subsystem that runs the driver cam. */
 public class CameraSubsystem extends SubsystemBase {
-    /** Creates a new ExampleSubsystem. */
+
     private UsbCamera camera1;
     private UsbCamera camera2;
     private MjpegServer mjpegServer1;
     private double currentCameraID;
     private NetworkTableInstance cameraNetworkTableInstance;
     private NetworkTable cameraNetworkTable;
-
+    
+    /** Constructs a new camera subsystem to run driver cams. */
     public CameraSubsystem() {
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -45,19 +44,20 @@ public class CameraSubsystem extends SubsystemBase {
                 EnumSet.of(NetworkTableEvent.Kind.kValueAll),
                 (NetworkTable table, String key, NetworkTableEvent event) -> {
                     double message = event.valueData.value.getDouble();
-                    System.out.println(message);
-                    if (message == currentCameraID) {
-                        // System.out.print("Still the same");
-                    } else if (message == 1.0) {
-                        // System.out.println("Set to cam1");
+                    if (message != currentCameraID && message == 1.0) {
                         switchTo(1);
-                    } else {
-                        // System.out.println("Set to cam2");
+                    } else if (message != currentCameraID && message == 2.0) {
                         switchTo(2);
                     }
                 });
     }
 
+    /**
+     * Switches the current camera being viewed. Not currently used because we only have one camera.
+     *
+     * @param cameraID The camera ID to switch to.
+     */
+    @Deprecated
     public void switchTo(int cameraID) {
         if (cameraID == 1) {
             currentCameraID = 1;

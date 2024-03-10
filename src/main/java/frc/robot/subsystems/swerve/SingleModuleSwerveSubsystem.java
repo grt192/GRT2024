@@ -76,6 +76,5 @@ public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem {
     /** Toggles whether the module should run or not. */
     public void toggleToRun() {
         toRun = !toRun;
-        System.out.println(toRun);
     }
 }

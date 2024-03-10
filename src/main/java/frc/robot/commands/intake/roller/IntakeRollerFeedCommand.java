@@ -2,50 +2,41 @@ package frc.robot.commands.intake.roller;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.util.TrackingTimer;
 
-public class IntakeRollerFeedCommand extends Command{
-    private final IntakeRollersSubsystem intakeSubsystem;
+/** Runs the rollers forwards infinitely. This means you must decorate the command with an end condition.*/
+public class IntakeRollerFeedCommand extends Command {
+    private final IntakeRollerSubsystem intakeSubsystem;
     private final TrackingTimer timer;
 
     /**
-     * Sets all the rollers inwards to pass note into shooter
-     * @param intakeSubsystem
+     * Sets all the rollers inwards to pass note into shooter.
+     *
+     * @param intakeRollerSubsystem The {@link IntakeRollerSubsystem} to set the powers to.
      */
-    public IntakeRollerFeedCommand(IntakeRollersSubsystem intakeSubsystem){
-        this.intakeSubsystem = intakeSubsystem;
+    public IntakeRollerFeedCommand(IntakeRollerSubsystem intakeRollerSubsystem) {
+        this.intakeSubsystem = intakeRollerSubsystem;
         timer = new TrackingTimer();
-        addRequirements(intakeSubsystem);
+        addRequirements(intakeRollerSubsystem);
     }
 
     @Override
     public void initialize() {
-        // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(.6, .6);
+        intakeSubsystem.setRollSpeeds(.6, .6);
         timer.reset();
     }
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-        if (intakeSubsystem.frontSensorNow() == false && timer.hasStarted() == false) {
+        if (intakeSubsystem.getFrontSensorReached() == false && timer.hasStarted() == false) {
             timer.start();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        // TODO Auto-generated method stub
-        intakeSubsystem.setAllRollSpeed(0, 0); 
+        intakeSubsystem.setRollSpeeds(0, 0); 
         
     }
-
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return timer.hasElapsed(2);
-    
-    }
-
 }

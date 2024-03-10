@@ -49,9 +49,9 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -203,19 +203,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     public void periodic() {
 
         robotPosEntry.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
-        // System.out.println(thetaController.getPositionError());
-        // System.out.println("  Error  " + Util.twoDecimals(frontRightModule.getDriveError()));
-        // System.out.print("  Setpoint  " + Util.twoDecimals(frontRightModule.getDriveSetpoint()));
-        // System.out.print("  Vel  " + Util.twoDecimals(frontRightModule.getDriveVelocity()));
-    
-        
-        // System.out.println(frontLeftModule.getDriveSetpoint());
-
-        // if (crimer.advanceIfElapsed(.1)){
-        //     //System.out.println("BR : " + backRightModule.getRawAngle());
-        //     System.out.println("BL : " + backLeftModule.getRawAngle());
-        // }
-
         SwerveModulePosition[] modulePos = getModulePositions(); 
     
         frontLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
@@ -241,14 +228,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             gyroAngle,
             getModulePositions()
         );
-        
-        // if(ahrsTimer.advanceIfElapsed(3)){
-        //     System.out.println(gyroAngle);
-        //     resetAhrs();
-        //     System.out.println(gyroAngle);
-        //     System.out.println("RESeT THE AHRS");
-        //     ahrsTimer.stop();
-        // }
+    
 
         fieldVisualization.setRobotPose(new Pose2d(
             GRTUtil.twoDecimals(estimate.getX() + 1),
@@ -325,7 +305,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             robotRelativeSpeeds,
             new Rotation2d(0)
         );
-        // System.out.println(speeds.vxMetersPerSecond);
 
         states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -484,7 +463,6 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
      * @return The robot Pose2d.
      */
     public Pose2d getRobotPosition() {
-        // System.out.println(poseEstimator.getEstimatedPosition().getRotation());
         return poseEstimator.getEstimatedPosition();
 
     }
@@ -546,6 +524,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         ahrs.zeroYaw();
     }
 
+    /** Prints the current module angles. Used for zeroing swerve. */
     public void printModuleAngles() {
         System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getMappedAngle())
                         + " FR: " + GRTUtil.twoDecimals(frontRightModule.getMappedAngle())
@@ -553,7 +532,12 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
                         + " BR: " + GRTUtil.twoDecimals(backRightModule.getMappedAngle()));
     }
 
-    public void setVerbose(boolean isVerbose){
+    /**
+     * Sets the verbosity of the swerve modules. Verbose mode prints out the angles of every module.
+     *
+     * @param isVerbose Whether to print the module angles.
+     */
+    public void setVerbose(boolean isVerbose) {
         verbose = isVerbose;
     }
 }

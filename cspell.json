@@ -6,6 +6,7 @@
     "words": [
         "ahrs",
         "Akima",
+        "AMPING",
         "apriltag",
         "AUTOAIM",
         "Auton",
@@ -19,6 +20,7 @@
         "drivemotors",
         "Holonomic",
         "intaking",
+        "leds",
         "mechs",
         "mjpeg",
         "mjpg",
@@ -26,7 +28,8 @@
         "roborio",
         "Setpoint",
         "setpoints",
-        "SUBWOOFER"
+        "SUBWOOFER",
+        "TELEOP"
     ],
     "ignoreWords": [],
     "import": []

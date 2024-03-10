@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.MatchStatus;
 
+/** The subsystem that manages everything field related. */
 public class FieldManagementSubsystem extends SubsystemBase {
 
     private boolean isRed;

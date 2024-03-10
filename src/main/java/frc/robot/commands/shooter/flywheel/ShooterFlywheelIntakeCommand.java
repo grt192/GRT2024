@@ -25,8 +25,4 @@ public class ShooterFlywheelIntakeCommand extends Command {
         return true;
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        System.out.println("Ready Shooter has been interuppted");
-    }
 }

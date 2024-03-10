@@ -36,8 +36,7 @@ import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
-import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
-import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
+import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.swerve.AlignCommand;
@@ -50,7 +49,7 @@ import frc.robot.subsystems.climb.ManualClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
-import frc.robot.subsystems.intake.IntakeRollersSubsystem;
+import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
@@ -65,7 +64,7 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollersSubsystem intakeRollerSubsystem = new IntakeRollersSubsystem();
+    private final IntakeRollerSubsystem intakeRollerSubsystem = new IntakeRollerSubsystem();
 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
@@ -237,76 +236,65 @@ public class RobotContainer {
         toggleClimbLimitsButton.onTrue(new InstantCommand(() -> climbSubsystem.enableSoftLimits(false)));
         toggleClimbLimitsButton.onFalse(new InstantCommand(() -> climbSubsystem.enableSoftLimits(true)));
 
-        /* Elevator controls -- */ //TODO: explain how these work
+        // rightBumper toggles the amp sequence 
+        // if the elevator is up, lower it and stow the intake
+        // if the elevator is down, run the amp sequence
         rightBumper.onTrue(
             new ConditionalCommand(
-                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                            () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem)
-                                    .until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
-                            new ElevatorToAmpCommand(elevatorSubsystem),
-                            new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2)),
+                    // if elevator is up
+                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                            () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
+                    // if elevator is down
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem) // run rollers out to front sensor
+                                    .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                            new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
+                            new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)), // angle intake for scoring
+                    // check if the elevator is currently targeting one of the upper positions to choose what to do
                     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
                             || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
 
+        // leftBumper toggles the trap position for the elevator
         leftBumper.onTrue(
                 new ConditionalCommand(
-                        new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
-                        new ElevatorToTrapCommand(elevatorSubsystem),
-                        () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
+                        new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
+                        new ElevatorToTrapCommand(elevatorSubsystem), // raise the elevator
+                        () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                                 || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
 
-        // GRTUtil.getBinaryCommandChoice(
 
-        // () -> elevatorSubsystem.getTargetState() == ElevatorState.TRAP,
-        // new ElevatorToTrapCommand(elevatorSubsystem),
-        // new ElevatorToZeroCommand(elevatorSubsystem)));
 
+        // aButton runs the intake sequence
         aButton.onTrue(
-                new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                        new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-                                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                                        new IntakeRollerFeedCommand(intakeRollerSubsystem)
-                                                .until(intakeRollerSubsystem::getNoteColorDetected),
-                                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
-                        // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
-                        ).unless(() -> mechController.getLeftTriggerAxis() > .1) // CANCEL IF TRY TO OUTTAKE
-                ).until(intakeRollerSubsystem::getNoteColorDetected)
-
-        // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow,
-        // new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-        // new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-        // new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen
-        // new
-        // IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
-        // // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
-        // ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO
-        // OUTTAKE
-        // ).until(intakeRollerSubsystem::backSensorNow),
-        // new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-        // new
-        // IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
-        // // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
-        // // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
-        // )
-        // ).unless(intakeRollerSubsystem::backSensorNow)
+            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
+                            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
+                                    // intake the note to the color sensor
+                                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
+                    ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+            )
         );
 
-        bButton.onTrue(new InstantCommand(() -> {
-        }, intakeRollerSubsystem));
+        // bButton stops the rollers
+        bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem));
 
+        // xButton toggles the intake being stowed
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
+            intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
+
+        // yButton runs the flywheels
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
-                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); for tuning
+                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); // for tuning
                 shooterFlywheelSubsystem.setShooterMotorSpeed();
                 
             } else {
                 shooterFlywheelSubsystem.stopShooter();
             }
 
+            // if we are at speed, rumble the mech controller
             if (shooterFlywheelSubsystem.atSpeed()) {
                 mechController.setRumble(RumbleType.kBothRumble, .4);
             } else {
@@ -322,46 +310,26 @@ public class RobotContainer {
                 
             }
         }, shooterFlywheelSubsystem
-
         ));
 
-        // yButton.onTrue(new
-        //     ShooterFlywheelReadyCommand(shooterFlywheelSubsystem).alongWith(
-        // // new InstantCommand(() -> intakePivotSubsystem.setPosition(0),
-        // // intakePivotSubsystem)
-        // ));
-
-        // yButton.onFalse(new ShooterFlywheelStopCommand(shooterFlywheelSubsystem));
-
+        // The triggers intake/outtake the rollers
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            double power = 0;
 
-            // if (intakeRollerSubsystem.backSensorNow()) {
-            //     if (shooterFlywheelSubsystem.atSpeed()) {
-            //         power = mechController.getRightTriggerAxis() > .1 
-            //                ? 1 : .7 * (-mechController.getLeftTriggerAxis());
-            //     } else {
-            //         power = .7 * (-mechController.getLeftTriggerAxis());
-            //     }
+            double power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
 
-            // } else {
-            power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
-            // }
-            intakeRollerSubsystem.setAllRollSpeed(power, power);
+            intakeRollerSubsystem.setRollSpeeds(power, power);
         }, intakeRollerSubsystem));
 
-        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
-                    intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
-
+        // Offset buttons to correct the shooter if needed
         offsetUpButton.onTrue(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5)))
+            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(3)))
         );
         offsetUpButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
         );
 
         offsetDownButton.onTrue(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-5)))
+            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-3)))
         );
         offsetDownButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))

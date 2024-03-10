@@ -78,7 +78,6 @@ public class SwerveModule {
 
         // untested for vortexes
         driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_PER_METER);
-        System.out.println("factor " + DRIVE_ROTATIONS_PER_METER);
         driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_PER_METER / 60.0); //Conversion from rpm to m/s
         
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
@@ -140,7 +139,6 @@ public class SwerveModule {
      * @param state The desired SwerveModuleState
      */
     public void setDesiredState(SwerveModuleState state) {
-        //System.out.println(state.angle.getDegrees());
         Rotation2d currentAngle = getWrappedAngle();
         SwerveModuleState optimized = SwerveModuleState.optimize(state, currentAngle);
 
