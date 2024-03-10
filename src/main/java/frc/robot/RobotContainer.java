@@ -117,6 +117,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         swerveSubsystem = new SwerveSubsystem();
+        swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
         intakePivotSubsystem = new IntakePivotSubsystem();
 
