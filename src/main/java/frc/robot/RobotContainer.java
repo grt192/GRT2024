@@ -268,7 +268,8 @@ public class RobotContainer {
                         new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
                                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
-                                                .until(intakeRollerSubsystem::getNoteColorDetected)
+                                                .until(intakeRollerSubsystem::getNoteColorDetected),
+                                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
                         ).unless(() -> mechController.getLeftTriggerAxis() > .1) // CANCEL IF TRY TO OUTTAKE
                 ).until(intakeRollerSubsystem::getNoteColorDetected)
@@ -276,7 +277,7 @@ public class RobotContainer {
         // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow,
         // new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
         // new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
-        // new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen(
+        // new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen
         // new
         // IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
         // // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
