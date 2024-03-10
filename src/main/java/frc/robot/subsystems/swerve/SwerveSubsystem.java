@@ -123,6 +123,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     private final GenericEntry backRightSteer;
     private final GenericEntry robotPosEntry;
 
+    private boolean verbose = false;
+
     /** Constructs a {@link SwerveSubsystem}. */
     public SwerveSubsystem() {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -263,6 +265,10 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         frontRightModule.setDesiredState(states[1]);
         backLeftModule.setDesiredState(states[2]);
         backRightModule.setDesiredState(states[3]);
+
+        if (verbose) {
+            printModuleAngles();
+        }
 
     }
 
@@ -538,5 +544,16 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
     /** Resets the ahrs on the navX. */
     public void resetAhrs() {
         ahrs.zeroYaw();
+    }
+
+    public void printModuleAngles() {
+        System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getMappedAngle())
+                        + " FR: " + GRTUtil.twoDecimals(frontRightModule.getMappedAngle())
+                        + " BL: " + GRTUtil.twoDecimals(backLeftModule.getMappedAngle())
+                        + " BR: " + GRTUtil.twoDecimals(backRightModule.getMappedAngle()));
+    }
+
+    public void setVerbose(boolean isVerbose){
+        verbose = isVerbose;
     }
 }
