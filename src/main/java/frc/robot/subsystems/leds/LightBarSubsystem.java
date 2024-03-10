@@ -116,7 +116,6 @@ public class LightBarSubsystem extends SubsystemBase {
      */
     public void setLightBarStatus(LightBarStatus status) {
         this.status = status;
-        // System.out.println(status);
     }
 
     /** Gets the status of the light bar.
@@ -125,7 +124,6 @@ public class LightBarSubsystem extends SubsystemBase {
      */
     public LightBarStatus getLightBarStatus() {
         return this.status;
-        // System.out.println(status);
     }
 
     /** Updates the coefficient storing the current percentage of shooter speed reached. 

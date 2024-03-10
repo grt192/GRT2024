@@ -38,43 +38,10 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Initializes elevator subsystem.
      */
     public ElevatorSubsystem() {
-        // Print out current position for debug & measurement
-        // System.out.print(extensionEncoder.getPosition());
 
         timer.start();
         
         zeroLimitSwitch = new DigitalInput(ElevatorConstants.ZERO_LIMIT_ID); 
-        
-        // elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
-        // elevatorNetworkTable = elevatorNetworkTableInstance.getTable("elevator");
-        // elevatorNetworkTable.addListener("target_position",
-        //     EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-        //     (NetworkTable table, String key, NetworkTableEvent event) -> {
-        //         String message = event.valueData.value.getString();
-        //         System.out.println(message);
-        //         if (message.equals("GROUND")) {
-        //             System.out.println("Setting Target to Ground");
-        //             this.setTargetState(ElevatorState.ZERO);
-        //         } else if (message.equals("SPEAKER")) {
-        //             System.out.println("Setting Target to TRAP");
-        //             this.setTargetState(ElevatorState.TRAP);
-        //         } else if (message.equals("AMP")) {
-        //             System.out.println("Setting Target to AMP");
-        //             this.setTargetState(ElevatorState.AMP);
-        //         } else {
-        //             return;
-        //         }
-        //         ElevatorState currentTargetState = this.getTargetState();
-        //         if (currentTargetState.equals(ElevatorState.AMP)) {
-        //             System.out.println("New target state is AMP!");
-        //         } else if (currentTargetState.equals(ElevatorState.ZERO)) {
-        //             System.out.println("New target state is GROUND!");
-        //         } else if (currentTargetState.equals(ElevatorState.TRAP)) {
-        //             System.out.println("New target state is TRAP!");
-        //         }
-        //     }
-        // );
-        // this entry is working!
 
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
@@ -102,29 +69,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        // System.out.println(elevatorNetworkTablePositionEntry.getString("default"));
-        // if(timer.advanceIfElapsed(.2)){
-        //     System.out.println(zeroLimitSwitch.get());
-        // }
-
-        
-        // System.out.println(extensionEncoder.getPosition()); 
-        
-        // System.out.println(this.getTargetState());
+ 
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
         }
          
         if (zeroLimitSwitch != null && !zeroLimitSwitch.get()) {
-            // System.out.println("RESET LIMIT");
             extensionEncoder.setPosition(0); 
         }
-
-        // System.out.println(getTargetState());
-        
-        // extensionMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-        // this through overun when no motor connected.
     }
     
     /**

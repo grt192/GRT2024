@@ -109,7 +109,6 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 1
             && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 1
             && targetBottomRPS != 0;
-        // System.out.println("shooter motor speed is: " + shooterMotorTop.get());
     }
 
     /** Sets shooting motor speed for only one speed. */
@@ -195,7 +194,6 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private double getShootingDistance() {
         double currentDistance;
         Pose2d currentField = poseSupplier.getPose2d();
-        //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);

@@ -81,7 +81,6 @@ public class ClimbArm {
         } catch (Exception e) {
             tempLatch = null;
             hookIsLatched = false;
-            System.out.println("Climb arm initialized without a solenoid latch.");
         }
         latch = tempLatch;
 

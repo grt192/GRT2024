@@ -162,7 +162,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     /** Gets position of encoder. */
     public double getPosition() {
-        //System.out.println("rotation encoder position: " + rotationEncoder.getPosition());
         return rotationEncoder.getPosition();
     }
 

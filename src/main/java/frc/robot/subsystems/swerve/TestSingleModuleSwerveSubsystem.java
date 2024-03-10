@@ -176,7 +176,6 @@ public class TestSingleModuleSwerveSubsystem extends SingleModuleSwerveSubsystem
     /** Toggle if the module is running. */
     public void toggleToRun() {
         toRun = !toRun;
-        System.out.println(toRun);
     }
 
 }
