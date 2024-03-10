@@ -266,7 +266,7 @@ public class RobotContainer {
 
         aButton.onTrue(
                 new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0).alongWith(
+                        new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
                                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
                                                 .until(intakeRollerSubsystem::backSensorNow)
@@ -331,7 +331,8 @@ public class RobotContainer {
             intakeRollerSubsystem.setAllRollSpeed(power, power);
         }, intakeRollerSubsystem));
 
-        xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem));
+        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
+                    intakePivotSubsystem.encoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
 
         offsetUpButton.onTrue(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5)))

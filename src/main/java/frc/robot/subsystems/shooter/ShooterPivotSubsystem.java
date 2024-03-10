@@ -93,15 +93,22 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         pivotMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         pivotMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
-        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 2, 3, 3.71, 5, 5.6, 7, ShooterConstants.MAX_SHOOTER_DISTANCE};
+        double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 
+                              2, 
+                              3, 
+                              3.71, 
+                              5, 
+                              5.6, 
+                              7, 
+                              ShooterConstants.MAX_SHOOTER_DISTANCE};
         double[] angles = {Units.degreesToRadians(65.5), 
-                           Units.degreesToRadians(57.5), 
-                           Units.degreesToRadians(51), 
-                           Units.degreesToRadians(40),
-                           Units.degreesToRadians(36.5),
-                           Units.degreesToRadians(35),
-                           Units.degreesToRadians(27),
-                           Units.degreesToRadians(27)};
+                           Units.degreesToRadians(53.5), 
+                           Units.degreesToRadians(45), 
+                           Units.degreesToRadians(36),
+                           Units.degreesToRadians(33.5),
+                           Units.degreesToRadians(32),
+                           Units.degreesToRadians(28),
+                           Units.degreesToRadians(28)};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
@@ -131,16 +138,18 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
-            currentDistance = Math.sqrt(xLength + yLength);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 
+            currentDistance = Math.sqrt(xLength + yLength);
         } else {
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }
+
+        System.out.println("DIST: " + currentDistance);
 
         return MathUtil.clamp(currentDistance, 
                               ShooterConstants.MIN_SHOOTER_DISTANCE, 

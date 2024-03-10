@@ -1,7 +1,5 @@
 package frc.robot.commands.intake.pivot;
 
-import static frc.robot.Constants.IntakeConstants.encodermiddle;
-import static frc.robot.Constants.IntakeConstants.pivotcounterclockwise;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;

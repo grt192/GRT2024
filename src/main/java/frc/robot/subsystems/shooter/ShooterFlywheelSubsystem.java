@@ -194,13 +194,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         //System.out.println("Angle of shooter" + Math.atan(speakerHeight/distance));
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.RED_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.RED_SPEAKER_POSE.getY(), 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         } else {
-            double xLength = Math.pow(currentField.getX() - AutoAlignConstants.BLUE_SPEAKER_POSE.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - AutoAlignConstants.BLUE_SPEAKER_POSE.getY(), 2);
+            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
+            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }

@@ -120,6 +120,14 @@ public final class Constants {
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
         public static final double MIN_SHOOTER_DISTANCE = 1.08;
         public static final double MAX_SHOOTER_DISTANCE = 8;
+
+        //center of red speaker: (652.73 218.42)
+        public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
+        public static final double RED_Y = Units.inchesToMeters(218.42);
+
+        //center of blue speaker: (-1.50 218.42)
+        public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
+        public static final double BLUE_Y = Units.inchesToMeters(218.42);
     }
 
     /** Constants for Climb Subsystem. */
