@@ -36,7 +36,7 @@ import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
-import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
+import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.swerve.AlignCommand;
@@ -245,11 +245,11 @@ public class RobotContainer {
                     new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                             () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(// extend pivot
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                             new IntakeRollerOuttakeCommand(intakeRollerSubsystem) // run rollers out to front sensor
                                     .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
                             new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
-                            new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2)), // angle intake for scoring
+                            new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)), // angle intake for scoring
                     // check if the elevator is currently targeting one of the upper positions to choose what to do
                     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
                             || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
@@ -268,10 +268,10 @@ public class RobotContainer {
         // aButton runs the intake sequence
         aButton.onTrue(
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
                             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                     // intake the note to the color sensor
-                                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // stow intake
+                                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
                     ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             )
         );

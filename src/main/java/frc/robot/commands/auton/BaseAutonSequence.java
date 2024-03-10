@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
-import frc.robot.commands.intake.pivot.IntakePivotMiddleCommand;
+import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
@@ -110,14 +110,14 @@ public class BaseAutonSequence extends SequentialCommandGroup {
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
         return followPath(intakeTrajectory).alongWith(
             new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1)
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
             )
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
                 .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveForwardTime)),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getBackSensorReached),
             new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.15),
-            new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
+            new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
         );
     }
 
