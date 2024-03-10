@@ -5,6 +5,8 @@ import static frc.robot.Constants.IntakeConstants.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,15 +23,19 @@ public class IntakePivotSubsystem extends SubsystemBase {
     private final double CONVERSION_FACTOR = 0.2142; // TODO tune
     private final double OFFSET = 0;// 0.9495;
 
+    private double setPos = 0;
+
     
      /**
       * Subsystem for controlling the pivot on the intake.
       */
     public IntakePivotSubsystem() {
         pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
+        pivotMotor.setNeutralMode(NeutralModeValue.Brake);
         // intakeencoder = new Encoder(1, 2);
         // extendedlimitswitch = new DigitalInput(extendedlimitswitchID);
         // retractedlimitswitch = new DigitalInput(retractedlimitswitchID);
+
         Slot0Configs slot0Configs = new Slot0Configs();
 
         slot0Configs.kP = P;
@@ -47,7 +53,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     public void setPosition(double position) {
         pivotMotor.setControl(request.withPosition((position - OFFSET) / CONVERSION_FACTOR));
-
+        setPos = position;
     }
 
     /**
@@ -60,7 +66,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     /**
      * returns the encoder position.
      */
-    public double encoderPosition() {
+    public double getEncoderPosition() {
         return pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR + OFFSET;
     }
 
@@ -97,6 +103,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        pivotMotor.setControl(request.withPosition((setPos - OFFSET) / CONVERSION_FACTOR));
         // System.out.println(pivotMotor.getPosition().getValueAsDouble() * CONVERSION_FACTOR);
     }
 }

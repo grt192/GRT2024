@@ -239,16 +239,15 @@ public class RobotContainer {
         /* Elevator controls -- */ //TODO: explain how these work
         rightBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
-                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
-                new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
-                    new IntakeRollerOuttakeCommand(intakeRollerSubsystem).until(
-                        () -> intakeRollerSubsystem.getFrontSensor() > .12),
-                    new ElevatorToAmpCommand(elevatorSubsystem),
-                    new IntakePivotMiddleCommand(intakePivotSubsystem, 0)),
-                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
-        );
+                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(
+                            () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)),
+                    new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem)
+                                    .until(() -> intakeRollerSubsystem.getFrontSensor() > .12),
+                            new ElevatorToAmpCommand(elevatorSubsystem),
+                            new IntakePivotMiddleCommand(intakePivotSubsystem, 0.2)),
+                    () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
+                            || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
 
         leftBumper.onTrue(
                 new ConditionalCommand(
@@ -269,10 +268,29 @@ public class RobotContainer {
                         new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
                                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                         new IntakeRollerFeedCommand(intakeRollerSubsystem)
-                                                .until(intakeRollerSubsystem::backSensorNow)
+                                                .until(intakeRollerSubsystem::getNoteColorDetected),
+                                        new IntakePivotMiddleCommand(intakePivotSubsystem, 0)
                         // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
                         ).unless(() -> mechController.getLeftTriggerAxis() > .1) // CANCEL IF TRY TO OUTTAKE
-                ).until(intakeRollerSubsystem::backSensorNow)
+                ).until(intakeRollerSubsystem::getNoteColorDetected)
+
+        // GRTUtil.getBinaryCommandChoice(intakeRollerSubsystem::frontSensorNow,
+        // new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
+        // new IntakePivotMiddleCommand(intakePivotSubsystem, 1).alongWith(
+        // new IntakeRollerIntakeCommand(intakeRollerSubsystem, ledSubsystem)).andThen
+        // new
+        // IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+        // // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
+        // ).unless(() -> mechController.getLeftTriggerAxis() > .1) //CANCEL IF TRY TO
+        // OUTTAKE
+        // ).until(intakeRollerSubsystem::backSensorNow),
+        // new IntakePivotMiddleCommand(intakePivotSubsystem, 1).andThen(
+        // new
+        // IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::backSensorNow)
+        // // new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(.1),
+        // // new IntakePivotMiddleCommand(intakePivotSubsystem, 0) // TODO: ADD THIS
+        // )
+        // ).unless(intakeRollerSubsystem::backSensorNow)
         );
 
         bButton.onTrue(new InstantCommand(() -> {
@@ -332,7 +350,7 @@ public class RobotContainer {
         }, intakeRollerSubsystem));
 
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
-                    intakePivotSubsystem.encoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
+                    intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
 
         offsetUpButton.onTrue(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(5)))
