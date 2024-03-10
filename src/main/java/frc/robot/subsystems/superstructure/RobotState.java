@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure;
 
+/** The robot state. */
 public enum RobotState {
     INTAKE(),
     AMP(),
@@ -8,7 +9,7 @@ public enum RobotState {
     IDLE();
 
 
-    private RobotState(){
+    private RobotState() {
     }
 
 }

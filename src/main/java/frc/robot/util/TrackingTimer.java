@@ -22,6 +22,7 @@ public class TrackingTimer extends Timer {
 
     /**
      * Gets whether the timer has started.
+     *
      * @return Whether the timer has started.
      */
     public boolean hasStarted() {

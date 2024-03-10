@@ -119,6 +119,10 @@ public class LightBarSubsystem extends SubsystemBase {
         // System.out.println(status);
     }
 
+    /** Gets the status of the light bar.
+     *
+     * @return The current light bar status.
+     */
     public LightBarStatus getLightBarStatus() {
         return this.status;
         // System.out.println(status);

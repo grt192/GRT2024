@@ -22,8 +22,8 @@ public class ShooterFlywheelReadyCommand extends Command {
         this.lightBarSubsystem = lightBarSubsystem;
         addRequirements(shooterSubsystem, lightBarSubsystem);
 
-        topSpeed = shooterSubsystem.getTopSetSpeed();
-        bottomSpeed = shooterSubsystem.getBottomSetSpeed();
+        topSpeed = shooterSubsystem.getTopMotorSplineSpeed();
+        bottomSpeed = shooterSubsystem.getBottomMotorSplineSpeed();
     }
     
     /** Constructor for this command. */

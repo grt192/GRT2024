@@ -7,23 +7,17 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.util.Pose2dSupplier;
 import frc.robot.util.GRTUtil;
-
+import frc.robot.util.Pose2dSupplier;
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
-import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 /** Controls motors and functions for the pivot part of shooter mech. */
@@ -35,7 +29,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     //devices
     private RelativeEncoder rotationEncoder;
     private SparkPIDController rotationPIDController;
-    private final DigitalInput limitSwitch;
 
     //angle PID (CHANGE LATER
     private static final double ANGLE_P = 1;
@@ -43,7 +36,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private static final double ANGLE_D = 0;
 
     //field
-    private boolean alliance; //true equals red alliance 
     private boolean autoAim;
     private double currentEncoderAngle;
     private double currentDistance;
@@ -71,7 +63,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         rotationEncoder = pivotMotor.getEncoder();
         rotationPIDController = pivotMotor.getPIDController();
         rotationPIDController.setOutputRange(-.3, 0.6);
-        limitSwitch = new DigitalInput(ShooterConstants.LIMIT_SWITCH_ID);
 
 
         //setting PID vars
@@ -161,9 +152,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         currentDistance = getShootingDistance();
 
-        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) + 
-                           " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
-                           + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())) );
+        System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) 
+            + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+            + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
         
         // if (currentDistance < 1.75) {
         //     return Units.degreesToRadians(62);

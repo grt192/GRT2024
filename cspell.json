@@ -6,6 +6,7 @@
     "words": [
         "ahrs",
         "Akima",
+        "AMPING",
         "apriltag",
         "AUTOAIM",
         "Auton",
@@ -26,7 +27,8 @@
         "roborio",
         "Setpoint",
         "setpoints",
-        "SUBWOOFER"
+        "SUBWOOFER",
+        "TELEOP"
     ],
     "ignoreWords": [],
     "import": []

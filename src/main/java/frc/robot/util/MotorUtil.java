@@ -1,20 +1,20 @@
 package frc.robot.util;
 
-import java.util.function.Consumer;
-
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.REVLibError;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DriverStation;
+import java.util.function.Consumer;
 
+/** Motor utility functions. */
 public class MotorUtil {
 
     /**
      * Creates a CANSparkMax on a given device ID and motor type, configuring it with global defaults.
+     *
      * @param deviceId The CAN ID of the SparkMax.
      * @param motorType The SparkMax's motor type (kBrushed or kBrushless).
      * @param configureMotor A callback to configure the motor further before settings are burned to flash.
@@ -36,6 +36,7 @@ public class MotorUtil {
 
     /**
      * Creates a brushless CANSparkMax on a given device ID, configuring it with global defaults.
+     *
      * @param deviceId The CAN ID of the SparkMax.
      * @param configureMotor A callback to configure the motor further before settings are burned to flash.
      * @return The configured SparkMax.
@@ -46,6 +47,7 @@ public class MotorUtil {
 
     /**
      * Creates a brushless CANSparkMax on a given device ID, configuring it with global defaults.
+     *
      * @param deviceId The CAN ID of the SparkMax.
      * @return The configured SparkMax.
      */
@@ -55,6 +57,7 @@ public class MotorUtil {
 
     /**
      * Creates a brushless CANSparkMax for a NEO 550 on a given device ID, configuring it with global defaults.
+     *
      * @param deviceId The CAN ID of the SparkMax.
      * @param configureMotor A callback to configure the motor further before settings are burned to flash.
      * @return The configured SparkMax.
@@ -75,6 +78,7 @@ public class MotorUtil {
 
     /**
      * Creates a brushless CANSparkMax for a NEO 550 on a given device ID, configuring it with global defaults.
+     *
      * @param deviceId The CAN ID of the SparkMax.
      * @return The configured SparkMax.
      */
@@ -84,6 +88,7 @@ public class MotorUtil {
 
     /**
      * Creates a SparkMaxPIDController from a given SparkMax and feedback device.
+     *
      * @param spark The SparkMax to get a PID controller for.
      * @param encoder The feedback device to use for PID.
      * @return The configured SparkMaxPIDController.
@@ -97,6 +102,13 @@ public class MotorUtil {
         return pidController;
     }
 
+    /**
+     * Creates a SparkMaxPIDController from a given SparkFlex and feedback device.
+     *
+     * @param spark The SparkFlex to get a PID controller for.
+     * @param encoder The feedback device to use for PID.
+     * @return The configured SparkMaxPIDController.
+     */
     public static SparkPIDController createSparkPIDController(CANSparkFlex spark, MotorFeedbackSensor encoder) {
         SparkPIDController pidController = spark.getPIDController();
 
@@ -108,12 +120,15 @@ public class MotorUtil {
 
     /**
      * Checks a CANSparkMax configuration call for an error, reporting it if it exists.
+     *
      * @param id The CAN ID of the SparkMax.
      * @param error The error returned by the configuration.
      * @param field The field being configured.
      */
     private static void checkError(int id, REVLibError error, String field) {
-        if (error == REVLibError.kOk) return;
+        if (error == REVLibError.kOk) {
+            return;
+        }
         DriverStation.reportError("Error configuring [" + field + "] on SparkMax " + id + ": " + error.name(), false);
     }
 }

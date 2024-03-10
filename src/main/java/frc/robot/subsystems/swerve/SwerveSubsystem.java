@@ -49,9 +49,9 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -546,6 +546,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         ahrs.zeroYaw();
     }
 
+    /** Prints the current module angles. Used for zeroing swerve. */
     public void printModuleAngles() {
         System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getMappedAngle())
                         + " FR: " + GRTUtil.twoDecimals(frontRightModule.getMappedAngle())
@@ -553,7 +554,12 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
                         + " BR: " + GRTUtil.twoDecimals(backRightModule.getMappedAngle()));
     }
 
-    public void setVerbose(boolean isVerbose){
+    /**
+     * Sets the verbosity of the swerve modules. Verbose mode prints out the angles of every module.
+     *
+     * @param isVerbose Whether to print the module angles.
+     */
+    public void setVerbose(boolean isVerbose) {
         verbose = isVerbose;
     }
 }

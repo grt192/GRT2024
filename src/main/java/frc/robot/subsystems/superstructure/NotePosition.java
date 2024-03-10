@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure;
 
+/** The note position in/around the robot. */
 public enum NotePosition {
     NONE(),
     INTAKING(), //seen and picking up
@@ -12,7 +13,7 @@ public enum NotePosition {
     SHOOTING(),
     AMPING();
 
-    private NotePosition(){
+    private NotePosition() {
 
     }
 }

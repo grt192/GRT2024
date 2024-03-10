@@ -4,27 +4,26 @@
 
 package frc.robot.subsystems.camera;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.Constants;
-
-import java.util.EnumSet;
-
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import java.util.EnumSet;
 
+/** The subsystem that runs the driver cam. */
 public class CameraSubsystem extends SubsystemBase {
-    /** Creates a new ExampleSubsystem. */
+
     private UsbCamera camera1;
     private UsbCamera camera2;
     private MjpegServer mjpegServer1;
     private double currentCameraID;
     private NetworkTableInstance cameraNetworkTableInstance;
     private NetworkTable cameraNetworkTable;
-
+    
+    /** Constructs a new camera subsystem to run driver cams. */
     public CameraSubsystem() {
         camera1 = new UsbCamera("camera1", 0);
         camera1.setFPS(60);
@@ -58,6 +57,12 @@ public class CameraSubsystem extends SubsystemBase {
                 });
     }
 
+    /**
+     * Switches the current camera being viewed. Not currently used because we only have one camera.
+     *
+     * @param cameraID The camera ID to switch to.
+     */
+    @Deprecated
     public void switchTo(int cameraID) {
         if (cameraID == 1) {
             currentCameraID = 1;

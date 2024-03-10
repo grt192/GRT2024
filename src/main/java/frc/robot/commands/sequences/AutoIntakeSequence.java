@@ -32,12 +32,12 @@ public class AutoIntakeSequence extends SequentialCommandGroup {
         SwerveSubsystem swerveSubsystem,
         NoteDetectionWrapper noteDetector,
         LightBarSubsystem lightBarSubsystem
-    ){
-        addCommands(new ElevatorToZeroCommand(elevatorSubsystem)
-        .andThen(new NoteAlignCommand(swerveSubsystem, noteDetector))
-        .andThen(new ParallelDeadlineGroup(
-            new IntakeRollerIntakeCommand(intakeRollersSubsystem, lightBarSubsystem).withTimeout(3),
-            new DriveForwardCommand(swerveSubsystem)))
+    ) {
+        addCommands(new ElevatorToZeroCommand(elevatorSubsystem).andThen(
+            new NoteAlignCommand(swerveSubsystem, noteDetector)),
+            new ParallelDeadlineGroup(
+                new IntakeRollerIntakeCommand(intakeRollersSubsystem, lightBarSubsystem).withTimeout(3),
+                new DriveForwardCommand(swerveSubsystem))
         );
     }
 }

@@ -99,7 +99,8 @@ public class DualJoystickDriveController extends BaseDriveController {
         return leftTopRightButton.getAsBoolean();
     }
     
-    public JoystickButton getShooterAimButton(){
+    @Override
+    public JoystickButton getShooterAimButton() {
         return leftTopRightButton;
     }   
 }   
