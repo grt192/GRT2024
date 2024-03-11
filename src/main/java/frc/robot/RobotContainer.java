@@ -33,7 +33,6 @@ import frc.robot.commands.auton.TaxiSequence;
 import frc.robot.commands.auton.Top2PieceSequence;
 import frc.robot.commands.auton.TopPreloadedSequence;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
-import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
@@ -246,7 +245,7 @@ public class RobotContainer {
                             () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
-                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem) // run rollers out to front sensor
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .5) // run rollers out to front sensor
                                     .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
                             new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
                             new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)), // angle intake for scoring
@@ -267,7 +266,7 @@ public class RobotContainer {
 
         // aButton runs the intake sequence
         aButton.onTrue(
-            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
+            new ElevatorToZeroCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
                             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
                                     // intake the note to the color sensor
@@ -281,7 +280,8 @@ public class RobotContainer {
 
         // xButton toggles the intake being stowed
         xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
-            intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : .2), intakePivotSubsystem));
+            intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : 
+            elevatorSubsystem.getExtensionPercent() > .5 ? .2 : 0), intakePivotSubsystem));
 
         // yButton runs the flywheels
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
