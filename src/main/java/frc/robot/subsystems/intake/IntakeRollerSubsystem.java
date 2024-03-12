@@ -18,6 +18,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,12 +28,14 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private final TalonSRX integrationMotor;
     private final AnalogPotentiometer frontSensor;
     private final AnalogPotentiometer backSensor;
-    private final ColorSensorV3 colorSensor;
+    private ColorSensorV3 colorSensor;
 
     private NetworkTableInstance ntInstance;
     private NetworkTable ntTable;
     private BooleanPublisher ntFrontPublisher;
     private BooleanPublisher ntBackPublisher;
+
+    private Timer colorResetTimer;
 
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake.
@@ -49,6 +52,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         ntTable = ntInstance.getTable("RobotStatus");
         ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
         ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
+
+        colorResetTimer.start();
     }
 
     /**
@@ -98,6 +103,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
      */
     public Color getColorSensor() {
         return colorSensor.getColor();
+        
     }
 
     /** Return whether the color sensor detects a note or not.
@@ -105,7 +111,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
      * @return whether the color sensor detects a note or not.
      */
     public boolean getNoteColorDetected() { 
-        return getColorSensor().red >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
+        return colorSensor.getRed() >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
     }
 
     /**
@@ -123,5 +129,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public void periodic() {
         ntFrontPublisher.set(getFrontSensorReached());
         ntBackPublisher.set(getBackSensorReached());
+        if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
+            colorSensor = new ColorSensorV3(I2C.Port.kMXP);
+        }
     }
 }
