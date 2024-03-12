@@ -32,7 +32,7 @@ import frc.robot.util.GRTUtil;
  * The base autonomous sequence that other autons extend. This class provides functions that abstract shared tasks
  * between autons.
  */
-public class AutonBuilder extends SequentialCommandGroup {
+public class AutonBuilder {
 
     private final IntakePivotSubsystem intakePivotSubsystem;
     private final IntakeRollerSubsystem intakeRollerSubsystem;
@@ -45,8 +45,6 @@ public class AutonBuilder extends SequentialCommandGroup {
     private final PIDController thetaController;
     private final PIDController xPID;
     private final PIDController yPID;
-
-    private double driveForwardTime = 1;
 
     /** Constructs a {@link AutonBuilder} with auton-abstracted functions. */
     public AutonBuilder(IntakePivotSubsystem intakePivotSubsystem,
@@ -66,19 +64,9 @@ public class AutonBuilder extends SequentialCommandGroup {
         this.lightBarSubsystem = lightBarSubsystem;
         this.fmsSubsystem = fmsSubsystem;
 
-        addRequirements(swerveSubsystem, intakeRollersSubsystem, intakePivotSubsystem);
-
-        // isRed = false ; //DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
         thetaController = new PIDController(3.5, 0, 0);
-
-        addCommands(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).withTimeout(
-                AutonConstants.SHOOT_FEED_TIME
-            )
-        );
     }
 
     /**
@@ -88,8 +76,7 @@ public class AutonBuilder extends SequentialCommandGroup {
      * @return followPath command
      */
     public Command followPath(ChoreoTrajectory trajectory) {
-        // swerveSubsystem.resetPose(trajectory.getInitialPose());
-        Command swerveCommand = Choreo.choreoSwerveCommand(
+        return Choreo.choreoSwerveCommand(
             trajectory,
             swerveSubsystem::getRobotPosition,
             xPID, 
@@ -104,8 +91,7 @@ public class AutonBuilder extends SequentialCommandGroup {
             }),
             fmsSubsystem::isRedAlliance,
             swerveSubsystem
-            );
-        return swerveCommand;
+        );
     }
 
     /**
@@ -121,7 +107,7 @@ public class AutonBuilder extends SequentialCommandGroup {
             )
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(driveForwardTime)),
+                .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(AutonConstants.INTAKE_SWERVE_TIME)),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
         );
     }
