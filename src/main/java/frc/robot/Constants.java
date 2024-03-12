@@ -192,6 +192,19 @@ public final class Constants {
                 Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(90));
     }
 
+    /** Constants for auton. */
+    public static class AutonConstants {
+        public static double INTAKE_SWERVE_SPEED = .15;
+        public static double INTAKE_SWERVE_TIME = 1;
+
+        public static double SHOOT_READY_TIME = 3;
+        public static double SHOOT_FEED_TIME = .5;
+
+        public static Pose2d TOP_START_POSE = new Pose2d(new Translation2d(1.43, 7.01), new Rotation2d());
+        public static Pose2d MIDDLE_START_POSE = new Pose2d(new Translation2d(1.389, 5.55), new Rotation2d());
+        public static Pose2d BOTTOM_START_POSE = new Pose2d(new Translation2d(1.43, 4.11), new Rotation2d());
+    }
+
     /** Constants for the LED subsystem. */
     public static class LEDConstants {
         public static final int LED_LENGTH = 22;
