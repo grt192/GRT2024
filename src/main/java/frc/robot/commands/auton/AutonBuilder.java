@@ -272,12 +272,4 @@ public class AutonBuilder {
             followPath(trajectory)    
         );
     }
-
-    /** Drives forward 2 meters. */
-    public Command getTaxi() {
-
-        ChoreoTrajectory trajectory = Choreo.getTrajectory("REAL2M");
-
-        return followPath(trajectory);
-    }
 }
