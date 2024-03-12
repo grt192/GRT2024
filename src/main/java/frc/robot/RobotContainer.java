@@ -24,14 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.auton.AutonFactoryFunction;
-import frc.robot.commands.auton.Bottom2PieceSequence;
-import frc.robot.commands.auton.BottomPreloadedSequence;
-import frc.robot.commands.auton.Middle2PieceSequence;
-import frc.robot.commands.auton.Middle4PieceSequence;
-import frc.robot.commands.auton.TaxiSequence;
-import frc.robot.commands.auton.Top2PieceSequence;
-import frc.robot.commands.auton.TopPreloadedSequence;
+import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
@@ -76,7 +69,8 @@ public class RobotContainer {
     private final FieldManagementSubsystem fmsSubsystem = new FieldManagementSubsystem();
     private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
 
-    private final SendableChooser<AutonFactoryFunction> autonPathChooser;
+    private final SendableChooser<Command> autonPathChooser;
+    private final AutonBuilder autonBuilder;
 
     /* MECH BUTTONS */
     private final XboxController mechController = new XboxController(2);
@@ -146,13 +140,24 @@ public class RobotContainer {
         driverCameraServer = new MjpegServer("m1", 1181);
         driverCameraServer.setSource(driverCamera);
 
+        autonBuilder = new AutonBuilder(
+            intakePivotSubsystem, intakeRollerSubsystem, 
+            shooterFlywheelSubsystem, shooterPivotSubsystem, 
+            elevatorSubsystem, 
+            swerveSubsystem, 
+            lightBarSubsystem, fmsSubsystem
+        );
+
         autonPathChooser = new SendableChooser<>();
-        autonPathChooser.setDefaultOption("TOPPreloaded", TopPreloadedSequence::new);
-        autonPathChooser.addOption("TOP2Piece", Top2PieceSequence::new);
-        autonPathChooser.addOption("MIDDLEShootPreloaded", TaxiSequence::new);
-        autonPathChooser.addOption("MIDDLE2Piece", Middle2PieceSequence::new);
-        autonPathChooser.addOption("BOTTOMShootPreloaded", BottomPreloadedSequence::new);
-        autonPathChooser.addOption("BOTTOM2Piece", Bottom2PieceSequence::new);
+        autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
+        autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
+        autonPathChooser.addOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
+        autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
+        autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
+        autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
+        autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
+        autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
+        autonPathChooser.addOption("bottomDisruptor", autonBuilder.getBottomDisruptor());
 
         configureBindings();
     }
@@ -406,15 +411,6 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return new Middle4PieceSequence(intakePivotSubsystem, intakeRollerSubsystem, shooterFlywheelSubsystem,
-                shooterPivotSubsystem, elevatorSubsystem, swerveSubsystem, lightBarSubsystem, fmsSubsystem);
-        // autonPathChooser.getSelected().create(intakePivotSubsystem,
-        // intakeRollerSubsystem,
-        // shooterFlywheelSubsystem,
-        // shooterPivotSubsystem,
-        // elevatorSubsystem,
-        // (SwerveSubsystem)
-        // baseSwerveSubsystem,
-        // ledSubsystem);
+        return autonPathChooser.getSelected();
     }
 }
