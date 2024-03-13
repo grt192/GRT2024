@@ -133,7 +133,5 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
             colorSensor = new ColorSensorV3(I2C.Port.kMXP);
         }
-        // System.out.println("COLOR SENSOR: " + colorSensor.getRed());
-        System.out.println("FRONT DISTANCE SENSOR: " + getFrontSensorValue());
     }
 }
