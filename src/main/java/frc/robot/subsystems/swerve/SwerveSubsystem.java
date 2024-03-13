@@ -55,13 +55,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 /** The subsystem that controls the swerve drivetrain. */
-public class SwerveSubsystem extends BaseSwerveSubsystem {
+public class SwerveSubsystem extends SubsystemBase {
     private final AHRS ahrs;
 
     private final Timer crimer;
@@ -535,7 +536,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         resetDriverHeading(new Rotation2d());
     }
 
-    /** Gets the gyro heading. TODO: uninvert because it is right side up now. */
+    /** Gets the gyro heading.*/
     private Rotation2d getGyroHeading() {
         return Rotation2d.fromDegrees(-ahrs.getAngle());
     }

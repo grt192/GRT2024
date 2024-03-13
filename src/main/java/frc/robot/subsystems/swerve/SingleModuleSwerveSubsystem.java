@@ -3,9 +3,10 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** A singular swerve module. */
-public class SingleModuleSwerveSubsystem extends BaseSwerveSubsystem {
+public class SingleModuleSwerveSubsystem extends SubsystemBase {
 
     private static final double MAX_VEL = 5; // m/s STUB
 
