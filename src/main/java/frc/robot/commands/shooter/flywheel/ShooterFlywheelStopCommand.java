@@ -16,6 +16,7 @@ public class ShooterFlywheelStopCommand extends Command {
     @Override
     public void initialize() {   
         shooterSubsystem.stopShooter();
+        shooterSubsystem.setAutoAimShooter(false);
     }
 
     @Override

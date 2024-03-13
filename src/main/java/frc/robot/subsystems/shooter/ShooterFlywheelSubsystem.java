@@ -46,6 +46,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private PolynomialSplineFunction topFlywheelSpline;
     private PolynomialSplineFunction bottomFlywheelSpline;
     private boolean atSpeed = false;
+    private boolean autoAim = false;
 
     /**
      * Runs the flywheels for the shooter.
@@ -119,6 +120,11 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     /** Sets the shooter to the splined speeds. */
     public void setShooterMotorSpeed() {
         setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
+    }
+
+    /** Changes auto aim angle. */
+    public void setAutoAimShooter(boolean bool) {
+        this.autoAim = bool;
     }
 
     /** Stops the shooter. Better than setting speeds to 0 because this slows them down without a PID. */

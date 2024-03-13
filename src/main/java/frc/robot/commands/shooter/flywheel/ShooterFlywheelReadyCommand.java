@@ -39,6 +39,7 @@ public class ShooterFlywheelReadyCommand extends Command {
     @Override
     public void initialize() {
         shooterSubsystem.setShooterMotorSpeed(topSpeed, bottomSpeed);
+        shooterSubsystem.setAutoAimShooter(true);
     }
 
     @Override
