@@ -143,10 +143,10 @@ public class SwerveModule {
         SwerveModuleState optimized = SwerveModuleState.optimize(state, currentAngle);
 
         double targetAngleRads = optimized.angle.getRadians() - offsetRads;
-        // double angleErrorRads = optimized.angle.minus(currentAngle).getRadians();
-        // TODO: implement the cos thing from last year?
+        double angleErrorRads = optimized.angle.minus(currentAngle).getRadians();
 
-        double targetVelocity = optimized.speedMetersPerSecond;
+        // Multiply by cos so we don't move quickly when the swerves are angled wrong
+        double targetVelocity = optimized.speedMetersPerSecond * Math.cos(angleErrorRads);
 
         driveMotor.setVelocity(targetVelocity);
 

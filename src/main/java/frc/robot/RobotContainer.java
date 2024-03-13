@@ -353,8 +353,8 @@ public class RobotContainer {
                 new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem)
         );
 
-        /* Amp Align -- Pressing and holding the button will cause the robot to automatically pathfind to the amp.
-         * Releasing the button will stop the robot (and the pathfinding). */
+        /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
+         * Releasing the button will stop the robot (and the path finding). */
         driveController.getAmpAlign().onTrue(new InstantCommand(
             () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN)
             ).andThen(new ParallelRaceGroup(
