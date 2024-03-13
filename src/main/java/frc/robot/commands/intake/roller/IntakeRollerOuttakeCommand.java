@@ -10,6 +10,7 @@ import frc.robot.util.TrackingTimer;
 public class IntakeRollerOuttakeCommand extends Command {
     private final IntakeRollerSubsystem intakeSubsystem;
     private final TrackingTimer timer;
+    private double speed = -1;
 
     /**
      * Runs the rollers outwards.
@@ -22,10 +23,23 @@ public class IntakeRollerOuttakeCommand extends Command {
         addRequirements(intakeSubsystem);
     }
 
+    /**
+     * Runs the rollers outwards at a set speed.
+     *
+     * @param intakeSubsystem The {@link IntakeRollerSubsystem} to outtake on.
+     * @param speed The speed to outtake at [0,1].
+     */
+    public IntakeRollerOuttakeCommand(IntakeRollerSubsystem intakeSubsystem, double speed) {
+        this.intakeSubsystem = intakeSubsystem;
+        timer = new TrackingTimer();
+        addRequirements(intakeSubsystem);
+        this.speed = -speed;
+    }
+
     @Override
     public void initialize() {
         timer.reset();
-        intakeSubsystem.setRollSpeeds(-1, -1); 
+        intakeSubsystem.setRollSpeeds(speed, speed); 
     }
 
     @Override

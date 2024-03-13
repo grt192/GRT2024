@@ -35,8 +35,7 @@ public class IntakeRollerIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setRollSpeeds(0, 0);
-        lightBarSubsystem.setLightBarStatus(
-                intakeSubsystem.getFrontSensorReached() ? LightBarStatus.HOLDING_NOTE : LightBarStatus.DORMANT);
+        lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE);
     }
 
     @Override

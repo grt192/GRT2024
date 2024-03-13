@@ -150,12 +150,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) 
         //     + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
         //     + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
-        
-        // if (currentDistance < 1.75) {
-        //     return Units.degreesToRadians(62);
-        // }
-
-        // return Math.atan(speakerHeight / currentDistance) + Units.degreesToRadians(5);
 
         return angleSpline.value(getShootingDistance());
     }
