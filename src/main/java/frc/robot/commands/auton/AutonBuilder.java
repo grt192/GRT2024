@@ -278,9 +278,12 @@ public class AutonBuilder {
         );
     }
 
-    public Command getTaxiTwoMeters(){
+    /** Drives 2 meters away from the alliance wall. */
+    public Command getTaxiTwoMeters() {
         return AutoBuilder.pathfindToPose(
-            swerveSubsystem.getRobotPosition().plus(new Transform2d(new Translation2d(2, 0), new Rotation2d())), 
+            swerveSubsystem.getRobotPosition().plus(
+                new Transform2d(new Translation2d(fmsSubsystem.isRedAlliance() ? -2 : 2, 0), new Rotation2d())
+            ), 
             new PathConstraints(
             2.0, 2.0, 
                     Units.degreesToRadians(720), Units.degreesToRadians(1080)
