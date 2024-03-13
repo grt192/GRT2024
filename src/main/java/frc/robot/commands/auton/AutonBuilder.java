@@ -2,10 +2,15 @@ package frc.robot.commands.auton;
 
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -271,5 +276,17 @@ public class AutonBuilder {
             trajectory.getInitialPose(),
             followPath(trajectory)    
         );
+    }
+
+    public Command getTaxiTwoMeters(){
+        return AutoBuilder.pathfindToPose(
+            swerveSubsystem.getRobotPosition().plus(new Transform2d(new Translation2d(2, 0), new Rotation2d())), 
+            new PathConstraints(
+            2.0, 2.0, 
+                    Units.degreesToRadians(720), Units.degreesToRadians(1080)
+                    ), 
+            0, 
+            0.0
+                );
     }
 }
