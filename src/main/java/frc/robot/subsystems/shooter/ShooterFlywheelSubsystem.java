@@ -215,5 +215,9 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         ntPublisher.set(atSpeed());
+
+        if (atSpeed != false) {
+            setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
+        }
     }
 }
