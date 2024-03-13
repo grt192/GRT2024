@@ -47,7 +47,7 @@ public class DualJoystickDriveController extends BaseDriveController {
      */
     private double getDriveScaling() {
         boolean isSlowMode = leftJoystick.getTrigger();
-        return isSlowMode ? 0.24 : 1.0;
+        return isSlowMode ? 0.25 : 1.0;
     }
 
     /** Gets the amount to scale rotational input by.
@@ -56,7 +56,7 @@ public class DualJoystickDriveController extends BaseDriveController {
      */
     private double getTurnScaling() {
         boolean isSlowMode = leftJoystick.getTrigger();
-        return isSlowMode ? 0.125 : 0.8;
+        return isSlowMode ? 0.3 : 0.8;
     }
 
     @Override

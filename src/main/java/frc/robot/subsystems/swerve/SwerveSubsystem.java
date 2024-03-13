@@ -55,17 +55,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 /** The subsystem that controls the swerve drivetrain. */
-public class SwerveSubsystem extends BaseSwerveSubsystem {
+public class SwerveSubsystem extends SubsystemBase {
     private final AHRS ahrs;
 
     private final Timer crimer;
     private final Timer ahrsTimer;
+
+    private final Timer lockTimer;
+    private static final double LOCK_TIMEOUT_SECONDS = 1.0; // The elapsed idle time to wait before locking
 
     public static final double MAX_VEL = 4.172; //calculated
     public static final double MAX_ACCEL = 3;
@@ -171,6 +175,8 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
 
+        lockTimer = new Timer();
+
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
@@ -236,20 +242,50 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
             estimate.getRotation())
         );
         
-        for (int i = 0; i < 4; i++) {
-            angles[i].set(states[i].angle.getRadians());
-            velocities[i].set(states[i].speedMetersPerSecond);
+        // If all commanded velocities are 0, the system is idle (drivers / commands are
+        // not supplying input).
+        boolean isIdle = states[0].speedMetersPerSecond == 0.0
+            && states[1].speedMetersPerSecond == 0.0
+            && states[2].speedMetersPerSecond == 0.0
+            && states[3].speedMetersPerSecond == 0.0;
+
+        // Start lock timer when idle
+        if (isIdle) {
+            lockTimer.start();
+        } else {
+            lockTimer.stop();
+            lockTimer.reset();
         }
 
-        frontLeftModule.setDesiredState(states[0]);
-        frontRightModule.setDesiredState(states[1]);
-        backLeftModule.setDesiredState(states[2]);
-        backRightModule.setDesiredState(states[3]);
+        // Lock the swerve module if the lock timeout has elapsed, or set them to their 
+        // setpoints if drivers are supplying non-idle input.
+        if (lockTimer.hasElapsed(LOCK_TIMEOUT_SECONDS)) {
+            applyLock();
+        } else {
+            for (int i = 0; i < 4; i++) {
+                angles[i].set(states[i].angle.getRadians());
+                velocities[i].set(states[i].speedMetersPerSecond);
+            }
+
+            frontLeftModule.setDesiredState(states[0]);
+            frontRightModule.setDesiredState(states[1]);
+            backLeftModule.setDesiredState(states[2]);
+            backRightModule.setDesiredState(states[3]);   
+        }
 
         if (verbose) {
             printModuleAngles();
         }
 
+    }
+
+    /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
+     */
+    public void applyLock() {
+        frontLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
+        frontRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
+        backLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
+        backRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
     }
 
     /**
@@ -500,7 +536,7 @@ public class SwerveSubsystem extends BaseSwerveSubsystem {
         resetDriverHeading(new Rotation2d());
     }
 
-    /** Gets the gyro heading. TODO: uninvert because it is right side up now. */
+    /** Gets the gyro heading.*/
     private Rotation2d getGyroHeading() {
         return Rotation2d.fromDegrees(-ahrs.getAngle());
     }

@@ -211,7 +211,7 @@ public class AutonBuilder {
     /** Starts source side. Shoots preloaded note, intakes bottom note, shoots note. */
     public SequentialCommandGroup getBottomTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("B1-BottomStartToBottomNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("B1-BottomNoteStartToBottomNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -228,7 +228,7 @@ public class AutonBuilder {
     public SequentialCommandGroup getMiddleThreePiece() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
-        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmp");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmpNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -247,7 +247,8 @@ public class AutonBuilder {
     public SequentialCommandGroup getMiddleFourPiece() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
-        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmp");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmpNote");
+        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("D4-AmpToBottomNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -255,6 +256,8 @@ public class AutonBuilder {
             goIntake(startToPiece1),
             shoot(),
             goIntake(piece1ToPiece2),
+            shoot(),
+            goIntake(piece2ToPiece3),
             shoot()
         );
     }
