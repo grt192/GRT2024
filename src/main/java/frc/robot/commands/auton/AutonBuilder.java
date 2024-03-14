@@ -253,9 +253,9 @@ public class AutonBuilder {
      */
     public SequentialCommandGroup getMiddleFourPiece() {
 
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
-        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmpNote");
-        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("D4-AmpToBottomNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("M2-SpeakerNoteToAmpNote");
+        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("M3-AmpToBottomNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
