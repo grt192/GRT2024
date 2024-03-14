@@ -213,7 +213,7 @@ public class AutonBuilder {
             goIntake(startToPiece1),
             shoot(),
             goIntake(piece1ToPiece2),
-            shoot(),
+            shoot()
         );
     }
 
