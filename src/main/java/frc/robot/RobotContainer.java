@@ -7,6 +7,7 @@ package frc.robot;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
@@ -103,6 +104,7 @@ public class RobotContainer {
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
     private double shooterTopSpeed = .75;
     private double shooterBotSpeed = .4;
+    private double intakePosition = 0;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -199,10 +201,22 @@ public class RobotContainer {
                 case 225:
                     shooterBotSpeed -= .001;
                     break;
+                
+                case 90:
+                    intakePosition += .01;
+                    break;
+                
+                case 270:
+                    intakePosition -= .01;
+                    break;
 
                 default:
                     break;
             }
+
+            System.out.println(intakePosition);
+
+
             
             // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
             //                + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
@@ -272,23 +286,32 @@ public class RobotContainer {
 
         // leftBumper toggles the trap position for the elevator
         leftBumper.onTrue(
+            new ConditionalCommand(
+                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                    () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
-                        new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
-                                () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
-                        new ElevatorToTrapCommand(elevatorSubsystem), // raise the elevator
-                        () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
-                                || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
+                    new ElevatorToTrapCommand(elevatorSubsystem), 
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
+                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
+                                .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
+                    ),
+                    intakeRollerSubsystem::getFrontSensorReached
+                ), // raise the elevator
+                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
+                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+        );
 
 
 
         // aButton runs the intake sequence
         aButton.onTrue(
             new ElevatorToZeroCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
-                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
-                            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                                    // intake the note to the color sensor
-                                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
-                    ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
+                    // intake the note to the color sensor
+                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
+                ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             )
         );
 
@@ -296,9 +319,24 @@ public class RobotContainer {
         bButton.onTrue(new InstantCommand(() -> {}, intakeRollerSubsystem));
 
         // xButton toggles the intake being stowed
-        xButton.onTrue(new InstantCommand(() ->  intakePivotSubsystem.setPosition(
-            intakePivotSubsystem.getEncoderPosition() < .5 ? 1 : 
-            elevatorSubsystem.getExtensionPercent() > .5 ? .2 : 0), intakePivotSubsystem));
+        xButton.onTrue(new InstantCommand(() ->  {
+            double outPosition = 1;
+            double stowPosition = 0;
+            if (elevatorSubsystem.getExtensionPercent() > .5 
+                && elevatorSubsystem.getTargetState() == ElevatorState.TRAP) {
+                outPosition = .38; // push intake out
+            } else if (elevatorSubsystem.getExtensionPercent() > .5 
+                && elevatorSubsystem.getTargetState() == ElevatorState.AMP) {
+                stowPosition = .2;
+            }
+
+            intakePivotSubsystem.setPosition(
+                intakePivotSubsystem.getEncoderPosition() < (outPosition + stowPosition) / 2 
+                ? outPosition 
+                : stowPosition
+            );
+
+        }, intakePivotSubsystem));
 
         // yButton runs the flywheels
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -329,6 +367,11 @@ public class RobotContainer {
             }
         }, shooterFlywheelSubsystem
         ));
+
+        // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
+        //     intakePivotSubsystem.setPosition(intakePosition);
+        // }, intakePivotSubsystem));
 
         // The triggers intake/outtake the rollers
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
