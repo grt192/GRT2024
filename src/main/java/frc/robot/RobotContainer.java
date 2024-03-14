@@ -297,8 +297,9 @@ public class RobotContainer {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
                 // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); // for tuning
                 shooterFlywheelSubsystem.setShooterMotorSpeed();
-                
+                shooterPivotSubsystem.setAutoAimBoolean(true);
             } else {
+                shooterPivotSubsystem.setAutoAimBoolean(false);
                 shooterFlywheelSubsystem.stopShooter();
             }
 
@@ -346,12 +347,12 @@ public class RobotContainer {
         /* SWERVE BINDINGS */
 
         /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
-        driveController.getShooterAimButton().onTrue(
-                new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true), shooterPivotSubsystem)
-        );
-        driveController.getShooterAimButton().onFalse(
-                new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem)
-        );
+        // driveController.getShooterAimButton().onTrue(
+        //         new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true), shooterPivotSubsystem)
+        // );
+        // driveController.getShooterAimButton().onFalse(
+        //         new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem)
+        // );
 
         /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
          * Releasing the button will stop the robot (and the path finding). */
