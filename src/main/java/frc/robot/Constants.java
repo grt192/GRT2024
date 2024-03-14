@@ -194,7 +194,7 @@ public final class Constants {
 
     /** Constants for auton. */
     public static class AutonConstants {
-        public static double INTAKE_SWERVE_SPEED = .15;
+        public static double INTAKE_SWERVE_SPEED = .3;
         public static double INTAKE_SWERVE_TIME = 1;
 
         public static double SHOOT_READY_TIME = 3;

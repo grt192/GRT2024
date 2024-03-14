@@ -169,15 +169,17 @@ public class RobotContainer {
         );
 
         autonPathChooser = new SendableChooser<>();
-        autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
+        // autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
-        autonPathChooser.addOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
+        autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
         autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
         autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
         autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
         autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
         autonPathChooser.addOption("bottomDisruptor", autonBuilder.getBottomDisruptor());
+
+        swerveCrauton.add(autonPathChooser);
 
         configureBindings();
     }
