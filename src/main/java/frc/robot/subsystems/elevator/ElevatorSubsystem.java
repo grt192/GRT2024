@@ -10,7 +10,11 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.commands.elevator.ElevatorToLimitSwitchCommand;
 
 /** Represents the elevator mechanism. */
 public class ElevatorSubsystem extends SubsystemBase {
@@ -69,14 +73,27 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
+        CommandScheduler.getInstance().run();
  
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
         }
          
-        if (zeroLimitSwitch != null && !zeroLimitSwitch.get()) {
+        if (zeroLimitSwitch != null && !zeroLimitSwitch.get() && ElevatorConstants.LIMIT_SWITCH_ENABLED) {
+            //if limit switch tells us it's at the bottom
             extensionEncoder.setPosition(0); 
+            this.setManualPower(0);//stops the motor in manual mode to avoid motor stall.
+        }
+
+        if (ElevatorConstants.LIMIT_SWITCH_ENABLED) {
+            if (zeroLimitSwitch != null && zeroLimitSwitch.get()) { //if limit switch is not pressed
+                if (Math.abs(this.getExtensionPercent()) < ElevatorConstants.EXTENSION_TOLERANCE) { 
+                    //if the encoder thinks the elevator is at ground
+                    CommandScheduler.getInstance().schedule(new ElevatorToLimitSwitchCommand(this));
+                    //slowly go down to limit switch
+                } 
+            }
         }
     }
     
@@ -86,10 +103,14 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return true if the elevator is touching the limit switch, false if not.
      */
     public boolean atGround() {
-        if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
-            return true;
+        if (ElevatorConstants.LIMIT_SWITCH_ENABLED) {
+            if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            return Math.abs(this.getExtensionPercent()) < ElevatorConstants.EXTENSION_TOLERANCE;
         }
     }
 
@@ -108,16 +129,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
-    /**
-     * Manually sets the elevator's current state to the state inputted.
-     *
-     * @param state the state you want to set to
-     */
-    public void setState(ElevatorState state) {
-        this.state = state;
-        return;
-    }
-    
     /**
      * Set the target state to the state inputted.
      *
@@ -182,4 +193,34 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setManualPower(double power) {
         this.manualPower = power;
     } 
+    /**
+     * Sets the motor power.
+     *
+     * @param power the power you want to set to
+     */
+
+    public void setMotorPower(double power) {
+        extensionMotor.set(power);
+    }
+    /**
+     * Returns the state of the limit switch, 0 is not triggered, 1 is triggered.
+     *
+     * @return false is not triggered, true is triggered. 
+     */
+
+    public boolean getLimitSwitch() {
+        if (zeroLimitSwitch != null) {
+            return !zeroLimitSwitch.get();
+        } else {
+            throw new Error("Can't find limit switch!");
+        }
+    }
+
+    /**
+     * Zeros the encoder to position 0.
+     *
+     */
+    public void zeroEncoder() {
+        extensionEncoder.setPosition(0);
+    }
 }
