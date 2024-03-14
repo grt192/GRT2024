@@ -107,13 +107,10 @@ public class AutonBuilder {
      */
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
         return followPath(intakeTrajectory).alongWith(
-            new ElevatorToIntakeCommand(elevatorSubsystem).andThen(
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-            )
+            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .raceWith(new DriveForwardCommand(swerveSubsystem).withTimeout(AutonConstants.INTAKE_SWERVE_TIME)),
-            new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorReached))
         );
     }
 
@@ -125,7 +122,9 @@ public class AutonBuilder {
     public Command shoot() {
         return new ShooterPivotAimCommand(shooterPivotSubsystem)
             .alongWith(new SetCalculatedAngleCommand(swerveSubsystem))
-            .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).withTimeout(AutonConstants.SHOOT_FEED_TIME)
+            .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).until(
+                () -> !intakeRollerSubsystem.getNoteColorDetected()
+            )
         );
     }
 
@@ -162,7 +161,10 @@ public class AutonBuilder {
 
         autonSequence.addCommands(
             resetSwerve(GRTUtil.mirrorAcrossField(initPose, fmsSubsystem::isRedAlliance)),
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem)
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
+                new ShooterPivotAimCommand(shooterPivotSubsystem),
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+            )
         );
         autonSequence.addCommands(commands);
         autonSequence.addCommands(

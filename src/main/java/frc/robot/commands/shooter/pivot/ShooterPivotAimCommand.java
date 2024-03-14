@@ -10,7 +10,7 @@ public class ShooterPivotAimCommand extends Command {
     
     ShooterPivotSubsystem shooterPivotSubsystem;
 
-    /** Constructs a {@link ShooterPivotAimCommand} using the specified pivot. */
+    /** Constructs a {@link ShooterPivotAimCommand} using the specified pivot. Sets auto-aim to true. */
     public ShooterPivotAimCommand(ShooterPivotSubsystem pivotSubsystem) {
         this.shooterPivotSubsystem = pivotSubsystem;
         addRequirements(pivotSubsystem);
