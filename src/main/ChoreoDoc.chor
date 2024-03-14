@@ -4199,7 +4199,7 @@
             "usesDefaultFieldObstacles": true,
             "circleObstacles": []
         },
-        "Z2-MiddleToCenter1": {
+        "Z2-Center1ToWing": {
             "waypoints": [
                 {
                     "x": 8.18997573852539,

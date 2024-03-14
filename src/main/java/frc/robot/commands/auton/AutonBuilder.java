@@ -202,6 +202,76 @@ public class AutonBuilder {
         );
     }
 
+    public SequentialCommandGroup getTopThreePiece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("T2-AmpNoteToSpeakerNote");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            shoot(),
+            goIntake(piece1ToPiece2),
+            shoot(),
+        );
+    }
+
+    public SequentialCommandGroup getTopFourPiece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("T2-AmpNoteToSpeakerNote");
+        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("T3-SpeakerNoteToBottomNote");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            shoot(),
+            goIntake(piece1ToPiece2),
+            shoot(),
+            goIntake(piece2ToPiece3),
+            shoot()
+        );
+
+    }
+
+    public SequentialCommandGroup getTopCenterTwoPiece(){
+        
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-TopToCenter1");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z3-WingToCenter2");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("Z4-Center2ToWing");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            goIntake(wingToPiece2),
+            goShoot(piece3ToWing)
+        );
+
+    }
+    
+    public SequentialCommandGroup getMiddleCenterTwoPiece(){
+        
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-MiddleToCenter1");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z3-WingToCenter2");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("Z4-Center2ToWing");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            goIntake(wingToPiece2),
+            goShoot(piece3ToWing)
+        );
+        
+    }
+
     /** Starts at subwoofer. Shoots preloaded note, intakes middle  note, shoots note. */
     public SequentialCommandGroup getMiddleTwoPiece() {
         
