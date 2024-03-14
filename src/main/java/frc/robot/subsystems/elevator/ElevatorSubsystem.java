@@ -49,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
-        extensionMotor.setInverted(false);
+        extensionMotor.setInverted(true);
         extensionMotor.setClosedLoopRampRate(0.3);
         
         
