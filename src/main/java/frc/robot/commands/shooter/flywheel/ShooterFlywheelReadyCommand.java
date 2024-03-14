@@ -24,22 +24,25 @@ public class ShooterFlywheelReadyCommand extends Command {
 
         topSpeed = shooterSubsystem.getTopMotorSplineSpeed();
         bottomSpeed = shooterSubsystem.getBottomMotorSplineSpeed();
+        shooterSubsystem.setAutoAimShooter(true);
     }
     
     /** Constructor for this command. */
     public ShooterFlywheelReadyCommand(ShooterFlywheelSubsystem shooterSubsystem, LightBarSubsystem lightBarSubsystem,
             double topSpeed, double bottomSpeed) {
         
-        this(shooterSubsystem, lightBarSubsystem);
+        this.shooterSubsystem = shooterSubsystem;
+        this.lightBarSubsystem = lightBarSubsystem;
+        addRequirements(shooterSubsystem, lightBarSubsystem);
 
         this.topSpeed = topSpeed;
         this.bottomSpeed = bottomSpeed;
+        shooterSubsystem.setAutoAimShooter(false);
     }
 
     @Override
     public void initialize() {
         shooterSubsystem.setShooterMotorSpeed(topSpeed, bottomSpeed);
-        shooterSubsystem.setAutoAimShooter(true);
     }
 
     @Override

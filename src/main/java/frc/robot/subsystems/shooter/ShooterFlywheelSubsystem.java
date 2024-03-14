@@ -223,7 +223,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         ntPublisher.set(atSpeed());
 
         //only grabs spline speeds if shooter motor is running (ie not stopped)
-        if (atSpeed != false) {
+        if (autoAim) {
             setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
         }
     }
