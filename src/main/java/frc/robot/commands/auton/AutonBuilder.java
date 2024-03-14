@@ -192,7 +192,7 @@ public class AutonBuilder {
     /** Starts amp side. Shoots preloaded note, intakes top note, shoots note. */
     public SequentialCommandGroup getTopTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("C1-AmpStartToAmpNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -205,7 +205,7 @@ public class AutonBuilder {
     /** Starts at subwoofer. Shoots preloaded note, intakes middle  note, shoots note. */
     public SequentialCommandGroup getMiddleTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -234,8 +234,8 @@ public class AutonBuilder {
      */
     public SequentialCommandGroup getMiddleThreePiece() {
 
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A1-SpeakerStartToSpeakerNote");
-        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("D3-SpeakerNoteToAmpNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("M2-SpeakerNoteToAmpNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -266,17 +266,6 @@ public class AutonBuilder {
             shoot(),
             goIntake(piece2ToPiece3),
             shoot()
-        );
-    }
-
-    /** Starts source side, goes to center of the field and pushes around bottom 2 notes. */
-    public SequentialCommandGroup getBottomDisruptor() {
-
-        ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomPLAYOFFS");
-
-        return buildAuton(
-            trajectory.getInitialPose(),
-            followPath(trajectory)    
         );
     }
 
