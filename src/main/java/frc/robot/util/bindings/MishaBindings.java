@@ -25,7 +25,7 @@ import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 
 /** Misha's control bindings. */
-public class MishaBindings implements MechBindings {
+public class MishaBindings {
 
     private final XboxController mechController;
     private final LightBarSubsystem lightBarSubsystem;
@@ -65,25 +65,28 @@ public class MishaBindings implements MechBindings {
         
         aButton = new JoystickButton(mechController, XboxController.Button.kA.value);
         bButton = new JoystickButton(mechController, XboxController.Button.kB.value);
-        leftBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value);
-        rightBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
         xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
         yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+        leftBumper = new JoystickButton(mechController, XboxController.Button.kLeftBumper.value);
+        rightBumper = new JoystickButton(mechController, XboxController.Button.kRightBumper.value);
         offsetUpButton = new JoystickButton(switchboard, 7);
         offsetDownButton = new JoystickButton(switchboard, 8);
         toggleClimbLimitsButton = new JoystickButton(switchboard, 9);
     }
 
-    @Override
+    /** Sets all the bindings to this set. */
     public void setAllBindings() {
         bindIntaking();
         bindAmp();
         bindTrap();
         bindShooting();
-        bindSequences();
     }
 
-    @Override
+    /** Binds the intake controls.
+     * a runs the intaking sequence
+     * b stops the roller in an emergency
+     * x toggles the intake pivot, stops the rollers.
+     */
     public void bindIntaking() {
         aButton.onTrue(
             new ElevatorToZeroCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
@@ -116,7 +119,7 @@ public class MishaBindings implements MechBindings {
                 : stowPosition
             );
 
-        }, intakePivotSubsystem));
+        }, intakePivotSubsystem).alongWith(new InstantCommand(() -> {}, intakeRollerSubsystem)));
 
         intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
 
@@ -191,7 +194,11 @@ public class MishaBindings implements MechBindings {
         
     }
 
-    @Override
+    /** Binds the controls for shooting notes.
+     * Shoot sequence is:
+     * 1. y hold to spin up wheel
+     * 2. right trigger to shoot
+     */
     public void bindShooting() {
 
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -237,14 +244,6 @@ public class MishaBindings implements MechBindings {
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
         );
     }
-
-    /** Bind sequences for doing complex tasks. */
-    public void bindSequences() {
-        
-        
-        
-    }
-
-    
+  
 
 }

@@ -1,11 +1,10 @@
 package frc.robot.util;
 
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Color;
+import java.util.function.BooleanSupplier;
 
 /** Utility functions specific to our repo. */
 public class GRTUtil {
