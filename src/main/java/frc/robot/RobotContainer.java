@@ -11,6 +11,7 @@ import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.PixelFormat;
@@ -36,6 +37,7 @@ import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
@@ -99,7 +101,9 @@ public class RobotContainer {
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
+
     private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 6);
+    private final JoystickButton shuttleNotes = new JoystickButton(switchboard, 6);
 
     private UsbCamera driverCamera;
     private MjpegServer driverCameraServer;
@@ -472,6 +476,10 @@ public class RobotContainer {
         );
         offsetDownButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
+        );
+
+        shuttleNotes.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
+            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition)
         );
 
         /* SWERVE BINDINGS */

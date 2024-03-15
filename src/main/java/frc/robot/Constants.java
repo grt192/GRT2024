@@ -126,6 +126,7 @@ public final class Constants {
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
         public static final double MIN_SHOOTER_DISTANCE = 1.08;
         public static final double MAX_SHOOTER_DISTANCE = 8;
+        public static final double FLYWHEEL_SHUTTLE_SPEED = 0.3;
 
         //center of red speaker: (652.73 218.42)
         public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
@@ -134,6 +135,8 @@ public final class Constants {
         //center of blue speaker: (-1.50 218.42)
         public static final double BLUE_X = Units.inchesToMeters(-1.5 + 9.05);
         public static final double BLUE_Y = Units.inchesToMeters(218.42);
+
+        
     }
 
     /** Constants for Climb Subsystem. */
@@ -186,6 +189,7 @@ public final class Constants {
 
         public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77),
                 Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(90));
+
     }
 
     /** Constants for auton. */

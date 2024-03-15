@@ -51,6 +51,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private PolynomialSplineFunction bottomFlywheelSpline;
     private boolean atSpeed = false;
     private boolean autoAim = false;
+    private Pose2d targetPose;
 
     /**
      * Runs the flywheels for the shooter.
