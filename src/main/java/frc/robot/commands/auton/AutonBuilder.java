@@ -114,6 +114,21 @@ public class AutonBuilder {
         );
     }
 
+    public Command goIntakeNoOvershoot(ChoreoTrajectory intakeTrajectory) {
+        return followPath(intakeTrajectory).alongWith(
+            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+        ).andThen(
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+                .alongWith(new DriveForwardCommand(swerveSubsystem).withTimeout(.7))
+        );
+    }
+
+    public Command goAndIntake(ChoreoTrajectory intakeTrajectory) {
+        return followPath(intakeTrajectory).alongWith(
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+        );
+    }
+
     /** 
      * Shoots at calculated robot angle and shooter angle.
      *
@@ -162,6 +177,7 @@ public class AutonBuilder {
         autonSequence.addCommands(
             resetSwerve(GRTUtil.mirrorAcrossField(initPose, fmsSubsystem::isRedAlliance)),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
+                new SetCalculatedAngleCommand(swerveSubsystem),
                 new ShooterPivotAimCommand(shooterPivotSubsystem),
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
             )
@@ -192,7 +208,7 @@ public class AutonBuilder {
     /** Starts amp side. Shoots preloaded note, intakes top note, shoots note. */
     public SequentialCommandGroup getTopTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -204,7 +220,7 @@ public class AutonBuilder {
 
     public SequentialCommandGroup getTopThreePiece() {
 
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
         ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("T2-AmpNoteToSpeakerNote");
 
         return buildAuton(
@@ -219,7 +235,7 @@ public class AutonBuilder {
 
     public SequentialCommandGroup getTopFourPiece() {
 
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-AmpStartToAmpNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
         ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("T2-AmpNoteToSpeakerNote");
         ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("T3-SpeakerNoteToBottomNote");
 
@@ -230,7 +246,7 @@ public class AutonBuilder {
             shoot(),
             goIntake(piece1ToPiece2),
             shoot(),
-            goIntake(piece2ToPiece3),
+            goAndIntake(piece2ToPiece3),
             shoot()
         );
 
@@ -288,7 +304,7 @@ public class AutonBuilder {
     /** Starts source side. Shoots preloaded note, intakes bottom note, shoots note. */
     public SequentialCommandGroup getBottomTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("B1-BottomNoteStartToBottomNote");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("B1-OffsetBottomNoteStartToBottomNote");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -334,7 +350,7 @@ public class AutonBuilder {
             shoot(),
             goIntake(piece1ToPiece2),
             shoot(),
-            goIntake(piece2ToPiece3),
+            goIntakeNoOvershoot(piece2ToPiece3),
             shoot()
         );
     }

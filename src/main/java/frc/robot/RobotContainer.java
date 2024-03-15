@@ -171,6 +171,8 @@ public class RobotContainer {
         autonPathChooser = new SendableChooser<>();
         // autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
+        autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
+        autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
         autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
         autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
         autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
