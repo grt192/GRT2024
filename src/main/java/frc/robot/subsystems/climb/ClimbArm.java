@@ -1,7 +1,6 @@
-//TODO: Rewrite climb.
-
 package frc.robot.subsystems.climb;
 
+import static frc.robot.Constants.ClimbConstants.EXTENSION_METERS_PER_ROTATION;
 import static frc.robot.Constants.ClimbConstants.LOWER_LIMIT_METERS;
 import static frc.robot.Constants.ClimbConstants.RAISE_LIMIT_METERS;
 
@@ -13,121 +12,89 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.util.MotorUtil;
 
 /**
- * Represents a single climb arm.
+ * Represents a single manually controlled climb arm.
  */
 public class ClimbArm {
-    private static final double EXTENSION_TOLERANCE_METERS = 0.01;
-    private static final double EXTENSION_RAMP_RATE = 0.5;
-    private static final double EXTENSION_METERS_PER_ROTATION = 1 / 224.55; /* Find through empirical testing. */
+    private final CANSparkMax winchMotor;
+    private final RelativeEncoder extensionEncoder;
+    private final SparkPIDController extensionPID;
+    private final DigitalInput zeroLimitSwitch;
 
     private static final double EXTENSION_P = 0;
     private static final double EXTENSION_I = 0;
     private static final double EXTENSION_D = 0;
+    private static final double EXTENSION_TOLERANCE_METERS = 0.02;
 
-    private static final double ZEROING_SPEED = 0.3;
-
-    private final CANSparkMax winchMotor;
-    private final RelativeEncoder extensionEncoder;
-    private final SparkPIDController extensionPidController;
-
-    private final DigitalInput zeroLimitSwitch;
-    private final Solenoid latch;
-
-    private double targetExtension;
-    private boolean hookIsLatched;
-    private boolean isZeroing;
+    private boolean isUsingPID;
+    private double winchPower;
+    private double extensionTarget;
 
     /**
      * Constructs a new {@link ClimbArm}.
      *
      * @param winchMotorId The motor's CAN ID.
-     * @param zeroLimitPort The limit switch's RIO port.
-     * @param latchPort The solenoid's PCM port.
      */
-    public ClimbArm(int winchMotorId, int zeroLimitPort, int latchPort) {
+    public ClimbArm(int winchMotorId, int zeroLimitPort, boolean isInverted) {
         /* Configures the motor */
         winchMotor = MotorUtil.createSparkMax(winchMotorId, (sparkMax) -> {
             sparkMax.setIdleMode(IdleMode.kBrake); 
-            sparkMax.setInverted(true);
-            sparkMax.setClosedLoopRampRate(EXTENSION_RAMP_RATE);
+            sparkMax.setInverted(isInverted);
 
-            sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) RAISE_LIMIT_METERS);
-            sparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
-            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) LOWER_LIMIT_METERS);
-            sparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+            sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
+            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
         });
+
+        this.enableSoftLimits(true);
 
         extensionEncoder = winchMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor(EXTENSION_METERS_PER_ROTATION);
-        extensionEncoder.setPosition(0);
+        extensionEncoder.setPosition(LOWER_LIMIT_METERS); /* The arm starts lowered. */
 
-        /* Sets up the PID controller */
-        extensionPidController = MotorUtil.createSparkPIDController(winchMotor, extensionEncoder);
-        extensionPidController.setP(EXTENSION_P);
-        extensionPidController.setI(EXTENSION_I);
-        extensionPidController.setD(EXTENSION_D);
-        extensionPidController.setSmartMotionAllowedClosedLoopError(EXTENSION_TOLERANCE_METERS, 0);
+        extensionPID = MotorUtil.createSparkPIDController(winchMotor, extensionEncoder);
+        extensionPID.setP(EXTENSION_P);
+        extensionPID.setI(EXTENSION_I);
+        extensionPID.setD(EXTENSION_D);
+        isUsingPID = true;
 
         zeroLimitSwitch = new DigitalInput(zeroLimitPort);
-        Solenoid tempLatch;
-        try {
-            tempLatch = new Solenoid(PneumaticsModuleType.CTREPCM, latchPort);
-            hookIsLatched = true;
-        } catch (Exception e) {
-            tempLatch = null;
-            hookIsLatched = false;
-        }
-        latch = tempLatch;
-
-        targetExtension = 0;
     }
 
-    /**
-     * Run this function every periodic loop.
-     */
+    /** Run this function every periodic loop.*/
     public void update() {
         if (zeroLimitSwitch != null && this.isLimitSwitchPressed()) {
             resetEncoder();
+            winchPower = Math.max(0, winchPower);
         }
 
-        if (isZeroing && !this.isLimitSwitchPressed()) {
-            winchMotor.set(-ZEROING_SPEED);
-        } else if (isZeroing && this.isLimitSwitchPressed()) {
-            winchMotor.set(0);
-        }
-        
-        /* If the hook is latched in place, the motor can be safely un-powered to avoid stalling.*/
-        if (hookIsLatched && !isZeroing) {
-            winchMotor.set(0);
-        } else if (!isZeroing) {
-            extensionPidController.setReference(targetExtension, ControlType.kPosition);
+        if (isUsingPID) {
+            extensionPID.setReference(extensionTarget, ControlType.kPosition);
+        } else {
+            winchMotor.set(winchPower);
         }
     }
-    
+
     /**
-     * Sets the targeted extension height for this climb arm.
+     * Sets this climb arm's speed (has no effect if PID mode is enabled).
      *
-     * @param targetExtension The extension target in meters.
+     * @param speed The desired speed from -1.0 (downwards) to +1.0 (upwards).
      */
-    public void setTargetExtension(double targetExtension) {
-        this.targetExtension = MathUtil.clamp(targetExtension, LOWER_LIMIT_METERS, RAISE_LIMIT_METERS);
+    public void setSpeed(double speed) {
+        winchPower = MathUtil.clamp(speed, -1.0, +1.0);
     }
 
     /**
-     * Returns this climb arm's PID extension target in meters.
+     * Sets the targeted extension height for this climb arm (has no effect if PID mode is disabled).
+     *
+     * @param extensionTarget The extension target in meters.
      */
-    public double getTargetExtension() {
-        return targetExtension;
+    public void setExtensionTarget(double extensionTarget) {
+        this.extensionTarget = MathUtil.clamp(extensionTarget, LOWER_LIMIT_METERS, RAISE_LIMIT_METERS);
     }
 
-    /**
-     * Returns this climb arm's current extension in meters.
-     */
+    /** Returns this climb arm's current extension in meters. */
     public double getCurrentExtension() {
         return extensionEncoder.getPosition();
     }
@@ -135,60 +102,35 @@ public class ClimbArm {
     /**
      * Returns true if this climb arm is within tolerance of its target, and false otherwise.
      */
-    public boolean isAtTargetExtension() {
-        return Math.abs(this.getCurrentExtension() - this.getTargetExtension()) < EXTENSION_TOLERANCE_METERS; 
+    public boolean isAtExtensionTarget() {
+        return Math.abs(this.getCurrentExtension() - extensionTarget) < EXTENSION_TOLERANCE_METERS; 
     }
 
     /**
-     * Closes the solenoid latch.
-     */
-    public void closeLatch() {
-        if (latch == null) {
-            return;
-        }
-
-        latch.set(false);
-
-        if (this.getCurrentExtension() < LOWER_LIMIT_METERS + EXTENSION_TOLERANCE_METERS) {
-            hookIsLatched = true;
-        }
-    }
-
-    /**
-     * Opens the solenoid latch.
+     * Enables/disables this climb arm's motor position limits.
      *
-     * @implNote Keeping it open uses ~2.3 A at 12 V per arm, so it is recommended to keep it closed whenever possible.
+     * @param enable True to enable, false to disable.
      */
-    public void openLatch() {
-        if (latch == null) {
-            return;
-        }
-
-        hookIsLatched = false;
-        latch.set(true);
+    public void enableSoftLimits(boolean enable) {
+        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
+        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
     }
 
     /**
-     * Enables/disables this climb arm's zeroing mode.
+     * Enables/disables this climb arm's PID controller.
      *
-     * @param enable Enables if true, disables if false..
+     * @param enable True to enable, false to disable.
      */
-    public void enableZeroingMode(boolean enable) {
-        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, !enable);
-        winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, !enable);
-        isZeroing = enable;
+    public void enablePID(boolean enable) {
+        isUsingPID = enable;
     }
 
-    /**
-     * Returns whether or not this climb arm's limit switch at position 0 is pressed.
-     */ 
+    /** Returns whether or not this climb arm's limit switch at position 0 is pressed. */ 
     public boolean isLimitSwitchPressed() {
         return !zeroLimitSwitch.get();
     }
 
-    /**
-     * Resets the motor's encoder to 0.
-     */
+    /** Resets the motor's encoder to 0. */
     private void resetEncoder() {
         extensionEncoder.setPosition(0);
     }
