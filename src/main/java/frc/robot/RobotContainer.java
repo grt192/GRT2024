@@ -135,7 +135,7 @@ public class RobotContainer {
         }
 
         driverCamera = new UsbCamera("fisheye", 0);
-        driverCamera.setVideoMode(PixelFormat.kYUYV, 320, 240, 30);
+        driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
         driverCameraServer = new MjpegServer("m1", 1181);
         driverCameraServer.setSource(driverCamera);
 
@@ -217,6 +217,13 @@ public class RobotContainer {
         // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
         // leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
 
+        // elevatorSubsystem.setManual();
+
+        // elevatorSubsystem.setDefaultCommand(new InstantCommand(() ->
+        //     elevatorSubsystem.setManualPower(mechController.getRightX()),
+        //     elevatorSubsystem)
+        // );
+
         /* INTAKE TEST */
 
         // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3),
@@ -236,6 +243,8 @@ public class RobotContainer {
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
             climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
+
+        
 
         toggleClimbLimitsButton.onTrue(new InstantCommand(() -> climbSubsystem.enableSoftLimits(false)));
         toggleClimbLimitsButton.onFalse(new InstantCommand(() -> climbSubsystem.enableSoftLimits(true)));
@@ -347,12 +356,7 @@ public class RobotContainer {
         /* SWERVE BINDINGS */
 
         /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
-        // driveController.getShooterAimButton().onTrue(
-        //         new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true), shooterPivotSubsystem)
-        // );
-        // driveController.getShooterAimButton().onFalse(
-        //         new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(false), shooterPivotSubsystem)
-        // );
+        // drive
 
         /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
          * Releasing the button will stop the robot (and the path finding). */
