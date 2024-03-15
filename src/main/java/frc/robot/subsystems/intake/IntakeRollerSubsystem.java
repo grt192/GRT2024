@@ -107,6 +107,14 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         
     }
 
+    /** Returns the red value seen by the color sensor.
+     *
+     * @return the red value seen by the color sensor.
+     */
+    public double getColorSensorRed() {
+        return colorSensor.getRed();
+    }
+
     /** Return whether the color sensor detects a note or not.
      *
      * @return whether the color sensor detects a note or not.
@@ -130,7 +138,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public void periodic() {
         ntFrontPublisher.set(getFrontSensorReached());
         ntBackPublisher.set(getBackSensorReached());
-        if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
+        if (colorSensor.getRed() == 0 || !colorSensor.isConnected() && colorResetTimer.advanceIfElapsed(2)) {
+            System.out.println("Attempting to reset the color sensor.");
             colorSensor = new ColorSensorV3(I2C.Port.kMXP);
         }
     }
