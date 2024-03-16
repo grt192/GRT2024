@@ -320,9 +320,9 @@ public class RobotContainer {
         aButton.onTrue(
             new ElevatorToZeroCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                    // intake the note to the color sensor
-                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
+                    new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
+                        // intake the note to the color sensor
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
                 ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             )
         );
