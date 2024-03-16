@@ -355,6 +355,66 @@ public class AutonBuilder {
         );
     }
 
+    public SequentialCommandGroup get2TopWingThen1Center1(){
+        
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("M2-SpeakerNoteToAmpNote");
+        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("Z1M3-AmpToCenter1");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            shoot(),
+            goIntake(piece1ToPiece2),
+            shoot(),
+            goIntake(piece2ToPiece3),
+            goShoot(piece3ToWing)
+        );
+    }
+
+    public SequentialCommandGroup get2TopWingThen2TopCenter() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("M2-SpeakerNoteToAmpNote");
+        ChoreoTrajectory piece2ToPiece3 = Choreo.getTrajectory("Z1M3-AmpToCenter1");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
+        ChoreoTrajectory wingToPiece4 = Choreo.getTrajectory("Z3-WingToCenter2");
+        ChoreoTrajectory piece4ToWing = Choreo.getTrajectory("Z4-Center2ToWing");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            shoot(),
+            goIntake(piece1ToPiece2),
+            shoot(),
+            goIntake(piece2ToPiece3),
+            goShoot(piece3ToWing),
+            goIntake(wingToPiece4),
+            goShoot(piece4ToWing)
+        );
+    }
+
+    public SequentialCommandGroup getAmpToCenterTop2Piece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-OffsetTopToCenter1");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z3-WingToCenter2");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("Z4-Center2ToWing");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            goIntake(wingToPiece2),
+            goShoot(piece2ToWing)
+        );
+
+    }
+
     /** Drives 2 meters away from the alliance wall. */
     public Command getTaxiTwoMeters() {
         return AutoBuilder.pathfindToPose(

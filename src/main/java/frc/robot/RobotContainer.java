@@ -169,13 +169,16 @@ public class RobotContainer {
         );
 
         autonPathChooser = new SendableChooser<>();
-        // autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
+        autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
         autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
         autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
+        // autonPathChooser.addOption("centerTop2Piece", autonBuilder.());
         autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
         autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
         autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
+        autonPathChooser.addOption("middle2PieceThenCenterTop1", autonBuilder.get2TopWingThen1Center1()); //UNTESTED
+        autonPathChooser.addOption("middle2PieceThenCenterTop2", autonBuilder.get2TopWingThen2TopCenter()); //UNTESTED
         autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
         autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
