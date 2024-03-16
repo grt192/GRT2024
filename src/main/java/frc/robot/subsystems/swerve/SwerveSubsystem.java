@@ -59,6 +59,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import org.photonvision.EstimatedRobotPose;
 
 /** The subsystem that controls the swerve drivetrain. */
@@ -129,9 +131,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private boolean verbose = false;
 
+    private BooleanSupplier redSupplier;
+
     /** Constructs a {@link SwerveSubsystem}. */
-    public SwerveSubsystem() {
+    public SwerveSubsystem(BooleanSupplier redSupplier) {
         ahrs = new AHRS(SPI.Port.kMXP);
+
+        this.redSupplier = redSupplier;
 
         frontLeftModule = new SwerveModule(FL_DRIVE, FL_STEER, FL_OFFSET, true);
         frontRightModule = new SwerveModule(FR_DRIVE, FR_STEER, FR_OFFSET, true);
@@ -191,14 +197,6 @@ public class SwerveSubsystem extends SubsystemBase {
                         new ReplanningConfig(true, true)
                 ),
             () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-                // var alliance = DriverStation.getAlliance();
-                // if (alliance.isPresent()) {
-                //     return alliance.get() == DriverStation.Alliance.Red;
-                // }
                 return false;
             },
             this
@@ -407,7 +405,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param yPower The power in the y direction.
      */
     public void setSwerveAimDrivePowers(double xPower, double yPower) {
-        double shootAngleRadians = getShootAngle(DriverStation.getAlliance().get() == Alliance.Red);
+        double shootAngleRadians = getShootAngle(redSupplier.getAsBoolean());
 
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
