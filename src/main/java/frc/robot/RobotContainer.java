@@ -220,7 +220,7 @@ public class RobotContainer {
                     break;
             }
 
-            System.out.println(intakePosition);
+            // System.out.println(intakePosition);
 
 
             
@@ -302,7 +302,7 @@ public class RobotContainer {
                                 .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
                     ),
-                    intakeRollerSubsystem::getFrontSensorReached
+                    () -> true//intakeRollerSubsystem::getFrontSensorReached
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
@@ -330,7 +330,7 @@ public class RobotContainer {
             double stowPosition = 0;
             if (elevatorSubsystem.getExtensionPercent() > .5 
                 && elevatorSubsystem.getTargetState() == ElevatorState.TRAP) {
-                outPosition = .38; // push intake out
+                outPosition = .45; // push intake out
             } else if (elevatorSubsystem.getExtensionPercent() > .5 
                 && elevatorSubsystem.getTargetState() == ElevatorState.AMP) {
                 stowPosition = .2;

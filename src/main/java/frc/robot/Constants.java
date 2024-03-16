@@ -104,9 +104,9 @@ public final class Constants {
         public static final int RETRACTED_LIMIT_SWITCH_ID = 6;
         public static final int INTAKE_ENCODER_ID = 3;
 
-        public static final double FRONT_SENSOR_THRESHOLD = .05;
+        public static final double FRONT_SENSOR_THRESHOLD = .1;
         public static final double BACK_SENSOR_THRESHOLD = .5;
-        public static final double COLOR_SENSOR_RED_THRESHOLD = 250;
+        public static final double COLOR_SENSOR_RED_THRESHOLD = 45;
     }
 
     /** Constants for Shooter Subsystem. */
