@@ -62,7 +62,13 @@ public class LEDLayer {
             
             double distance = Math.abs(i - offset);
 
-            setLED(i, OpacityColor.blendColors(baseColor, peakColor, 0.3 * (distance / colorArray.length)));
+            if (distance <= 2) { 
+                setLED(i, peakColor);
+            } else {
+                setLED(i, baseColor);
+            }
+            
+            // setLED(i, OpacityColor.blendColors(baseColor, peakColor, 0.3 * (distance / colorArray.length)));
         }
 
     }
@@ -72,17 +78,28 @@ public class LEDLayer {
      *
      * @param baseColor The color for the background (not reached) portion of the progress bar.
      * @param progressColor The color for the portion of the progress bar that has been covered.
+     * @param completeColor The color to display once the shooter reaches > 98% of its desired speed.
      * @param percentage The double [0.0, 1.0] representing the progress of the progress bar. 
      */
-    public void setProgressBar(OpacityColor baseColor, OpacityColor progressColor, double percentage) {
+    public void setProgressBar(OpacityColor baseColor, 
+                                OpacityColor progressColor, 
+                                OpacityColor completeColor, 
+                                double percentage) {
         
-        int cutoff = (int) (colorArray.length * percentage);
-        
+        int progressInLEDs = (int) (colorArray.length * percentage);
+        progressInLEDs = colorArray.length - progressInLEDs; // Show the progress with left as 0% and right as 100%
+
         for (int i = 0; i < colorArray.length; i++) {
-            if (i >= cutoff) {
-                setLED(i, baseColor);
-            } else {
+            if (i >= progressInLEDs) {
                 setLED(i, progressColor);
+            } else {
+                setLED(i, baseColor);
+            }
+        }
+
+        if (percentage >= 0.98) { // Set the last few LEDs to be a different color when we're at speed
+            for (int i = 0; i < 5; i++) {
+                setLED(i, completeColor);
             }
         }
 

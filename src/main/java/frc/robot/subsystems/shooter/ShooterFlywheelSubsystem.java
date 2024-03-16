@@ -222,7 +222,6 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         ntPublisher.set(atSpeed());
-        System.out.println(shooterMotorTop.getVelocity().getValueAsDouble());
 
         //only grabs spline speeds if shooter motor is running (ie not stopped)
         if (autoAim) {

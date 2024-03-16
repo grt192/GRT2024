@@ -47,6 +47,7 @@ import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
+import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
 
@@ -66,8 +67,9 @@ public class RobotContainer {
 
     private final ElevatorSubsystem elevatorSubsystem;
 
-    private final FieldManagementSubsystem fmsSubsystem = new FieldManagementSubsystem();
-    private final LightBarSubsystem lightBarSubsystem = new LightBarSubsystem();
+    private final FieldManagementSubsystem fmsSubsystem;
+    private final LightBarSubsystem lightBarSubsystem;
+    private final SuperstructureSubsystem superstructureSubsystem;
 
     private final SendableChooser<Command> autonPathChooser;
     private final AutonBuilder autonBuilder;
@@ -110,6 +112,10 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        fmsSubsystem = new FieldManagementSubsystem();
+        lightBarSubsystem = new LightBarSubsystem();
+        superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
+        
         swerveSubsystem = new SwerveSubsystem();
         swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
@@ -214,7 +220,7 @@ public class RobotContainer {
                     break;
             }
 
-            System.out.println(intakePosition);
+            // System.out.println(intakePosition);
 
 
             
@@ -296,7 +302,7 @@ public class RobotContainer {
                                 .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
                     ),
-                    intakeRollerSubsystem::getFrontSensorReached
+                    () -> true//intakeRollerSubsystem::getFrontSensorReached
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
@@ -324,7 +330,7 @@ public class RobotContainer {
             double stowPosition = 0;
             if (elevatorSubsystem.getExtensionPercent() > .5 
                 && elevatorSubsystem.getTargetState() == ElevatorState.TRAP) {
-                outPosition = .38; // push intake out
+                outPosition = .45; // push intake out
             } else if (elevatorSubsystem.getExtensionPercent() > .5 
                 && elevatorSubsystem.getTargetState() == ElevatorState.AMP) {
                 stowPosition = .2;
@@ -341,7 +347,7 @@ public class RobotContainer {
         // yButton runs the flywheels
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
-                lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP);
+                lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
                 // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); // for tuning
                 shooterFlywheelSubsystem.setShooterMotorSpeed();
                 shooterPivotSubsystem.setAutoAimBoolean(true);
@@ -404,12 +410,13 @@ public class RobotContainer {
         /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
          * Releasing the button will stop the robot (and the path finding). */
         driveController.getAmpAlign().onTrue(new InstantCommand(
-            () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN)
+            () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
             ).andThen(new ParallelRaceGroup(
                 AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
                 new ConditionalWaitCommand(
-                    () -> !driveController.getAmpAlign().getAsBoolean())
-        )));
+                    () -> !driveController.getAmpAlign().getAsBoolean()))
+                    ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        );
 
         /* Note align -- deprecated, new version in the works*/
         // driveController.getNoteAlign().onTrue(new ParallelRaceGroup(

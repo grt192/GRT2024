@@ -24,7 +24,7 @@ public class IntakeRollerIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-        lightBarSubsystem.setLightBarStatus(LightBarStatus.INTAKING);
+        lightBarSubsystem.setLightBarStatus(LightBarStatus.INTAKING, 2);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class IntakeRollerIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setRollSpeeds(0, 0);
-        lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE);
+        lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
     }
 
     @Override
