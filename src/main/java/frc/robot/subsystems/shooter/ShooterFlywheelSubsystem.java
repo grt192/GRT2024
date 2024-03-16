@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
+
+import java.util.function.BooleanSupplier;
+
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
@@ -41,6 +44,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private double targetBottomRPS;
 
     private Pose2dSupplier poseSupplier;
+    private BooleanSupplier redSupplier;
 
     private AkimaSplineInterpolator akima;
     private PolynomialSplineFunction topFlywheelSpline;
@@ -53,7 +57,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @param poseSupplier The poseSupplier for shooter speed calculations.
      */
-    public ShooterFlywheelSubsystem(Pose2dSupplier poseSupplier) {
+    public ShooterFlywheelSubsystem(Pose2dSupplier poseSupplier, BooleanSupplier redSupplier) {
         //motors
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
         shooterMotorBottom = new TalonFX(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID);
@@ -93,6 +97,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorTop.getConfigurator().apply(configs);
 
         this.poseSupplier = poseSupplier;
+        this.redSupplier = redSupplier;
         //nts
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
@@ -202,7 +207,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         double currentDistance;
         Pose2d currentField = poseSupplier.getPose2d();
 
-        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
+        if (redSupplier.getAsBoolean()) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
             double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 

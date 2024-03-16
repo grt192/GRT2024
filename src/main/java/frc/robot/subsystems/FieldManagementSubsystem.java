@@ -23,8 +23,13 @@ public class FieldManagementSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        boolean incomingIsRed;
+        try {
+            incomingIsRed = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red);
+        } catch (Exception e) {
+            incomingIsRed = isRed;
+        }
         
-        boolean incomingIsRed = DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red);
         if (incomingIsRed != isRed) {
             if (incomingIsRed) {
                 System.out.println("Alliance color switched to Red.");

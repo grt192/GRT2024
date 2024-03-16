@@ -121,8 +121,14 @@ public class RobotContainer {
 
         intakePivotSubsystem = new IntakePivotSubsystem();
 
-        shooterPivotSubsystem = new ShooterPivotSubsystem(swerveSubsystem::getRobotPosition);
-        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem(swerveSubsystem::getRobotPosition);
+        shooterPivotSubsystem = new ShooterPivotSubsystem(
+            swerveSubsystem::getRobotPosition, 
+            fmsSubsystem::isRedAlliance
+        );
+        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem(
+            swerveSubsystem::getRobotPosition, 
+            fmsSubsystem::isRedAlliance
+        );
 
         elevatorSubsystem = new ElevatorSubsystem();
 

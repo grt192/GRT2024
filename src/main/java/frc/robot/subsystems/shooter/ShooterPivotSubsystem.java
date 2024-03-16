@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.Pose2dSupplier;
+
+import java.util.function.BooleanSupplier;
+
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
@@ -38,7 +41,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private boolean autoAim;
     private double currentEncoderAngle;
     private double currentDistance;
+
     private Pose2dSupplier poseSupplier; //new Pose2d();
+    private BooleanSupplier redSupplier;
 
     private AkimaSplineInterpolator akima;
     private PolynomialSplineFunction angleSpline;
@@ -48,10 +53,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double angleOffset = 0;
 
     /** Inits motors and pose field. Also inits PID stuff. */
-    public ShooterPivotSubsystem(Pose2dSupplier poseSupplier) {
+    public ShooterPivotSubsystem(Pose2dSupplier poseSupplier, BooleanSupplier redSupplier) {
 
         timer.start();
         this.poseSupplier = poseSupplier;
+        this.redSupplier = redSupplier;
 
         //motors
         pivotMotor = new CANSparkMax(ShooterConstants.PIVOT_MOTOR_ID, MotorType.kBrushless); 
@@ -124,7 +130,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double getShootingDistance() {
         Pose2d currentField = poseSupplier.getPose2d();
 
-        if (DriverStation.getAlliance().get() == Alliance.Red) {  //true = red
+        if (redSupplier.getAsBoolean()) {  //true = red
             double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
             double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
 
