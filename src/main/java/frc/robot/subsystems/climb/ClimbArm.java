@@ -6,6 +6,7 @@ import static frc.robot.Constants.ClimbConstants.RAISE_LIMIT_METERS;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -42,11 +43,11 @@ public class ClimbArm {
             sparkMax.setIdleMode(IdleMode.kBrake); 
             sparkMax.setInverted(isInverted);
 
-            // sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
-            // sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
+            sparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) (RAISE_LIMIT_METERS + .05));
+            sparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) (LOWER_LIMIT_METERS - .05));
         });
 
-        // this.enableSoftLimits(true);
+        this.enableSoftLimits(true);
 
         extensionEncoder = winchMotor.getEncoder();
         extensionEncoder.setPositionConversionFactor(EXTENSION_METERS_PER_ROTATION);
@@ -111,8 +112,8 @@ public class ClimbArm {
      * @param enable True to enable, false to disable.
      */
     public void enableSoftLimits(boolean enable) {
-        //winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
-        //winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
+        winchMotor.enableSoftLimit(SoftLimitDirection.kForward, enable);
+        // winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, enable);
     }
 
     /**
