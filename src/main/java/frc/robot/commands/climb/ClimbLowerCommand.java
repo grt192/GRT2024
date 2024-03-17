@@ -24,4 +24,11 @@ public class ClimbLowerCommand extends Command {
     public boolean isFinished() {
         return climbSubsystem.isAtTargetExtension();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (!climbSubsystem.isZeroedAndAtZero()) {
+            climbSubsystem.startZeroing();
+        }
+    }
 }

@@ -6,6 +6,7 @@ import static frc.robot.Constants.ClimbConstants.RIGHT_WINCH_MOTOR_ID;
 import static frc.robot.Constants.ClimbConstants.RIGHT_ZERO_LIMIT_PORT;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.GRTUtil;
 
 /**
  * Represents the climb mechanism (both arms).
@@ -14,7 +15,7 @@ public class ClimbSubsystem extends SubsystemBase {
     private final ClimbArm leftClimbArm;
     private final ClimbArm rightClimbArm;
 
-    private static final double ZEROING_SPEED = 0.3;
+    private static final double ZEROING_SPEED = 0.6;
 
     private boolean isZeroing;
 
@@ -26,6 +27,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        System.out.println("Left: " + GRTUtil.twoDecimals(leftClimbArm.getCurrentExtension())
+                      + ", Right: " + GRTUtil.twoDecimals(rightClimbArm.getCurrentExtension()));
+
+        //System.out.println(leftClimbArm.isLimitSwitchPressed() + " " + rightClimbArm.isLimitSwitchPressed());
+
         leftClimbArm.update();
         rightClimbArm.update();
     }

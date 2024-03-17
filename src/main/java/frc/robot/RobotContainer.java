@@ -99,7 +99,7 @@ public class RobotContainer {
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
-    private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 9);
+    private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 6);
 
     private UsbCamera driverCamera;
     private MjpegServer driverCameraServer;
@@ -330,7 +330,6 @@ public class RobotContainer {
         leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
         rightStickButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
 
-        
         toggleClimbModeSwitch.onTrue(new InstantCommand(() -> climbSubsystem.setManual()));
         toggleClimbModeSwitch.onFalse(new InstantCommand(() -> climbSubsystem.setAutomatic()));
 
