@@ -7,9 +7,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.vision.NoteDetectionWrapper;
 import java.util.NoSuchElementException;
 
-/**
- *  Rotates the robot to face directly towards a note on the ground.
- */
+/** Rotates the robot to face directly towards a note on the ground. */
 public class NoteAlignCommand extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final NoteDetectionWrapper noteDetector;
@@ -68,7 +66,7 @@ public class NoteAlignCommand extends Command {
         swerveSubsystem.setDrivePowersWithHeadingLock(
             driveController.getForwardPower(), driveController.getLeftPower(), 
             swerveSubsystem.getRobotPosition().getRotation().plus(
-            Rotation2d.fromDegrees(noteYawOffsetDegrees))
+            Rotation2d.fromDegrees(1.25 * -noteYawOffsetDegrees))
         );
     }
 
@@ -76,6 +74,4 @@ public class NoteAlignCommand extends Command {
     public void end(boolean interrupted) {
         System.out.println("Ended NoteAlignCommand");
     }
-
-
 }

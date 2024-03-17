@@ -216,11 +216,6 @@ public final class Constants {
     public static final class VisionConstants {
         public static final String VISION_TABLE_KEY = "Vision";
 
-        public static final PhotonCamera FRONT_CAMERA = new PhotonCamera("Arducam_OV9281_USB_Camera_2");
-        public static final Transform3d FRONT_CAMERA_POSE = new Transform3d(
-                new Translation3d(Units.inchesToMeters(+8), Units.inchesToMeters(4), Units.inchesToMeters(+44)),
-                new Rotation3d(Math.PI, Units.degreesToRadians(16), 0));
-
         public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
         public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(Units.inchesToMeters(+9.7), Units.inchesToMeters(-14.2), Units.inchesToMeters(+25.9)),
@@ -239,7 +234,6 @@ public final class Constants {
             new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-170.0))
         );
 
-        public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("Microsoft_LifeCam_HD-3000");
-        public static final Transform3d NOTE_CAMERA_POSE = new Transform3d();
+        public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
     }
 }
