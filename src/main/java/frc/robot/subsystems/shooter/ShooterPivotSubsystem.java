@@ -98,9 +98,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
                               7, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
         double[] angles = {Units.degreesToRadians(65.5), 
-                           Units.degreesToRadians(53.5), 
-                           Units.degreesToRadians(45), 
-                           Units.degreesToRadians(36),
+                           Units.degreesToRadians(55.5), 
+                           Units.degreesToRadians(47), 
+                           Units.degreesToRadians(37),
                            Units.degreesToRadians(33.5),
                            Units.degreesToRadians(32),
                            Units.degreesToRadians(28),

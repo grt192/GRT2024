@@ -122,7 +122,7 @@ public class RobotContainer {
         superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
         
         swerveSubsystem = new SwerveSubsystem(fmsSubsystem::isRedAlliance);
-        swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
+        swerveSubsystem.setVerbose(true); // SET THIS TO true FOR TUNING VALUES
 
         intakePivotSubsystem = new IntakePivotSubsystem();
 
@@ -293,7 +293,7 @@ public class RobotContainer {
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
-                                .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                                .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2) // angle intake for scoring
                     ).until(() -> mechController.getLeftTriggerAxis() > .05 
@@ -309,13 +309,15 @@ public class RobotContainer {
                 new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                     () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
-                    new ElevatorToTrapCommand(elevatorSubsystem), 
+                    new ElevatorToTrapCommand(elevatorSubsystem).andThen(
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, .45)
+                    ), 
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
-                                .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                                .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
                     ),
-                    () -> true//intakeRollerSubsystem::getFrontSensorReached
+                    intakeRollerSubsystem::getFrontSensorReached
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
