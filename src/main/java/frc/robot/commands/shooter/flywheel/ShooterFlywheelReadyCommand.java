@@ -20,7 +20,7 @@ public class ShooterFlywheelReadyCommand extends Command {
         
         this.shooterSubsystem = shooterSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
-        addRequirements(shooterSubsystem, lightBarSubsystem);
+        addRequirements(shooterSubsystem);
 
         topSpeed = shooterSubsystem.getTopMotorSplineSpeed();
         bottomSpeed = shooterSubsystem.getBottomMotorSplineSpeed();
@@ -33,7 +33,7 @@ public class ShooterFlywheelReadyCommand extends Command {
         
         this.shooterSubsystem = shooterSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
-        addRequirements(shooterSubsystem, lightBarSubsystem);
+        addRequirements(shooterSubsystem);
 
         this.topSpeed = topSpeed;
         this.bottomSpeed = bottomSpeed;

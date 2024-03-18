@@ -382,7 +382,7 @@ public class RobotContainer {
                 mechController.setRumble(RumbleType.kBothRumble, .4);
             } else {
                 mechController.setRumble(RumbleType.kBothRumble, 0);
-                if (lightBarSubsystem.getLightBarStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
+                if (lightBarSubsystem.getLightBarMechStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
                     double top = shooterFlywheelSubsystem.getTopSpeed() / shooterFlywheelSubsystem.getTargetTopRPS();
                     double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
                                   / shooterFlywheelSubsystem.getTargetBottomRPS();
