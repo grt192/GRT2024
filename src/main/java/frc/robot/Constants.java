@@ -67,7 +67,7 @@ public final class Constants {
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = 2.816 + Math.PI * 7.0 / 4;
+        public static final double BL_OFFSET = 5.79 + Math.PI * 7.0 / 4 + Math.PI * 1.0/8 + Math.PI * 3.0/4;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
@@ -106,8 +106,7 @@ public final class Constants {
 
         public static final double FRONT_SENSOR_THRESHOLD = .1;
         public static final double BACK_SENSOR_THRESHOLD = .5;
-        public static final double UlTRA_SENSOR_THRESHOLD = .1;
-        public static final double COLOR_SENSOR_RED_THRESHOLD = 250;
+        public static final double COLOR_SENSOR_RED_THRESHOLD = 45;
     }
 
     /** Constants for Shooter Subsystem. */
