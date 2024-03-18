@@ -44,7 +44,7 @@ public class IntakeRollerOuttakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (!intakeSubsystem.getFrontSensorReached() && !timer.hasStarted()) {
+        if (intakeSubsystem.getFrontSensorReached() && !timer.hasStarted()) {
             timer.start();
         }
     }

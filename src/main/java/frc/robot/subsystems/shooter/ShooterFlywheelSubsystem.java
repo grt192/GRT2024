@@ -115,6 +115,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         atSpeed = Math.abs(targetTopRPS - shooterMotorTop.getVelocity().getValueAsDouble()) < 1
             && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 1
             && targetBottomRPS != 0;
+        
+        // System.out.println("targetTop: " + targetTopRPS + "realTop" + shooterMotorTop.getVelocity().getValueAsDouble());
+        // System.out.println("targetBottom: " + targetBottomRPS + "realBottom" + shooterMotorBottom.getVelocity().getValueAsDouble());
+
     }
 
     /** Sets shooting motor speed for only one speed. */

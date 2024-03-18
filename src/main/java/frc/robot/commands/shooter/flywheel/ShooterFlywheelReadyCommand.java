@@ -41,13 +41,9 @@ public class ShooterFlywheelReadyCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-        shooterSubsystem.setShooterMotorSpeed(topSpeed, bottomSpeed);
-    }
-
-    @Override
     public void execute() {
-
+        shooterSubsystem.setShooterMotorSpeed(topSpeed, bottomSpeed);
+        
         double top = shooterSubsystem.getTopSpeed() / shooterSubsystem.getTargetTopRPS();
         double bottom = shooterSubsystem.getBottomSpeed() / shooterSubsystem.getTargetBottomRPS();
         double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 

@@ -40,6 +40,6 @@ public class IntakeRollerIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return intakeSubsystem.getNoteColorDetected();
+        return intakeSubsystem.getRockwellSensorValue();
     }
 }

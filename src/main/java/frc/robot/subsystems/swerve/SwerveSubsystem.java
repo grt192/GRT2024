@@ -560,10 +560,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /** Prints the current module angles. Used for zeroing swerve. */
     public void printModuleAngles() {
-        System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getMappedAngle())
-                        + " FR: " + GRTUtil.twoDecimals(frontRightModule.getMappedAngle())
-                        + " BL: " + GRTUtil.twoDecimals(backLeftModule.getMappedAngle())
-                        + " BR: " + GRTUtil.twoDecimals(backRightModule.getMappedAngle()));
+        System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
+                        + " FR: " + GRTUtil.twoDecimals(frontRightModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
+                        + " BL: " + GRTUtil.twoDecimals(backLeftModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
+                        + " BR: " + GRTUtil.twoDecimals(backRightModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2));
     }
 
     /**

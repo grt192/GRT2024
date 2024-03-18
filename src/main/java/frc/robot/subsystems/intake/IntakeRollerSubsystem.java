@@ -17,6 +17,8 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -26,9 +28,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IntakeRollerSubsystem extends SubsystemBase {
     private final CANSparkMax frontMotors;
     private final TalonSRX integrationMotor;
-    private final AnalogPotentiometer frontSensor;
+    private final DigitalInput frontSensor;
     private final AnalogPotentiometer backSensor;
-    private ColorSensorV3 colorSensor;
+    private final DigitalInput rockwellSensor;
+    // private ColorSensorV3 colorSensor;
+
+    private boolean prevFrontSensorValue = false;
 
     private NetworkTableInstance ntInstance;
     private NetworkTable ntTable;
@@ -44,17 +49,19 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
-        frontSensor = new AnalogPotentiometer(IntakeConstants.FRONT_SENSOR_ID);
+        frontSensor = new DigitalInput(3);
         backSensor = new AnalogPotentiometer(IntakeConstants.BACK_SENSOR_ID);
-        colorSensor = new ColorSensorV3(I2C.Port.kMXP);
+        // colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+        // colorSensor = new ColorSensorV3(I2C.Port.kMXP);
+        rockwellSensor = new DigitalInput(4);
     
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
         ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
         ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
 
-        colorResetTimer = new Timer();
-        colorResetTimer.start();
+        // colorResetTimer = new Timer();
+        // colorResetTimer.start();
     }
 
     /**
@@ -63,11 +70,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
      * @return Whether a note is at the front sensor currently.
      */
     public boolean getFrontSensorReached() {
-        if (frontSensor.get() >= IntakeConstants.FRONT_SENSOR_THRESHOLD) {
-            return true;
-        } else {
-            return false;
-        }
+        return (prevFrontSensorValue == true && !getFrontSensorValue());
     }
 
     /**
@@ -75,8 +78,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
      *
      * @return The current measurement of the front sensor.
      */
-    public double getFrontSensorValue() {
-        return frontSensor.get();
+    public boolean getFrontSensorValue() {
+        return !frontSensor.get();
     }
 
     /**
@@ -97,23 +100,50 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         return backSensor.get();
     }
 
+    /**
+     * Gets whether a note is at the back sensor currently.
+     *
+     * @return Whether a note is at the back sensor currently.
+     */
+    // public boolean getUltraSensorReached() {
+    //     return ultrasonicSensor.get() > IntakeConstants.UlTRA_SENSOR_THRESHOLD || ultrasonicSensor.get() < .018;
+    // }
+
+    /**
+     * Gets the back sensor value.
+     *
+     * @return The current measurement of the back sensor.
+     */
+    // public double getUltraSensorValue() {
+    //     return ultrasonicSensor.get();
+    // }
+
+    /**
+     * Gets the back sensor value.
+     *
+     * @return The current measurement of the back sensor.
+     */
+    public boolean getRockwellSensorValue() {
+        return !rockwellSensor.get();
+    }
+
     
     /** Returns the color seen by the color sensor.
      *
      * @return the color seen by the color sensor.
      */
-    public Color getColorSensor() {
-        return colorSensor.getColor();
+    // public Color getColorSensor() {
+    //     return colorSensor.getColor();
         
-    }
+    // }
 
     /** Return whether the color sensor detects a note or not.
      *
      * @return whether the color sensor detects a note or not.
      */
-    public boolean getNoteColorDetected() { 
-        return colorSensor.getRed() >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
-    }
+    // public boolean getNoteColorDetected() { 
+    //     return colorSensor.getRed() >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
+    // }
 
     /**
      * sets the speed for the front and integration rollers.
@@ -130,8 +160,12 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public void periodic() {
         ntFrontPublisher.set(getFrontSensorReached());
         ntBackPublisher.set(getBackSensorReached());
-        if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
-            colorSensor = new ColorSensorV3(I2C.Port.kMXP);
-        }
+        // if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
+        //     colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+        // }
+        // System.out.println("COLOR SENSOR: " + colorSensor.getRed());
+        System.out.println("FRONT ROCKWELL: " + getFrontSensorValue());
+        prevFrontSensorValue = getFrontSensorValue();
+        // System.out.println("ULTRASONIC SENSOR: " + ultrasonicSensor.get());
     }
 }

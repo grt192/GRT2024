@@ -169,15 +169,21 @@ public class RobotContainer {
         );
 
         autonPathChooser = new SendableChooser<>();
-        autonPathChooser.setDefaultOption("topPreloaded", autonBuilder.getMiddleFourPiece());
+        autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
-        autonPathChooser.addOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
+        autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
+        autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
+        // autonPathChooser.addOption("centerTop2Piece", autonBuilder.());
+        autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
         autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
         autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
+        autonPathChooser.addOption("middle2PieceThenCenterTop1", autonBuilder.get2TopWingThen1Center1()); //UNTESTED
+        autonPathChooser.addOption("middle2PieceThenCenterTop2", autonBuilder.get2TopWingThen2TopCenter()); //UNTESTED
         autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
         autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
-        autonPathChooser.addOption("bottomDisruptor", autonBuilder.getBottomDisruptor());
+
+        swerveCrauton.add(autonPathChooser);
 
         configureBindings();
     }
@@ -293,7 +299,7 @@ public class RobotContainer {
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
-                                .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                                .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2) // angle intake for scoring
                     ).until(() -> mechController.getLeftTriggerAxis() > .05 
@@ -309,13 +315,15 @@ public class RobotContainer {
                 new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                     () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
-                    new ElevatorToTrapCommand(elevatorSubsystem), 
+                    new ElevatorToTrapCommand(elevatorSubsystem).andThen(
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, .45)
+                    ), 
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
-                                .until(() -> intakeRollerSubsystem.getFrontSensorValue() > .12),
+                                .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
                     ),
-                    () -> true//intakeRollerSubsystem::getFrontSensorReached
+                    intakeRollerSubsystem::getFrontSensorReached
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
