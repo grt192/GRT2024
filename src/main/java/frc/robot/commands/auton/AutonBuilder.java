@@ -110,16 +110,7 @@ public class AutonBuilder {
             //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getBackSensorReached))
-        );
-    }
-
-    public Command goIntakeNoOvershoot(ChoreoTrajectory intakeTrajectory) {
-        return followPath(intakeTrajectory).alongWith(
-            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-        ).andThen(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).withTimeout(.7))
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getBackSensorReached).withTimeout(1))
         );
     }
 
@@ -350,7 +341,7 @@ public class AutonBuilder {
             shoot(),
             goIntake(piece1ToPiece2),
             shoot(),
-            goIntakeNoOvershoot(piece2ToPiece3),
+            goAndIntake(piece2ToPiece3),
             shoot()
         );
     }
