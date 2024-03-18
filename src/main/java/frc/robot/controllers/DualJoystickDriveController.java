@@ -26,19 +26,17 @@ public class DualJoystickDriveController extends BaseDriveController {
 
     @Override
     public double getForwardPower() {
-        double scale = getDriveScaling();
-        return MathUtil.applyDeadband(-leftJoystick.getY() * scale, JOYSTICK_DEADBAND);
+        return MathUtil.applyDeadband(-leftJoystick.getY(), JOYSTICK_DEADBAND) * getDriveScaling();
     }
 
     @Override
     public double getLeftPower() {
-        double scale = getDriveScaling();
-        return MathUtil.applyDeadband(-leftJoystick.getX() * scale, JOYSTICK_DEADBAND);
+        return MathUtil.applyDeadband(-leftJoystick.getX(), JOYSTICK_DEADBAND) * getDriveScaling();
     }
 
     @Override
     public double getRotatePower() {
-        return MathUtil.applyDeadband(-rightJoystick.getX() * getTurnScaling(), JOYSTICK_DEADBAND);
+        return MathUtil.applyDeadband(-rightJoystick.getX(), JOYSTICK_DEADBAND) * getTurnScaling();
     }
 
     /** Gets the amount to scale translational input by.
