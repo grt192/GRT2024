@@ -49,7 +49,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
-        frontSensor = new DigitalInput(5);
+        frontSensor = new DigitalInput(3);
         backSensor = new AnalogPotentiometer(IntakeConstants.BACK_SENSOR_ID);
         // colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         // colorSensor = new ColorSensorV3(I2C.Port.kMXP);

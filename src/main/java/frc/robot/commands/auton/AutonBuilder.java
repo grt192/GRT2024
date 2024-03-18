@@ -110,7 +110,7 @@ public class AutonBuilder {
             //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorReached))
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getBackSensorReached))
         );
     }
 
@@ -138,7 +138,7 @@ public class AutonBuilder {
         return new ShooterPivotAimCommand(shooterPivotSubsystem)
             .alongWith(new SetCalculatedAngleCommand(swerveSubsystem))
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).until(
-                () -> !intakeRollerSubsystem.getNoteColorDetected()
+                () -> !intakeRollerSubsystem.getRockwellSensorValue()
             )
         );
     }

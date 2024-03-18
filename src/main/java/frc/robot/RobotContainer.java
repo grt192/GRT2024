@@ -122,7 +122,7 @@ public class RobotContainer {
         superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
         
         swerveSubsystem = new SwerveSubsystem(fmsSubsystem::isRedAlliance);
-        swerveSubsystem.setVerbose(true); // SET THIS TO true FOR TUNING VALUES
+        swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
         intakePivotSubsystem = new IntakePivotSubsystem();
 
