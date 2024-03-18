@@ -116,8 +116,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
             && Math.abs(targetBottomRPS - shooterMotorBottom.getVelocity().getValueAsDouble()) < 1
             && targetBottomRPS != 0;
         
-        System.out.println("targetTop: " + targetTopRPS + "realTop" + shooterMotorTop.getVelocity().getValueAsDouble());
-        System.out.println("targetBottom: " + targetBottomRPS + "realBottom" + shooterMotorBottom.getVelocity().getValueAsDouble());
+        // System.out.println("targetTop: " + targetTopRPS + "realTop" + shooterMotorTop.getVelocity().getValueAsDouble());
+        // System.out.println("targetBottom: " + targetBottomRPS + "realBottom" + shooterMotorBottom.getVelocity().getValueAsDouble());
 
     }
 
