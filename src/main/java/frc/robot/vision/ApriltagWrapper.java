@@ -27,7 +27,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
  */
 public class ApriltagWrapper {
     private final PhotonPoseEstimator poseEstimator;
-    private final String name;
+    private final PhotonCamera camera;
 
     private final BooleanSubscriber debugEnabled;
     private final DoublePublisher xPosPub;
@@ -41,7 +41,7 @@ public class ApriltagWrapper {
      * @param cameraPose The camera's 3d transformation relative to the robot.
      */
     public ApriltagWrapper(PhotonCamera camera, Transform3d cameraPose) {
-        this.name = camera.getName();
+        this.camera = camera;
         
         /* Pose Estimation Setup */
         AprilTagFieldLayout fieldLayout;
@@ -64,9 +64,9 @@ public class ApriltagWrapper {
         NetworkTable visionTable = inst.getTable(VISION_TABLE_KEY);
         
         BooleanTopic debugEnabledTopic = visionTable.getBooleanTopic("debugEnabled");
-        DoubleTopic xPosTopic = visionTable.getDoubleTopic("xPos" + name);
-        DoubleTopic yPosTopic = visionTable.getDoubleTopic("yPos" + name);
-        DoubleTopic headingTopic = visionTable.getDoubleTopic("heading" + name);
+        DoubleTopic xPosTopic = visionTable.getDoubleTopic("xPos" + this.camera.getName());
+        DoubleTopic yPosTopic = visionTable.getDoubleTopic("yPos" + this.camera.getName());
+        DoubleTopic headingTopic = visionTable.getDoubleTopic("heading" + this.camera.getName());
         
         this.debugEnabled = debugEnabledTopic.subscribe(false);
         this.xPosPub = xPosTopic.publish(PubSubOption.keepDuplicates(true));
@@ -85,6 +85,10 @@ public class ApriltagWrapper {
         Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
 
         if (robotPose.isPresent() && debugEnabled.get()) {
+            /* Uncomment for camera pose calibration. */
+            // System.out.println(camera.getName() + "to tag: "
+            //     + camera.getLatestResult().getBestTarget().getBestCameraToTarget()
+            // );
             updateNetworkTables(robotPose.get().estimatedPose.toPose2d());
         }
 
