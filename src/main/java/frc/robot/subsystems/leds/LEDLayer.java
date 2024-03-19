@@ -87,19 +87,21 @@ public class LEDLayer {
                                 double percentage) {
         
         int progressInLEDs = (int) (colorArray.length * percentage);
-        progressInLEDs = colorArray.length - progressInLEDs; // Show the progress with left as 0% and right as 100%
+        // progressInLEDs = colorArray.length - progressInLEDs; // Show the progress with left as 0% and right as 100%
 
-        for (int i = 0; i < colorArray.length; i++) {
-            if (i >= progressInLEDs) {
+        for (int i = colorArray.length - 1; i >= 0 ; i--) {
+            if (i <= progressInLEDs) {
                 setLED(i, progressColor);
             } else {
                 setLED(i, baseColor);
             }
         }
-
+        
         if (percentage >= 0.98) { // Set the last few LEDs to be a different color when we're at speed
-            for (int i = 0; i < 5; i++) {
-                setLED(i, completeColor);
+            for (int i = colorArray.length - 1; i >= 0 ; i--) {
+                if (i % 2 == 0) {
+                    setLED(i, completeColor);
+                }
             }
         }
 

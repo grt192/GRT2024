@@ -183,6 +183,14 @@ public class LightBarSubsystem extends SubsystemBase {
         return this.status;
     }
 
+    /** Gets the status of the light bar.
+     *
+     * @return The current light bar status.
+     */
+    public LightBarStatus getLightBarMechStatus() {
+        return this.mechStatus;
+    }
+    
     /** Updates the coefficient storing the current percentage of shooter speed reached. 
      *  This is used to show the speed of the shooter as a 'progress bar' when we're spinning up the flywheel.
      *
