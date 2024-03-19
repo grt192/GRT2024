@@ -146,6 +146,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem();
 
         climbSubsystem = new ClimbSubsystem();
+        climbSubsystem.setManual();
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
