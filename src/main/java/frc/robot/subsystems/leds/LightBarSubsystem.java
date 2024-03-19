@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.util.OpacityColor;
+import frc.robot.util.TrackingTimer;
 
 /** LightBarSubsystem represents the short strip of LEDs running across the shooter of the robot.
  *  Used for robot --> driver and driver --> human player signaling.
@@ -31,7 +32,7 @@ public class LightBarSubsystem extends SubsystemBase {
     private double shooterSpeedPercentage;
 
     private final Timer ledTimer; // TODO: better naming
-    private final Timer mechResetLEDTimer; 
+    private final TrackingTimer mechResetLEDTimer; 
 
     // private static final OpacityColor TRANSPARENT_COLOR = new OpacityColor();
     private static final OpacityColor ORANGE_NOTE_COLOR = new OpacityColor(254, 80, 0); // used for intake status
@@ -69,7 +70,7 @@ public class LightBarSubsystem extends SubsystemBase {
         ledTimer.start();
         
         // used to reset the shooter or intake LEDs 5 sec after we've picked up a note or reached shooter speed
-        mechResetLEDTimer = new Timer(); 
+        mechResetLEDTimer = new TrackingTimer(); 
     }
 
     /** Periodic loop of subsystem.
@@ -116,7 +117,9 @@ public class LightBarSubsystem extends SubsystemBase {
                 break;
             case HOLDING_NOTE: // LEDs --> BOUNCING GREEN WHEN HOLDING NOTE
                 mechLayer.setBounce(GREEN_COLOR, WHITE_COLOR, bounceOffset);
-                mechResetLEDTimer.start();
+                if (!mechResetLEDTimer.hasStarted()) {
+                    mechResetLEDTimer.start();
+                }
                 break;
             case SHOOTER_SPIN_UP: // LEDs --> PROGRESS BAR (GREEN ON BLUE) WHILE SHOOTER SPINS UP
                 mechLayer.setProgressBar(BLUE_COLOR, PURPLE_ENDGAME_COLOR, GREEN_COLOR, shooterSpeedPercentage);
@@ -129,7 +132,7 @@ public class LightBarSubsystem extends SubsystemBase {
                 break;
         }
 
-        if (mechResetLEDTimer.hasElapsed(5.0)) {
+        if (mechResetLEDTimer.hasElapsed(2.5)) {
             mechStatus = LightBarStatus.DORMANT;
             mechResetLEDTimer.stop();
             mechResetLEDTimer.reset();

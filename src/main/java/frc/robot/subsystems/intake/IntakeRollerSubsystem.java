@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.leds.LightBarSubsystem;
+import frc.robot.subsystems.superstructure.LightBarStatus;
 
 /** The subsystem that controls the rollers on the intake. */
 public class IntakeRollerSubsystem extends SubsystemBase {
@@ -42,13 +44,15 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private BooleanPublisher ntFrontPublisher;
     private BooleanPublisher ntBackPublisher;
 
+    private final LightBarSubsystem lightBarSubsystem;
+
     private Timer colorResetTimer;
     private Timer sensorTimer = new Timer();
 
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake.
      */
-    public IntakeRollerSubsystem() {
+    public IntakeRollerSubsystem(LightBarSubsystem lightBarSubsystem) {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
         frontMotors.setInverted(true);
@@ -62,6 +66,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         ntTable = ntInstance.getTable("RobotStatus");
         ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
         ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
+
+        this.lightBarSubsystem = lightBarSubsystem;
 
         // colorResetTimer = new Timer();
         // colorResetTimer.start();
@@ -177,5 +183,9 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         // System.out.println("FRONT ROCKWELL: " + getFrontSensorValue());
         prevFrontSensorValue = getFrontSensorValue();
         // System.out.println("ULTRASONIC SENSOR: " + ultrasonicSensor.get());
+
+        if (getFrontSensorValue()) {
+            lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
+        }
     }
 }

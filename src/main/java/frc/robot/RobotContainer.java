@@ -63,7 +63,7 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem;
 
     private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollerSubsystem intakeRollerSubsystem = new IntakeRollerSubsystem();
+    private final IntakeRollerSubsystem intakeRollerSubsystem;
 
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
@@ -133,6 +133,7 @@ public class RobotContainer {
         swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
         intakePivotSubsystem = new IntakePivotSubsystem();
+        intakeRollerSubsystem = new IntakeRollerSubsystem(lightBarSubsystem);
 
         shooterPivotSubsystem = new ShooterPivotSubsystem(
             swerveSubsystem::getRobotPosition, 
