@@ -216,22 +216,23 @@ public final class Constants {
     public static final class VisionConstants {
         public static final String VISION_TABLE_KEY = "Vision";
 
+        //TODO: Calculate real (not from CAD) poses.
         public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
         public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
-            new Translation3d(Units.inchesToMeters(+9.7), Units.inchesToMeters(-14.2), Units.inchesToMeters(+25.9)),
-            new Rotation3d(Units.degreesToRadians(.3), Units.degreesToRadians(-16), Units.degreesToRadians(-20.2))
+            new Translation3d(+0.238, -0.357, +0.662), /* in meters */
+            new Rotation3d(Units.degreesToRadians(-0.5), Units.degreesToRadians(-20.3), Units.degreesToRadians(-10.4))
         );
 
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
         public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
-            new Translation3d(Units.inchesToMeters(+3.9), Units.inchesToMeters(+14.5), Units.inchesToMeters(+26.3)),
-            new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-16.0), Units.degreesToRadians(+160.0))
+            new Translation3d(-0.126, +0.298, +0.563), /* in meters */
+            new Rotation3d(Units.degreesToRadians(-0.3), Units.degreesToRadians(-16.2), Units.degreesToRadians(+160.2))
         );
 
         public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");
         public static final Transform3d  BACK_RIGHT_CAMERA_POSE = new Transform3d(
-            new Translation3d(Units.inchesToMeters(-5.1), Units.inchesToMeters(-11.6), Units.inchesToMeters(+22.3)),
-            new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-170.0))
+            new Translation3d(-0.130, -0.294, +0.567), /* in meters */
+            new Rotation3d(Units.degreesToRadians(+0.4), Units.degreesToRadians(-20.3), Units.degreesToRadians(-169.4))
         );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
