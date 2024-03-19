@@ -113,6 +113,8 @@ public class RobotContainer {
     private double shooterBotSpeed = .4;
     private double intakePosition = 0;
 
+    private boolean isNoteTrapReady = false;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -157,6 +159,7 @@ public class RobotContainer {
 
         driverCamera = new UsbCamera("fisheye", 0);
         driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
+        driverCamera.setExposureManual(35);
         driverCameraServer = new MjpegServer("m1", 1181);
         driverCameraServer.setSource(driverCamera);
 
@@ -188,7 +191,42 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private void configureBindings() {        
+    private void configureBindings() {
+        
+        /* Driving -- One joystick controls translation, the other rotation. If the robot-relative button is held down,
+         * the robot is controlled along its own axes, otherwise controls apply to the field axes by default. If the
+         * swerve aim button is held down, the robot will rotate automatically to always face a target, and only
+         * translation will be manually controllable. */
+        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
+            if (driveController.getRelativeMode()) {
+                swerveSubsystem.setRobotRelativeDrivePowers(
+                        driveController.getForwardPower(),
+                        driveController.getLeftPower(),
+                        driveController.getRotatePower()
+                );
+            } else {
+                if (driveController.getSwerveAimMode()) {
+                    swerveSubsystem.setSwerveAimDrivePowers(
+                            driveController.getForwardPower(),
+                            driveController.getLeftPower());
+                } else {
+                    swerveSubsystem.setDrivePowers(
+                            driveController.getForwardPower(),
+                            driveController.getLeftPower(),
+                            driveController.getRotatePower());
+                }
+            }
+
+            xError.setValue(xPID.getPositionError());
+            yError.setValue(yPID.getPositionError());
+
+        }, swerveSubsystem));
+
+        /* Pressing the button resets the field axes to the current robot axes. */
+        driveController.getDriverHeadingResetButton().onTrue(new InstantCommand(() -> {
+            swerveSubsystem.resetDriverHeading();
+        }));
+        
         /* SHOOTER PIVOT TEST */
 
         // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
@@ -298,7 +336,7 @@ public class RobotContainer {
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
-                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
+                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
                                 .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2) // angle intake for scoring
@@ -316,14 +354,18 @@ public class RobotContainer {
                     () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, .45)
-                    ), 
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, .45).withTimeout(.1)
+                    ).andThen(new InstantCommand(() -> {
+                        isNoteTrapReady = false;
+                    })), 
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
-                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .75) // run rollers to front sensor
+                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
                                 .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
-                    ),
-                    intakeRollerSubsystem::getFrontSensorReached
+                    ).andThen(new InstantCommand(() -> {
+                        isNoteTrapReady = true;
+                    })),
+                    () -> isNoteTrapReady
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
@@ -448,39 +490,7 @@ public class RobotContainer {
         /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
         driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
-        /* Driving -- One joystick controls translation, the other rotation. If the robot-relative button is held down,
-         * the robot is controlled along its own axes, otherwise controls apply to the field axes by default. If the
-         * swerve aim button is held down, the robot will rotate automatically to always face a target, and only
-         * translation will be manually controllable. */
-        swerveSubsystem.setDefaultCommand(new RunCommand(() -> {
-            if (driveController.getRelativeMode()) {
-                swerveSubsystem.setRobotRelativeDrivePowers(
-                        driveController.getForwardPower(),
-                        driveController.getLeftPower(),
-                        driveController.getRotatePower()
-                );
-            } else {
-                if (driveController.getSwerveAimMode()) {
-                    swerveSubsystem.setSwerveAimDrivePowers(
-                            driveController.getForwardPower(),
-                            driveController.getLeftPower());
-                } else {
-                    swerveSubsystem.setDrivePowers(
-                            driveController.getForwardPower(),
-                            driveController.getLeftPower(),
-                            driveController.getRotatePower());
-                }
-            }
-
-            xError.setValue(xPID.getPositionError());
-            yError.setValue(yPID.getPositionError());
-
-        }, swerveSubsystem));
-
-        /* Pressing the button resets the field axes to the current robot axes. */
-        driveController.getDriverHeadingResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.resetDriverHeading();
-        }));
+        
     }
 
     /**

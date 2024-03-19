@@ -8,6 +8,8 @@ package frc.robot.subsystems.intake;
 
 import static frc.robot.Constants.IntakeConstants;
 
+import javax.imageio.plugins.tiff.TIFFDirectory;
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -41,6 +43,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private BooleanPublisher ntBackPublisher;
 
     private Timer colorResetTimer;
+    private Timer sensorTimer = new Timer();
 
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake.
@@ -70,7 +73,13 @@ public class IntakeRollerSubsystem extends SubsystemBase {
      * @return Whether a note is at the front sensor currently.
      */
     public boolean getFrontSensorReached() {
-        return (prevFrontSensorValue == true && !getFrontSensorValue());
+
+        if (prevFrontSensorValue && !getFrontSensorValue()) {
+            sensorTimer.reset();
+            sensorTimer.start();
+        }
+
+        return ((prevFrontSensorValue && !getFrontSensorValue()) || !sensorTimer.hasElapsed(.2));
     }
 
     /**
@@ -158,13 +167,14 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
         ntFrontPublisher.set(getFrontSensorReached());
         ntBackPublisher.set(getBackSensorReached());
         // if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
         //     colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         // }
         // System.out.println("COLOR SENSOR: " + colorSensor.getRed());
-        System.out.println("FRONT ROCKWELL: " + getFrontSensorValue());
+        // System.out.println("FRONT ROCKWELL: " + getFrontSensorValue());
         prevFrontSensorValue = getFrontSensorValue();
         // System.out.println("ULTRASONIC SENSOR: " + ultrasonicSensor.get());
     }
