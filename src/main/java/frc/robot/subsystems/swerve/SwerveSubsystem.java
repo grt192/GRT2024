@@ -91,7 +91,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDriveKinematics kinematics;
     private final ApriltagWrapper[] apriltagWrappers = {
         new ApriltagWrapper(FRONT_RIGHT_CAMERA, FRONT_RIGHT_CAMERA_POSE),
-        // new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE),
+        new ApriltagWrapper(BACK_LEFT_CAMERA, BACK_LEFT_CAMERA_POSE),
         new ApriltagWrapper(BACK_RIGHT_CAMERA, BACK_RIGHT_CAMERA_POSE)
     };
 
