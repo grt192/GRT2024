@@ -57,6 +57,7 @@ import frc.robot.subsystems.superstructure.LightBarStatus;
 import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
+import frc.robot.util.GRTUtil;
 import frc.robot.vision.NoteDetectionWrapper;
 
 /** The robot container. */
@@ -123,6 +124,7 @@ public class RobotContainer {
     private double intakePosition = 0;
 
     private boolean isNoteTrapReady = false;
+    private boolean noteInBack = false;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -430,6 +432,17 @@ public class RobotContainer {
                 shooterPivotSubsystem.setAutoAimBoolean(false);
                 shooterFlywheelSubsystem.stopShooter();
             }
+
+            if (intakeRollerSubsystem.getIntegrationSpeed() > 0 
+                && noteInBack 
+                && !intakeRollerSubsystem.getRockwellSensorValue()
+            ) {
+                System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
+                                + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getCurrentAngle())
+                                + " Top: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getTopMotorSplineSpeed())
+                                + " Bot: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getBottomMotorSplineSpeed()));
+            }
+            noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
 
             // if we are at speed, rumble the mech controller
             if (shooterFlywheelSubsystem.atSpeed()) {

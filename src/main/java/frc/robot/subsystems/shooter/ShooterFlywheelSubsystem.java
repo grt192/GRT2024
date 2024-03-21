@@ -208,7 +208,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return targetBottomRPS;
     }
 
-    private double getShootingDistance() {
+    public double getShootingDistance() {
         double currentDistance;
         Pose2d currentField = poseSupplier.getPose2d();
 
@@ -227,11 +227,6 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         return MathUtil.clamp(currentDistance,
             ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE
         );
-    }
-
-    /** Public version of the command above. */
-    public double returnShootingDistance() {
-        return getShootingDistance();
     }
 
     @Override

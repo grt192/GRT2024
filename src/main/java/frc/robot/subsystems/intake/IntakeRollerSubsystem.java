@@ -171,6 +171,14 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         integrationMotor.set(TalonSRXControlMode.PercentOutput, integrationSpeed);
     }
 
+    /** Gets motor output of the integration roller.
+     *
+     * @return The motor speed in percent.
+     */
+    public double getIntegrationSpeed() {
+        return integrationMotor.getMotorOutputPercent();
+    }
+
     @Override
     public void periodic() {
 
