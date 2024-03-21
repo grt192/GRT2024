@@ -479,7 +479,7 @@ public class RobotContainer {
         );
 
         shuttleNotes.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
-            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition)
+            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition, shooterPivotSubsystem)
         );
 
         /* SWERVE BINDINGS */
