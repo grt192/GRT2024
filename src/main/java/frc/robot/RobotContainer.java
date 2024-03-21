@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auton.AutonBuilder;
+import frc.robot.commands.climb.ClimbLowerCommand;
+import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
@@ -41,7 +43,7 @@ import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
 import frc.robot.subsystems.FieldManagementSubsystem;
-import frc.robot.subsystems.climb.ManualClimbSubsystem;
+import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
@@ -66,7 +68,7 @@ public class RobotContainer {
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    private final ManualClimbSubsystem climbSubsystem;
+    private final ClimbSubsystem climbSubsystem;
 
     private final ElevatorSubsystem elevatorSubsystem;
 
@@ -89,11 +91,15 @@ public class RobotContainer {
             XboxController.Button.kRightBumper.value);
     private final JoystickButton xButton = new JoystickButton(mechController, XboxController.Button.kX.value);
     private final JoystickButton yButton = new JoystickButton(mechController, XboxController.Button.kY.value);
+    private final JoystickButton leftStickButton = new JoystickButton(mechController,
+            XboxController.Button.kLeftStick.value);
+    private final JoystickButton rightStickButton = new JoystickButton(mechController,
+        XboxController.Button.kRightStick.value);
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
-    private final JoystickButton toggleClimbLimitsButton = new JoystickButton(switchboard, 9);
+    private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 6);
 
     private UsbCamera driverCamera;
     private MjpegServer driverCameraServer;
@@ -139,7 +145,8 @@ public class RobotContainer {
 
         elevatorSubsystem = new ElevatorSubsystem();
 
-        climbSubsystem = new ManualClimbSubsystem();
+        climbSubsystem = new ClimbSubsystem();
+        climbSubsystem.setManual();
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
@@ -315,16 +322,17 @@ public class RobotContainer {
         /* MECHANISM BINDINGS */
 
         /* Climb Controls -- In manual mode, left and right joystick up/down controls left and right arm up/down,
-         * respectively. The position limits are enabled by default, but can be disabled by toggling the bottom left
-         * switch on the switchboard. */
+         * respectively. In automatic mode, pressing the left and right joysticks sends the elevator to its lowered
+         * and raised positions.*/
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
             climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
 
-        
+        leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
+        rightStickButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
 
-        toggleClimbLimitsButton.onTrue(new InstantCommand(() -> climbSubsystem.enableSoftLimits(false)));
-        toggleClimbLimitsButton.onFalse(new InstantCommand(() -> climbSubsystem.enableSoftLimits(true)));
+        toggleClimbModeSwitch.onTrue(new InstantCommand(() -> climbSubsystem.setManual()));
+        toggleClimbModeSwitch.onFalse(new InstantCommand(() -> climbSubsystem.setAutomatic()));
 
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake
