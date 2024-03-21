@@ -38,6 +38,8 @@ public class ShooterFlywheelReadyCommand extends Command {
         this.topSpeed = topSpeed;
         this.bottomSpeed = bottomSpeed;
         shooterSubsystem.setAutoAimShooter(false);
+
+        System.out.println("Distance to Shooeter: " + shooterSubsystem.returnShootingDistance());
     }
 
     @Override

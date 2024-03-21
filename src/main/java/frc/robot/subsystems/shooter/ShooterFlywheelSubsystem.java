@@ -229,6 +229,11 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         );
     }
 
+    /** Public version of the command above. */
+    public double returnShootingDistance() {
+        return getShootingDistance();
+    }
+
     @Override
     public void periodic() {
         ntPublisher.set(atSpeed());
