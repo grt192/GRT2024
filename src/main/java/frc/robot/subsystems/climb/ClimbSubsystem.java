@@ -27,8 +27,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("Left: " + GRTUtil.twoDecimals(leftClimbArm.getCurrentExtension())
-                      + ", Right: " + GRTUtil.twoDecimals(rightClimbArm.getCurrentExtension()));
+        // System.out.println("Left: " + GRTUtil.twoDecimals(leftClimbArm.getCurrentExtension())
+        //               + ", Right: " + GRTUtil.twoDecimals(rightClimbArm.getCurrentExtension()));
 
         //System.out.println(leftClimbArm.isLimitSwitchPressed() + " " + rightClimbArm.isLimitSwitchPressed());
 
