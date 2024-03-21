@@ -102,7 +102,6 @@ public class RobotContainer {
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
 
-    private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 6);
     private final JoystickButton shuttleNotes = new JoystickButton(switchboard, 6);
 
     private UsbCamera driverCamera;
@@ -336,11 +335,8 @@ public class RobotContainer {
             climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
 
-        leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
-        rightStickButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
-
-        toggleClimbModeSwitch.onTrue(new InstantCommand(() -> climbSubsystem.setManual()));
-        toggleClimbModeSwitch.onFalse(new InstantCommand(() -> climbSubsystem.setAutomatic()));
+        // leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
+        // rightStickButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
 
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake
