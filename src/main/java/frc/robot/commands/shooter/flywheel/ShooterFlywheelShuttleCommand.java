@@ -15,7 +15,7 @@ public class ShooterFlywheelShuttleCommand extends Command {
 
     private static final double MAX_ROTATION_POWER = 0.3;
     private static final double ERROR_MULTIPLIER = 0.08;
-    private static final double TARGET_ANGLE = 30;
+    private static final double TARGET_ANGLE = Math.toRadians(30);
 
     private final SwerveSubsystem swerveSubsystem;
     private final ShooterFlywheelSubsystem flywheelSubsystem;
