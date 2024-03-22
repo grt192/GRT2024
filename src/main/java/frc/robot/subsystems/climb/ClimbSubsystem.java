@@ -100,7 +100,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
         setSpeeds(0, 0);
         goToExtension(0);
-        setAutomatic();
+        //  setAutomatic();
     }
 
     /**

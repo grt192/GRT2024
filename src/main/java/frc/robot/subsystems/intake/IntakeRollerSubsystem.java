@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
+import frc.robot.util.TrackingTimer;
 
 /** The subsystem that controls the rollers on the intake. */
 public class IntakeRollerSubsystem extends SubsystemBase {
@@ -47,7 +48,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private final LightBarSubsystem lightBarSubsystem;
 
     private Timer colorResetTimer;
-    private Timer sensorTimer = new Timer();
+    private TrackingTimer sensorTimer = new TrackingTimer();
 
     /** 
      * Subsystem controls the front, middle, and integration rollers for the intake.
@@ -85,7 +86,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
             sensorTimer.start();
         }
 
-        return ((prevFrontSensorValue && !getFrontSensorValue()) || !sensorTimer.hasElapsed(.2));
+        return ((prevFrontSensorValue && !getFrontSensorValue()) || (!sensorTimer.hasElapsed(.2) && sensorTimer.hasStarted()));
     }
 
     /**

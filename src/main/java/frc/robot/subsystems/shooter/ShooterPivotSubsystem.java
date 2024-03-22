@@ -163,12 +163,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     public double getPosition() {
         return rotationEncoder.getPosition();
     }
-
-    /** Gets encoder's current angle. */
-    public double getCurrentAngle() {
-        return currentEncoderAngle;
-    }
-
+    
     /** Sets whether Auto-aim should be on or off. */
     public void setAutoAimBoolean(boolean autonAim) { 
         this.autoAim = autonAim;

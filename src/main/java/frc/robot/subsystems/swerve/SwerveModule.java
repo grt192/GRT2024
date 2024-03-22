@@ -80,6 +80,7 @@ public class SwerveModule {
         driveMotor.setPositionConversionFactor(DRIVE_ROTATIONS_PER_METER);
         driveMotor.setVelocityConversionFactor(DRIVE_ROTATIONS_PER_METER / 60.0); //Conversion from rpm to m/s
         
+
         steerMotor = new CANSparkMax(steerPort, MotorType.kBrushless);
         // steerMotor.setInverted(true);
         steerMotor.setIdleMode(IdleMode.kBrake);

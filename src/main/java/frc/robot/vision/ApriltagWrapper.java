@@ -82,13 +82,22 @@ public class ApriltagWrapper {
      */
     public Optional<EstimatedRobotPose> getRobotPose(Pose3d prevEstimatedRobotPose) {
         poseEstimator.setReferencePose(prevEstimatedRobotPose);
-        Optional<EstimatedRobotPose> robotPose = poseEstimator.update();
+        Optional<EstimatedRobotPose> robotPose = Optional.empty();
+        try {
+            double ambiguity = camera.getLatestResult().getBestTarget().getPoseAmbiguity();
+            double distance = camera.getLatestResult().getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
+            if (ambiguity < 1 && ambiguity != -1 && distance < 5) {
+                robotPose = poseEstimator.update();
+            }
+        } catch (Exception e) {
+            
+        }
 
-        if (robotPose.isPresent() && debugEnabled.get()) {
+        if (robotPose.isPresent()) {
             /* Uncomment for camera pose calibration. */
-            // System.out.println(camera.getName() + "to tag: "
-            //     + camera.getLatestResult().getBestTarget().getBestCameraToTarget()
-            // );
+            System.out.println(camera.getName() + "to tag: "
+                + camera.getLatestResult().getBestTarget().getBestCameraToTarget()
+            );
             updateNetworkTables(robotPose.get().estimatedPose.toPose2d());
         }
 

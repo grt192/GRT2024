@@ -30,6 +30,7 @@ public class ClimbArm {
 
     private boolean isUsingPID;
     private double winchPower;
+    private double prevWinchPower;
     private double extensionTarget;
 
     /**
@@ -60,6 +61,9 @@ public class ClimbArm {
         isUsingPID = true;
 
         zeroLimitSwitch = new DigitalInput(zeroLimitPort);
+
+        winchPower = 0;
+        prevWinchPower = 0;
     }
 
     /** Run this function every periodic loop.*/
@@ -71,9 +75,11 @@ public class ClimbArm {
 
         if (isUsingPID) {
             extensionPID.setReference(extensionTarget, ControlType.kPosition);
-        } else {
+        } else if (winchPower != prevWinchPower) {
             winchMotor.set(winchPower);
         }
+
+        prevWinchPower = winchPower;
     }
 
     /**

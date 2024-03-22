@@ -389,13 +389,12 @@ public class RobotContainer {
 
         // aButton runs the intake sequence
         aButton.onTrue(
-            new ElevatorToZeroCommand(elevatorSubsystem).andThen(// first lower the elevator (should be down)
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).alongWith(// then extend the intake
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                    // intake the note to the color sensor
-                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
-                ).unless(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
-            )
+            new InstantCommand(() -> {intakePivotSubsystem.setPosition(1);}, intakePivotSubsystem).alongWith(// then extend the intake
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
+                // intake the note to the color sensor
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
+            ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+            
         );
 
         // bButton stops the rollers
@@ -428,37 +427,39 @@ public class RobotContainer {
                 // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); // for tuning
                 shooterFlywheelSubsystem.setShooterMotorSpeed();
                 shooterPivotSubsystem.setAutoAimBoolean(true);
+                if (shooterFlywheelSubsystem.atSpeed()) {
+                    mechController.setRumble(RumbleType.kBothRumble, .4);
+                } else {
+                    mechController.setRumble(RumbleType.kBothRumble, 0);
+                    if (lightBarSubsystem.getLightBarMechStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
+                        double top = shooterFlywheelSubsystem.getTopSpeed() 
+                            / shooterFlywheelSubsystem.getTargetTopRPS();
+                        double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
+                                    / shooterFlywheelSubsystem.getTargetBottomRPS();
+                        double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
+
+                        lightBarSubsystem.updateShooterSpeedPercentage(avg);
+                    }
+                
+                }
             } else {
                 shooterPivotSubsystem.setAutoAimBoolean(false);
                 shooterFlywheelSubsystem.stopShooter();
             }
 
-            if (intakeRollerSubsystem.getIntegrationSpeed() > 0 
-                && noteInBack 
+            if (noteInBack 
                 && !intakeRollerSubsystem.getRockwellSensorValue()
+                && intakeRollerSubsystem.getIntegrationSpeed() > 0 
             ) {
                 System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
-                                + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getCurrentAngle())
+                                + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getPosition())
                                 + " Top: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getTopMotorSplineSpeed())
                                 + " Bot: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getBottomMotorSplineSpeed()));
             }
             noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
 
             // if we are at speed, rumble the mech controller
-            if (shooterFlywheelSubsystem.atSpeed()) {
-                mechController.setRumble(RumbleType.kBothRumble, .4);
-            } else {
-                mechController.setRumble(RumbleType.kBothRumble, 0);
-                if (lightBarSubsystem.getLightBarMechStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
-                    double top = shooterFlywheelSubsystem.getTopSpeed() / shooterFlywheelSubsystem.getTargetTopRPS();
-                    double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
-                                  / shooterFlywheelSubsystem.getTargetBottomRPS();
-                    double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
-
-                    lightBarSubsystem.updateShooterSpeedPercentage(avg);
-                }
-                
-            }
+           
         }, shooterFlywheelSubsystem
         ));
 

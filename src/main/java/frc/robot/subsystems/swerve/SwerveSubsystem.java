@@ -207,12 +207,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
 
         robotPosEntry.setValue(GRTUtil.twoDecimals(getRobotPosition().getX()));
-        SwerveModulePosition[] modulePos = getModulePositions(); 
-    
-        frontLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[0].angle.getDegrees()));
-        frontRightSteer.setValue(GRTUtil.twoDecimals(modulePos[1].angle.getDegrees()));
-        backLeftSteer.setValue(GRTUtil.twoDecimals(modulePos[2].angle.getDegrees()));
-        backRightSteer.setValue(GRTUtil.twoDecimals(modulePos[3].angle.getDegrees()));
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
             Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(

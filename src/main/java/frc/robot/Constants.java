@@ -57,7 +57,7 @@ public final class Constants {
 
     /** Constants for the swerve subsystem. */
     public static class SwerveConstants {
-        public static final int FL_DRIVE = 20;
+        public static final int FL_DRIVE = 8;
         public static final int FL_STEER = 1;
         public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
 
@@ -141,7 +141,7 @@ public final class Constants {
 
     /** Constants for Climb Subsystem. */
     public static class ClimbConstants {
-        public static final int LEFT_WINCH_MOTOR_ID = 8;
+        public static final int LEFT_WINCH_MOTOR_ID = 20;
         public static final int LEFT_ZERO_LIMIT_PORT = 0;
 
         public static final int RIGHT_WINCH_MOTOR_ID = 9;
@@ -226,7 +226,7 @@ public final class Constants {
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
         public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
             new Translation3d(-0.126, +0.298, +0.563), /* in meters */
-            new Rotation3d(Units.degreesToRadians(-0.3), Units.degreesToRadians(-16.2), Units.degreesToRadians(+160.2))
+            new Rotation3d(Units.degreesToRadians(+179.7), Units.degreesToRadians(-16.2), Units.degreesToRadians(+160.2))
         );
 
         public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");

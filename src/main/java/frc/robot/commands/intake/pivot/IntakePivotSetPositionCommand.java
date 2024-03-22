@@ -19,6 +19,7 @@ public class IntakePivotSetPositionCommand extends Command {
     public IntakePivotSetPositionCommand(IntakePivotSubsystem intakePivotSubsystem, double position) {
         this.pivotSubsystem = intakePivotSubsystem;
         this.position = position;
+        addRequirements(intakePivotSubsystem);
     }
 
     @Override
