@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
+import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
 import com.choreo.lib.ChoreoTrajectory;
@@ -41,6 +43,7 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
+import frc.robot.commands.vision.CalculateBackCameraTransformCommand;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.controllers.DualJoystickDriveController;
 import frc.robot.controllers.XboxDriveController;
@@ -208,6 +211,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        /* Test Bindings -- Leave these commented out when not needed. */
+        // leftStickButton.onTrue(new CalculateBackCameraTransformCommand(BACK_LEFT_CAMERA, BACK_RIGHT_CAMERA));
         
         /* Driving -- One joystick controls translation, the other rotation. If the robot-relative button is held down,
          * the robot is controlled along its own axes, otherwise controls apply to the field axes by default. If the
