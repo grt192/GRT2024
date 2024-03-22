@@ -210,7 +210,7 @@ public class SwerveSubsystem extends SubsystemBase {
         
         for (ApriltagWrapper apriltagWrapper : apriltagWrappers) {
             Optional<EstimatedRobotPose> visionEstimate = apriltagWrapper.getRobotPose(
-                new Pose3d(fieldVisualization.getRobotPose())
+                new Pose3d(getRobotPosition())
             );
 
             if (visionEstimate.isPresent()) {
