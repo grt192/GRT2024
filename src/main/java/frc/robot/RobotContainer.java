@@ -107,7 +107,9 @@ public class RobotContainer {
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
 
-    private final JoystickButton shuttleNotes = new JoystickButton(switchboard, 6);
+    private final JoystickButton toggleClimbModeSwitch = new JoystickButton(switchboard, 6);
+    private final JoystickButton shuttleNotesDefaultSpeed = new JoystickButton(switchboard, 6);
+    private final JoystickButton shuttleNotesIncreaseSpeed = new JoystickButton(switchboard, 2);
 
     private UsbCamera driverCamera;
     private MjpegServer driverCameraServer;
@@ -514,8 +516,12 @@ public class RobotContainer {
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
         );
 
-        shuttleNotes.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
-            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition, shooterPivotSubsystem)
+        shuttleNotesDefaultSpeed.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
+            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition, shooterPivotSubsystem, 0.5)
+        );
+
+        shuttleNotesIncreaseSpeed.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
+            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition, shooterPivotSubsystem, 0.7)
         );
 
         /* SWERVE BINDINGS */
