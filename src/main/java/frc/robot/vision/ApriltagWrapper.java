@@ -95,9 +95,9 @@ public class ApriltagWrapper {
 
         if (robotPose.isPresent()) {
             /* Uncomment for camera pose calibration. */
-            System.out.println(camera.getName() + "to tag: "
-                + camera.getLatestResult().getBestTarget().getBestCameraToTarget()
-            );
+            // System.out.println(camera.getName() + "to tag: "
+            //     + camera.getLatestResult().getBestTarget().getBestCameraToTarget()
+            // );
             updateNetworkTables(robotPose.get().estimatedPose.toPose2d());
         }
 

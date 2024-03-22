@@ -291,7 +291,7 @@ public class AutonBuilder {
 
     public SequentialCommandGroup getTopCenterTwoPiece(){
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-TopToCenter1");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-OffsetTopToCenter1");
         ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
         ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z3-WingToCenter2");
         ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("Z4-Center2ToWing");
