@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -226,13 +227,19 @@ public final class Constants {
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
         public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
             new Translation3d(-0.126, +0.298, +0.563), /* in meters */
-            new Rotation3d(Units.degreesToRadians(+179.7), Units.degreesToRadians(-16.2), Units.degreesToRadians(+160.2))
+            // new Rotation3d(Units.degreesToRadians(+179.7),
+            //                Units.degreesToRadians(-16.2),
+            //                Units.degreesToRadians(+160.2))
+            new Rotation3d(new Quaternion(-0.13815, +0.17069, +0.97523, +0.02661))
         );
 
         public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");
         public static final Transform3d  BACK_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(-0.130, -0.294, +0.567), /* in meters */
-            new Rotation3d(Units.degreesToRadians(+0.4), Units.degreesToRadians(-20.3), Units.degreesToRadians(-169.4))
+            // new Rotation3d(Units.degreesToRadians(+0.4),
+            //                Units.degreesToRadians(-20.3), 
+            //                Units.degreesToRadians(-169.4))
+            new Rotation3d(new Quaternion(-0.17392, -0.08957, +0.98059, -0.01330))
         );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
