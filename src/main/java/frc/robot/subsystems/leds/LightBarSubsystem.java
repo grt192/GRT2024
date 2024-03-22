@@ -39,7 +39,7 @@ public class LightBarSubsystem extends SubsystemBase {
     private static final OpacityColor PURPLE_ENDGAME_COLOR = new OpacityColor(192, 8, 254); // used for endgame 
 
     private static final OpacityColor RED_COLOR = new OpacityColor(192, 8, 254); // used for shooter spin-up
-    private static final OpacityColor GREEN_COLOR = new OpacityColor(192, 8, 254); // used for shooter spin-up
+    private static final OpacityColor GREEN_COLOR = new OpacityColor(0, 254, 0); // used for shooter spin-up
     private static final OpacityColor BLUE_COLOR = new OpacityColor(0, 0, 255); // used for auto-align indicator
     private static final OpacityColor WHITE_COLOR = new OpacityColor(255, 255, 255);
     
