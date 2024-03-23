@@ -339,7 +339,18 @@ public class RobotContainer {
          * respectively. In automatic mode, pressing the left and right joysticks sends the elevator to its lowered
          * and raised positions.*/
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
-            climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
+            double leftPower = -0.3;
+            double rightPower = -0.3;
+
+            if (Math.abs(mechController.getLeftY()) > 0.05) {
+                leftPower = -mechController.getLeftY();
+            } 
+
+            if (Math.abs(mechController.getRightY()) > 0.05) {
+                leftPower = -mechController.getRightY();
+            } 
+            
+            climbSubsystem.setSpeeds(leftPower, rightPower);
         }, climbSubsystem));
 
         // leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
