@@ -449,7 +449,18 @@ public class RobotContainer {
                 }
             } else {
                 shooterPivotSubsystem.setAutoAimBoolean(false);
-                shooterFlywheelSubsystem.stopShooter();
+                if (mechController.getPOV() == 0) {
+                    shooterPivotSubsystem.setAngle(Units.degreesToRadians(60));
+                    shooterFlywheelSubsystem.setShooterMotorSpeed(.4);
+                    if (shooterFlywheelSubsystem.atSpeed()) {
+                        mechController.setRumble(RumbleType.kBothRumble, .4);
+                    } else {
+                        mechController.setRumble(RumbleType.kBothRumble, 0);
+                    }
+                } else {
+                    shooterFlywheelSubsystem.stopShooter();
+                    mechController.setRumble(RumbleType.kBothRumble, 0);
+                }
             }
 
             if (noteInBack 

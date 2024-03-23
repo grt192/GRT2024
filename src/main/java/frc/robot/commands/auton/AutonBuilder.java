@@ -172,7 +172,7 @@ public class AutonBuilder {
                 new SetCalculatedAngleCommand(swerveSubsystem),
                 new ShooterPivotAimCommand(shooterPivotSubsystem),
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-            )
+            ).withTimeout(2)
         );
         autonSequence.addCommands(commands);
         autonSequence.addCommands(

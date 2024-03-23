@@ -86,7 +86,7 @@ public class ApriltagWrapper {
         try {
             double ambiguity = camera.getLatestResult().getBestTarget().getPoseAmbiguity();
             double distance = camera.getLatestResult().getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-            if (ambiguity < 1 && ambiguity != -1 && distance < 5) {
+            if (distance < 5) {
                 robotPose = poseEstimator.update();
             }
         } catch (Exception e) {
