@@ -204,6 +204,8 @@ public class RobotContainer {
         autonPathChooser.addOption("middlecenter2piece", autonBuilder.getMiddleCenterTwoPiece());
         autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
         autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
+        autonPathChooser.addOption("bottombottomcenterdisruptor", autonBuilder.getBottomBottomCenterDistruptor());
+        autonPathChooser.addOption("bottomtopcenterdisruptor", autonBuilder.getBottomTopCenterDistruptor());
 
         swerveCrauton.add(autonPathChooser);
 

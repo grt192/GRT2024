@@ -183,6 +183,18 @@ public class AutonBuilder {
         return autonSequence;
     }
 
+    // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting furthest away from amp
+    public SequentialCommandGroup getBottomBottomCenterDistruptor() {
+        ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomBottomCenterDisruptor");
+        return new SequentialCommandGroup(followPath(trajectory));
+    }
+
+    // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting closest to amp
+    public SequentialCommandGroup getBottomTopCenterDistruptor() {
+        ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomTopCenterDisruptor");
+        return new SequentialCommandGroup(followPath(trajectory));
+    }
+
     /** Starts amp side and shoots the preloaded note. */
     public SequentialCommandGroup getTopPreloaded() {
         return buildAuton(AutonConstants.TOP_START_POSE, shoot());
