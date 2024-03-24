@@ -24,6 +24,7 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.subsystems.FieldManagementSubsystem;
+import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakePivotSubsystem;
 import frc.robot.subsystems.intake.IntakeRollerSubsystem;
@@ -45,6 +46,7 @@ public class AutonBuilder {
     private final ShooterPivotSubsystem shooterPivotSubsystem;
     private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
+    private final ClimbSubsystem climbSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
     private final FieldManagementSubsystem fmsSubsystem;
@@ -58,6 +60,7 @@ public class AutonBuilder {
                              ShooterFlywheelSubsystem shooterFlywheelSubsystem,
                              ShooterPivotSubsystem shooterPivotSubsystem,
                              ElevatorSubsystem elevatorSubsystem,
+                             ClimbSubsystem climbSubsystem,
                              SwerveSubsystem swerveSubsystem,
                              LightBarSubsystem lightBarSubsystem,
                              FieldManagementSubsystem fmsSubsystem) {
@@ -66,6 +69,7 @@ public class AutonBuilder {
         this.shooterFlywheelSubsystem = shooterFlywheelSubsystem;
         this.shooterPivotSubsystem = shooterPivotSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.climbSubsystem = climbSubsystem;
         this.swerveSubsystem = swerveSubsystem;
         this.lightBarSubsystem = lightBarSubsystem;
         this.fmsSubsystem = fmsSubsystem;
@@ -128,7 +132,7 @@ public class AutonBuilder {
      */
     public Command shoot() {
         return new ShooterPivotAimCommand(shooterPivotSubsystem)
-            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem))
+            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)).withTimeout(1)
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).until(
                 () -> !intakeRollerSubsystem.getRockwellSensorValue())
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem)).withTimeout(.5)
@@ -186,13 +190,18 @@ public class AutonBuilder {
     // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting furthest away from amp
     public SequentialCommandGroup getBottomBottomCenterDistruptor() {
         ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomBottomCenterDisruptor");
-        return new SequentialCommandGroup(followPath(trajectory));
+        return new SequentialCommandGroup(
+            resetSwerve(GRTUtil.mirrorAcrossField(trajectory.getInitialPose(), fmsSubsystem::isRedAlliance)),
+            followPath(trajectory));
     }
 
     // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting closest to amp
     public SequentialCommandGroup getBottomTopCenterDistruptor() {
-        ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomTopCenterDisruptor");
-        return new SequentialCommandGroup(followPath(trajectory));
+        ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomTopCenterDistruptor");
+        return new SequentialCommandGroup(
+            resetSwerve(GRTUtil.mirrorAcrossField(trajectory.getInitialPose(), fmsSubsystem::isRedAlliance)),
+            new InstantCommand(() -> climbSubsystem.setSpeeds(-0.2, -0.2)),
+            followPath(trajectory));
     }
 
     /** Starts amp side and shoots the preloaded note. */

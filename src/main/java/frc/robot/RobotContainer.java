@@ -20,6 +20,7 @@ import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -182,7 +183,8 @@ public class RobotContainer {
         autonBuilder = new AutonBuilder(
             intakePivotSubsystem, intakeRollerSubsystem, 
             shooterFlywheelSubsystem, shooterPivotSubsystem, 
-            elevatorSubsystem, 
+            elevatorSubsystem,
+            climbSubsystem, 
             swerveSubsystem, 
             lightBarSubsystem, fmsSubsystem
         );
@@ -319,10 +321,13 @@ public class RobotContainer {
 
         // elevatorSubsystem.setManual();
 
-        // elevatorSubsystem.setDefaultCommand(new InstantCommand(() ->
-        //     elevatorSubsystem.setManualPower(mechController.getRightX()),
-        //     elevatorSubsystem)
-        // );
+        elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            if (mechController.getPOV() == 0) {
+                elevatorSubsystem.setTargetState(ElevatorState.TRAP);
+            } else if (mechController.getPOV() == 180) {
+                elevatorSubsystem.setTargetState(ElevatorState.ZERO);
+            } 
+        }, elevatorSubsystem));
 
         /* INTAKE TEST */
 
@@ -451,7 +456,7 @@ public class RobotContainer {
                 }
             } else {
                 shooterPivotSubsystem.setAutoAimBoolean(false);
-                if (mechController.getPOV() == 0) {
+                if (mechController.getPOV() == 90) {
                     shooterPivotSubsystem.setAngle(Units.degreesToRadians(60));
                     shooterFlywheelSubsystem.setShooterMotorSpeed(.4);
                     if (shooterFlywheelSubsystem.atSpeed()) {
@@ -547,6 +552,6 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonPathChooser.getSelected();
+        return autonBuilder.getMiddleFourPiece();//autonPathChooser.getSelected();
     }
 }
