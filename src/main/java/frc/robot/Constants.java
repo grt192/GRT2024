@@ -239,7 +239,7 @@ public final class Constants {
             // new Rotation3d(Units.degreesToRadians(+0.4),
             //                Units.degreesToRadians(-20.3), 
             //                Units.degreesToRadians(-169.4))
-            new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, -0.98007))
+            new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, +0.98007))
         );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
