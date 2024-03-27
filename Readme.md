@@ -8,7 +8,7 @@
 |BL_Drive|4|
 |BL_Steer|5|
 |BR_Drive|6|
-|BR|Steer|7|
+|BR_Steer|7|
 |Integration Motor|19|
 |Intake Front Motor|17|
 |Intake Back Motor|18|
