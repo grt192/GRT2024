@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -15,12 +14,14 @@ public class ShooterFlywheelShuttleCommand extends Command {
 
     private static final double MAX_ROTATION_POWER = 0.3;
     private static final double ERROR_MULTIPLIER = 0.08;
-    private static final double TARGET_ANGLE = Math.toRadians(30);
+    private static final double TARGET_ANGLE = Units.degreesToRadians(70);
 
     private final SwerveSubsystem swerveSubsystem;
     private final ShooterFlywheelSubsystem flywheelSubsystem;
     private Pose2dSupplier poseSupplier; //new Pose2d();
     private final ShooterPivotSubsystem pivotSubsystem;
+    private final double shooterSpeed;
+
 
     private boolean redAlliance = true;
     private double angleOffset;
@@ -28,12 +29,13 @@ public class ShooterFlywheelShuttleCommand extends Command {
     /** Constructor for Shuttle Command. */
     public ShooterFlywheelShuttleCommand(SwerveSubsystem swerveSubsystem, 
            ShooterFlywheelSubsystem flywheelSubsystem, Pose2dSupplier poseSupplier, 
-           ShooterPivotSubsystem pivotSubsystem) {
+           ShooterPivotSubsystem pivotSubsystem, double speed) {
 
         this.swerveSubsystem = swerveSubsystem;
         this.flywheelSubsystem = flywheelSubsystem;
         this.poseSupplier = poseSupplier;
         this.pivotSubsystem = pivotSubsystem;
+        this.shooterSpeed = speed;
 
         addRequirements(swerveSubsystem, flywheelSubsystem);
     }
@@ -57,7 +59,7 @@ public class ShooterFlywheelShuttleCommand extends Command {
 
         double robotX = currentField.getX();
         double robotY = currentField.getY();
-        double robotAngle = currentField.getRotation().getDegrees();
+        double robotAngle = Units.degreesToRadians(currentField.getRotation().getDegrees());
 
         if (redAlliance) {
             angleOffset = getAngle(redAllianceX, redAllianceY, robotX, robotY) - robotAngle;
@@ -70,8 +72,7 @@ public class ShooterFlywheelShuttleCommand extends Command {
 
     /** Is robot in center line. */
     public boolean isFinished() {
-
-        return (poseSupplier.getPose2d().getX() < 326.365 + 70 || poseSupplier.getPose2d().getX() > 326.36 - 70);
+        return (poseSupplier.getPose2d().getX() < Units.inchesToMeters(326.365 + 70) || poseSupplier.getPose2d().getX() > Units.inchesToMeters(326.36 - 70));
     }
 
     /** What the command has to execute. */
@@ -79,7 +80,7 @@ public class ShooterFlywheelShuttleCommand extends Command {
 
         swerveSubsystem.setRobotRelativeDrivePowers(0, 0, -MathUtil.clamp(
             angleOffset * ERROR_MULTIPLIER, -MAX_ROTATION_POWER, MAX_ROTATION_POWER)); //CHANGE ANGULAR POWER
-        flywheelSubsystem.setShooterMotorSpeed(ShooterConstants.FLYWHEEL_SHUTTLE_SPEED);
+        flywheelSubsystem.setShooterMotorSpeed(shooterSpeed);
         pivotSubsystem.setAngle(TARGET_ANGLE);
         
     }
