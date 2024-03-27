@@ -3,13 +3,25 @@
     "open": true
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT4)"
+    "mode": "Client (NT4)",
+    "serverTeam": "192"
+  },
+  "Retained Values": {
+    "open": false
   },
   "Server": {
     "open": true
   },
   "transitory": {
-    "Testing": {
+    "Shuffleboard": {
+      "Auton": {
+        "Field": {
+          "double[]##v_/Shuffleboard/Auton/Field/Robot": {
+            "open": true
+          }
+        },
+        "open": true
+      },
       "open": true
     }
   }
