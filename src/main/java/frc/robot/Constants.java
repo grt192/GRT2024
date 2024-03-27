@@ -221,25 +221,19 @@ public final class Constants {
         public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
         public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(+0.238, -0.357, +0.662), /* in meters */
-            new Rotation3d(Units.degreesToRadians(-0.5), Units.degreesToRadians(-20.3), Units.degreesToRadians(-10.4))
+            new Rotation3d(new Quaternion(+0.01331, +0.98037, -0.09192, +0.17394)) /* W X Y Z */
         );
 
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
         public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
             new Translation3d(-0.126, +0.298, +0.563), /* in meters */
-            // new Rotation3d(Units.degreesToRadians(+179.7),
-            //                Units.degreesToRadians(-16.2),
-            //                Units.degreesToRadians(+160.2))
-            new Rotation3d(new Quaternion(-0.13815, +0.17069, +0.97523, +0.02661))
+            new Rotation3d(new Quaternion(-0.13815, +0.17069, +0.97523, +0.02661)) /* W X Y Z */
         );
 
         public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");
         public static final Transform3d  BACK_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(-0.130, -0.294, +0.567), /* in meters */
-            // new Rotation3d(Units.degreesToRadians(+0.4),
-            //                Units.degreesToRadians(-20.3), 
-            //                Units.degreesToRadians(-169.4))
-            new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, +0.98007))
+            new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, +0.98007)) /* W X Y Z */
         );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
