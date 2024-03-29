@@ -2,11 +2,12 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.Constants.ElevatorConstants;
 
 /** Sends the elevator to position zero. */
 public class ElevatorToLimitSwitchCommand extends Command {
     private ElevatorSubsystem elevatorSubsystem;
-    
+    private boolean isFinished = false; 
     /** Constructs a {@link ElevatorToLimitSwitchCommand} for the specified elevator. */
     public ElevatorToLimitSwitchCommand(ElevatorSubsystem elevatorSubsystem) {
         this.addRequirements(elevatorSubsystem);
@@ -15,7 +16,17 @@ public class ElevatorToLimitSwitchCommand extends Command {
 
     @Override
     public void initialize() {
-        elevatorSubsystem.setMotorPower(0.2);
+        try {
+            if (!elevatorSubsystem.getLimitSwitch()){
+                elevatorSubsystem.setMotorPower(ElevatorConstants.DOWN_POWER);
+            }
+        }
+        catch (Exception e) {
+            System.out.print(e);
+            isFinished = true;
+            return;
+        }
+        
     }
 
     @Override
@@ -26,6 +37,13 @@ public class ElevatorToLimitSwitchCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.getLimitSwitch();
+        try{
+            isFinished = elevatorSubsystem.getLimitSwitch();
+        }
+        catch (Exception e) {
+            System.out.print(e);
+            isFinished = true;
+        }
+        return isFinished;
     }
 }

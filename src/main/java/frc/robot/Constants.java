@@ -46,6 +46,8 @@ public final class Constants {
 
         public static final double POSITION_CONVERSION_FACTOR = 1 / 27.785; // Units.inchesToMeters(30.)/63.5;
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
+
+        public static final double DOWN_POWER = -0.2; //the motor power to make the elevator move down slowly
     }
 
     /** Constants for the driver station. */

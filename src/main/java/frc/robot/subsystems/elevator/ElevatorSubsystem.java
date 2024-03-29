@@ -3,6 +3,9 @@ package frc.robot.subsystems.elevator;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import org.apache.commons.math3.analysis.function.Exp;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -61,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
         extensionFollow.setIdleMode(IdleMode.kBrake);
-        extensionFollow.setInverted(false);
+        extensionFollow.setInverted(true);
 
         extensionPidController = extensionMotor.getPIDController();
         extensionPidController.setP(ElevatorConstants.EXTENSION_P);
@@ -73,8 +76,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        CommandScheduler.getInstance().run();
- 
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
@@ -101,10 +102,11 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @return true if the elevator is touching the limit switch, false if not.
      */
     public boolean atGround() {
-        if (ElevatorConstants.LIMIT_SWITCH_ENABLED) {
-            if (zeroLimitSwitch != null && zeroLimitSwitch.get()) {
-                return true;
-            } else {
+        if (ElevatorConstants.LIMIT_SWITCH_ENABLED && zeroLimitSwitch != null) {
+            try{
+                return zeroLimitSwitch.get();
+            } catch (Exception e) {
+                System.out.println(e);
                 return false;
             }
         } else {
@@ -120,11 +122,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public boolean atState(ElevatorState state) {
         double distance = Math.abs(this.getExtensionPercent() - state.getExtendDistanceMeters());
-        if (distance < ElevatorConstants.EXTENSION_TOLERANCE) {
-            return true;
-        } else {
-            return false;
-        }
+        return distance < ElevatorConstants.EXTENSION_TOLERANCE;
     }
 
     /**
