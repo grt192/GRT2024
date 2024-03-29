@@ -68,7 +68,7 @@ public final class Constants {
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = 5.79 + Math.PI * 7.0 / 4 + Math.PI * 1.0/8 + Math.PI * 3.0/4;
+        public static final double BL_OFFSET = 5.79 + Math.PI * 7.0 / 4 + Math.PI * 1.0 / 8 + Math.PI * 3.0 / 4;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
@@ -216,8 +216,8 @@ public final class Constants {
     /** Constants for vision. */
     public static final class VisionConstants {
         public static final String VISION_TABLE_KEY = "Vision";
+        public static final Boolean USE_REAL_CAMERA_POSES = true; 
 
-        //TODO: Calculate real (not from CAD) poses.
         public static final PhotonCamera FRONT_RIGHT_CAMERA = new PhotonCamera("front right");
         public static final Transform3d FRONT_RIGHT_CAMERA_POSE = new Transform3d(
             new Translation3d(+0.238, -0.357, +0.662), /* in meters */
@@ -225,16 +225,30 @@ public final class Constants {
         );
 
         public static final PhotonCamera BACK_LEFT_CAMERA = new PhotonCamera("back left");
-        public static final Transform3d  BACK_LEFT_CAMERA_POSE = new Transform3d(
-            new Translation3d(-0.126, +0.298, +0.563), /* in meters */
-            new Rotation3d(new Quaternion(-0.13815, +0.17069, +0.97523, +0.02661)) /* W X Y Z */
-        );
+        public static final Transform3d  BACK_LEFT_CAMERA_POSE = USE_REAL_CAMERA_POSES
+            /* Calculated Real Pose */
+            ? new Transform3d(
+                new Translation3d(-0.120, +0.305, +0.572), /* in meters */
+                new Rotation3d(new Quaternion(-0.11148, +0.15802, +0.98081, +0.02497)) /* W X Y Z */
+            )
+            /* CAD Pose */
+            : new Transform3d(
+                new Translation3d(-0.126, +0.298, +0.563), /* in meters */
+                new Rotation3d(new Quaternion(-0.13815, +0.17069, +0.97523, +0.02661)) /* W X Y Z */
+            );
 
         public static final PhotonCamera BACK_RIGHT_CAMERA = new PhotonCamera("back right");
-        public static final Transform3d  BACK_RIGHT_CAMERA_POSE = new Transform3d(
-            new Translation3d(-0.130, -0.294, +0.567), /* in meters */
-            new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, +0.98007)) /* W X Y Z */
-        );
+        public static final Transform3d  BACK_RIGHT_CAMERA_POSE = USE_REAL_CAMERA_POSES
+            /* Calculated Real Pose */
+            ? new Transform3d(
+                new Translation3d(-0.161, -0.334, +0.516), /* in meters */
+                new Rotation3d(new Quaternion(-0.09005, +0.18402, +0.02004, +0.97858)) /* W X Y Z */
+            )
+            /* CAD Pose */
+            : new Transform3d(
+                new Translation3d(-0.130, -0.294, +0.567), /* in meters */
+                new Rotation3d(new Quaternion(-0.09190, +0.17498, +0.01993, +0.98007)) /* W X Y Z */
+            );
 
         public static final PhotonCamera NOTE_CAMERA = new PhotonCamera("cap");
     }

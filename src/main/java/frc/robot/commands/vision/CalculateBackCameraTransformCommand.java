@@ -3,6 +3,7 @@ package frc.robot.commands.vision;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
@@ -21,12 +22,17 @@ public class CalculateBackCameraTransformCommand extends Command {
     public CalculateBackCameraTransformCommand(PhotonCamera backLeft, PhotonCamera backRight) {
         this.backLeft = backLeft;
         this.backRight = backRight;
+        System.out.println("Starting . . .");
     }
 
     @Override
     public void execute() {
-        backLeftTarget = backLeft.getLatestResult().getBestTarget();
-        backRightTarget = backRight.getLatestResult().getBestTarget();
+        PhotonPipelineResult backLeftResult = backLeft.getLatestResult();
+        PhotonPipelineResult backRightResult = backRight.getLatestResult();
+        backLeftTarget = backLeftResult.getBestTarget();
+        backRightTarget = backRightResult.getBestTarget();
+
+        System.out.println((backLeftTarget != null) + "   " + (backRightTarget != null));
 
         if (backLeftTarget == null || backRightTarget == null) {
             backLeftTarget = null;
@@ -37,6 +43,10 @@ public class CalculateBackCameraTransformCommand extends Command {
         if (backLeftTarget.getFiducialId() != backRightTarget.getFiducialId()) {
             backLeftTarget = null;
             backRightTarget = null;
+            return;
+        }
+
+        if (Math.abs(backRightResult.getTimestampSeconds() - backLeftResult.getTimestampSeconds()) > 0.05) {
             return;
         }
         
