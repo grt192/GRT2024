@@ -86,15 +86,13 @@ public class ElevatorSubsystem extends SubsystemBase {
             this.setManualPower(0);//stops the motor in manual mode to avoid motor stall.
         }
 
-        if (ElevatorConstants.LIMIT_SWITCH_ENABLED) {
-            if (zeroLimitSwitch != null && zeroLimitSwitch.get()) { //if limit switch is not pressed
-                if (Math.abs(this.getExtensionPercent()) < ElevatorConstants.EXTENSION_TOLERANCE) { 
-                    //if the encoder thinks the elevator is at ground
-                    CommandScheduler.getInstance().schedule(new ElevatorToLimitSwitchCommand(this));
-                    //slowly go down to limit switch
-                } 
-            }
-        }
+        if (ElevatorConstants.LIMIT_SWITCH_ENABLED &&
+            zeroLimitSwitch != null && zeroLimitSwitch.get() &&
+            Math.abs(this.getExtensionPercent()) < ElevatorConstants.EXTENSION_TOLERANCE) { 
+                //if the encoder thinks the elevator is at ground
+                CommandScheduler.getInstance().schedule(new ElevatorToLimitSwitchCommand(this));
+                //slowly go down to limit switch
+        } 
     }
     
     /**
