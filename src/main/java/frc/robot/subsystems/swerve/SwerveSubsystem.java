@@ -80,6 +80,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
 
+    private final Translation2d BLUE_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(114), Units.inchesToMeters(323 - 96));
+    private final Translation2d RED_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(652.73 - 114), Units.inchesToMeters(323 - 96));
+    
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
@@ -182,6 +185,9 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 
         lockTimer = new Timer();
+
+        
+
 
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
@@ -377,6 +383,36 @@ public class SwerveSubsystem extends SubsystemBase {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
+    public Translation2d getShuttleTargetPoint() {
+        if(redSupplier.getAsBoolean()) {
+            return RED_SHUTTLE_POINT;
+        } else {
+            return BLUE_SHUTTLE_POINT;
+        }
+    }
+
+    public void setSwerveAimPower(double xPower, double yPower, Translation2d targetPoint) {
+        double pivotAngleRadians = getAngleToPoint(targetPoint);
+
+        setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(pivotAngleRadians));
+    }
+
+    private double getXFromPoint(Translation2d targetPoint) {
+        return targetPoint.getX() - getRobotPosition().getX();
+    }
+
+    private double getYFromPoint(Translation2d targetPoint) {
+        return targetPoint.getY() - getRobotPosition().getY();
+    }
+
+    /** Gets pivot angle to any point on the field. */
+    public double getAngleToPoint(Translation2d targetPoint) {
+        double xDist = getXFromPoint(targetPoint);
+        double yDist = getYFromPoint(targetPoint);
+
+        return Math.atan2(yDist, xDist) + Math.PI;
+    }
+
     /**
      * Sets the drive powers with a heading lock. Field relative.
      *
@@ -399,7 +435,7 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param yPower The power in the y direction.
      */
     public void setSwerveAimDrivePowers(double xPower, double yPower) {
-        double shootAngleRadians = getShootAngle(redSupplier.getAsBoolean());
+        double shootAngleRadians = getShootAngle();
 
         setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
     }
@@ -407,11 +443,10 @@ public class SwerveSubsystem extends SubsystemBase {
     /**
      * Gets the correct angle to aim the swerve at to point at the speaker.
      *
-     * @param isRed Whether the team is red or not.
      * @return The angle to point at.
      */
-    public double getShootAngle(boolean isRed) {
-        double xDistance = getXFromSpeaker(isRed);
+    public double getShootAngle() {
+        double xDistance = getXFromSpeaker();
         double yDistance = getYFromSpeaker();
 
         double rawAngle = Math.atan2(yDistance, xDistance) + Math.PI;
@@ -428,24 +463,23 @@ public class SwerveSubsystem extends SubsystemBase {
         return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
     }
 
+
     /**
      * Gets the X distance from the speaker.
      *
-     * @param isRed Whether the current team is red or not.
      * @return The X distance from the speaker in meters.
      */
-    public double getXFromSpeaker(boolean isRed) {
-        return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
+    public double getXFromSpeaker() {
+        return getSpeakerPosition().getX() - getRobotPosition().getX();
     }
 
     /**
      * Gets the current speaker position.
      *
-     * @param isRed If our team is red or not.
      * @return The translation 2d of the speaker.
      */
-    public Translation2d getSpeakerPosition(boolean isRed) {
-        if (isRed) {
+    public Translation2d getSpeakerPosition() {
+        if (redSupplier.getAsBoolean()) {
             return RED_SPEAKER_POS;
         } else {
             return BLUE_SPEAKER_POS;
