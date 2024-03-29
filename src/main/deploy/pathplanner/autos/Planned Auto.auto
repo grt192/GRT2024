@@ -1,0 +1,169 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6366394921288249,
+      "y": 6.685472408484753
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShooterFlywheelReady"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootPreload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootPreloadIntakeWingPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoIntakeUsingNoteDetection"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MoveToSurvey"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NoteDetectatPos1"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "GetNote1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoIntakeUsingNoteDetection"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootNote1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NoteDetectatPos2"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "GetNote2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoIntakeUsingNoteDetection"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootNote2"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NoteDetectatPos3"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "GetNote3"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoIntakeUsingNoteDetection"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootNote3"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -1,0 +1,101 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6366394921288249,
+      "y": 6.685472408484753
+    },
+    "rotation": 60.385130219167806
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootPreloadIntakeWingPath"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Note1Missing (ends if not there)"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": []
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MoveToSurvey"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "NoteDetection"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GetNote1"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ShootNote1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "GetNote2"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
