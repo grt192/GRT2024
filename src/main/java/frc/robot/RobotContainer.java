@@ -41,6 +41,7 @@ import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
+import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
@@ -178,15 +179,11 @@ public class RobotContainer {
             driveController = new DualJoystickDriveController();
         }
 
-        try {
-            driverCamera = new UsbCamera("fisheye", 0);
-            driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
-            driverCamera.setExposureManual(35);
-            driverCameraServer = new MjpegServer("m1", 1181);
-            driverCameraServer.setSource(driverCamera);
-        } catch (Exception e) {
-            System.out.print(e);
-        }            
+        driverCamera = new UsbCamera("fisheye", 0);
+        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+        driverCamera.setExposureManual(40);
+        driverCameraServer = new MjpegServer("m1", 1181);
+        driverCameraServer.setSource(driverCamera);
 
         autonBuilder = new AutonBuilder(
             intakePivotSubsystem, intakeRollerSubsystem, 
@@ -415,10 +412,19 @@ public class RobotContainer {
         // aButton runs the intake sequence
         aButton.onTrue(
             new InstantCommand(() -> {intakePivotSubsystem.setPosition(1);}, intakePivotSubsystem).alongWith(// then extend the intake
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                // intake the note to the color sensor
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
-            ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)).andThen(
+                    new ConditionalCommand(
+                        new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
+                            new InstantCommand(() -> {intakePivotSubsystem.setPosition(0);}, intakePivotSubsystem)
+                        ), 
+                        
+                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
+                            .until(() -> intakeRollerSubsystem.getFrontSensorReached()).andThen(
+                                new InstantCommand(() -> {intakePivotSubsystem.setPosition(0);}, intakePivotSubsystem)
+                        ), 
+                        () -> aButton.getAsBoolean()
+                    )
+                ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             
         );
 
