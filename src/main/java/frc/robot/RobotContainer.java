@@ -35,6 +35,7 @@ import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
+import frc.robot.commands.elevator.ElevatorToIntakeCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
@@ -367,7 +368,7 @@ public class RobotContainer {
         rightBumper.onTrue(
             new ConditionalCommand(
                     // if elevator is up
-                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                    new ElevatorToIntakeCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
@@ -385,7 +386,7 @@ public class RobotContainer {
         // leftBumper toggles the trap position for the elevator
         leftBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                new ElevatorToIntakeCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                     () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
