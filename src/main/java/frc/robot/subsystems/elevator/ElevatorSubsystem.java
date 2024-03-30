@@ -85,9 +85,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        System.out.println("Current Extension: " + getExtensionPercent());
-        System.out.println("Limit Switch: " + getLimitSwitch());
-        System.out.println("Motor Output: " + extensionMotor.getAppliedOutput());
+        // System.out.println("Current Extension: " + getExtensionPercent());
+        // System.out.println("Limit Switch: " + getLimitSwitch());
+        // System.out.println("Motor Output: " + extensionMotor.getAppliedOutput());
 
         if (isManual) {
             //Add some factors for better control.
