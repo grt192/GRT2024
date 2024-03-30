@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonConstants;
@@ -23,6 +24,8 @@ import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
+import frc.robot.commands.swerve.AutoIntakeSequence;
+import frc.robot.commands.swerve.AutonNoteAlignCommand;
 import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -33,6 +36,7 @@ import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.GRTUtil;
+import frc.robot.vision.NoteDetectionWrapper;
 
 
 /** 
@@ -48,12 +52,14 @@ public class AutonBuilder {
     private final ElevatorSubsystem elevatorSubsystem;
     private final ClimbSubsystem climbSubsystem;
     private final SwerveSubsystem swerveSubsystem;
+    private final NoteDetectionWrapper noteDetector;
     private final LightBarSubsystem lightBarSubsystem;
     private final FieldManagementSubsystem fmsSubsystem;
     private final PIDController thetaController;
     private final PIDController xPID;
     private final PIDController yPID;
 
+    //TODO: have auton follow alternate path if no note intaken.
     /** Constructs a {@link AutonBuilder} with auton-abstracted functions. */
     public AutonBuilder(IntakePivotSubsystem intakePivotSubsystem,
                              IntakeRollerSubsystem intakeRollersSubsystem,
@@ -62,6 +68,7 @@ public class AutonBuilder {
                              ElevatorSubsystem elevatorSubsystem,
                              ClimbSubsystem climbSubsystem,
                              SwerveSubsystem swerveSubsystem,
+                             NoteDetectionWrapper noteDetector,
                              LightBarSubsystem lightBarSubsystem,
                              FieldManagementSubsystem fmsSubsystem) {
         this.intakePivotSubsystem = intakePivotSubsystem; 
@@ -71,6 +78,7 @@ public class AutonBuilder {
         this.elevatorSubsystem = elevatorSubsystem;
         this.climbSubsystem = climbSubsystem;
         this.swerveSubsystem = swerveSubsystem;
+        this.noteDetector = noteDetector;
         this.lightBarSubsystem = lightBarSubsystem;
         this.fmsSubsystem = fmsSubsystem;
 
@@ -112,10 +120,14 @@ public class AutonBuilder {
      */
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
         return followPath(intakeTrajectory).andThen(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(
-                    intakeRollerSubsystem::getFrontSensorValue).until(
-                        intakeRollerSubsystem::getBackSensorReached).withTimeout(1))
+            new ParallelRaceGroup(
+                new AutonNoteAlignCommand(swerveSubsystem, intakeRollerSubsystem, noteDetector),
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+            ).withTimeout(1)
+            // new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+            //     .alongWith(new DriveForwardCommand(swerveSubsystem).until(
+            //         intakeRollerSubsystem::getFrontSensorValue).until(
+            //             intakeRollerSubsystem::getBackSensorReached).withTimeout(1))
         );
     }
 

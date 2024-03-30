@@ -204,6 +204,7 @@ public class RobotContainer {
             elevatorSubsystem,
             climbSubsystem, 
             swerveSubsystem, 
+            noteDetector,
             lightBarSubsystem, fmsSubsystem
         );
 
