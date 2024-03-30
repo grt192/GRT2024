@@ -1,6 +1,8 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controllers.BaseDriveController;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -12,8 +14,10 @@ public class NoteAlignCommand extends Command {
     private final SwerveSubsystem swerveSubsystem;
     private final NoteDetectionWrapper noteDetector;
     private final BaseDriveController driveController;
+    private final PIDController yawController;
 
     private double noteYawOffsetDegrees;
+    private double angularVelocity;
 
     /**
      * Constructs a new {@link NoteAlignCommand}.
@@ -28,6 +32,13 @@ public class NoteAlignCommand extends Command {
         this.swerveSubsystem = swerveSubsystem;
         this.noteDetector = noteDetector;
         this.driveController = driveController;
+
+        this.yawController = new PIDController(2.5, 0, 0);
+        yawController.setSetpoint(0);
+        yawController.setTolerance(1);
+        // yawController.enableContinuousInput(-90, 90);
+
+        angularVelocity = 0;
 
         this.addRequirements(swerveSubsystem);
     }
@@ -63,10 +74,14 @@ public class NoteAlignCommand extends Command {
             is probably not worth logging. */
         }
 
-        swerveSubsystem.setDrivePowersWithHeadingLock(
-            driveController.getForwardPower(), driveController.getLeftPower(), 
-            swerveSubsystem.getRobotPosition().getRotation().plus(
-            Rotation2d.fromDegrees(1.25 * -noteYawOffsetDegrees))
+        angularVelocity = yawController.calculate(
+            Units.degreesToRadians(noteYawOffsetDegrees) - angularVelocity * .1
+        );
+
+        swerveSubsystem.setRobotRelativeDrivePowers(
+            .3,
+            driveController.getLeftPower(),
+            angularVelocity / SwerveSubsystem.MAX_OMEGA
         );
     }
 

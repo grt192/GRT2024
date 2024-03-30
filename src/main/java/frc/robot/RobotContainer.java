@@ -8,6 +8,8 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
+import java.util.function.BooleanSupplier;
+
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -43,6 +45,7 @@ import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
 import frc.robot.commands.swerve.AlignCommand;
+import frc.robot.commands.swerve.AutoIntakeSequence;
 import frc.robot.commands.swerve.NoteAlignCommand;
 import frc.robot.commands.swerve.SwerveStopCommand;
 import frc.robot.commands.vision.CalculateBackCameraTransformCommand;
@@ -544,10 +547,12 @@ public class RobotContainer {
                     ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
         );
 
-        /* Note align -- deprecated, new version in the works*/
+        /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
         driveController.getNoteAlign().onTrue(
-            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController)
-                .unless(() -> noteDetector.getNote().isEmpty())
+            new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
+                                   swerveSubsystem, noteDetector,
+                                   driveController, lightBarSubsystem)                  
+            .onlyWhile(driveController.getNoteAlign())
         );
     
         /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
