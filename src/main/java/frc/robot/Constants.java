@@ -35,11 +35,11 @@ public final class Constants {
         public static final int ZERO_LIMIT_ID = 7;
 
         public static final double ZERO_POSITION = 0;
-        public static final double INTAKE_POSITION = .1;
+        public static final double INTAKE_POSITION = 0;
         public static final double AMP_POSITION = .9;
         public static final double TRAP_POSITION = 1.;
 
-        public static final double EXTENSION_P = 2;
+        public static final double EXTENSION_P = 2.3;
         public static final double EXTENSION_I = 0.0035;
         public static final double EXTENSION_D = 0;
         public static final double EXTENSION_TOLERANCE = 0.008;
