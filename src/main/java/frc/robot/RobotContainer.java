@@ -371,14 +371,14 @@ public class RobotContainer {
         rightBumper.onTrue(
             new ConditionalCommand(
                     // if elevator is up
-                    new ElevatorToIntakeCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                    new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
                                 .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
-                        new ElevatorToAmpCommand(elevatorSubsystem), // raise elevator
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2) // angle intake for scoring
+                        new ElevatorToAmpCommand(elevatorSubsystem).alongWith( // raise elevator
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)) // angle intake for scoring
                     ).until(() -> mechController.getLeftTriggerAxis() > .05 
                         || mechController.getRightTriggerAxis() > .05
                     ), 
@@ -389,7 +389,7 @@ public class RobotContainer {
         // leftBumper toggles the trap position for the elevator
         leftBumper.onTrue(
             new ConditionalCommand(
-                new ElevatorToIntakeCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                     () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
