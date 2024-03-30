@@ -40,14 +40,14 @@ public final class Constants {
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 2;
-        public static final double EXTENSION_I = 0;
-        public static final double EXTENSION_D = 4;
-        public static final double EXTENSION_TOLERANCE = 0.3;
+        public static final double EXTENSION_I = 0.0035;
+        public static final double EXTENSION_D = 0;
+        public static final double EXTENSION_TOLERANCE = 0.008;
 
-        public static final double POSITION_CONVERSION_FACTOR = 1 / 27.785; // Units.inchesToMeters(30.)/63.5;
+        public static final double POSITION_CONVERSION_FACTOR = 1 /26.357; // Units.inchesToMeters(30.)/63.5;
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
 
-        public static final double DOWN_POWER = -0.2; //the motor power to make the elevator move down slowly
+        public static final double DOWN_POWER = -0.001; //the motor power to make the elevator move down slowly
     }
 
     /** Constants for the driver station. */

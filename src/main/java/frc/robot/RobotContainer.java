@@ -174,11 +174,15 @@ public class RobotContainer {
             driveController = new DualJoystickDriveController();
         }
 
-        driverCamera = new UsbCamera("fisheye", 0);
-        driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
-        driverCamera.setExposureManual(35);
-        driverCameraServer = new MjpegServer("m1", 1181);
-        driverCameraServer.setSource(driverCamera);
+        try {
+            driverCamera = new UsbCamera("fisheye", 0);
+            driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
+            driverCamera.setExposureManual(35);
+            driverCameraServer = new MjpegServer("m1", 1181);
+            driverCameraServer.setSource(driverCamera);
+        } catch (Exception e) {
+            System.out.print(e);
+        }            
 
         autonBuilder = new AutonBuilder(
             intakePivotSubsystem, intakeRollerSubsystem, 
@@ -324,9 +328,14 @@ public class RobotContainer {
         elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (mechController.getPOV() == 0) {
                 elevatorSubsystem.setTargetState(ElevatorState.TRAP);
+                // elevatorSubsystem.setMotorPower(0.1);
             } else if (mechController.getPOV() == 180) {
                 elevatorSubsystem.setTargetState(ElevatorState.ZERO);
+                // elevatorSubsystem.setMotorPower(-0.1);
             } 
+            else{
+                // elevatorSubsystem.setMotorPower(0);
+            }
         }, elevatorSubsystem));
 
         /* INTAKE TEST */

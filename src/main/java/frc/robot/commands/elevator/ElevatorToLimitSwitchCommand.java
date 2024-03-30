@@ -18,7 +18,7 @@ public class ElevatorToLimitSwitchCommand extends Command {
     public void initialize() {
         try {
             if (!elevatorSubsystem.getLimitSwitch()){
-                elevatorSubsystem.setMotorPower(ElevatorConstants.DOWN_POWER);
+                elevatorSubsystem.setCoast();
             }
         }
         catch (Exception e) {
@@ -31,7 +31,8 @@ public class ElevatorToLimitSwitchCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.setMotorPower(0);
+        elevatorSubsystem.setBrake();
+        System.out.print("0 motor");
         elevatorSubsystem.zeroEncoder();
     }
 

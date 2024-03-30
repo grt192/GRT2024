@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 
 import frc.robot.Constants.ElevatorConstants;
@@ -52,8 +55,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         extensionMotor = new CANSparkMax(ElevatorConstants.EXTENSION_ID, MotorType.kBrushless);
         extensionMotor.setIdleMode(IdleMode.kBrake);
-        extensionMotor.setInverted(true);
-        extensionMotor.setClosedLoopRampRate(0.3);
+        extensionMotor.setInverted(false);
+        // extensionMotor.setClosedLoopRampRate(0.3);
         
         
         extensionEncoder = extensionMotor.getEncoder();
@@ -64,18 +67,28 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionFollow = new CANSparkMax(ElevatorConstants.EXTENSION_FOLLOW_ID, MotorType.kBrushless);
         extensionFollow.follow(extensionMotor);
         extensionFollow.setIdleMode(IdleMode.kBrake);
-        extensionFollow.setInverted(true);
+        extensionFollow.setInverted(false);
 
         extensionPidController = extensionMotor.getPIDController();
         extensionPidController.setP(ElevatorConstants.EXTENSION_P);
         extensionPidController.setI(ElevatorConstants.EXTENSION_I);
+        extensionPidController.setIZone(0.15);
         extensionPidController.setD(ElevatorConstants.EXTENSION_D);
         extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
         extensionPidController.setOutputRange(-0.3, 1);
+        extensionPidController.setFeedbackDevice(extensionEncoder);
+
+        NetworkTableInstance NTInstance = NetworkTableInstance.getDefault();
+        NetworkTable NT = NTInstance.getTable("Sensors");
+        NetworkTableEntry NTLimitSwitch = NT.getEntry("ElevatorLimitSwitch");
     }
 
     @Override 
     public void periodic() {
+        System.out.println("Current Extension: " + getExtensionPercent());
+        System.out.println("Limit Switch: " + getLimitSwitch());
+        System.out.println("Motor Output: " + extensionMotor.getAppliedOutput());
+
         if (isManual) {
             //Add some factors for better control.
             extensionMotor.set(this.manualPower);
@@ -85,6 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             //if limit switch tells us it's at the bottom
             extensionEncoder.setPosition(0); 
             this.setManualPower(0);//stops the motor in manual mode to avoid motor stall.
+            extensionPidController.setIAccum(0);
         }
 
         // if (ElevatorConstants.LIMIT_SWITCH_ENABLED &&
@@ -132,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void setTargetState(ElevatorState targetState) {
         extensionPidController.setReference(
-            targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0.03, ArbFFUnits.kPercentOut
+            targetState.getExtendDistanceMeters(), ControlType.kPosition, 0, 0, ArbFFUnits.kPercentOut
         );
         this.targetState = targetState;
         return;
@@ -218,5 +232,15 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void zeroEncoder() {
         extensionEncoder.setPosition(0);
+    }
+
+    public void setCoast(){
+        extensionMotor.setIdleMode(IdleMode.kCoast);
+        extensionFollow.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void setBrake(){
+        extensionMotor.setIdleMode(IdleMode.kCoast);
+        extensionFollow.setIdleMode(IdleMode.kCoast);
     }
 }
