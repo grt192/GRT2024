@@ -111,17 +111,11 @@ public class AutonBuilder {
      * @return goIntake Command
      */
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
-        return followPath(intakeTrajectory).alongWith(
-            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-        ).andThen(
+        return followPath(intakeTrajectory).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getRockwellSensorValue).withTimeout(1))
-        );
-    }
-
-    public Command goAndIntake(ChoreoTrajectory intakeTrajectory) {
-        return followPath(intakeTrajectory).alongWith(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(
+                    intakeRollerSubsystem::getFrontSensorValue).until(
+                        intakeRollerSubsystem::getBackSensorReached).withTimeout(1))
         );
     }
 
@@ -187,16 +181,16 @@ public class AutonBuilder {
         return autonSequence;
     }
 
-    // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting furthest away from amp
-    public SequentialCommandGroup getBottomBottomCenterDistruptor() {
+    /**Starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting furthest away from amp.*/
+    public SequentialCommandGroup getBottomBottomCenterDisruptor() {
         ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomBottomCenterDisruptor");
         return new SequentialCommandGroup(
             resetSwerve(GRTUtil.mirrorAcrossField(trajectory.getInitialPose(), fmsSubsystem::isRedAlliance)),
             followPath(trajectory));
     }
 
-    // starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting closest to amp
-    public SequentialCommandGroup getBottomTopCenterDistruptor() {
+    /** starts furthest away from amp in SPECIAL START POSITION, sweeps center notes starting closest to amp. */
+    public SequentialCommandGroup getBottomTopCenterDisruptor() {
         ChoreoTrajectory trajectory = Choreo.getTrajectory("BottomTopCenterDistruptor");
         return new SequentialCommandGroup(
             resetSwerve(GRTUtil.mirrorAcrossField(trajectory.getInitialPose(), fmsSubsystem::isRedAlliance)),
@@ -232,6 +226,7 @@ public class AutonBuilder {
         );
     }
 
+    /** Starts amp side, shoots preloaded and 2 other wing notes. */
     public SequentialCommandGroup getTopThreePiece() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
@@ -247,6 +242,7 @@ public class AutonBuilder {
         );
     }
 
+    /** Starts amp side, shoots preloaded and 3 other wing notes. */
     public SequentialCommandGroup getTopFourPiece() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
@@ -266,6 +262,8 @@ public class AutonBuilder {
 
     }
 
+    /** Starts by the amp, shoots preloaded, gets 2 closest to amp wing notes, 
+     * then closest 2 to amp center note. */
     public SequentialCommandGroup getTopTwoPieceThenCenter2() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
@@ -290,6 +288,8 @@ public class AutonBuilder {
 
     }
 
+    /** Starts by the amp, shoots preloaded, gets 2 closest to amp wing notes, 
+     * then closest to amp center note. */
     public SequentialCommandGroup getTopTwoPieceThenCenter1() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("T1-OffsetAmpStartToAmpNote");
@@ -310,7 +310,8 @@ public class AutonBuilder {
 
     }
 
-    public SequentialCommandGroup getTopCenterTwoPiece(){
+    /** Starts by the amp, shoots preloaded, then gets two center notes closest to amp. */
+    public SequentialCommandGroup getTopCenterTwoPiece() {
         
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-OffsetTopToCenter1");
         ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
@@ -328,8 +329,9 @@ public class AutonBuilder {
 
     }
     
-    public SequentialCommandGroup getMiddleCenterTwoPiece(){
-        // 
+    /** Starts in front of the subwoofer, shoots preloaded, then gets two center notes closest to amp. */
+    public SequentialCommandGroup getMiddleCenterTwoPiece() {
+
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("Z1-MiddleToCenter1");
         ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("Z2-Center1ToWing");
         ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z3-WingToCenter2");
@@ -413,7 +415,9 @@ public class AutonBuilder {
         );
     }
 
-    public SequentialCommandGroup getMiddleTwoPieceThen1TopCenter(){
+    /** Starts in front of subwoofer, shoots preloaded, gets 2 closest to amp wing notes, 
+     * then closest to amp center note. */
+    public SequentialCommandGroup getMiddleTwoPieceThen1TopCenter() {
         
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
         ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("M2-SpeakerNoteToAmpNote");
@@ -432,6 +436,8 @@ public class AutonBuilder {
         );
     }
 
+    /** Starts in front of subwoofer, shoots preloaded, gets 2 closest to amp wing notes, 
+     * then 2 closest to amp center note. */
     public SequentialCommandGroup getMiddleTwoPieceThen2TopCenter() {
 
         ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("M1-SpeakerStartToSpeakerNote");
