@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.397583366595304,
+        "y": 0.707935701585688
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.3981044125598805,
+        "y": 0.7079672962912361
+      },
+      "isLocked": true,
+      "linkedName": "Scan8"
+    },
+    {
+      "anchor": {
+        "x": 8.464929787002431,
+        "y": 1.815559345404405
+      },
+      "prevControl": {
+        "x": 8.78714757429515,
+        "y": 0.9697376537610217
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Scan7"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0,
+      "rotationDegrees": 7.5,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 102.09,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Scan",
+  "previewStartingState": {
+    "rotation": 3.47,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

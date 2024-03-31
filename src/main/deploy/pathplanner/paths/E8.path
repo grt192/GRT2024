@@ -1,0 +1,63 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.342574113719656,
+        "y": 1.3389455350339265
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7184948655611596,
+        "y": 0.7415000544286795
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.397583366595304,
+        "y": 0.707935701585688
+      },
+      "prevControl": {
+        "x": 5.974096703239007,
+        "y": 0.5205301270724829
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Scan8"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 3.4682292589171033,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Scan",
+  "previewStartingState": {
+    "rotation": -29.913645991534878,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
