@@ -28,8 +28,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     private NetworkTableEntry extensionPercentEntry;
     private NetworkTableEntry motor10CurrentEntry;
     private NetworkTableEntry motor10VoltageEntry;
+    private NetworkTableEntry motor10TemperatureEntry;
     private NetworkTableEntry motor11CurrentEntry;
     private NetworkTableEntry motor11VoltageEntry;
+    private NetworkTableEntry motor11TemperatureEntry;
 
     private volatile boolean isManual = false;
     private double manualPower = 0;
@@ -89,8 +91,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         targetStateEntry = elevatorNetworkTable.getEntry("TargetState");
         motor10CurrentEntry = motorsNetworkTable.getEntry("10Current");
         motor10VoltageEntry = motorsNetworkTable.getEntry("10Voltage");
+        motor10TemperatureEntry = motorsNetworkTable.getEntry("10Temperature");
         motor11CurrentEntry = motorsNetworkTable.getEntry("11Current");
         motor11VoltageEntry = motorsNetworkTable.getEntry("11Voltage");
+        motor11TemperatureEntry = motorsNetworkTable.getEntry("11Temperature");
 
     }
 
@@ -102,8 +106,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         targetStateEntry.setString(getTargetState().toString()); 
         motor10CurrentEntry.setDouble(extensionMotor.getOutputCurrent());
         motor10VoltageEntry.setDouble(extensionMotor.getBusVoltage());
+        motor10TemperatureEntry.setDouble(extensionMotor.getMotorTemperature());
         motor11CurrentEntry.setDouble(extensionFollow.getOutputCurrent());
         motor11VoltageEntry.setDouble(extensionFollow.getBusVoltage());
+        motor11TemperatureEntry.setDouble(extensionFollow.getMotorTemperature());
 
         if (isManual) {
             //Add some factors for better control.
