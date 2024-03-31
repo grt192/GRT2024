@@ -5,7 +5,6 @@ import frc.robot.Constants;
 /** States of the elevator. */
 public enum ElevatorState {
     ZERO(Constants.ElevatorConstants.ZERO_POSITION),
-    INTAKE(Constants.ElevatorConstants.INTAKE_POSITION),
     AMP(Constants.ElevatorConstants.AMP_POSITION),
     TRAP(Constants.ElevatorConstants.TRAP_POSITION);
 
