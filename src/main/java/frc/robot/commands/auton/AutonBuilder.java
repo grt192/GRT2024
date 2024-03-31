@@ -123,7 +123,9 @@ public class AutonBuilder {
             new ParallelRaceGroup(
                 new AutonNoteAlignCommand(swerveSubsystem, intakeRollerSubsystem, noteDetector),
                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-            ).withTimeout(1)
+            ).withTimeout(1),
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).until(
+                ()  -> intakeRollerSubsystem.getBackSensorReached()).withTimeout(2)
             // new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
             //     .alongWith(new DriveForwardCommand(swerveSubsystem).until(
             //         intakeRollerSubsystem::getFrontSensorValue).until(
