@@ -35,7 +35,6 @@ public final class Constants {
         public static final int ZERO_LIMIT_ID = 7;
 
         public static final double ZERO_POSITION = 0;
-        public static final double INTAKE_POSITION = 0;
         public static final double AMP_POSITION = .9;
         public static final double TRAP_POSITION = 1.;
 
