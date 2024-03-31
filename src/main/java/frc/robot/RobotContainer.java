@@ -37,7 +37,7 @@ import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
-import frc.robot.commands.elevator.ElevatorToIntakeCommand;
+import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
