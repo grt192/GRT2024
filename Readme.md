@@ -40,4 +40,4 @@
 | Entry Name | Type | Description |
 |:----------:|:----:|:-----------:|
 | LimitSwitch | Boolean | True for triggered |
-| ExtentionPercent | Double | Percent extended |
+| ExtensionPercent | Double | Percent extended |
