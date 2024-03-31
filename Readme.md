@@ -40,4 +40,8 @@
 | Entry Name | Type | Description |
 |:----------:|:----:|:-----------:|
 | LimitSwitch | Boolean | True for triggered |
+<<<<<<< HEAD
 | ExtensionPercent | Double | Percent extended |
+=======
+| ExtentionPercent | Double | Percent extended |
+>>>>>>> 6b839d7 (Added Controller ID table, Motor ID table, and Network Tables table.)
