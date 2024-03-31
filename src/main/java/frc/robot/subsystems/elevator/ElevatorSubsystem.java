@@ -4,8 +4,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import org.apache.commons.math3.analysis.function.Exp;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -13,19 +11,25 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.commands.elevator.ElevatorToLimitSwitchCommand;
 
 /** Represents the elevator mechanism. */
 public class ElevatorSubsystem extends SubsystemBase {
-    // private NetworkTableInstance elevatorNetworkTableInstance;
-    // private NetworkTable elevatorNetworkTable;
+    private NetworkTableInstance elevatorNetworkTableInstance;
+    private NetworkTable elevatorNetworkTable;
+    private NetworkTable motorsNetworkTable;
+    private NetworkTableEntry limitSwitchEntry;
+    private NetworkTableEntry targetStateEntry;
+    private NetworkTableEntry extensionPercentEntry;
+    private NetworkTableEntry motor10CurrentEntry;
+    private NetworkTableEntry motor10VoltageEntry;
+    private NetworkTableEntry motor11CurrentEntry;
+    private NetworkTableEntry motor11VoltageEntry;
 
     private volatile boolean isManual = false;
     private double manualPower = 0;
@@ -76,18 +80,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionPidController.setD(ElevatorConstants.EXTENSION_D);
         extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
         extensionPidController.setOutputRange(-0.3, 1);
-        extensionPidController.setFeedbackDevice(extensionEncoder);
 
-        NetworkTableInstance NTInstance = NetworkTableInstance.getDefault();
-        NetworkTable NT = NTInstance.getTable("Sensors");
-        NetworkTableEntry NTLimitSwitch = NT.getEntry("ElevatorLimitSwitch");
+        elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
+        elevatorNetworkTable  = elevatorNetworkTableInstance.getTable("Elevator");
+        motorsNetworkTable = elevatorNetworkTableInstance.getTable("Motors");
+        limitSwitchEntry = elevatorNetworkTable.getEntry("LimitSwitch");
+        extensionPercentEntry = elevatorNetworkTable.getEntry("ExtensionPercent");
+        targetStateEntry = elevatorNetworkTable.getEntry("TargetState");
+        motor10CurrentEntry = motorsNetworkTable.getEntry("10Current");
+        motor10VoltageEntry = motorsNetworkTable.getEntry("10Voltage");
+        motor11CurrentEntry = motorsNetworkTable.getEntry("11Current");
+        motor11VoltageEntry = motorsNetworkTable.getEntry("11Voltage");
+
     }
 
     @Override 
     public void periodic() {
-        // System.out.println("Current Extension: " + getExtensionPercent());
-        // System.out.println("Limit Switch: " + getLimitSwitch());
-        // System.out.println("Motor Output: " + extensionMotor.getAppliedOutput());
+        //update elevator status to netowrk tables.
+        extensionPercentEntry.setDouble(getExtensionPercent());
+        limitSwitchEntry.setBoolean(getLimitSwitch());
+        targetStateEntry.setString(getTargetState().toString()); 
+        motor10CurrentEntry.setDouble(extensionMotor.getOutputCurrent());
+        motor10VoltageEntry.setDouble(extensionMotor.getBusVoltage());
+        motor11CurrentEntry.setDouble(extensionFollow.getOutputCurrent());
+        motor11VoltageEntry.setDouble(extensionFollow.getBusVoltage());
 
         if (isManual) {
             //Add some factors for better control.
@@ -98,16 +114,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             //if limit switch tells us it's at the bottom
             extensionEncoder.setPosition(0); 
             this.setManualPower(0);//stops the motor in manual mode to avoid motor stall.
-            extensionPidController.setIAccum(0);
+            extensionPidController.setIAccum(0);//Set Integral to 0 to prevent PID from moving further down.
         }
-
-        // if (ElevatorConstants.LIMIT_SWITCH_ENABLED &&
-        //     zeroLimitSwitch != null && zeroLimitSwitch.get() &&
-        //     Math.abs(this.getExtensionPercent()) < ElevatorConstants.EXTENSION_TOLERANCE) { 
-        //         //if the encoder thinks the elevator is at ground
-        //         CommandScheduler.getInstance().schedule(new ElevatorToLimitSwitchCommand(this));
-        //         //slowly go down to limit switch
-        // } 
     }
     
     /**
@@ -219,11 +227,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
 
     public boolean getLimitSwitch() {
-        if (zeroLimitSwitch != null) {
             return !zeroLimitSwitch.get();
-        } else {
-            throw new Error("Can't find limit switch!");
-        }
     }
 
     /**
