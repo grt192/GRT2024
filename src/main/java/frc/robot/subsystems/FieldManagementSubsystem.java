@@ -16,7 +16,6 @@ public class FieldManagementSubsystem extends SubsystemBase {
 
     private NetworkTableInstance FMSNTInstance;
     private NetworkTable FMSNTTable;
-    private NetworkTableEntry allianceColorEntry;
     private NetworkTableEntry stationNumberEntry;
     private NetworkTableEntry matchNumberEntry;
     private NetworkTableEntry matchTypeEntry;
@@ -36,7 +35,6 @@ public class FieldManagementSubsystem extends SubsystemBase {
 
         FMSNTInstance = NetworkTableInstance.getDefault();
         FMSNTTable = FMSNTInstance.getTable("FMS");
-        allianceColorEntry = FMSNTTable.getEntry("AllianceColor");
         stationNumberEntry = FMSNTTable.getEntry("StationNumber");
         matchNumberEntry = FMSNTTable.getEntry("MatchNumber");
         matchTypeEntry = FMSNTTable.getEntry("MatchType");
@@ -84,7 +82,6 @@ public class FieldManagementSubsystem extends SubsystemBase {
             matchStatus = MatchStatus.ENDGAME; // without an FMS, we will be in 'endgame' for the first 30 sec.
         }
         
-        allianceColorEntry.setString(DriverStation.getAlliance().toString());
         stationNumberEntry.setInteger(DriverStation.getLocation().orElse(-1));
         matchNumberEntry.setInteger(DriverStation.getMatchNumber());
         matchTypeEntry.setString(DriverStation.getMatchType().toString());
