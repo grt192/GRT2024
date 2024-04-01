@@ -50,7 +50,7 @@ public class NoteDetectionWrapper {
         }
 
         PhotonTrackedTarget target = result.getBestTarget();
-        
+
         noteDetectedPub.set(true);
         return Optional.of(target);
     }

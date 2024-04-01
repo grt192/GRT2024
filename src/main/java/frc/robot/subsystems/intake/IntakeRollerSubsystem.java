@@ -15,6 +15,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -34,8 +36,8 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private final CANSparkMax frontMotors;
     private final TalonSRX integrationMotor;
     private final DigitalInput frontSensor;
-    private final AnalogPotentiometer backSensor;
     private final DigitalInput rockwellSensor;
+    private final DigitalInput ampSensor;
     // private ColorSensorV3 colorSensor;
 
     private boolean prevFrontSensorValue = false;
@@ -56,12 +58,11 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public IntakeRollerSubsystem(LightBarSubsystem lightBarSubsystem) {
         integrationMotor = new TalonSRX(IntakeConstants.INTEGRATION_MOTOR_ID);
         frontMotors = new CANSparkMax(IntakeConstants.FRONT_MOTOR_ID, MotorType.kBrushless);
+        frontMotors.setIdleMode(IdleMode.kBrake);
         frontMotors.setInverted(true);
         frontSensor = new DigitalInput(3);
-        backSensor = new AnalogPotentiometer(IntakeConstants.BACK_SENSOR_ID);
-        // colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        // colorSensor = new ColorSensorV3(I2C.Port.kMXP);
         rockwellSensor = new DigitalInput(4);
+        ampSensor = new DigitalInput(5);
     
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
@@ -99,42 +100,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     }
 
     /**
-     * Gets whether a note is at the back sensor currently.
-     *
-     * @return Whether a note is at the back sensor currently.
-     */
-    public boolean getBackSensorReached() {
-        return backSensor.get() > IntakeConstants.BACK_SENSOR_THRESHOLD;
-    }
-
-    /**
-     * Gets the back sensor value.
-     *
-     * @return The current measurement of the back sensor.
-     */
-    public double getBackSensorValue() {
-        return backSensor.get();
-    }
-
-    /**
-     * Gets whether a note is at the back sensor currently.
-     *
-     * @return Whether a note is at the back sensor currently.
-     */
-    // public boolean getUltraSensorReached() {
-    //     return ultrasonicSensor.get() > IntakeConstants.UlTRA_SENSOR_THRESHOLD || ultrasonicSensor.get() < .018;
-    // }
-
-    /**
-     * Gets the back sensor value.
-     *
-     * @return The current measurement of the back sensor.
-     */
-    // public double getUltraSensorValue() {
-    //     return ultrasonicSensor.get();
-    // }
-
-    /**
      * Gets the back sensor value.
      *
      * @return The current measurement of the back sensor.
@@ -142,24 +107,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     public boolean getRockwellSensorValue() {
         return !rockwellSensor.get();
     }
-
-    
-    /** Returns the color seen by the color sensor.
-     *
-     * @return the color seen by the color sensor.
-     */
-    // public Color getColorSensor() {
-    //     return colorSensor.getColor();
-        
-    // }
-
-    /** Return whether the color sensor detects a note or not.
-     *
-     * @return whether the color sensor detects a note or not.
-     */
-    // public boolean getNoteColorDetected() { 
-    //     return colorSensor.getRed() >= IntakeConstants.COLOR_SENSOR_RED_THRESHOLD;
-    // }
 
     /**
      * sets the speed for the front and integration rollers.
@@ -180,19 +127,15 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         return integrationMotor.getMotorOutputPercent();
     }
 
+    public boolean getAmpSensor() {
+        return ampSensor.get();
+    }
+
     @Override
     public void periodic() {
 
         ntFrontPublisher.set(getFrontSensorReached());
-        ntBackPublisher.set(getBackSensorReached());
-        // if (colorSensor.getRed() == 0 && colorResetTimer.advanceIfElapsed(2)) {
-        //     colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        // }
-        // System.out.println("COLOR SENSOR: " + colorSensor.getRed());
-        // System.out.println("FRONT ROCKWELL: " + getFrontSensorValue());
         prevFrontSensorValue = getFrontSensorValue();
-        // System.out.println("ULTRASONIC SENSOR: " + ultrasonicSensor.get());
-
         if (getFrontSensorValue()) {
             lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
         }

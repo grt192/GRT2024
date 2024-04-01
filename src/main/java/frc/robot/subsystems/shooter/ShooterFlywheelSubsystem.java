@@ -69,6 +69,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorTop.setNeutralMode(NeutralModeValue.Coast);
         shooterMotorBottom.setNeutralMode(NeutralModeValue.Coast);
 
+
         Slot0Configs configs = new Slot0Configs();
 
         double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 
@@ -79,7 +80,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
                               5.6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
 
-        double[] topSpeeds = {.6, .5, .7, .75, .75, .75, .75};
+        double[] topSpeeds = {.4, .5, .7, .75, .75, .75, .75};
         double[] bottomSpeeds = {.5, .5, .35, .4, .4, .75, .75};
 
         targetTopRPS = 0.0;

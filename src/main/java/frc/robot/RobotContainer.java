@@ -30,8 +30,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
@@ -41,6 +43,7 @@ import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
+import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
@@ -178,15 +181,11 @@ public class RobotContainer {
             driveController = new DualJoystickDriveController();
         }
 
-        try {
-            driverCamera = new UsbCamera("fisheye", 0);
-            driverCamera.setVideoMode(PixelFormat.kMJPEG, 176, 144, 30);
-            driverCamera.setExposureManual(35);
-            driverCameraServer = new MjpegServer("m1", 1181);
-            driverCameraServer.setSource(driverCamera);
-        } catch (Exception e) {
-            System.out.print(e);
-        }            
+        driverCamera = new UsbCamera("fisheye", 0);
+        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+        driverCamera.setExposureManual(40);
+        driverCameraServer = new MjpegServer("m1", 1181);
+        driverCameraServer.setSource(driverCamera);
 
         autonBuilder = new AutonBuilder(
             intakePivotSubsystem, intakeRollerSubsystem, 
@@ -374,11 +373,16 @@ public class RobotContainer {
                     new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
-                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
-                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
-                                .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
-                        new ElevatorToAmpCommand(elevatorSubsystem).alongWith( // raise elevator
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)) // angle intake for scoring
+                    new SequentialCommandGroup(
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(intakeRollerSubsystem::getAmpSensor).andThen(// extend pivot
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
+                                    .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2),
+                        new ElevatorToAmpCommand(elevatorSubsystem)
+                    )
+                    
+                         // raise elevator
+                         // angle intake for scoring
                     ).until(() -> mechController.getLeftTriggerAxis() > .05 
                         || mechController.getRightTriggerAxis() > .05
                     ), 
@@ -394,17 +398,13 @@ public class RobotContainer {
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, .45).withTimeout(.1)
-                    ).andThen(new InstantCommand(() -> {
-                        isNoteTrapReady = false;
-                    })), 
+                    ), 
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
                                 .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
-                    ).andThen(new InstantCommand(() -> {
-                        isNoteTrapReady = true;
-                    })),
-                    () -> isNoteTrapReady
+                    ),
+                    intakeRollerSubsystem::getAmpSensor
                 ), // raise the elevator
                 () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
                     || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
@@ -415,10 +415,18 @@ public class RobotContainer {
         // aButton runs the intake sequence
         aButton.onTrue(
             new InstantCommand(() -> {intakePivotSubsystem.setPosition(1);}, intakePivotSubsystem).alongWith(// then extend the intake
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)).andThen(
-                // intake the note to the color sensor
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, 0) // stow intake
-            ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)).andThen(
+                    new ConditionalCommand(
+                        new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
+                            new InstantCommand(() -> {intakePivotSubsystem.setPosition(0);}, intakePivotSubsystem)
+                        ), 
+                        
+                        new InstantCommand(
+                            () -> {intakePivotSubsystem.setPosition(0);}, intakePivotSubsystem
+                        ), 
+                        () -> aButton.getAsBoolean()
+                    )
+                ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             
         );
 
@@ -446,6 +454,14 @@ public class RobotContainer {
         }, intakePivotSubsystem));
 
         // yButton runs the flywheels
+
+        yButton.onTrue(
+            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
+            ).unless(intakeRollerSubsystem::getRockwellSensorValue)
+        );
+
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
