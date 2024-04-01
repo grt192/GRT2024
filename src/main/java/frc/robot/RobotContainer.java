@@ -392,11 +392,15 @@ public class RobotContainer {
 
         /* MECHANISM BINDINGS */
 
-        /* Climb Controls -- Left and right joystick up/down controls left and right arm up/down,
-         * respectively. */
-        climbSubsystem.setDefaultCommand(new RunCommand(() -> {
-            climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
-        }, climbSubsystem));
+        /* Climb Controls -- Left and right joystick up/down controls left and right arm up/down, respectively. Pressing
+         * down on either the left or right joystick toggles automatic lowering (on by default), which brings down both
+         * arms automatically when there is no joystick input. */
+        climbSubsystem.setDefaultCommand(Commands.run(
+            () -> climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY()), climbSubsystem
+        ));
+
+        leftStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
+        rightStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
 
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake

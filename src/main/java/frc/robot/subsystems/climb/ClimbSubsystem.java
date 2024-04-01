@@ -11,13 +11,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Represents the climb mechanism (both arms).
  */
 public class ClimbSubsystem extends SubsystemBase {
+    private static final double KEEP_LOWERED_POWER = -0.2;
+
     private final ClimbArm leftClimbArm;
     private final ClimbArm rightClimbArm;
+
+    private double leftPower;
+    private double rightPower;
+
+    private boolean keepLowered;
 
     /** Constructs a new {@link ClimbSubsystem}. */
     public ClimbSubsystem() {
         leftClimbArm = new ClimbArm(LEFT_WINCH_MOTOR_ID, LEFT_ZERO_LIMIT_PORT, true);
         rightClimbArm = new ClimbArm(RIGHT_WINCH_MOTOR_ID, RIGHT_ZERO_LIMIT_PORT, false);
+
+        keepLowered = true;
     }
 
     @Override
@@ -27,8 +36,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
         // System.out.println(leftClimbArm.isLimitSwitchPressed() + " " + rightClimbArm.isLimitSwitchPressed());
 
-        leftClimbArm.update();
-        rightClimbArm.update();
+        leftClimbArm.update((leftPower == 0) && keepLowered ? KEEP_LOWERED_POWER : leftPower);
+        rightClimbArm.update((rightPower == 0) && keepLowered ? KEEP_LOWERED_POWER : rightPower);
     }
 
     /**
@@ -38,19 +47,17 @@ public class ClimbSubsystem extends SubsystemBase {
      * @param rightArmSpeed The right arm's desired speed.
      */
     public void setSpeeds(double leftArmSpeed, double rightArmSpeed) {
-        leftClimbArm.setSpeed(leftArmSpeed);
-        rightClimbArm.setSpeed(rightArmSpeed);
+        leftPower = leftArmSpeed;
+        rightPower = rightArmSpeed;
     }
 
-    /**
-     * Returns whether or not both climb arms are correctly zeroed (and currently at position zero).
-     */
-    public boolean isZeroedAndAtZero() {
-        boolean leftArmZeroedAndAtZero = leftClimbArm.isLimitSwitchPressed() 
-                                      && leftClimbArm.getCurrentExtension() == 0;
-        boolean rightArmZeroedAndAtZero = rightClimbArm.isLimitSwitchPressed()
-                                       && rightClimbArm.getCurrentExtension() == 0;
+    /** When enabled, the climb arms keep themselves at the bottom without manual input. */
+    public void enableAutomaticLowering(boolean enable) {
+        keepLowered = enable;
+    }
 
-        return leftArmZeroedAndAtZero && rightArmZeroedAndAtZero;
+    /** Toggles the feature to keep the climb arms at the bottom without manual input. */
+    public void toggleAutomaticLowering() {
+        keepLowered = !keepLowered;
     }
 }

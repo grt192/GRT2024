@@ -51,7 +51,9 @@ public class ClimbArm {
     }
 
     /** Run this function every periodic loop.*/
-    public void update() {
+    public void update(double speed) {
+        winchPower = MathUtil.clamp(speed, -1.0, +1.0);
+
         if (this.isLimitSwitchPressed()) {
             resetEncoder();
             winchPower = Math.max(0, winchPower);
