@@ -136,7 +136,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
         ntFrontPublisher.set(getFrontSensorReached());
         prevFrontSensorValue = getFrontSensorValue();
-        System.out.println(getAmpSensor());
         if (getFrontSensorValue()) {
             lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
         }

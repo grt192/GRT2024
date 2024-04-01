@@ -374,11 +374,11 @@ public class RobotContainer {
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new SequentialCommandGroup(
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(intakeRollerSubsystem::getAmpSensor).andThen(// extend pivot
                             new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
-                                    .until(() -> intakeRollerSubsystem.getFrontSensorReached()).unless(intakeRollerSubsystem::getAmpSensor),
-                        new ElevatorToAmpCommand(elevatorSubsystem),
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2)
+                                    .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2),
+                        new ElevatorToAmpCommand(elevatorSubsystem)
                     )
                     
                          // raise elevator
