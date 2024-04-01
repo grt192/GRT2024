@@ -41,3 +41,15 @@
 |:----------:|:----:|:-----------:|
 | LimitSwitch | Boolean | True for triggered |
 | ExtensionPercent | Double | Percent extended |
+## FMS
+| Entry Name | Type | Description |
+|:----------:|:----:|:-----------:|
+| AllianceColor | String | Blue or Red |
+| StationNumber | Int | 1, 2, or 3. -1 as no connection. |
+| MatchNumber | Int | |
+| MatchType | String | |
+| TimeLeft | Double | In seconds |
+| IsAutnonmous | Boolean | |
+| IsEStopped | Boolean | |
+| IsEnabled | Boolean | |
+| IsDSAttached | Boolean | |

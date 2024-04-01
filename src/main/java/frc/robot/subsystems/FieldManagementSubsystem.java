@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.MatchStatus;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 /** The subsystem that manages everything field related. */
 public class FieldManagementSubsystem extends SubsystemBase {
@@ -11,6 +14,17 @@ public class FieldManagementSubsystem extends SubsystemBase {
     private boolean connectedToFMS;
     private MatchStatus matchStatus;
 
+    private NetworkTableInstance FMSNTInstance;
+    private NetworkTable FMSNTTable;
+    private NetworkTableEntry allianceColorEntry;
+    private NetworkTableEntry stationNumberEntry;
+    private NetworkTableEntry matchNumberEntry;
+    private NetworkTableEntry matchTypeEntry;
+    private NetworkTableEntry timeLeftEntry;
+    private NetworkTableEntry isAutonomousEntry;
+    private NetworkTableEntry isEStoppedEntry;
+    private NetworkTableEntry isEnabledEntry;
+    private NetworkTableEntry isDSAttachedEntry;
     /**
      * Initializes subsystem to handle information related to the Field Management System (such as our alliance color).
      */
@@ -19,9 +33,20 @@ public class FieldManagementSubsystem extends SubsystemBase {
         isRed = false;
         connectedToFMS = false;
         matchStatus = MatchStatus.DORMANT;
-    }
 
-    @Override
+        FMSNTInstance = NetworkTableInstance.getDefault();
+        FMSNTTable = FMSNTInstance.getTable("FMS");
+        allianceColorEntry = FMSNTTable.getEntry("AllianceColor");
+        stationNumberEntry = FMSNTTable.getEntry("StationNumber");
+        matchNumberEntry = FMSNTTable.getEntry("MatchNumber");
+        matchTypeEntry = FMSNTTable.getEntry("MatchType");
+        timeLeftEntry = FMSNTTable.getEntry("TimeLeft");
+        isAutonomousEntry = FMSNTTable.getEntry("IsAutonomous");
+        isEStoppedEntry = FMSNTTable.getEntry("IsEStopped");
+        isEnabledEntry = FMSNTTable.getEntry("IsEnabled");
+        isDSAttachedEntry = FMSNTTable.getEntry("IsDSAttached");
+    }
+  
     public void periodic() {
         boolean incomingIsRed;
         try {
@@ -58,7 +83,16 @@ public class FieldManagementSubsystem extends SubsystemBase {
         if (DriverStation.isTeleopEnabled() && (DriverStation.getMatchTime() < 30)) { 
             matchStatus = MatchStatus.ENDGAME; // without an FMS, we will be in 'endgame' for the first 30 sec.
         }
-
+        
+        allianceColorEntry.setString(DriverStation.getAlliance().toString());
+        stationNumberEntry.setInteger(DriverStation.getLocation().orElse(-1));
+        matchNumberEntry.setInteger(DriverStation.getMatchNumber());
+        matchTypeEntry.setString(DriverStation.getMatchType().toString());
+        timeLeftEntry.setDouble(DriverStation.getMatchTime());
+        isAutonomousEntry.setBoolean(DriverStation.isAutonomous());
+        isEStoppedEntry.setBoolean(DriverStation.isEStopped());
+        isEnabledEntry.setBoolean(DriverStation.isEnabled());
+        isDSAttachedEntry.setBoolean(DriverStation.isDSAttached());
     }
 
     /**
