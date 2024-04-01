@@ -92,20 +92,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         motor10CurrentEntry = motorsNetworkTable.getEntry("10Current");
         motor10VoltageEntry = motorsNetworkTable.getEntry("10Voltage");
 <<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fe1cfe9 (Added temperature display)
         motor10TemperatureEntry = motorsNetworkTable.getEntry("10Temperature");
         motor11CurrentEntry = motorsNetworkTable.getEntry("11Current");
         motor11VoltageEntry = motorsNetworkTable.getEntry("11Voltage");
         motor11TemperatureEntry = motorsNetworkTable.getEntry("11Temperature");
-<<<<<<< HEAD
 =======
         motor11CurrentEntry = motorsNetworkTable.getEntry("11Current");
         motor11VoltageEntry = motorsNetworkTable.getEntry("11Voltage");
 >>>>>>> 2e96ba6 (Implemented NT for motor & elevator status. Removed unused code & imports.)
-=======
->>>>>>> fe1cfe9 (Added temperature display)
 
     }
 
@@ -118,20 +112,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         motor10CurrentEntry.setDouble(extensionMotor.getOutputCurrent());
         motor10VoltageEntry.setDouble(extensionMotor.getBusVoltage());
 <<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> fe1cfe9 (Added temperature display)
         motor10TemperatureEntry.setDouble(extensionMotor.getMotorTemperature());
         motor11CurrentEntry.setDouble(extensionFollow.getOutputCurrent());
         motor11VoltageEntry.setDouble(extensionFollow.getBusVoltage());
         motor11TemperatureEntry.setDouble(extensionFollow.getMotorTemperature());
-<<<<<<< HEAD
 =======
         motor11CurrentEntry.setDouble(extensionFollow.getOutputCurrent());
         motor11VoltageEntry.setDouble(extensionFollow.getBusVoltage());
 >>>>>>> 2e96ba6 (Implemented NT for motor & elevator status. Removed unused code & imports.)
-=======
->>>>>>> fe1cfe9 (Added temperature display)
 
         if (isManual) {
             //Add some factors for better control.
