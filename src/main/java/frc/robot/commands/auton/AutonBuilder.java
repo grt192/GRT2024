@@ -115,7 +115,7 @@ public class AutonBuilder {
             //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
         ).andThen(
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getBackSensorReached).withTimeout(1))
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getRockwellSensorValue).withTimeout(1))
         );
     }
 

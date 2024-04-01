@@ -16,7 +16,7 @@ public class IntakeRollerAmpIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-       intakeRollerSubsystem.setRollSpeeds(0.3, 0);
+       intakeRollerSubsystem.setRollSpeeds(0.7, 0);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class IntakeRollerAmpIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return intakeRollerSubsystem.getFrontSensorReached();
+        return intakeRollerSubsystem.getAmpSensor();
     }
 
 }
