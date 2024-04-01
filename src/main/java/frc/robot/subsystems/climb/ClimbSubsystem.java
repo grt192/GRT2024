@@ -6,7 +6,6 @@ import static frc.robot.Constants.ClimbConstants.RIGHT_WINCH_MOTOR_ID;
 import static frc.robot.Constants.ClimbConstants.RIGHT_ZERO_LIMIT_PORT;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.GRTUtil;
 
 /**
  * Represents the climb mechanism (both arms).
@@ -14,10 +13,6 @@ import frc.robot.util.GRTUtil;
 public class ClimbSubsystem extends SubsystemBase {
     private final ClimbArm leftClimbArm;
     private final ClimbArm rightClimbArm;
-
-    private static final double ZEROING_SPEED = 0.6;
-
-    private boolean isZeroing;
 
     /** Constructs a new {@link ClimbSubsystem}. */
     public ClimbSubsystem() {
@@ -36,41 +31,6 @@ public class ClimbSubsystem extends SubsystemBase {
         rightClimbArm.update();
     }
 
-    /** Sets climb to manual mode (full control over each arm's speed). */
-    public void setManual() {
-        leftClimbArm.enablePID(false);
-        rightClimbArm.enablePID(false);
-        leftClimbArm.enableSoftLimits(false);
-        rightClimbArm.enableSoftLimits(false);
-    }
-
-    /** Sets climb to automatic mode (each arm controlled by a position PID). */
-    public void setAutomatic() {
-        leftClimbArm.enableSoftLimits(true);
-        rightClimbArm.enableSoftLimits(true);
-        leftClimbArm.enablePID(true);
-        rightClimbArm.enablePID(true);
-    }
-
-    /**
-     * Sets the targeted extension height for both climb arms.
-     *
-     * @param height The extension target
-     */
-    public void goToExtension(double height) {
-        if (isZeroing) {
-            return;
-        }
-
-        leftClimbArm.setExtensionTarget(height);
-        rightClimbArm.setExtensionTarget(height);
-    }
-
-    /** Returns true if both climb arms are at their extension target, and false otherwise. */
-    public boolean isAtTargetExtension() {
-        return leftClimbArm.isAtExtensionTarget() && rightClimbArm.isAtExtensionTarget();
-    }
-
     /**
      * Sets the climb arms' speeds from -1.0 (downwards) to +1.0 (upwards)
      *
@@ -78,29 +38,8 @@ public class ClimbSubsystem extends SubsystemBase {
      * @param rightArmSpeed The right arm's desired speed.
      */
     public void setSpeeds(double leftArmSpeed, double rightArmSpeed) {
-        if (isZeroing) {
-            return;
-        }
-
         leftClimbArm.setSpeed(leftArmSpeed);
         rightClimbArm.setSpeed(rightArmSpeed);
-    }
-
-    /** Starts zeroing both climb arms. */
-    public void startZeroing() {
-        setSpeeds(-ZEROING_SPEED, -ZEROING_SPEED);
-        setManual();
-
-        isZeroing = true;
-    }
-    
-    /** Ends the zeroing process for both climb arms. */
-    public void endZeroing() {
-        isZeroing = false;
-
-        setSpeeds(0, 0);
-        goToExtension(0);
-        //  setAutomatic();
     }
 
     /**

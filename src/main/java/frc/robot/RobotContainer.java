@@ -39,8 +39,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auton.AutonBuilder;
-import frc.robot.commands.climb.ClimbLowerCommand;
-import frc.robot.commands.climb.ClimbRaiseCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
@@ -169,7 +167,6 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem();
 
         climbSubsystem = new ClimbSubsystem();
-        climbSubsystem.setManual();
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
@@ -395,15 +392,11 @@ public class RobotContainer {
 
         /* MECHANISM BINDINGS */
 
-        /* Climb Controls -- In manual mode, left and right joystick up/down controls left and right arm up/down,
-         * respectively. In automatic mode, pressing the left and right joysticks sends the elevator to its lowered
-         * and raised positions.*/
+        /* Climb Controls -- Left and right joystick up/down controls left and right arm up/down,
+         * respectively. */
         climbSubsystem.setDefaultCommand(new RunCommand(() -> {
             climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY());
         }, climbSubsystem));
-
-        // leftStickButton.onTrue(new ClimbLowerCommand(climbSubsystem));
-        // rightStickButton.onTrue(new ClimbRaiseCommand(climbSubsystem));
 
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake
