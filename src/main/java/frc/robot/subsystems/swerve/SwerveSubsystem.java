@@ -56,6 +56,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
@@ -275,6 +276,8 @@ public class SwerveSubsystem extends SubsystemBase {
             printModuleAngles();
         }
 
+        System.out.println(aiming);
+
     }
 
     /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
@@ -410,6 +413,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setTargetPoint(Translation2d targetPoint) {
         this.targetPoint = targetPoint;
+    }
+
+    public void targetSpeaker(){
+        targetPoint = redSupplier.getAsBoolean() ? SwerveConstants.RED_SPEAKER_POS : SwerveConstants.BLUE_SPEAKER_POS;
     }
 
     public ChassisSpeeds getAimChassisSpeeds(ChassisSpeeds currentSpeeds){

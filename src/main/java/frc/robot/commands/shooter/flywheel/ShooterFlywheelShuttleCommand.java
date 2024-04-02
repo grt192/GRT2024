@@ -18,8 +18,8 @@ public class ShooterFlywheelShuttleCommand extends Command {
     private static final double ERROR_MULTIPLIER = 0.08;
     private static final double TARGET_ANGLE = Units.degreesToRadians(70);
     
-    private final Translation2d BLUE_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(114), Units.inchesToMeters(323 - 96));
-    private final Translation2d RED_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(652.73 - 114), Units.inchesToMeters(323 - 96));
+    private final Translation2d BLUE_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(323));
+    private final Translation2d RED_SHUTTLE_POINT = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(323));
 
     private final SwerveSubsystem swerveSubsystem;
     private final ShooterFlywheelSubsystem flywheelSubsystem;
