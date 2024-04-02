@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
@@ -109,6 +110,7 @@ public class RobotContainer {
             XboxController.Button.kLeftStick.value);
     private final JoystickButton rightStickButton = new JoystickButton(mechController,
         XboxController.Button.kRightStick.value);
+    private final POVButton dPadRight = new POVButton(mechController, 90);
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
@@ -239,16 +241,10 @@ public class RobotContainer {
                         driveController.getRotatePower()
                 );
             } else {
-                if (driveController.getSwerveAimMode()) {
-                    swerveSubsystem.setSwerveAimDrivePowers(
-                            driveController.getForwardPower(),
-                            driveController.getLeftPower());
-                } else {
-                    swerveSubsystem.setDrivePowers(
-                            driveController.getForwardPower(),
-                            driveController.getLeftPower(),
-                            driveController.getRotatePower());
-                }
+                swerveSubsystem.setDrivePowers(
+                        driveController.getForwardPower(),
+                        driveController.getLeftPower(),
+                        driveController.getRotatePower());
             }
 
             xError.setValue(xPID.getPositionError());
@@ -489,8 +485,7 @@ public class RobotContainer {
             } else {
                 shooterPivotSubsystem.setAutoAimBoolean(false);
                 if (mechController.getPOV() == 90) {
-                    shooterPivotSubsystem.setAngle(Units.degreesToRadians(60));
-                    shooterFlywheelSubsystem.setShooterMotorSpeed(.4);
+
                     if (shooterFlywheelSubsystem.atSpeed()) {
                         mechController.setRumble(RumbleType.kBothRumble, .4);
                     } else {
@@ -518,6 +513,8 @@ public class RobotContainer {
         }, shooterFlywheelSubsystem
         ));
 
+        dPadRight.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem, shooterPivotSubsystem, .6).onlyWhile(dPadRight));
+
         // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
         //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
         //     intakePivotSubsystem.setPosition(intakePosition);
@@ -544,10 +541,6 @@ public class RobotContainer {
         );
         offsetDownButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
-        );
-
-        shuttleNotesDefaultSpeed.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, 
-            shooterFlywheelSubsystem, swerveSubsystem::getRobotPosition, shooterPivotSubsystem, 0.5)
         );
 
         /* SWERVE BINDINGS */
