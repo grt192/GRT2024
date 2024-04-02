@@ -30,7 +30,7 @@ public class ClimbSubsystem extends SubsystemBase {
         // System.out.println("Left: " + GRTUtil.twoDecimals(leftClimbArm.getCurrentExtension())
         //               + ", Right: " + GRTUtil.twoDecimals(rightClimbArm.getCurrentExtension()));
 
-        //System.out.println(leftClimbArm.isLimitSwitchPressed() + " " + rightClimbArm.isLimitSwitchPressed());
+        // System.out.println(leftClimbArm.isLimitSwitchPressed() + " " + rightClimbArm.isLimitSwitchPressed());
 
         leftClimbArm.update();
         rightClimbArm.update();
