@@ -18,6 +18,7 @@ public class ElevatorToLimitSwitchCommand extends Command {
         try {
             if (!elevatorSubsystem.getLimitSwitch()){
                 elevatorSubsystem.setCoast();
+                elevatorSubsystem.setMotorPower(0);
             }
         }
         catch (Exception e) {

@@ -115,7 +115,7 @@ public class RobotContainer {
     private final JoystickButton offsetDownButton = new JoystickButton(switchboard, 8);
 
     private final JoystickButton shuttleNotes = new JoystickButton(switchboard, 6);
-
+    private final JoystickButton elevatorToZero = new JoystickButton(switchboard, 1);
     private UsbCamera driverCamera;
     private MjpegServer driverCameraServer;
 
@@ -341,6 +341,7 @@ public class RobotContainer {
             }
         }, elevatorSubsystem));
 
+        elevatorToZero.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
         /* INTAKE TEST */
 
         // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3),
@@ -374,8 +375,8 @@ public class RobotContainer {
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
                     // if elevator is down
                     new SequentialCommandGroup(
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(intakeRollerSubsystem::getAmpSensor).andThen(// extend pivot
-                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
+                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(() -> !intakeRollerSubsystem.getRockwellSensorValue()).andThen(// extend pivot
+                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75).unless(intakeRollerSubsystem::getAmpSensor) // run rollers to front sensor
                                     .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
                         new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2),
                         new ElevatorToAmpCommand(elevatorSubsystem)
