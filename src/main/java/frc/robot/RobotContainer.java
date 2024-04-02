@@ -592,6 +592,6 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonBuilder.getMiddleFourPiece();//autonPathChooser.getSelected();
+        return autonBuilder.getMiddleTwoPiece();//autonPathChooser.getSelected();
     }
 }

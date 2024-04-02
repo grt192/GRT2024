@@ -378,7 +378,7 @@ public class AutonBuilder {
     /** Starts source side. Shoots preloaded note, intakes bottom note, shoots note. */
     public SequentialCommandGroup getBottomTwoPiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("B3");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("S3");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
