@@ -276,8 +276,6 @@ public class SwerveSubsystem extends SubsystemBase {
             printModuleAngles();
         }
 
-        System.out.println(aiming);
-
     }
 
     /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
