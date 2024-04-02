@@ -125,7 +125,7 @@ public class AutonBuilder {
                 new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
             ).withTimeout(1),
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).until(
-                ()  -> intakeRollerSubsystem.getBackSensorReached()).withTimeout(2)
+                ()  -> intakeRollerSubsystem.getRockwellSensorValue()).withTimeout(2)
             // new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
             //     .alongWith(new DriveForwardCommand(swerveSubsystem).until(
             //         intakeRollerSubsystem::getFrontSensorValue).until(

@@ -61,7 +61,7 @@ public class AutonNoteAlignCommand extends Command {
     @Override
     //stops when there is a note in the intake
     public boolean isFinished() {
-        return intakeRollerSubsystem.getFrontSensorReached();
+        return intakeRollerSubsystem.getAmpSensor();
     }
 
     @Override
@@ -87,6 +87,11 @@ public class AutonNoteAlignCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        swerveSubsystem.setRobotRelativeDrivePowers(
+            0,
+            0,
+            0
+        );
         System.out.println("Ended NoteAlignCommand");
     }
 }
