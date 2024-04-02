@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.climb.ClimbRaiseCommand;
@@ -257,6 +259,46 @@ public class RobotContainer {
             swerveSubsystem.resetDriverHeading();
         }));
         
+        /* SWERVE BINDINGS */
+
+        /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
+        // drive
+
+        /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
+         * Releasing the button will stop the robot (and the path finding). */
+        driveController.getAmpAlign().onTrue(new InstantCommand(
+            () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
+            ).andThen(new ParallelRaceGroup(
+                AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
+                new ConditionalWaitCommand(
+                    () -> !driveController.getAmpAlign().getAsBoolean()))
+                    ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        );
+
+        /* Note align -- deprecated, new version in the works*/
+        driveController.getNoteAlign().onTrue(
+            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController)
+                .unless(() -> noteDetector.getNote().isEmpty())
+        );
+    
+        /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
+        driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
+
+        driveController.getShooterAimButton().onTrue(Commands.runOnce(
+            () -> {
+                swerveSubsystem.setTargetPoint(fmsSubsystem.isRedAlliance() ? SwerveConstants.RED_SPEAKER_POS : SwerveConstants.BLUE_SPEAKER_POS);
+                swerveSubsystem.setAim(true);
+            }
+        ));
+
+        driveController.getShooterAimButton().onFalse(Commands.runOnce(
+            () -> {
+                swerveSubsystem.setAim(false);
+            }
+        ));
+
+        
+
         /* SHOOTER PIVOT TEST */
 
         // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
@@ -543,32 +585,7 @@ public class RobotContainer {
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
         );
 
-        /* SWERVE BINDINGS */
-
-        /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
-        // drive
-
-        /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
-         * Releasing the button will stop the robot (and the path finding). */
-        driveController.getAmpAlign().onTrue(new InstantCommand(
-            () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
-            ).andThen(new ParallelRaceGroup(
-                AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
-                new ConditionalWaitCommand(
-                    () -> !driveController.getAmpAlign().getAsBoolean()))
-                    ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
-        );
-
-        /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
-        driveController.getNoteAlign().onTrue(
-            new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
-                                   swerveSubsystem, noteDetector,
-                                   driveController, lightBarSubsystem)                  
-            .onlyWhile(driveController.getNoteAlign())
-        );
-    
-        /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
-        driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
+        
 
         
     }

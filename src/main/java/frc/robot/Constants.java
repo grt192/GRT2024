@@ -133,7 +133,7 @@ public final class Constants {
         public static final double FLYWHEEL_SHUTTLE_SPEED = 0.3;
 
         //center of red speaker: (652.73 218.42)
-        public static final double RED_X = Units.inchesToMeters(652.73 + 9.05);
+        public static final double RED_X = Units.inchesToMeters(652.73 - 9.05);
         public static final double RED_Y = Units.inchesToMeters(218.42);
 
         //center of blue speaker: (-1.50 218.42)
