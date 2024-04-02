@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
 
 import java.util.function.BooleanSupplier;
@@ -214,13 +215,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         Pose2d currentField = poseSupplier.getPose2d();
 
         if (redSupplier.getAsBoolean()) {  //true = red
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.RED_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.RED_Y, 2);
+            double xLength = Math.pow(currentField.getX() - SwerveConstants.RED_SPEAKER_POS.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - SwerveConstants.RED_SPEAKER_POS.getY(), 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         } else {
-            double xLength = Math.pow(currentField.getX() - ShooterConstants.BLUE_X, 2);
-            double yLength = Math.pow(currentField.getY() - ShooterConstants.BLUE_Y, 2);
+            double xLength = Math.pow(currentField.getX() - SwerveConstants.BLUE_SPEAKER_POS.getX(), 2);
+            double yLength = Math.pow(currentField.getY() - SwerveConstants.BLUE_SPEAKER_POS.getY(), 2);
 
             currentDistance = Math.sqrt(xLength + yLength);
         }

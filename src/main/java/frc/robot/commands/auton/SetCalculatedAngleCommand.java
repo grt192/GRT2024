@@ -2,6 +2,7 @@ package frc.robot.commands.auton;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 /** SetCalculatedAngleCommand. */
@@ -12,11 +13,18 @@ public class SetCalculatedAngleCommand extends Command {
     public SetCalculatedAngleCommand(SwerveSubsystem swerve) {
         this.swerve = swerve;
         addRequirements(swerve);
+    
     } 
 
     @Override
+    public void initialize() {
+        swerve.targetSpeaker();
+        swerve.setAim(true);
+    }
+
+    @Override
     public void execute() {
-        swerve.setSwerveAimDrivePowers(0, 0);
+        swerve.setDrivePowers(0, 0, 0);
     }
 
     @Override
@@ -27,5 +35,6 @@ public class SetCalculatedAngleCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         swerve.setRobotRelativeDrivePowers(0, 0, 0);
+        swerve.setAim(false);
     }
 }

@@ -56,6 +56,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
 import java.util.Optional;
@@ -79,7 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
-
+    
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
@@ -133,6 +134,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private BooleanSupplier redSupplier;
 
+    private Translation2d targetPoint = new Translation2d();
+    private boolean aiming = false;
+
     /** Constructs a {@link SwerveSubsystem}. */
     public SwerveSubsystem(BooleanSupplier redSupplier) {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -182,6 +186,9 @@ public class SwerveSubsystem extends SubsystemBase {
         );
 
         lockTimer = new Timer();
+
+        
+
 
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
@@ -269,6 +276,8 @@ public class SwerveSubsystem extends SubsystemBase {
             printModuleAngles();
         }
 
+        System.out.println(aiming);
+
     }
 
     /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
@@ -295,6 +304,8 @@ public class SwerveSubsystem extends SubsystemBase {
             getDriverHeading()
         );
 
+        speeds = getAimChassisSpeeds(speeds);
+
         states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
             states, speeds,
@@ -316,6 +327,8 @@ public class SwerveSubsystem extends SubsystemBase {
             new Rotation2d(0)
         );
 
+        speeds = getAimChassisSpeeds(speeds);
+
         states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
             states, speeds,
@@ -334,16 +347,14 @@ public class SwerveSubsystem extends SubsystemBase {
             new Rotation2d(0)
         );
 
+        speeds = getAimChassisSpeeds(speeds);
+
         states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
             states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-    /** Returns the PID error for the rotation controller. */
-    public double getAngleError() {
-        return thetaController.getPositionError();
-    }
 
     /**
      * Gets the current chassis speeds relative to the robot.
@@ -366,10 +377,14 @@ public class SwerveSubsystem extends SubsystemBase {
      * @param angleSpeed angular speed in rads/second.
      */
     public void setChassisSpeeds(double xSpeed, double ySpeed, double angleSpeed) {
+        
+
         ChassisSpeeds speeds = new ChassisSpeeds(
             xSpeed,
             ySpeed,
             angleSpeed);
+        
+        speeds = getAimChassisSpeeds(speeds);
         
         this.states = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -392,66 +407,50 @@ public class SwerveSubsystem extends SubsystemBase {
         setDrivePowers(xPower, yPower, turnPower);
     }
 
-    /**
-     * Sets the drive powers while aiming at the speaker.
-     *
-     * @param xPower The power in x direction.
-     * @param yPower The power in the y direction.
-     */
-    public void setSwerveAimDrivePowers(double xPower, double yPower) {
-        double shootAngleRadians = getShootAngle(redSupplier.getAsBoolean());
-
-        setDrivePowersWithHeadingLock(xPower, yPower, Rotation2d.fromRadians(shootAngleRadians));
+    public void setAim(boolean aiming){
+        this.aiming = aiming;
     }
 
-    /**
-     * Gets the correct angle to aim the swerve at to point at the speaker.
-     *
-     * @param isRed Whether the team is red or not.
-     * @return The angle to point at.
-     */
-    public double getShootAngle(boolean isRed) {
-        double xDistance = getXFromSpeaker(isRed);
-        double yDistance = getYFromSpeaker();
-
-        double rawAngle = Math.atan2(yDistance, xDistance) + Math.PI;
-
-        return rawAngle + ANGLE_OFFSET_FOR_AUTO_AIM; 
+    public void setTargetPoint(Translation2d targetPoint) {
+        this.targetPoint = targetPoint;
     }
 
-    /**
-     * Gets the Y distance from the speaker.
-     *
-     * @return The Y distance from the speaker in meters.
-     */
-    public double getYFromSpeaker() {
-        return BLUE_SPEAKER_POS.getY() - getRobotPosition().getY(); 
+    public void targetSpeaker(){
+        targetPoint = redSupplier.getAsBoolean() ? SwerveConstants.RED_SPEAKER_POS : SwerveConstants.BLUE_SPEAKER_POS;
     }
 
-    /**
-     * Gets the X distance from the speaker.
-     *
-     * @param isRed Whether the current team is red or not.
-     * @return The X distance from the speaker in meters.
-     */
-    public double getXFromSpeaker(boolean isRed) {
-        return getSpeakerPosition(isRed).getX() - getRobotPosition().getX();
-    }
-
-    /**
-     * Gets the current speaker position.
-     *
-     * @param isRed If our team is red or not.
-     * @return The translation 2d of the speaker.
-     */
-    public Translation2d getSpeakerPosition(boolean isRed) {
-        if (isRed) {
-            return RED_SPEAKER_POS;
-        } else {
-            return BLUE_SPEAKER_POS;
+    public ChassisSpeeds getAimChassisSpeeds(ChassisSpeeds currentSpeeds){
+        if (aiming) {
+            Rotation2d currentRotation = getRobotPosition().getRotation();
+            currentSpeeds.omegaRadiansPerSecond = thetaController.calculate(currentRotation.getRadians(), getAngleToTarget());
         }
+        return currentSpeeds;
     }
 
+    public Translation2d getTargetPoint() {
+        return targetPoint;
+    }
+
+    private double getXFromTarget() {
+        return targetPoint.getX() - getRobotPosition().getX();
+    }
+
+    private double getYFromTarget() {
+        return targetPoint.getY() - getRobotPosition().getY();
+    }
+
+    /** Gets pivot angle to any point on the field. */
+    public double getAngleToTarget() {
+        double xDist = getXFromTarget();
+        double yDist = getYFromTarget();
+
+        return Math.atan2(yDist, xDist) + Math.PI;
+    }
+
+    /** Returns the PID error for the rotation controller. */
+    public double getAngleError() {
+        return thetaController.getPositionError();
+    }
 
     /**
      * Sets the states of the swerve modules.
