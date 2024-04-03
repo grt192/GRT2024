@@ -186,11 +186,15 @@ public class RobotContainer {
             driveController = new DualJoystickDriveController();
         }
 
+        try {
         driverCamera = new UsbCamera("fisheye", 0);
         driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
         driverCamera.setExposureManual(40);
         driverCameraServer = new MjpegServer("m1", 1181);
         driverCameraServer.setSource(driverCamera);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
 
         autonBuilder = new AutonBuilder(
             intakePivotSubsystem, intakeRollerSubsystem, 
