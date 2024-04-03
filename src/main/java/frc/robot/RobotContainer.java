@@ -229,7 +229,7 @@ public class RobotContainer {
     private void configureBindings() {
         /* Test Bindings -- Leave these commented out when not needed. */
         // leftStickButton.onTrue(new CalculateBackCameraTransformCommand(BACK_LEFT_CAMERA, BACK_RIGHT_CAMERA));
-        startButton.onTrue(new ClimbLowerCommand(climbSubsystem));
+        // startButton.onTrue(new ClimbLowerCommand(climbSubsystem));
         
         /* Driving -- One joystick controls translation, the other rotation. If the robot-relative button is held down,
          * the robot is controlled along its own axes, otherwise controls apply to the field axes by default. If the
@@ -405,6 +405,7 @@ public class RobotContainer {
         leftStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
         rightStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
 
+        
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake
         // if the elevator is down, run the amp sequence
