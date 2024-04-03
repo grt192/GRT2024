@@ -26,9 +26,9 @@ public class ShooterPivotAimCommand extends Command {
         shooterPivotSubsystem.setAutoAimBoolean(false);
     }
 
-    @Override
-    public boolean isFinished() {
-        return Math.abs(shooterPivotSubsystem.getPosition() - shooterPivotSubsystem.getAutoAimAngle())
-            < ShooterConstants.PID_ERROR_TOLERANCE;
-    }
+    // @Override
+    // public boolean isFinished() {
+    //     return Math.abs(shooterPivotSubsystem.getPosition() - shooterPivotSubsystem.getAutoAimAngle())
+    //         < ShooterConstants.PID_ERROR_TOLERANCE;
+    // }
 }

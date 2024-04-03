@@ -139,8 +139,7 @@ public class AutonBuilder {
      * @return shoot command
      */
     public Command shoot() {
-        return new ShooterPivotAimCommand(shooterPivotSubsystem)
-            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)).withTimeout(1)
+        return new SetCalculatedAngleCommand(swerveSubsystem).withTimeout(1)
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).until(
                 () -> !intakeRollerSubsystem.getRockwellSensorValue())
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem)).withTimeout(.5)
@@ -186,7 +185,13 @@ public class AutonBuilder {
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
             ).withTimeout(2)
         );
-        autonSequence.addCommands(commands);
+        autonSequence.addCommands(
+            (new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem)).alongWith(
+                new ShooterPivotAimCommand(shooterPivotSubsystem),
+                new SequentialCommandGroup(commands)
+            )
+            // commands
+        );
         autonSequence.addCommands(
             new WaitCommand(2),
             new ShooterFlywheelStopCommand(shooterFlywheelSubsystem)

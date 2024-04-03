@@ -8,7 +8,6 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
-import java.util.function.BooleanSupplier;
 
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
@@ -592,6 +591,6 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonBuilder.getMiddleTwoPiece();//autonPathChooser.getSelected();
+        return autonBuilder.getMiddleTwoPieceThen2TopCenter();//autonPathChooser.getSelected();
     }
 }

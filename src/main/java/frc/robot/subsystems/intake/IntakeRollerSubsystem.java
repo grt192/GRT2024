@@ -177,6 +177,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
             lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
         }
 
-        System.out.println(getAmpSensor());
+        // System.out.println(getAmpSensor());
     }
 }
