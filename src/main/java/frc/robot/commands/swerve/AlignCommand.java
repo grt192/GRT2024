@@ -1,5 +1,12 @@
 package frc.robot.commands.swerve;
 
+import static frc.robot.Constants.AutoAlignConstants.BLUE_STAGE_BACK_POSE;
+import static frc.robot.Constants.AutoAlignConstants.BLUE_STAGE_LEFT_POSE;
+import static frc.robot.Constants.AutoAlignConstants.BLUE_STAGE_RIGHT_POSE;
+import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_BACK_POSE;
+import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_LEFT_POSE;
+import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_RIGHT_POSE;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,5 +71,33 @@ public class AlignCommand {
         command.addRequirements(swerveSubsystem);
         
         return command;
+    }
+
+    /**
+     * Generates a holonomic path from the robot to the nearest stage face. The robot should end up with its climb hooks
+     * aligned directly above the chain. 
+     *
+     * @param swerveSubsystem The swerve drive to move the robot to its target.
+     * @param isRed True if the robot is on the red alliance, false if on the blue alliance.
+     * @return Pathfinding Command to bring the robot to its target position.
+     */
+    public static Command getStageAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed) {
+        Pose2d currentPose = swerveSubsystem.getRobotPosition();
+        Pose2d targetPose = new Pose2d();
+        double distance = Double.MAX_VALUE;
+
+        Pose2d[] possibleTargets = isRed
+            ? new Pose2d[]{RED_STAGE_BACK_POSE, RED_STAGE_LEFT_POSE, RED_STAGE_RIGHT_POSE}
+            : new Pose2d[]{BLUE_STAGE_BACK_POSE, BLUE_STAGE_LEFT_POSE, BLUE_STAGE_RIGHT_POSE};
+
+        for (Pose2d possibleTarget : possibleTargets) {
+            double possibleDistance = currentPose.getTranslation().getDistance(possibleTarget.getTranslation());
+            if (possibleDistance < distance) {
+                distance = possibleDistance;
+                targetPose = possibleTarget;
+            }
+        }
+
+        return getAlignCommand(targetPose, swerveSubsystem);
     }
 }
