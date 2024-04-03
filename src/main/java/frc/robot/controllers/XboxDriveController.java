@@ -58,7 +58,7 @@ public class XboxDriveController extends BaseDriveController {
     }
 
     @Override
-    public JoystickButton getAmpAlign() {
+    public JoystickButton getAutoAmp() {
         return xButton;
     }
 

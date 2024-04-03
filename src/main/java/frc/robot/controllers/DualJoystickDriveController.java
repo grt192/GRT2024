@@ -78,7 +78,7 @@ public class DualJoystickDriveController extends BaseDriveController {
     }
 
     @Override
-    public JoystickButton getAmpAlign() {
+    public JoystickButton getAutoAmp() {
         return leftTopLeftButton;
     }
 
