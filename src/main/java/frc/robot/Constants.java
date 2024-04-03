@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -43,7 +44,7 @@ public final class Constants {
         public static final double EXTENSION_D = 0;
         public static final double EXTENSION_TOLERANCE = 0.008;
 
-        public static final double POSITION_CONVERSION_FACTOR = 1 /26.357; // Units.inchesToMeters(30.)/63.5;
+        public static final double POSITION_CONVERSION_FACTOR = 1 / 26.357; // Units.inchesToMeters(30.)/63.5;
         public static final double VELOCITY_CONVERSION_FACTOR = 1;
 
         public static final double DOWN_POWER = -0.001; //the motor power to make the elevator move down slowly
@@ -183,6 +184,44 @@ public final class Constants {
 
         public static final Pose2d RED_AMP_POSE = new Pose2d(Units.inchesToMeters(578.77),
                 Units.inchesToMeters(323.00 - robotRadius), Rotation2d.fromDegrees(90));
+
+        /* Stage poses such that the climb hooks are directly above the chains. Poses are defined in terms of the
+         * corresponding apriltag's pose transformed by a constant distance to the chain. "Stage Left", in this case,
+         * refers to the left third of the stage when facing the stage from the driver station. We are aware that this
+         * naming scheme differs from the theatre convention. */
+        private static final Transform2d STAGE_TAG_TO_ROBOT = new Transform2d(Units.inchesToMeters(17.0),
+                                                                              Units.inchesToMeters(0),
+                                                                              Rotation2d.fromDegrees(180));
+
+        public static final Pose2d BLUE_STAGE_BACK_POSE = new Pose2d(Units.inchesToMeters(209.48),
+                                                                    Units.inchesToMeters(161.62),
+                                                                    Rotation2d.fromDegrees(0))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
+
+        public static final Pose2d BLUE_STAGE_LEFT_POSE = new Pose2d(Units.inchesToMeters(182.73),
+                                                                    Units.inchesToMeters(177.10),
+                                                                    Rotation2d.fromDegrees(120))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
+
+        public static final Pose2d BLUE_STAGE_RIGHT_POSE = new Pose2d(Units.inchesToMeters(182.73),
+                                                                    Units.inchesToMeters(146.19),
+                                                                    Rotation2d.fromDegrees(240))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
+
+        public static final Pose2d RED_STAGE_BACK_POSE = new Pose2d(Units.inchesToMeters(441.74),
+                                                                    Units.inchesToMeters(161.62),
+                                                                    Rotation2d.fromDegrees(180))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
+
+        public static final Pose2d RED_STAGE_LEFT_POSE = new Pose2d(Units.inchesToMeters(468.69),
+                                                                    Units.inchesToMeters(146.19),
+                                                                    Rotation2d.fromDegrees(300))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
+
+        public static final Pose2d RED_STAGE_RIGHT_POSE = new Pose2d(Units.inchesToMeters(468.69),
+                                                                    Units.inchesToMeters(177.10),
+                                                                    Rotation2d.fromDegrees(60))
+                                                                    .transformBy(STAGE_TAG_TO_ROBOT);
 
     }
 
