@@ -60,4 +60,9 @@ public class ClimbSubsystem extends SubsystemBase {
     public void toggleAutomaticLowering() {
         keepLowered = !keepLowered;
     }
+
+    /** Returns true if both climb arms are at their lowest positions. */
+    public boolean isLowered() {
+        return rightClimbArm.isLimitSwitchPressed() && leftClimbArm.isLimitSwitchPressed();
+    }
 }

@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auton.AutonBuilder;
+import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
@@ -111,6 +112,7 @@ public class RobotContainer {
     private final JoystickButton rightStickButton = new JoystickButton(mechController,
         XboxController.Button.kRightStick.value);
     private final POVButton dPadRight = new POVButton(mechController, 90);
+    private final JoystickButton startButton = new JoystickButton(mechController, XboxController.Button.kStart.value);
 
     private final GenericHID switchboard = new GenericHID(3);
     private final JoystickButton offsetUpButton = new JoystickButton(switchboard, 7);
@@ -227,6 +229,7 @@ public class RobotContainer {
     private void configureBindings() {
         /* Test Bindings -- Leave these commented out when not needed. */
         // leftStickButton.onTrue(new CalculateBackCameraTransformCommand(BACK_LEFT_CAMERA, BACK_RIGHT_CAMERA));
+        startButton.onTrue(new ClimbLowerCommand(climbSubsystem));
         
         /* Driving -- One joystick controls translation, the other rotation. If the robot-relative button is held down,
          * the robot is controlled along its own axes, otherwise controls apply to the field axes by default. If the
