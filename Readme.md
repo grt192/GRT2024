@@ -33,7 +33,7 @@
 | Entry Name | Type | Description |
 |:----------:|:----:|:-----------:|
 | 10Current | Double | |
-| 10Voltage | Dobule | |
+| 10Voltage | Double | |
 | 11Current | Double | |
 | 11Voltage | Double | |
 ## Elevator
