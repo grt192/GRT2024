@@ -67,7 +67,6 @@ import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
-import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
 import frc.robot.util.GRTUtil;
@@ -90,7 +89,6 @@ public class RobotContainer {
 
     private final FieldManagementSubsystem fmsSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
-    private final SuperstructureSubsystem superstructureSubsystem;
 
     private final SendableChooser<Command> autonPathChooser;
     private final AutonBuilder autonBuilder;
@@ -127,12 +125,6 @@ public class RobotContainer {
 
     ChoreoTrajectory trajectory;
 
-    private PIDController xPID;
-    private PIDController yPID;
-
-    private final GenericEntry xError;
-    private final GenericEntry yError;
-
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
@@ -148,14 +140,12 @@ public class RobotContainer {
      */
     public RobotContainer() {
         fmsSubsystem = new FieldManagementSubsystem();
-        lightBarSubsystem = new LightBarSubsystem();
-        superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
         
         swerveSubsystem = new SwerveSubsystem(fmsSubsystem::isRedAlliance);
         swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
         intakePivotSubsystem = new IntakePivotSubsystem();
-        intakeRollerSubsystem = new IntakeRollerSubsystem(lightBarSubsystem);
+        intakeRollerSubsystem = new IntakeRollerSubsystem();
 
         shooterPivotSubsystem = new ShooterPivotSubsystem(
             swerveSubsystem::getRobotPosition, 
@@ -166,19 +156,16 @@ public class RobotContainer {
             fmsSubsystem::isRedAlliance
         );
 
+        lightBarSubsystem = new LightBarSubsystem(intakeRollerSubsystem,
+                                                shooterFlywheelSubsystem,
+                                                fmsSubsystem);
         elevatorSubsystem = new ElevatorSubsystem();
 
         climbSubsystem = new ClimbSubsystem();
 
         noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
-        xPID = new PIDController(4, 0, 0);
-        yPID = new PIDController(4, 0, 0);
-
         swerveCrauton = Shuffleboard.getTab("Auton");
-
-        xError = swerveCrauton.add("xError", 0).withPosition(8, 0).getEntry();
-        yError = swerveCrauton.add("yError", 0).withPosition(9, 0).getEntry();
 
         if (DriverStation.getJoystickName(0).equals("Controller (Xbox One For Windows)")) {
             driveController = new XboxDriveController();
@@ -202,7 +189,8 @@ public class RobotContainer {
             elevatorSubsystem,
             climbSubsystem, 
             swerveSubsystem, 
-            lightBarSubsystem, fmsSubsystem
+            lightBarSubsystem, 
+            fmsSubsystem
         );
 
         autonPathChooser = new SendableChooser<>();
@@ -252,9 +240,6 @@ public class RobotContainer {
                         driveController.getLeftPower(),
                         driveController.getRotatePower());
             }
-
-            xError.setValue(xPID.getPositionError());
-            yError.setValue(yPID.getPositionError());
 
         }, swerveSubsystem));
 
