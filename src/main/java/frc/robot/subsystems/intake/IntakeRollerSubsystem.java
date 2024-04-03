@@ -77,9 +77,9 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         intakeNTTable = ntInstance.getTable("Intake");
         frontSensorEntry = intakeNTTable.getEntry("FrontSensor");
         rockwellSensorEntry = intakeNTTable.getEntry("Rockwell");
-        ampSenSorEntry - intakeNTTable.getEntry("AMPSensor");
-        ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
-        ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
+        ampSenSorEntry = intakeNTTable.getEntry("AMPSensor");
+        ntFrontPublisher = ntTable.getBooleanTopic("FrontSensor").publish();
+        ntBackPublisher = ntTable.getBooleanTopic("BackSensor").publish();
 
         this.lightBarSubsystem = lightBarSubsystem;
 
