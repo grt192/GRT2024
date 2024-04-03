@@ -290,10 +290,17 @@ public class RobotContainer {
         //         AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
         //         new ConditionalWaitCommand(
         //             () -> !driveController.getAmpAlign().getAsBoolean()))
-        //      ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        //             ).andThen(
+        //                 new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1))
+        //             )
         // );
 
-
+        /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
+         * climb hooks will end up directly above the center of the nearest chain. */
+        driveController.getStageAlignButton().onTrue(
+            AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance())
+                .onlyWhile(driveController.getStageAlignButton())
+        );
 
         /* Note align -- deprecated, new version in the works*/
         driveController.getNoteAlign().onTrue(
