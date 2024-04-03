@@ -48,6 +48,7 @@ import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
+import frc.robot.commands.sequences.PrepareAmpSequence;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.AutoIntakeSequence;
@@ -418,20 +419,12 @@ public class RobotContainer {
                     // if elevator is up
                     new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
+                        
                     // if elevator is down
-                    new SequentialCommandGroup(
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(() -> !intakeRollerSubsystem.getRockwellSensorValue()).andThen(// extend pivot
-                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75).unless(intakeRollerSubsystem::getAmpSensor) // run rollers to front sensor
-                                    .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2),
-                        new ElevatorToAmpCommand(elevatorSubsystem)
-                    )
-                    
-                         // raise elevator
-                         // angle intake for scoring
-                    ).until(() -> mechController.getLeftTriggerAxis() > .05 
-                        || mechController.getRightTriggerAxis() > .05
-                    ), 
+                    new PrepareAmpSequence(elevatorSubsystem, intakePivotSubsystem, intakeRollerSubsystem)
+                        .until(() -> mechController.getLeftTriggerAxis() > .05 
+                                  || mechController.getRightTriggerAxis() > .05),
+                 
                     // check if the elevator is currently targeting one of the upper positions to choose what to do
                     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
                         || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));
