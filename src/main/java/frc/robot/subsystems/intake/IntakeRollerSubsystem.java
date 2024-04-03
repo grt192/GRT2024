@@ -10,6 +10,8 @@ import static frc.robot.Constants.IntakeConstants;
 
 import javax.imageio.plugins.tiff.TIFFDirectory;
 
+import org.apache.commons.math3.ml.neuralnet.Network;
+
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -19,6 +21,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -47,6 +50,11 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private BooleanPublisher ntFrontPublisher;
     private BooleanPublisher ntBackPublisher;
 
+    private NetworkTable intakeNTTable;
+    private NetworkTableEntry frontSensorEntry;
+    private NetworkTableEntry rockwellSensorEntry;
+    private NetworkTableEntry ampSenSorEntry;
+
     private final LightBarSubsystem lightBarSubsystem;
 
     private Timer colorResetTimer;
@@ -66,6 +74,10 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
+        intakeNTTable = ntInstance.getTable("Intake");
+        frontSensorEntry = intakeNTTable.getEntry("FrontSensor");
+        rockwellSensorEntry = intakeNTTable.getEntry("Rockwell");
+        ampSenSorEntry - intakeNTTable.getEntry("AMPSensor");
         ntFrontPublisher = ntTable.getBooleanTopic("frontSensor").publish();
         ntBackPublisher = ntTable.getBooleanTopic("backSensor").publish();
 
@@ -133,6 +145,9 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        frontSensorEntry.setBoolean(getFrontSensorReached());
+        rockwellSensorEntry.setBoolean(getRockwellSensorValue());
+        ampSenSorEntry.setBoolean(getAmpSensor());
 
         ntFrontPublisher.set(getFrontSensorReached());
         prevFrontSensorValue = getFrontSensorValue();
