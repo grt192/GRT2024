@@ -463,6 +463,14 @@ public class SwerveSubsystem extends SubsystemBase {
         return currentSpeeds;
     }
 
+    public double getAngleError(){
+        return getRobotPosition().getRotation().getRadians() - getAngleToTarget();
+    }
+
+    public boolean atTargetAngle(){
+        return Math.abs(getAngleError()) < Units.degreesToRadians(3);
+    }
+
     public Translation2d getTargetPoint() {
         return targetPoint;
     }
@@ -496,7 +504,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /** Returns the PID error for the rotation controller. */
-    public double getAngleError() {
+    public double getAnglePIDError() {
         return thetaController.getPositionError();
     }
 

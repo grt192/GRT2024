@@ -9,6 +9,7 @@ import frc.robot.util.TrackingTimer;
 public class IntakeRollerFeedCommand extends Command {
     private final IntakeRollerSubsystem intakeSubsystem;
     private final TrackingTimer timer;
+    private double speed = .6;
 
     /**
      * Sets all the rollers inwards to pass note into shooter.
@@ -21,9 +22,22 @@ public class IntakeRollerFeedCommand extends Command {
         addRequirements(intakeRollerSubsystem);
     }
 
+    /**
+     * Sets all the rollers inwards to pass note into shooter.
+     *
+     * @param intakeRollerSubsystem The {@link IntakeRollerSubsystem} to set the powers to.
+     */
+    public IntakeRollerFeedCommand(IntakeRollerSubsystem intakeRollerSubsystem, double speed) {
+        this.intakeSubsystem = intakeRollerSubsystem;
+        timer = new TrackingTimer();
+        addRequirements(intakeRollerSubsystem);
+
+        this.speed = speed;
+    }
+
     @Override
     public void initialize() {
-        intakeSubsystem.setRollSpeeds(.6, .6);
+        intakeSubsystem.setRollSpeeds(speed, speed);
         timer.reset();
     }
 

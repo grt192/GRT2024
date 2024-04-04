@@ -166,8 +166,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
     
     /** Sets whether Auto-aim should be on or off. */
-    public void setAutoAimBoolean(boolean autonAim) { 
-        this.autoAim = autonAim;
+    public void setAutoAimBoolean(boolean autoAim) { 
+        this.autoAim = autoAim;
     }
 
     @Override

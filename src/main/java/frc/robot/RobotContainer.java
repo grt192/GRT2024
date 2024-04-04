@@ -11,6 +11,10 @@ import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 import java.util.function.BooleanSupplier;
 
 import com.choreo.lib.ChoreoTrajectory;
+import com.fasterxml.jackson.databind.util.Named;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
@@ -21,6 +25,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.XboxController;
@@ -32,14 +37,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auton.AutoAmpSequence;
 import frc.robot.commands.auton.AutonBuilder;
+import frc.robot.commands.auton.SwerveAimCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
@@ -47,10 +55,13 @@ import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
+import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.sequences.PrepareAmpSequence;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.AutoIntakeSequence;
 import frc.robot.commands.swerve.NoteAlignCommand;
@@ -145,6 +156,7 @@ public class RobotContainer {
     private boolean isNoteTrapReady = false;
     private boolean noteInBack = false;
 
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -228,6 +240,22 @@ public class RobotContainer {
         autonPathChooser.addOption("bottomtopcenterdisruptor", autonBuilder.getBottomTopCenterDistruptor());
 
         swerveCrauton.add(autonPathChooser);
+
+        NamedCommands.registerCommand("Shoot", new ParallelDeadlineGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(.05),
+                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+            ),
+            new SwerveAimCommand(swerveSubsystem)
+        ));
+        NamedCommands.registerCommand(
+            "Intake", 
+            new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))
+        );
+                        
+                
 
         configureBindings();
     }
@@ -596,6 +624,10 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonBuilder.getMiddleFourPiece();//autonPathChooser.getSelected();
+        return AutoBuilder.buildAuto("A1456").alongWith(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
+            new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
+            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+        );
     }
 }
