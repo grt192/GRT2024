@@ -50,6 +50,14 @@ public class IntakeRollerSubsystem extends SubsystemBase {
     private BooleanPublisher ntFrontPublisher;
     private BooleanPublisher ntBackPublisher;
 
+    private NetworkTable motorsNTTable;
+    private NetworkTableEntry frontMotorCurrentEntry;
+    private NetworkTableEntry frontMotorVoltageEntry;
+    private NetworkTableEntry frontMotorTemperatureEntry;
+    private NetworkTableEntry integrationMotorCurrentEntry;
+    private NetworkTableEntry integrationMotorVoltageEntry;
+    private NetworkTableEntry integrationMotorTemperatureEntry;
+
     private NetworkTable intakeNTTable;
     private NetworkTableEntry frontSensorEntry;
     private NetworkTableEntry rockwellSensorEntry;
@@ -81,6 +89,13 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         ntFrontPublisher = ntTable.getBooleanTopic("FrontSensor").publish();
         ntBackPublisher = ntTable.getBooleanTopic("BackSensor").publish();
 
+        motorsNTTable = ntInstance.getTable("Motors");
+        frontMotorCurrentEntry = motorsNTTable.getEntry("Intake17Current");
+        frontMotorVoltageEntry = motorsNTTable.getEntry("Intake17Voltage");
+        frontMotorTemperatureEntry = motorsNTTable.getEntry("Intake17Temperature");
+        integrationMotorCurrentEntry = motorsNTTable.getEntry("Intake19Current");
+        integrationMotorVoltageEntry = motorsNTTable.getEntry("Intake19Voltage");
+        integrationMotorTemperatureEntry = motorsNTTable.getEntry("Intake19Temperature");
         this.lightBarSubsystem = lightBarSubsystem;
 
         // colorResetTimer = new Timer();
@@ -148,6 +163,13 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         frontSensorEntry.setBoolean(getFrontSensorReached());
         rockwellSensorEntry.setBoolean(getRockwellSensorValue());
         ampSenSorEntry.setBoolean(getAmpSensor());
+
+        frontMotorCurrentEntry.setDouble(frontMotors.getOutputCurrent());
+        frontMotorVoltageEntry.setDouble(frontMotors.getBusVoltage());
+        frontMotorTemperatureEntry.setDouble(frontMotors.getMotorTemperature());
+        integrationMotorCurrentEntry.setDouble(integrationMotor.getSupplyCurrent());
+        integrationMotorVoltageEntry.setDouble(integrationMotor.getMotorOutputVoltage());
+        integrationMotorTemperatureEntry.setDouble(integrationMotor.getTemperature());
 
         ntFrontPublisher.set(getFrontSensorReached());
         prevFrontSensorValue = getFrontSensorValue();

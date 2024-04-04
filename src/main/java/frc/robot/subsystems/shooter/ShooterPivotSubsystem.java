@@ -7,6 +7,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
@@ -22,6 +25,7 @@ import java.util.function.BooleanSupplier;
 
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.ml.neuralnet.Network;
 
 /** Controls motors and functions for the pivot part of shooter mech. */
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -52,6 +56,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private final Timer timer = new Timer();
 
     private double angleOffset = 0;
+
+    private NetworkTableInstance ntInstance;
+    private NetworkTable motorsTable;
+    private NetworkTableEntry shooter12CurrentEntry;
+    private NetworkTableEntry shooter12VoltageEntry;
+    private NetworkTableEntry shooter12TemperatureEntry;
 
     /** Inits motors and pose field. Also inits PID stuff. */
     public ShooterPivotSubsystem(Pose2dSupplier poseSupplier, BooleanSupplier redSupplier) {
@@ -117,6 +127,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         autoAim = false;
 
         rotationPIDController.setReference(Units.degreesToRadians(18), ControlType.kPosition);
+        
+        ntInstance = NetworkTableInstance.getDefault();
+        motorsTable = ntInstance.getTable("Motors");
+        shooter12CurrentEntry = motorsTable.getEntry("Shooter12CurrentEntry");
+        shooter12VoltageEntry = motorsTable.getEntry("Shooter12Voltage");
+        shooter12TemperatureEntry = motorsTable.getEntry("Shooter12Temperature");
     }
     
     /** motor speed setting functions. */
@@ -177,6 +193,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         if (autoAim) {
             setAngle(getAutoAimAngle());
         }
+        
+        shooter12CurrentEntry.setDouble(pivotMotor.getOutputCurrent());
+        shooter12VoltageEntry.setDouble(pivotMotor.getBusVoltage());
+        shooter12TemperatureEntry.setDouble(pivotMotor.getMotorTemperature());
     }
     
     /** Sets the angle offset to a new value.

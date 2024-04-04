@@ -7,6 +7,10 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
+
 
 /** The subsystem for the pivot on the intake. */
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -15,6 +19,12 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     private PositionVoltage request = new PositionVoltage(0).withSlot(0);
     private double setPos = 0;
+
+    private NetworkTableInstance ntInstance;
+    private NetworkTable motorsNTTable;
+    private NetworkTableEntry intake16CurrentEntry;
+    private NetworkTableEntry intake16VoltageEntry;
+    private NetworkTableEntry intake16TemperatureEntry;
     
     /**
      * Subsystem for controlling the pivot on the intake.
@@ -34,6 +44,12 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
         pivotMotor.getConfigurator().apply(slot0Configs);
         pivotMotor.setPosition(0);
+
+        ntInstance = NetworkTableInstance.getDefault();
+        motorsNTTable = ntInstance.getTable("Motors");
+        intake16CurrentEntry = motorsNTTable.getEntry("Intake16Current");
+        intake16VoltageEntry = motorsNTTable.getEntry("Intake16Voltage");
+        intake16TemperatureEntry = motorsNTTable.getEntry("Intake16Temperature");
     }
 
     /**
@@ -73,5 +89,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         pivotMotor.setControl(request.withPosition(setPos / IntakeConstants.PIVOT_CONVERSION_FACTOR));
+
+        intake16CurrentEntry.setDouble(pivotMotor.getSupplyCurrent().getValueAsDouble());
+        intake16VoltageEntry.setDouble(pivotMotor.getMotorVoltage().getValueAsDouble());
+        intake16TemperatureEntry.setDouble(pivotMotor.getDeviceTemp().getValueAsDouble());
     }
 }

@@ -10,6 +10,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
+
 import frc.robot.util.MotorUtil;
 
 /**
@@ -22,6 +26,12 @@ public class ClimbArm {
 
     private double winchPower;
     private double prevWinchPower;
+
+    private NetworkTableInstance climbNTInstance;
+    private NetworkTable motorsNTTable;
+    private NetworkTableEntry currentEntry;
+    private NetworkTableEntry voltageEntry;
+    private NetworkTableEntry temperatureEntry;
 
     /**
      * Constructs a new {@link ClimbArm}.
@@ -48,6 +58,13 @@ public class ClimbArm {
 
         winchPower = 0;
         prevWinchPower = 0;
+
+        climbNTInstance = NetworkTableInstance.getDefault();
+        motorsNTTable = climbNTInstance.getTable("Motors");
+        currentEntry = motorsNTTable.getEntry("Climb" + winchMotorId + "Current");
+        voltageEntry = motorsNTTable.getEntry("Climb" + winchMotorId + "Voltage");
+        temperatureEntry = motorsNTTable.getEntry("Climb" + winchMotorId + "Temperature");
+
     }
 
     /** Run this function every periodic loop.*/
@@ -64,6 +81,10 @@ public class ClimbArm {
         }
 
         prevWinchPower = winchPower;
+
+        currentEntry.setDouble(winchMotor.getOutputCurrent());
+        voltageEntry.setDouble(winchMotor.getBusVoltage());
+        temperatureEntry.setDouble(winchMotor.getMotorTemperature());
     }
 
     /**

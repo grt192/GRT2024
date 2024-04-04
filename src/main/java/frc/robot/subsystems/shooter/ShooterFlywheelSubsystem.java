@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -54,6 +55,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private boolean autoAim = false;
     private Pose2d targetPose;
 
+    private NetworkTable motorsNTTable;
+    private NetworkTableEntry shooter13CurrentEntry;
+    private NetworkTableEntry shooter13VoltageEntry;
+    private NetworkTableEntry shooter13TemperatureEntry;
+    private NetworkTableEntry shooter14CurrentEntry;
+    private NetworkTableEntry shooter14VoltageEntry;
+    private NetworkTableEntry shooter14TemperatureEntry;
     /**
      * Runs the flywheels for the shooter.
      *
@@ -105,6 +113,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         ntInstance = NetworkTableInstance.getDefault();
         ntTable = ntInstance.getTable("RobotStatus");
         ntPublisher = ntTable.getBooleanTopic("shooterReady").publish();
+        motorsNTTable = ntInstance.getTable("Motors");
+        shooter13CurrentEntry = motorsNTTable.getEntry("Shooter13Current");
+        shooter13VoltageEntry = motorsNTTable.getEntry("Shooter13Voltage");
+        shooter13TemperatureEntry = motorsNTTable.getEntry("Shooter13Temperature");
+        shooter14CurrentEntry = motorsNTTable.getEntry("Shooter14Current");
+        shooter14VoltageEntry = motorsNTTable.getEntry("Shooter14Voltage");
+        shooter14TemperatureEntry = motorsNTTable.getEntry("Shooter14Temperature");
     }
 
     /** Sets shooting motor speed.  */
@@ -237,5 +252,12 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         if (autoAim) {
             setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
         }
+
+        shooter13CurrentEntry.setDouble(shooterMotorTop.getSupplyCurrent().getValueAsDouble());
+        shooter13VoltageEntry.setDouble(shooterMotorTop.getMotorVoltage().getValueAsDouble());
+        shooter13TemperatureEntry.setDouble(shooterMotorTop.getDeviceTemp().getValueAsDouble());
+        shooter14CurrentEntry.setDouble(shooterMotorBottom.getSupplyCurrent().getValueAsDouble());
+        shooter14VoltageEntry.setDouble(shooterMotorBottom.getMotorVoltage().getValueAsDouble());
+        shooter14TemperatureEntry.setDouble(shooterMotorBottom.getDeviceTemp().getValueAsDouble());
     }
 }
