@@ -32,10 +32,18 @@
 ## Motors
 | Entry Name | Type | Description |
 |:----------:|:----:|:-----------:|
-| 10Current | Double | |
-| 10Voltage | Double | |
-| 11Current | Double | |
-| 11Voltage | Double | |
+| Climb20Current | Double | |
+| Climb20Temperature | Double | |
+| Climb20Voltage | Double | |
+| Climb9Current | Double | |
+| Climb9Temperature | Double | |
+| Climb9Voltage | Double | |
+| Elevator10Current | Double | |
+| Elevator10Temperature| Double | |
+| Elevator10Voltage | Double | |
+| Elevator11Current | Double | |
+| Elevator11Temperature| Double | |
+| Elevator11Voltage | Double | |
 ## Elevator
 | Entry Name | Type | Description |
 |:----------:|:----:|:-----------:|

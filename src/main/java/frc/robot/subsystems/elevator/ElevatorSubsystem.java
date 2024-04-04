@@ -89,12 +89,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         limitSwitchEntry = elevatorNetworkTable.getEntry("LimitSwitch");
         extensionPercentEntry = elevatorNetworkTable.getEntry("ExtensionPercent");
         targetStateEntry = elevatorNetworkTable.getEntry("TargetState");
-        motor10CurrentEntry = motorsNetworkTable.getEntry("10Current");
-        motor10VoltageEntry = motorsNetworkTable.getEntry("10Voltage");
-        motor10TemperatureEntry = motorsNetworkTable.getEntry("10Temperature");
-        motor11CurrentEntry = motorsNetworkTable.getEntry("11Current");
-        motor11VoltageEntry = motorsNetworkTable.getEntry("11Voltage");
-        motor11TemperatureEntry = motorsNetworkTable.getEntry("11Temperature");
+        motor10CurrentEntry = motorsNetworkTable.getEntry("Elevator10Current");
+        motor10VoltageEntry = motorsNetworkTable.getEntry("Elevator10Voltage");
+        motor10TemperatureEntry = motorsNetworkTable.getEntry("Elevator10Temperature");
+        motor11CurrentEntry = motorsNetworkTable.getEntry("Elevator11Current");
+        motor11VoltageEntry = motorsNetworkTable.getEntry("Elevator11Voltage");
+        motor11TemperatureEntry = motorsNetworkTable.getEntry("Elevator11Temperature");
 
     }
 
