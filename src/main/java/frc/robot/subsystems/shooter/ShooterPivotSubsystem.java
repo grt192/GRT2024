@@ -22,6 +22,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -47,7 +48,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private double currentEncoderAngle;
     private double currentDistance;
 
-    private Pose2dSupplier poseSupplier; //new Pose2d();
+    private DoubleSupplier distanceSupplier; //new Pose2d();
     private BooleanSupplier redSupplier;
 
     private AkimaSplineInterpolator akima;
@@ -64,10 +65,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private NetworkTableEntry shooter12TemperatureEntry;
 
     /** Inits motors and pose field. Also inits PID stuff. */
-    public ShooterPivotSubsystem(Pose2dSupplier poseSupplier, BooleanSupplier redSupplier) {
+    public ShooterPivotSubsystem(DoubleSupplier distanceSupplier, BooleanSupplier redSupplier) {
 
         timer.start();
-        this.poseSupplier = poseSupplier;
+        this.distanceSupplier = distanceSupplier;
         this.redSupplier = redSupplier;
 
         //motors
@@ -147,23 +148,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     private double getShootingDistance() {
-        Pose2d currentField = poseSupplier.getPose2d();
-
-        if (redSupplier.getAsBoolean()) {  //true = red
-            double xLength = Math.pow(currentField.getX() - SwerveConstants.RED_SPEAKER_POS.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - SwerveConstants.RED_SPEAKER_POS.getY(), 2);
-
-            currentDistance = Math.sqrt(xLength + yLength);
-        } else {
-            double xLength = Math.pow(currentField.getX() - SwerveConstants.BLUE_SPEAKER_POS.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - SwerveConstants.BLUE_SPEAKER_POS.getY(), 2);
-
-            currentDistance = Math.sqrt(xLength + yLength);
-        }
-
-        return MathUtil.clamp(currentDistance, 
-                              ShooterConstants.MIN_SHOOTER_DISTANCE, 
-                              ShooterConstants.MAX_SHOOTER_DISTANCE);
+        return distanceSupplier.getAsDouble();
     }
 
     /** Gets correct Angle for pivot to turn to. */

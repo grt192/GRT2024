@@ -59,6 +59,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.ApriltagWrapper;
+
+import java.math.MathContext;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -68,10 +70,7 @@ import org.photonvision.EstimatedRobotPose;
 public class SwerveSubsystem extends SubsystemBase {
     private final AHRS ahrs;
 
-    private final Timer crimer;
-    private final Timer ahrsTimer;
-
-    private final Timer lockTimer;
+    private final Timer lockTimer = new Timer();
     private static final double LOCK_TIMEOUT_SECONDS = 1.0; // The elapsed idle time to wait before locking
 
     public static final double MAX_VEL = 4.172; //calculated
@@ -80,7 +79,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
-    
+    public static final double SHOT_SPEED = 40; // meters per sec
+
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
     private final SwerveModule backLeftModule;
@@ -136,6 +136,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private Translation2d targetPoint = new Translation2d();
     private boolean aiming = false;
+    private Pose2d lastPose = new Pose2d();
+    private Pose2d velocity = new Pose2d();
+    private Timer velocityTimer = new Timer();
 
     /** Constructs a {@link SwerveSubsystem}. */
     public SwerveSubsystem(BooleanSupplier redSupplier) {
@@ -154,12 +157,6 @@ public class SwerveSubsystem extends SubsystemBase {
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
 
         inst.startServer();
-
-        crimer = new Timer();
-        crimer.start();
-
-        ahrsTimer = new Timer();
-        ahrsTimer.start();
 
         choreoTab = Shuffleboard.getTab("Auton");
         fieldVisualization = new Field2d();
@@ -184,12 +181,7 @@ public class SwerveSubsystem extends SubsystemBase {
             // Vision measurement standard deviations: [X, Y, theta]
             MatBuilder.fill(Nat.N3(), Nat.N1(), 0.1, 0.1, 0.01)
         );
-
-        lockTimer = new Timer();
-
         
-
-
         // Configure AutoBuilder
         AutoBuilder.configureHolonomic(
             this::getRobotPosition, 
@@ -208,6 +200,8 @@ public class SwerveSubsystem extends SubsystemBase {
             },
             this
         );
+
+        velocityTimer.start();
     }
 
     @Override
@@ -276,15 +270,16 @@ public class SwerveSubsystem extends SubsystemBase {
             printModuleAngles();
         }
 
-    }
+        //update velocity
+        double timePassed = velocityTimer.get();
+        velocityTimer.restart();
+        double vX = (getRobotPosition().getX() - lastPose.getX()) / timePassed;
+        double vY = (getRobotPosition().getY() - lastPose.getY()) / timePassed;
+        double vTheta = (getRobotPosition().getRotation().getRadians() - lastPose.getRotation().getRadians()) 
+            / timePassed;
+        velocity = new Pose2d(new Translation2d(vX, vY), new Rotation2d(vTheta));
+        lastPose = getRobotPosition();
 
-    /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
-     */
-    public void applyLock() {
-        frontLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
-        frontRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
-        backLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
-        backRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
     }
 
     /**
@@ -353,20 +348,6 @@ public class SwerveSubsystem extends SubsystemBase {
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
 
-
-    /**
-     * Gets the current chassis speeds relative to the robot.
-     *
-     * @return The robot relative chassis speeds.
-     */
-    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-        ChassisSpeeds robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            kinematics.toChassisSpeeds(states),
-            getRobotPosition().getRotation() // getGyroHeading()
-        );
-        return robotRelativeSpeeds;
-    }
-
     /**
      * Sets the chassis speeds.
      *
@@ -389,6 +370,7 @@ public class SwerveSubsystem extends SubsystemBase {
             this.states, speeds,
             MAX_VEL, MAX_VEL, MAX_OMEGA);
     }
+   
 
     /**
      * Sets the drive powers with a heading lock. Field relative.
@@ -403,6 +385,51 @@ public class SwerveSubsystem extends SubsystemBase {
         double turnPower = MathUtil.clamp(turnSpeed / MAX_OMEGA, -1.0, 1.0);
 
         setDrivePowers(xPower, yPower, turnPower);
+    }
+
+    /**
+     * Sets the states of the swerve modules.
+     *
+     * @param states The array of swerve modules states
+     */
+    public void setSwerveModuleStates(SwerveModuleState[] states) {
+        this.states = states;
+    }
+
+    /** Executes swerve X locking, putting swerve's wheels into an X configuration to prevent motion.
+     */
+    public void applyLock() {
+        frontLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
+        frontRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
+        backLeftModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(-Math.PI / 4.0)));
+        backRightModule.setDesiredState(new SwerveModuleState(0.0, new Rotation2d(Math.PI / 4.0)));
+    }
+
+    /**
+     * Gets the current chassis speeds relative to the robot.
+     *
+     * @return The robot relative chassis speeds.
+     */
+    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
+        ChassisSpeeds robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            kinematics.toChassisSpeeds(states),
+            getRobotPosition().getRotation() // getGyroHeading()
+        );
+        return robotRelativeSpeeds;
+    }
+
+    /**
+     * Gets the module positions.
+     *
+     * @return The array of module positions.
+     */
+    public SwerveModulePosition[] getModulePositions() {
+        return new SwerveModulePosition[] {
+            frontLeftModule.getState(),
+            frontRightModule.getState(),
+            backLeftModule.getState(),
+            backRightModule.getState()
+        };
     }
 
     public void setAim(boolean aiming){
@@ -437,6 +464,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return targetPoint.getY() - getRobotPosition().getY();
     }
 
+    private double getDistanceFromTarget() {
+        return Math.sqrt(getXFromTarget() * getXFromTarget() + getYFromTarget() * getYFromTarget());
+    }
+
     /** Gets pivot angle to any point on the field. */
     public double getAngleToTarget() {
         double xDist = getXFromTarget();
@@ -445,32 +476,17 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.atan2(yDist, xDist) + Math.PI;
     }
 
+    public double getShootingAngle() {
+        Translation2d shootingPos = getShootingPosition();
+        double xDist = shootingPos.getX();
+        double yDist = shootingPos.getY();
+
+        return Math.atan2(yDist, xDist) + Math.PI;
+    }
+
     /** Returns the PID error for the rotation controller. */
     public double getAngleError() {
         return thetaController.getPositionError();
-    }
-
-    /**
-     * Sets the states of the swerve modules.
-     *
-     * @param states The array of swerve modules states
-     */
-    public void setSwerveModuleStates(SwerveModuleState[] states) {
-        this.states = states;
-    }
-
-    /**
-     * Gets the module positions.
-     *
-     * @return The array of module positions.
-     */
-    public SwerveModulePosition[] getModulePositions() {
-        return new SwerveModulePosition[] {
-            frontLeftModule.getState(),
-            frontRightModule.getState(),
-            backLeftModule.getState(),
-            backRightModule.getState()
-        };
     }
 
     /**
@@ -489,7 +505,27 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Pose2d getRobotPosition() {
         return poseEstimator.getEstimatedPosition();
+    }
 
+    public Pose2d getRobotVelocity() {
+        return velocity;
+    }
+
+    public Translation2d getShootingPosition() {
+        double shotTime = getDistanceFromTarget() / SHOT_SPEED;
+        Pose2d robotPos = getRobotPosition();
+        Translation2d estimatedPose = new Translation2d();
+        for (int i = 0; i < 3; i++) {
+            double estimatedX = getRobotVelocity().getX() * shotTime + robotPos.getX();
+            double estimatedY = getRobotVelocity().getY() * shotTime + robotPos.getY();
+            estimatedPose = new Translation2d(estimatedX, estimatedY);
+            shotTime = estimatedPose.getDistance(getTargetPoint()) / SHOT_SPEED;
+        }
+        return estimatedPose;
+    }
+
+    public double getShootingDistance() {
+        return getShootingPosition().getDistance(targetPoint);
     }
 
     /**

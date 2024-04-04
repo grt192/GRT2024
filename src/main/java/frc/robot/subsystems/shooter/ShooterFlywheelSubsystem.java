@@ -23,6 +23,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.util.Pose2dSupplier;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import org.apache.commons.math3.analysis.interpolation.AkimaSplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
@@ -45,7 +46,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private double targetTopRPS;
     private double targetBottomRPS;
 
-    private Pose2dSupplier poseSupplier;
+    private DoubleSupplier distanceSupplier;
     private BooleanSupplier redSupplier;
 
     private AkimaSplineInterpolator akima;
@@ -53,7 +54,6 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private PolynomialSplineFunction bottomFlywheelSpline;
     private boolean atSpeed = false;
     private boolean autoAim = false;
-    private Pose2d targetPose;
 
     private NetworkTable motorsNTTable;
     private NetworkTableEntry shooter13CurrentEntry;
@@ -67,7 +67,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @param poseSupplier The poseSupplier for shooter speed calculations.
      */
-    public ShooterFlywheelSubsystem(Pose2dSupplier poseSupplier, BooleanSupplier redSupplier) {
+    public ShooterFlywheelSubsystem(DoubleSupplier distanceSupplier, BooleanSupplier redSupplier) {
         //motors
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
         shooterMotorBottom = new TalonFX(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID);
@@ -107,7 +107,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorBottom.getConfigurator().apply(configs);
         shooterMotorTop.getConfigurator().apply(configs);
 
-        this.poseSupplier = poseSupplier;
+        this.distanceSupplier = distanceSupplier;
         this.redSupplier = redSupplier;
         //nts
         ntInstance = NetworkTableInstance.getDefault();
@@ -226,24 +226,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     }
 
     public double getShootingDistance() {
-        double currentDistance;
-        Pose2d currentField = poseSupplier.getPose2d();
-
-        if (redSupplier.getAsBoolean()) {  //true = red
-            double xLength = Math.pow(currentField.getX() - SwerveConstants.RED_SPEAKER_POS.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - SwerveConstants.RED_SPEAKER_POS.getY(), 2);
-
-            currentDistance = Math.sqrt(xLength + yLength);
-        } else {
-            double xLength = Math.pow(currentField.getX() - SwerveConstants.BLUE_SPEAKER_POS.getX(), 2);
-            double yLength = Math.pow(currentField.getY() - SwerveConstants.BLUE_SPEAKER_POS.getY(), 2);
-
-            currentDistance = Math.sqrt(xLength + yLength);
-        }
-
-        return MathUtil.clamp(currentDistance,
-            ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE
-        );
+        return distanceSupplier.getAsDouble();
     }
 
     @Override
