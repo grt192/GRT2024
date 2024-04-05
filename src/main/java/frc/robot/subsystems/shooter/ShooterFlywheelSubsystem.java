@@ -177,7 +177,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      * @return The splined top motor speed.
      */
     public double getTopMotorSplineSpeed() {
-        return topFlywheelSpline.value(getShootingDistance());
+        return topFlywheelSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));
     }
 
     /**
@@ -186,7 +186,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      * @return The spline bottom motor speed.
      */
     public double getBottomMotorSplineSpeed() {
-        return bottomFlywheelSpline.value(getShootingDistance());
+        return bottomFlywheelSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));
     }
 
     /**

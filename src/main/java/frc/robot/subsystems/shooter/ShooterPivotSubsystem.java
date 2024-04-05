@@ -160,7 +160,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //     + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
         //     + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
 
-        return angleSpline.value(getShootingDistance());
+        return angleSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));
     }
 
     /** Gets position of encoder. */
