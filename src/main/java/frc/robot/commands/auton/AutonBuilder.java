@@ -281,6 +281,28 @@ public class AutonBuilder {
 
     }
 
+    public SequentialCommandGroup getAmp1ThenCenter3() {
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("OA1");
+        ChoreoTrajectory piece1ToPiece2 = Choreo.getTrajectory("O14");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("4X");
+        ChoreoTrajectory wingToPiece3 = Choreo.getTrajectory("X5");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("5X");
+        ChoreoTrajectory wingToPiece4 = Choreo.getTrajectory("X6");
+        ChoreoTrajectory piece4ToWing = Choreo.getTrajectory("6Y");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            goIntake(startToPiece1),
+            shoot(),
+            goIntake(piece1ToPiece2),
+            goShoot(piece2ToWing),
+            goIntake(wingToPiece3),
+            goShoot(piece3ToWing),
+            goIntake(wingToPiece4),
+            goShoot(piece4ToWing)
+        );
+    }
+
     /** Starts by the amp, shoots preloaded, gets 2 closest to amp wing notes, 
      * then closest 2 to amp center note. */
     public SequentialCommandGroup getTopTwoPieceThenCenter2() {
