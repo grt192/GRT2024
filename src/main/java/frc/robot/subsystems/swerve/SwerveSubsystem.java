@@ -47,6 +47,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -79,7 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
-    public static final double SHOT_SPEED = 40; // meters per sec
+    public static final double SHOT_SPEED = 10; // meters per sec
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
@@ -140,6 +141,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private Pose2d velocity = new Pose2d();
     private Timer velocityTimer = new Timer();
 
+    private NetworkTableEntry xEntry = networkTable.getEntry("x");
+    private NetworkTableEntry yEntry = networkTable.getEntry("y");
     /** Constructs a {@link SwerveSubsystem}. */
     public SwerveSubsystem(BooleanSupplier redSupplier) {
         ahrs = new AHRS(SPI.Port.kMXP);
@@ -155,6 +158,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
         thetaController = new PIDController(4, 0, 0);
         thetaController.enableContinuousInput(Math.PI, -Math.PI);
+        thetaController.setTolerance(Units.degreesToRadians(3));
 
         inst.startServer();
 
@@ -271,15 +275,20 @@ public class SwerveSubsystem extends SubsystemBase {
         }
 
         //update velocity
-        double timePassed = velocityTimer.get();
-        velocityTimer.restart();
-        double vX = (getRobotPosition().getX() - lastPose.getX()) / timePassed;
-        double vY = (getRobotPosition().getY() - lastPose.getY()) / timePassed;
-        double vTheta = (getRobotPosition().getRotation().getRadians() - lastPose.getRotation().getRadians()) 
-            / timePassed;
-        velocity = new Pose2d(new Translation2d(vX, vY), new Rotation2d(vTheta));
-        lastPose = getRobotPosition();
+        if (velocityTimer.hasElapsed(.1)) {
+            double timePassed = velocityTimer.get();
+            velocityTimer.restart();
+            double vX = (getRobotPosition().getX() - lastPose.getX()) / timePassed;
+            double vY = (getRobotPosition().getY() - lastPose.getY()) / timePassed;
+            double vTheta = (getRobotPosition().getRotation().getRadians() - lastPose.getRotation().getRadians()) 
+                / timePassed;
+            velocity = new Pose2d(new Translation2d(vX, vY), new Rotation2d(vTheta));
+            lastPose = getRobotPosition();
 
+            System.out.println("shooting pos: " + getShootingPosition());
+        }
+        xEntry.setDouble(getShootingPosition().getX());
+        yEntry.setDouble(getShootingPosition().getY());
     }
 
     /**
@@ -447,7 +456,9 @@ public class SwerveSubsystem extends SubsystemBase {
     public ChassisSpeeds getAimChassisSpeeds(ChassisSpeeds currentSpeeds){
         if (aiming) {
             Rotation2d currentRotation = getRobotPosition().getRotation();
-            currentSpeeds.omegaRadiansPerSecond = thetaController.calculate(currentRotation.getRadians(), getAngleToTarget());
+            currentSpeeds.omegaRadiansPerSecond = 
+                thetaController.calculate(currentRotation.getRadians(), getShootingAngle()) 
+                * MathUtil.clamp(MathUtil.applyDeadband(velocity.getTranslation().getNorm(), .2) * 1 + 1, 1, 3);
         }
         return currentSpeeds;
     }
@@ -478,8 +489,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public double getShootingAngle() {
         Translation2d shootingPos = getShootingPosition();
-        double xDist = shootingPos.getX();
-        double yDist = shootingPos.getY();
+        double xDist = getTargetPoint().getX() - shootingPos.getX();
+        double yDist = getTargetPoint().getY() - shootingPos.getY();
 
         return Math.atan2(yDist, xDist) + Math.PI;
     }
