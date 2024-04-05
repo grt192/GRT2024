@@ -14,6 +14,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.util.Pose2dSupplier;
+import java.util.function.BooleanSupplier;
 
 /** Contains functions to create auto-alignment commands. */
 public class AlignCommand {
@@ -45,32 +47,20 @@ public class AlignCommand {
      * Creates a PathPlanner align command using PathPlanner's pathfindToPose() and autoBuilder.
      *
      * @param swerveSubsystem The robot swerve subsystem to control
-     * @param isRed Whether or not we have a red alliance
+     * @param isRedSup True if the robot is on the red alliance, false if on blue.
      * @return Pathfinding Command that pathfinds and aligns the robot
      */
-    public static Command getAmpAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed) {
+    public static Command getAmpAlignCommand(SwerveSubsystem swerveSubsystem, BooleanSupplier isRedSup) {
         
         Pose2d targetPose;
 
-        if (isRed) {
+        if (isRedSup.getAsBoolean()) {
             targetPose = AutoAlignConstants.RED_AMP_POSE;
         } else {
             targetPose = AutoAlignConstants.BLUE_AMP_POSE;
         }
-
-        Command command = AutoBuilder.pathfindToPose(
-            targetPose, 
-            new PathConstraints(
-            2.0, 2.0, 
-                    Units.degreesToRadians(720), Units.degreesToRadians(1080)
-                    ), 
-            0, 
-            0.0
-                );
-
-        command.addRequirements(swerveSubsystem);
         
-        return command;
+        return getAlignCommand(targetPose, swerveSubsystem);
     }
 
     /**
@@ -78,15 +68,17 @@ public class AlignCommand {
      * aligned directly above the chain. 
      *
      * @param swerveSubsystem The swerve drive to move the robot to its target.
-     * @param isRed True if the robot is on the red alliance, false if on the blue alliance.
+     * @param currentPoseSup A function that returns the current pose of the robot.
+     * @param isRedSup True if the robot is on the red alliance, false if on the blue alliance.
      * @return Pathfinding Command to bring the robot to its target position.
      */
-    public static Command getStageAlignCommand(SwerveSubsystem swerveSubsystem, Boolean isRed) {
-        Pose2d currentPose = swerveSubsystem.getRobotPosition();
+    public static Command getStageAlignCommand(SwerveSubsystem swerveSubsystem,
+                                               Pose2dSupplier currentPoseSup, BooleanSupplier isRedSup) {
+        Pose2d currentPose = currentPoseSup.getPose2d();
         Pose2d targetPose = new Pose2d();
         double distance = Double.MAX_VALUE;
 
-        Pose2d[] possibleTargets = isRed
+        Pose2d[] possibleTargets = isRedSup.getAsBoolean()
             ? new Pose2d[]{RED_STAGE_BACK_POSE, RED_STAGE_LEFT_POSE, RED_STAGE_RIGHT_POSE}
             : new Pose2d[]{BLUE_STAGE_BACK_POSE, BLUE_STAGE_LEFT_POSE, BLUE_STAGE_RIGHT_POSE};
 

@@ -189,11 +189,11 @@ public class RobotContainer {
         }
 
         try {
-        driverCamera = new UsbCamera("fisheye", 0);
-        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
-        driverCamera.setExposureManual(40);
-        driverCameraServer = new MjpegServer("m1", 1181);
-        driverCameraServer.setSource(driverCamera);
+            driverCamera = new UsbCamera("fisheye", 0);
+            driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+            driverCamera.setExposureManual(40);
+            driverCameraServer = new MjpegServer("m1", 1181);
+            driverCameraServer.setSource(driverCamera);
         } catch (Exception e) {
             System.out.print(e);
         }
@@ -298,7 +298,8 @@ public class RobotContainer {
         /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
          * climb hooks will end up directly above the center of the nearest chain. */
         driveController.getStageAlignButton().onTrue(
-            AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance())
+            AlignCommand.getStageAlignCommand(swerveSubsystem,
+                                              swerveSubsystem::getRobotPosition, fmsSubsystem::isRedAlliance)
                 .onlyWhile(driveController.getStageAlignButton())
         );
 

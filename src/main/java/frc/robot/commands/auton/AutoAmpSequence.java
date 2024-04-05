@@ -30,7 +30,7 @@ public class AutoAmpSequence extends SequentialCommandGroup {
             /* Prepares the mechanisms for amping while path-finding the robot to its amping position. */
             Commands.parallel(
                 new PrepareAmpSequence(elevatorSubsystem, intakePivotSubsystem, intakeRollerSubsystem),
-                AlignCommand.getAmpAlignCommand(swerveSubsystem, fms.isRedAlliance())
+                AlignCommand.getAmpAlignCommand(swerveSubsystem, fms::isRedAlliance)
             ),
 
             /* Deposits the note into the amp. */
