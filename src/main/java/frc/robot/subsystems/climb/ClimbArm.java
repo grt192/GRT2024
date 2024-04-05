@@ -73,7 +73,7 @@ public class ClimbArm {
 
         if (this.isLimitSwitchPressed()) {
             resetEncoder();
-            winchPower = Math.max(-.1, winchPower);
+            winchPower = Math.max(-0.03, winchPower);
         }
 
         if (winchPower != prevWinchPower) {
