@@ -31,7 +31,7 @@ public class SwerveModule {
     private double offsetRads;
     
     // private static final double DRIVE_METERS_PER_ROTATION = (13.0 / 90.0) * Math.PI * Units.inchesToMeters(4.0);
-    private static final double DRIVE_ROTATIONS_PER_METER = 4.172 / 6428 * 60 * 4 / 3.42 * 3 / 3.08;
+    private static final double DRIVE_ROTATIONS_PER_METER = 4.172 / 6428 * 60 * 4 / 3.42 * 3 / 3.08 * 3 / 3.06;
     // private static final double STEER_ROTATIONS_PER_RADIAN = (130.0 / 1776.0) * 2.0 * Math.PI;
     private static final double STEER_VOLTS_RADIANS = 2 * Math.PI / 3.3; 
     // https://docs.revrobotics.com/sparkmax/feature-description/data-port#analog-input
