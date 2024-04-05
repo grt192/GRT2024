@@ -415,6 +415,28 @@ public class AutonBuilder {
         );
     }
 
+    /** starts in E position, intakes and shoots speaker side 3 center notes. */
+    public SequentialCommandGroup getBottomCenter3Piece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("E8");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("8Z");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z7");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("7Y");
+        ChoreoTrajectory wingToPiece3 = Choreo.getTrajectory("Y6");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("6Y");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
+            goIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            goIntake(wingToPiece2),
+            goShoot(piece2ToWing),
+            goIntake(wingToPiece3),
+            goShoot(piece3ToWing)
+            );
+    }
+
     /**
      * Starts: right in front of subwoofer. Shoots preloaded note, intakes middle note, shoots,
      * intakes top note, shoots.
