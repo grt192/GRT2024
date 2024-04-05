@@ -50,7 +50,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     private BooleanSupplier redSupplier;
 
     private AkimaSplineInterpolator akima;
-    private PolynomialSplineFunction topFlywheelSpline;
+    private PolynomialSplineFunction flywheelSpline;
     private PolynomialSplineFunction bottomFlywheelSpline;
     private boolean atSpeed = false;
     private boolean autoAim = false;
@@ -89,15 +89,13 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
                               5.6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
 
-        double[] topSpeeds = {.4, .5, .7, .75, .75, .75, .75};
-        double[] bottomSpeeds = {.5, .5, .35, .4, .4, .75, .75};
+        double[] speeds = {.4, .5, .7, .75, .75, .75, .75};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
 
         akima = new AkimaSplineInterpolator();
-        topFlywheelSpline = akima.interpolate(distances, topSpeeds);
-        bottomFlywheelSpline = akima.interpolate(distances, bottomSpeeds);
+        flywheelSpline = akima.interpolate(distances, speeds);
 
         configs.kP = .5;
         configs.kI = 0.05;
@@ -146,7 +144,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets the shooter to the splined speeds. */
     public void setShooterMotorSpeed() {
-        setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
+        setShooterMotorSpeed(getSplineSpeed(), getSplineSpeed());
     }
 
     /** Changes auto aim angle. */
@@ -176,17 +174,10 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
      *
      * @return The splined top motor speed.
      */
-    public double getTopMotorSplineSpeed() {
-        return topFlywheelSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));
-    }
-
-    /**
-     * Returns the current spline bottom motor speed.
-     *
-     * @return The spline bottom motor speed.
-     */
-    public double getBottomMotorSplineSpeed() {
-        return bottomFlywheelSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));
+    public double getSplineSpeed() {
+        return flywheelSpline.value(MathUtil.clamp(
+            getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE
+        ));
     }
 
     /**
@@ -233,7 +224,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
     public void periodic() {
         //only grabs spline speeds if shooter motor is running (ie not stopped)
         if (autoAim) {
-            setShooterMotorSpeed(getTopMotorSplineSpeed(), getBottomMotorSplineSpeed());
+            setShooterMotorSpeed(getSplineSpeed(), getSplineSpeed());
         }
 
         shooter13CurrentEntry.setDouble(shooterMotorTop.getSupplyCurrent().getValueAsDouble());

@@ -550,8 +550,7 @@ public class RobotContainer {
             ) {
                 System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
                                 + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getPosition())
-                                + " Top: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getTopMotorSplineSpeed())
-                                + " Bot: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getBottomMotorSplineSpeed()));
+                                + " Speed: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getSplineSpeed()));
             }
             noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
 
