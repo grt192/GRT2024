@@ -114,7 +114,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
                            Units.degreesToRadians(36), 
                            Units.degreesToRadians(31), //4
                            Units.degreesToRadians(28),
-                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(27.5),
                            Units.degreesToRadians(28.5)};
 
         // X = distances, Y = angles in rads
