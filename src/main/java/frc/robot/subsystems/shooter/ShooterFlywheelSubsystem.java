@@ -72,6 +72,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         shooterMotorTop = new TalonFX(ShooterConstants.SHOOTER_MOTOR_TOP_ID);
         shooterMotorBottom = new TalonFX(ShooterConstants.SHOOTER_MOTOR_BOTTOM_ID);
 
+        request.EnableFOC = true;
+
         shooterMotorTop.setInverted(true);
         shooterMotorBottom.setInverted(true);
 
@@ -84,12 +86,12 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
         double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 
                               2, 
                               3, 
-                              3.71, 
-                              4.8, 
-                              5.6, 
+                              4, 
+                              5, 
+                              6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
 
-        double[] speeds = {.4, .5, .7, .75, .75, .75, .75};
+        double[] speeds = {.5, .5, .65, .75, .75, .8, .8};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
