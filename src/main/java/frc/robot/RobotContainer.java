@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.auton.AutoAmpSequence;
 import frc.robot.commands.auton.AutonBuilder;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
@@ -48,6 +49,7 @@ import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
+import frc.robot.commands.sequences.PrepareAmpSequence;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.AutoIntakeSequence;
@@ -268,16 +270,30 @@ public class RobotContainer {
         /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
         // drive
 
-        /* Amp Align -- Pressing and holding the button will cause the robot to automatically path find to the amp.
-         * Releasing the button will stop the robot (and the path finding). */
-        driveController.getAmpAlign().onTrue(new InstantCommand(
-            () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
-            ).andThen(new ParallelRaceGroup(
-                AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
-                new ConditionalWaitCommand(
-                    () -> !driveController.getAmpAlign().getAsBoolean()))
-                    ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        /* Automatic Amping -- Pressing and holding the button will cause the robot to automatically path find to the
+         * amp and deposit its note. Releasing the button will stop the robot (and the path finding). */
+        // TODO: Bring back LED integration.
+        driveController.getAutoAmp().onTrue(
+            new AutoAmpSequence(fmsSubsystem,
+                                swerveSubsystem, 
+                                elevatorSubsystem,
+                                intakePivotSubsystem,
+                                intakeRollerSubsystem)
+
+                .onlyWhile(driveController.getAutoAmp())
         );
+
+        // DEPRECATED AMP ALIGN
+        // driveController.getAmpAlign().onTrue(new InstantCommand(
+        //     () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
+        //     ).andThen(new ParallelRaceGroup(
+        //         AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
+        //         new ConditionalWaitCommand(
+        //             () -> !driveController.getAmpAlign().getAsBoolean()))
+        //      ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        // );
+
+
 
         /* Note align -- deprecated, new version in the works*/
         driveController.getNoteAlign().onTrue(
@@ -418,20 +434,12 @@ public class RobotContainer {
                     // if elevator is up
                     new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)), // stow the pivot
+
                     // if elevator is down
-                    new SequentialCommandGroup(
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).unless(() -> !intakeRollerSubsystem.getRockwellSensorValue()).andThen(// extend pivot
-                            new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75).unless(intakeRollerSubsystem::getAmpSensor) // run rollers to front sensor
-                                    .until(() -> intakeRollerSubsystem.getFrontSensorReached()),
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0.2),
-                        new ElevatorToAmpCommand(elevatorSubsystem)
-                    )
-                    
-                         // raise elevator
-                         // angle intake for scoring
-                    ).until(() -> mechController.getLeftTriggerAxis() > .05 
-                        || mechController.getRightTriggerAxis() > .05
-                    ), 
+                    new PrepareAmpSequence(elevatorSubsystem, intakePivotSubsystem, intakeRollerSubsystem)
+                        .until(() -> mechController.getLeftTriggerAxis() > .05 
+                                  || mechController.getRightTriggerAxis() > .05),
+                 
                     // check if the elevator is currently targeting one of the upper positions to choose what to do
                     () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
                         || elevatorSubsystem.getTargetState() == ElevatorState.TRAP));

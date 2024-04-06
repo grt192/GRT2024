@@ -57,11 +57,11 @@ public abstract class BaseDriveController {
     public abstract Boolean getRelativeMode();
 
     /**
-     * Gets the button bound to auto-aligning to the amp.
+     * Gets the button bound to auto-align and -deposit into the amp.
      *
      * @return The JoystickButton to ampAlign.
      */
-    public abstract JoystickButton getAmpAlign();
+    public abstract JoystickButton getAutoAmp();
 
     /**
      * Gets the button bound to run the noteAlign sequence.
