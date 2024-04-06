@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.util.GRTUtil;
 import frc.robot.util.Pose2dSupplier;
 
 import java.util.function.BooleanSupplier;
@@ -104,21 +105,17 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         double[] distances = {ShooterConstants.MIN_SHOOTER_DISTANCE, 
                               2, 
                               3, 
-                              3.71, 
-                              4.2,
+                              4, 
                               5, 
-                              5.6, 
-                              7, 
+                              6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
-        double[] angles = {Units.degreesToRadians(65.5), 
-                           Units.degreesToRadians(53.5), 
-                           Units.degreesToRadians(46), 
-                           Units.degreesToRadians(40),
-                           Units.degreesToRadians(37.5),
-                           Units.degreesToRadians(33.5),
-                           Units.degreesToRadians(32),
-                           Units.degreesToRadians(28),
-                           Units.degreesToRadians(28)};
+        double[] angles = {Units.degreesToRadians(60), 
+                           Units.degreesToRadians(51), 
+                           Units.degreesToRadians(35), 
+                           Units.degreesToRadians(29), //4
+                           Units.degreesToRadians(27.26),
+                           Units.degreesToRadians(26),
+                           Units.degreesToRadians(27.5)};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
@@ -157,7 +154,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         currentDistance = getShootingDistance();
 
         // System.out.println("Distance to speaker: " + GRTUtil.twoDecimals(currentDistance) 
-        //     + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(currentDistance)))
+        //     + " Set angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(angleSpline.value(MathUtil.clamp(currentDistance, ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE))))
         //     + " Current angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(rotationEncoder.getPosition())));
 
         return angleSpline.value(MathUtil.clamp(getShootingDistance(), ShooterConstants.MIN_SHOOTER_DISTANCE, ShooterConstants.MAX_SHOOTER_DISTANCE));

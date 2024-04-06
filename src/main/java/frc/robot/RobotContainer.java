@@ -138,7 +138,7 @@ public class RobotContainer {
     private final ShuffleboardTab swerveCrauton;
 
     private double shooterPivotSetPosition = Units.degreesToRadians(18);
-    private double shooterTopSpeed = .75;
+    private double shooterSpeed = .8;
     private double shooterBotSpeed = .4;
     private double intakePosition = 0;
 
@@ -341,28 +341,12 @@ public class RobotContainer {
                     shooterPivotSetPosition -= .003;
                     break;
 
-                case 45:
-                    shooterTopSpeed += .001;
-                    break;
-
-                case 315:
-                    shooterTopSpeed -= .001;
-                    break;
-
-                case 135:
-                    shooterBotSpeed += .001;
-                    break;
-
-                case 225:
-                    shooterBotSpeed -= .001;
-                    break;
-                
                 case 90:
-                    intakePosition += .01;
+                    shooterSpeed += .001;
                     break;
-                
+
                 case 270:
-                    intakePosition -= .01;
+                    shooterSpeed -= .001;
                     break;
 
                 default:
@@ -373,8 +357,7 @@ public class RobotContainer {
 
 
             
-            // System.out.print(" Top: " + GRTUtil.twoDecimals(shooterTopSpeed)
-            //                + " Bot: " + GRTUtil.twoDecimals(shooterBotSpeed)
+            // System.out.print(" Speed: " + GRTUtil.twoDecimals(shooterSpeed)
             // );
 
             // shooterPivotSubsystem.getAutoAimAngle();
@@ -388,18 +371,18 @@ public class RobotContainer {
 
         // elevatorSubsystem.setManual();
 
-        elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            if (mechController.getPOV() == 0) {
-                elevatorSubsystem.setTargetState(ElevatorState.TRAP);
-                // elevatorSubsystem.setMotorPower(0.1);
-            } else if (mechController.getPOV() == 180) {
-                elevatorSubsystem.setTargetState(ElevatorState.ZERO);
-                // elevatorSubsystem.setMotorPower(-0.1);
-            } 
-            else{
-                // elevatorSubsystem.setMotorPower(0);
-            }
-        }, elevatorSubsystem));
+        // elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     if (mechController.getPOV() == 0) {
+        //         elevatorSubsystem.setTargetState(ElevatorState.TRAP);
+        //         // elevatorSubsystem.setMotorPower(0.1);
+        //     } else if (mechController.getPOV() == 180) {
+        //         elevatorSubsystem.setTargetState(ElevatorState.ZERO);
+        //         // elevatorSubsystem.setMotorPower(-0.1);
+        //     } 
+        //     else{
+        //         // elevatorSubsystem.setMotorPower(0);
+        //     }
+        // }, elevatorSubsystem));
 
         elevatorToZero.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
         /* INTAKE TEST */
@@ -519,7 +502,7 @@ public class RobotContainer {
         shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
-                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterTopSpeed, shooterBotSpeed); // for tuning
+                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterSpeed); // for tuning
                 shooterFlywheelSubsystem.setShooterMotorSpeed();
                 shooterPivotSubsystem.setAutoAimBoolean(true);
                 if (shooterFlywheelSubsystem.atSpeed()) {
@@ -558,8 +541,7 @@ public class RobotContainer {
             ) {
                 System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
                                 + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getPosition())
-                                + " Top: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getTopMotorSplineSpeed())
-                                + " Bot: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getBottomMotorSplineSpeed()));
+                                + " Speed: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getSplineSpeed()));
             }
             noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
 

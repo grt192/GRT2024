@@ -128,8 +128,8 @@ public final class Constants {
         public static final double BOTTOM_SHOOTER_MOTOR_SPEED = .64;
 
         public static final double MAX_FLYWHEEL_RPS = 6380.0 / 60;
-        public static final double MIN_SHOOTER_DISTANCE = 1.08;
-        public static final double MAX_SHOOTER_DISTANCE = 8;
+        public static final double MIN_SHOOTER_DISTANCE = 1.2;
+        public static final double MAX_SHOOTER_DISTANCE = 7;
         public static final double FLYWHEEL_SHUTTLE_SPEED = 0.3;        
     }
 

@@ -285,7 +285,7 @@ public class SwerveSubsystem extends SubsystemBase {
             velocity = new Pose2d(new Translation2d(vX, vY), new Rotation2d(vTheta));
             lastPose = getRobotPosition();
 
-            System.out.println("shooting pos: " + getShootingPosition());
+            // System.out.println("shooting pos: " + getShootingPosition());
         }
         xEntry.setDouble(getShootingPosition().getX());
         yEntry.setDouble(getShootingPosition().getY());
