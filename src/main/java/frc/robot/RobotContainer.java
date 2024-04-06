@@ -534,6 +534,11 @@ public class RobotContainer {
                     mechController.setRumble(RumbleType.kBothRumble, 0);
                 }
             }
+            if (shooterFlywheelSubsystem.atSpeed()) {
+                mechController.setRumble(RumbleType.kBothRumble, .4);
+            } else {
+                mechController.setRumble(RumbleType.kBothRumble, 0);
+            }
 
             if (noteInBack 
                 && !intakeRollerSubsystem.getRockwellSensorValue()
@@ -550,7 +555,7 @@ public class RobotContainer {
         }, shooterFlywheelSubsystem
         ));
 
-        dPadRight.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem, shooterPivotSubsystem, .6).onlyWhile(dPadRight));
+        dPadRight.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem, shooterPivotSubsystem, .65, mechController).onlyWhile(dPadRight));
 
         // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
         //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
