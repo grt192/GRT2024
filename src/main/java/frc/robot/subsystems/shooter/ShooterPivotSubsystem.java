@@ -110,12 +110,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
                               6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
         double[] angles = {Units.degreesToRadians(60), 
-                           Units.degreesToRadians(51), 
-                           Units.degreesToRadians(35), 
-                           Units.degreesToRadians(29), //4
-                           Units.degreesToRadians(27.26),
-                           Units.degreesToRadians(26),
-                           Units.degreesToRadians(27.5)};
+                           Units.degreesToRadians(52), 
+                           Units.degreesToRadians(36), 
+                           Units.degreesToRadians(31), //4
+                           Units.degreesToRadians(28),
+                           Units.degreesToRadians(27),
+                           Units.degreesToRadians(28.5)};
 
         // X = distances, Y = angles in rads
         akima = new AkimaSplineInterpolator();
