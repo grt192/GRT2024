@@ -293,12 +293,12 @@ public class RobotContainer {
         //      ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
         // );
 
-
-
-        /* Note align -- deprecated, new version in the works*/
+        /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
         driveController.getNoteAlign().onTrue(
-            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController)
-                .unless(() -> noteDetector.getNote().isEmpty())
+            new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
+                                   swerveSubsystem, noteDetector,
+                                   driveController, lightBarSubsystem)                  
+            .onlyWhile(driveController.getNoteAlign())
         );
     
         /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
