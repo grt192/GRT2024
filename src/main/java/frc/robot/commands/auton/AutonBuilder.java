@@ -133,6 +133,15 @@ public class AutonBuilder {
         );
     }
 
+    public Command otherGoIntake(ChoreoTrajectory intakeTrajectory) {
+        return followPath(intakeTrajectory).alongWith(
+            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+        ).andThen(
+            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getRockwellSensorValue).withTimeout(1))
+        );
+    }
+
     /** 
      * Shoots at calculated robot angle and shooter angle.
      *
@@ -180,10 +189,10 @@ public class AutonBuilder {
         autonSequence.addCommands(
             resetSwerve(GRTUtil.mirrorAcrossField(initPose, fmsSubsystem::isRedAlliance)),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
-                new SetCalculatedAngleCommand(swerveSubsystem),
-                new ShooterPivotAimCommand(shooterPivotSubsystem),
+                // new SetCalculatedAngleCommand(swerveSubsystem),
+                // new ShooterPivotAimCommand(shooterPivotSubsystem),
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-            ).withTimeout(2)
+            ).withTimeout(1)
         );
         autonSequence.addCommands(
             (new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem)).alongWith(
@@ -437,6 +446,52 @@ public class AutonBuilder {
             );
     }
 
+    public SequentialCommandGroup getOtherBottom3Piece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("E8");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("8Z");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z7");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("7Z");
+        ChoreoTrajectory wingToPiece3 = Choreo.getTrajectory("Z6");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("6Z");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            //shoot(),
+            otherGoIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            otherGoIntake(wingToPiece2),
+            goShoot(piece2ToWing),
+            otherGoIntake(wingToPiece3),
+            goShoot(piece3ToWing)
+            );
+    }
+
+    public SequentialCommandGroup getOtherBottom4Piece() {
+
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("E8");
+        ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("8Z");
+        ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("Z7");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("7Z");
+        ChoreoTrajectory wingToPiece3 = Choreo.getTrajectory("Z6");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("6Z");
+        ChoreoTrajectory wingToPiece4 = Choreo.getTrajectory("Z5");
+        ChoreoTrajectory piece4ToWing = Choreo.getTrajectory("Z5X");
+
+        return buildAuton(
+            new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            //shoot(),
+            goIntake(startToPiece1),
+            goShoot(piece1ToWing),
+            goIntake(wingToPiece2),
+            goShoot(piece2ToWing),
+            goIntake(wingToPiece3),
+            goShoot(piece3ToWing),
+            goIntake(wingToPiece4),
+            goShoot(piece4ToWing)
+            );
+    }
+
     /**
      * Starts: right in front of subwoofer. Shoots preloaded note, intakes middle note, shoots,
      * intakes top note, shoots.
@@ -469,11 +524,11 @@ public class AutonBuilder {
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
             shoot(),
-            goIntake(startToPiece1),
+            otherGoIntake(startToPiece1),
             shoot(),
-            goIntake(piece1ToPiece2),
+            otherGoIntake(piece1ToPiece2),
             shoot(),
-            goIntake(piece2ToPiece3),
+            otherGoIntake(piece2ToPiece3),
             shoot()
         );
     }

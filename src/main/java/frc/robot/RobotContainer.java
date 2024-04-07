@@ -8,7 +8,7 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
-
+import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -596,6 +596,7 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonBuilder.getMiddleTwoPieceThen2TopCenter();//autonPathChooser.getSelected();
+        // swerveSubsystem.resetPose(Choreo.getTrajectory("ReTurn90").getInitialPose());
+        return autonBuilder.getOtherBottom3Piece();//autonPathChooser.getSelected();
     }
 }
