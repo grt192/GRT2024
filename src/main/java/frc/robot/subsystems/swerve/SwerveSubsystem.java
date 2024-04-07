@@ -199,9 +199,7 @@ public class SwerveSubsystem extends SubsystemBase {
                         FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, true)
                 ),
-            () -> {
-                return false;
-            },
+            redSupplier,
             this
         );
 
@@ -468,7 +466,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public boolean atTargetAngle(){
-        return Math.abs(getAngleError()) < Units.degreesToRadians(3);
+        return Math.abs(getAngleError()) < Units.degreesToRadians(5);
     }
 
     public Translation2d getTargetPoint() {

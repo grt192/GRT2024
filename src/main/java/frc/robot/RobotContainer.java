@@ -14,6 +14,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -624,7 +625,7 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("A1456").alongWith(
+        return AutoBuilder.followPath(PathPlannerPath.fromPathFile("E876")).alongWith(
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
             new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
