@@ -1,5 +1,6 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
@@ -22,8 +23,8 @@ public class AutoIntakeSequence extends SequentialCommandGroup {
                               LightBarSubsystem lightBarSubsystem) {
 
         addCommands(new IntakePivotSetPositionCommand(intakePivotSubsystem, 1),
-                    new ParallelRaceGroup(
-                        new NoteAlignCommand(swerveSubsystem, noteDetector, driveController),
+                    new ParallelCommandGroup(
+                        new NoteAlignCommand(swerveSubsystem, noteDetector, driveController).until(intakeRollerSubsystem::getFrontSensorValue),
                         new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
                     )
         );

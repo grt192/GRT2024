@@ -33,7 +33,7 @@ public class NoteAlignCommand extends Command {
         this.noteDetector = noteDetector;
         this.driveController = driveController;
 
-        this.yawController = new PIDController(2.5, 0, 0);
+        this.yawController = new PIDController(4, 0, 0);
         yawController.setSetpoint(0);
         yawController.setTolerance(1);
         // yawController.enableContinuousInput(-90, 90);
@@ -60,11 +60,6 @@ public class NoteAlignCommand extends Command {
     }
 
     @Override
-    public boolean isFinished() {
-        return !driveController.getNoteAlign().getAsBoolean();
-    }
-
-    @Override
     public void execute() {
         try {
             noteYawOffsetDegrees = noteDetector.getNote().get().getYaw();
@@ -88,5 +83,10 @@ public class NoteAlignCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         System.out.println("Ended NoteAlignCommand");
+        swerveSubsystem.setRobotRelativeDrivePowers(
+            0,
+            0,
+            0
+        );
     }
 }
