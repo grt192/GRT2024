@@ -8,8 +8,6 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
-import java.util.function.BooleanSupplier;
-
 import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -273,14 +271,14 @@ public class RobotContainer {
         /* Automatic Amping -- Pressing and holding the button will cause the robot to automatically path find to the
          * amp and deposit its note. Releasing the button will stop the robot (and the path finding). */
         // TODO: Bring back LED integration.
-        driveController.getAutoAmp().onTrue(
-            new AutoAmpSequence(fmsSubsystem,
-                                swerveSubsystem, 
-                                elevatorSubsystem,
-                                intakePivotSubsystem,
-                                intakeRollerSubsystem)
-
-                .onlyWhile(driveController.getAutoAmp())
+        driveController.getAutoAmp().whileTrue(
+            Commands.deferredProxy(() -> new AutoAmpSequence(
+                fmsSubsystem,
+                swerveSubsystem, 
+                elevatorSubsystem,
+                intakePivotSubsystem,
+                intakeRollerSubsystem
+            ))
         );
 
         // DEPRECATED AMP ALIGN
@@ -297,10 +295,12 @@ public class RobotContainer {
 
         /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
          * climb hooks will end up directly above the center of the nearest chain. */
-        driveController.getStageAlignButton().onTrue(
-            AlignCommand.getStageAlignCommand(swerveSubsystem,
-                                              swerveSubsystem::getRobotPosition, fmsSubsystem::isRedAlliance)
-                .onlyWhile(driveController.getStageAlignButton())
+        driveController.getStageAlignButton().whileTrue(
+            Commands.deferredProxy(() -> AlignCommand.getStageAlignCommand(
+                swerveSubsystem,
+                swerveSubsystem::getRobotPosition,
+                fmsSubsystem::isRedAlliance
+            ))
         );
 
         /* Note align -- deprecated, new version in the works*/
