@@ -204,6 +204,7 @@ public class RobotContainer {
             climbSubsystem, 
             swerveSubsystem, 
             noteDetector,
+            driveController,
             lightBarSubsystem, fmsSubsystem
         );
 
@@ -212,7 +213,7 @@ public class RobotContainer {
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
         autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
         autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
-        autonPathChooser.addOption("centerTop2Piece", autonBuilder.getTopCenterTwoPiece()); //UNTESTED
+        autonPathChooser.addOption("centerTop2Piece", autonBuilder.getTopCenterThreePiece()); //UNTESTED
         autonPathChooser.addOption("top2PieceThenCenterTop1", autonBuilder.getTopTwoPieceThenCenter1()); //UNTESTED
         autonPathChooser.addOption("top2PieceThenCenterTop2", autonBuilder.getTopTwoPieceThenCenter2()); //UNTESTED
         autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
@@ -597,6 +598,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // swerveSubsystem.resetPose(Choreo.getTrajectory("ReTurn90").getInitialPose());
-        return autonBuilder.getOtherBottom3Piece();//autonPathChooser.getSelected();
+        return autonBuilder.getTopCenterThreePiece();//autonPathChooser.getSelected();
     }
 }

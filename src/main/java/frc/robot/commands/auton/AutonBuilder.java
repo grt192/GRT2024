@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
@@ -26,6 +27,7 @@ import frc.robot.commands.shooter.flywheel.ShooterFlywheelStopCommand;
 import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.commands.swerve.AutoIntakeSequence;
 import frc.robot.commands.swerve.AutonNoteAlignCommand;
+import frc.robot.controllers.BaseDriveController;
 import frc.robot.subsystems.FieldManagementSubsystem;
 import frc.robot.subsystems.climb.ClimbSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -35,6 +37,7 @@ import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.util.ConditionalWaitCommand;
 import frc.robot.util.GRTUtil;
 import frc.robot.vision.NoteDetectionWrapper;
 
@@ -53,6 +56,7 @@ public class AutonBuilder {
     private final ClimbSubsystem climbSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final NoteDetectionWrapper noteDetector;
+    private final BaseDriveController driveController;
     private final LightBarSubsystem lightBarSubsystem;
     private final FieldManagementSubsystem fmsSubsystem;
     private final PIDController thetaController;
@@ -69,6 +73,7 @@ public class AutonBuilder {
                              ClimbSubsystem climbSubsystem,
                              SwerveSubsystem swerveSubsystem,
                              NoteDetectionWrapper noteDetector,
+                             BaseDriveController driveController,
                              LightBarSubsystem lightBarSubsystem,
                              FieldManagementSubsystem fmsSubsystem) {
         this.intakePivotSubsystem = intakePivotSubsystem; 
@@ -78,6 +83,7 @@ public class AutonBuilder {
         this.elevatorSubsystem = elevatorSubsystem;
         this.climbSubsystem = climbSubsystem;
         this.swerveSubsystem = swerveSubsystem;
+        this.driveController = driveController;
         this.noteDetector = noteDetector;
         this.lightBarSubsystem = lightBarSubsystem;
         this.fmsSubsystem = fmsSubsystem;
@@ -120,10 +126,7 @@ public class AutonBuilder {
      */
     public Command goIntake(ChoreoTrajectory intakeTrajectory) {
         return followPath(intakeTrajectory).andThen(
-            new ParallelRaceGroup(
-                new AutonNoteAlignCommand(swerveSubsystem, intakeRollerSubsystem, noteDetector),
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-            ).withTimeout(1),
+            (new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem, swerveSubsystem, noteDetector, driveController, lightBarSubsystem )).withTimeout(2),
             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).until(
                 ()  -> intakeRollerSubsystem.getRockwellSensorValue()).withTimeout(2)
             // new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
@@ -133,14 +136,14 @@ public class AutonBuilder {
         );
     }
 
-    public Command otherGoIntake(ChoreoTrajectory intakeTrajectory) {
-        return followPath(intakeTrajectory).alongWith(
-            //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
-        ).andThen(
-            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
-                .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getRockwellSensorValue).withTimeout(1))
-        );
-    }
+    // public Command otherGoIntake(ChoreoTrajectory intakeTrajectory) {
+    //     return followPath(intakeTrajectory).alongWith(
+    //         //new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+    //     ).andThen(
+    //         new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem)
+    //             .alongWith(new DriveForwardCommand(swerveSubsystem).until(intakeRollerSubsystem::getFrontSensorValue).until(intakeRollerSubsystem::getRockwellSensorValue).withTimeout(1))
+    //     );
+    // }
 
     /** 
      * Shoots at calculated robot angle and shooter angle.
@@ -163,6 +166,7 @@ public class AutonBuilder {
      */
     public SequentialCommandGroup goShoot(ChoreoTrajectory shootTrajectory) {
         return followPath(shootTrajectory)
+        .andThen(new ConditionalWaitCommand(shooterFlywheelSubsystem::atSpeed)).withTimeout(2)
         .andThen(shoot());
     }
 
@@ -189,14 +193,15 @@ public class AutonBuilder {
         autonSequence.addCommands(
             resetSwerve(GRTUtil.mirrorAcrossField(initPose, fmsSubsystem::isRedAlliance)),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
-                // new SetCalculatedAngleCommand(swerveSubsystem),
-                // new ShooterPivotAimCommand(shooterPivotSubsystem),
+                new SetCalculatedAngleCommand(swerveSubsystem),
+                new ShooterPivotAimCommand(shooterPivotSubsystem),
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
             ).withTimeout(1)
         );
         autonSequence.addCommands(
             (new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem)).alongWith(
                 new ShooterPivotAimCommand(shooterPivotSubsystem),
+                new ClimbLowerCommand(climbSubsystem),
                 new SequentialCommandGroup(commands)
             )
             // commands
@@ -301,6 +306,7 @@ public class AutonBuilder {
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
+            shoot(),
             goIntake(startToPiece1),
             shoot(),
             goIntake(piece1ToPiece2),
@@ -361,12 +367,14 @@ public class AutonBuilder {
     }
 
     /** Starts by the amp, shoots preloaded, then gets two center notes closest to amp. */
-    public SequentialCommandGroup getTopCenterTwoPiece() {
+    public SequentialCommandGroup getTopCenterThreePiece() {
         
-        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("OA4");
+        ChoreoTrajectory startToPiece1 = Choreo.getTrajectory("A4");
         ChoreoTrajectory piece1ToWing = Choreo.getTrajectory("4X");
         ChoreoTrajectory wingToPiece2 = Choreo.getTrajectory("X5");
-        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("5X");
+        ChoreoTrajectory piece2ToWing = Choreo.getTrajectory("5X");
+        ChoreoTrajectory wingToPiece3 = Choreo.getTrajectory("X6");
+        ChoreoTrajectory piece3ToWing = Choreo.getTrajectory("6Y");
 
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
@@ -374,6 +382,8 @@ public class AutonBuilder {
             goIntake(startToPiece1),
             goShoot(piece1ToWing),
             goIntake(wingToPiece2),
+            goShoot(piece2ToWing),
+            goIntake(wingToPiece3),
             goShoot(piece3ToWing)
         );
 
@@ -458,11 +468,11 @@ public class AutonBuilder {
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
             //shoot(),
-            otherGoIntake(startToPiece1),
+            goIntake(startToPiece1),
             goShoot(piece1ToWing),
-            otherGoIntake(wingToPiece2),
+            goIntake(wingToPiece2),
             goShoot(piece2ToWing),
-            otherGoIntake(wingToPiece3),
+            goIntake(wingToPiece3),
             goShoot(piece3ToWing)
             );
     }
@@ -524,11 +534,11 @@ public class AutonBuilder {
         return buildAuton(
             new Pose2d(startToPiece1.getInitialPose().getTranslation(), new Rotation2d()),
             shoot(),
-            otherGoIntake(startToPiece1),
+            goIntake(startToPiece1),
             shoot(),
-            otherGoIntake(piece1ToPiece2),
+            goIntake(piece1ToPiece2),
             shoot(),
-            otherGoIntake(piece2ToPiece3),
+            goIntake(piece2ToPiece3),
             shoot()
         );
     }
