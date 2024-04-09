@@ -21,7 +21,6 @@ public class IntakeRollerAmpIntakeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("SENSOR REACHED");
         intakeRollerSubsystem.setRollSpeeds(0, 0);
     }
 
