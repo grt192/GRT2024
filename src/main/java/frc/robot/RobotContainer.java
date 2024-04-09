@@ -545,7 +545,7 @@ public class RobotContainer {
                 && intakeRollerSubsystem.getIntegrationSpeed() > 0 
             ) {
                 System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
-                                + " Angle: " + GRTUtil.twoDecimals(shooterPivotSubsystem.getPosition())
+                                + " Angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(shooterPivotSubsystem.getPosition()))
                                 + " Speed: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getSplineSpeed()));
             }
             noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
@@ -555,6 +555,11 @@ public class RobotContainer {
         }, shooterFlywheelSubsystem
         ));
 
+        dPadRight.onTrue(new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
+                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
+                new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
+            ).unless(intakeRollerSubsystem::getRockwellSensorValue));
+        
         dPadRight.onTrue(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem, shooterPivotSubsystem, .65, mechController).onlyWhile(dPadRight));
 
         // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
