@@ -14,6 +14,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
@@ -158,6 +159,8 @@ public class RobotContainer {
     private boolean isNoteTrapReady = false;
     private boolean noteInBack = false;
 
+    private String autoName = "A456";
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -281,8 +284,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed", 
             new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
         );
-                        
-                
+                    
 
         configureBindings();
     }
@@ -651,7 +653,9 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto("A456").alongWith(
+        Pose2d autoStartPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
+        return AutoBuilder.buildAuto(autoName).alongWith(
+            autonBuilder.resetSwerve(autoStartPose),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
             new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
