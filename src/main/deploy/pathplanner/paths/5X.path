@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.480524393288442,
-        "y": 6.944526071648434
+        "x": 4.540552158027394,
+        "y": 6.60098474043102
       },
       "prevControl": {
-        "x": 5.330836567521921,
-        "y": 6.827417706190619
+        "x": 6.390864332260874,
+        "y": 6.483876374973206
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.85,
       "rotationDegrees": 10.0,
       "rotateFast": false
     }
@@ -38,8 +38,8 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.65,
-      "maxWaypointRelativePos": 0.85,
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
@@ -68,7 +68,7 @@
     },
     {
       "name": "Shoot 5",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
         "data": {
@@ -92,7 +92,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.29268063145577,
+    "rotation": 9.78240703180727,
     "rotateFast": false
   },
   "reversed": false,

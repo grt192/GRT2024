@@ -2,24 +2,24 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6582127857550991,
-      "y": 6.628333484912334
+      "x": 1.325730468864645,
+      "y": 5.515804013063089
     },
-    "rotation": 59.91997316061384
+    "rotation": 58.75307058652307
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "A1456"
+            "name": "StationaryShoot"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "A",
   "choreoAuto": false
 }

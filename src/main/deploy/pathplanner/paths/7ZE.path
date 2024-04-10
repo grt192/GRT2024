@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.895509771048071,
-        "y": 5.937394128711225
+        "x": 7.4622088188541555,
+        "y": 2.3070347995189566
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5721852413747595,
-        "y": 6.4058275905424855
+        "x": 6.021775923723031,
+        "y": 0.9368669236625209
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.480524393288442,
-        "y": 6.944526071648434
+        "x": 3.7264519607498547,
+        "y": 2.939419972991158
       },
       "prevControl": {
-        "x": 5.330836567521921,
-        "y": 6.827417706190619
+        "x": 3.833977134257283,
+        "y": 2.9296449572177554
+      },
+      "nextControl": {
+        "x": 3.4688135567426617,
+        "y": 2.9628416460827207
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.6607658350837373,
+        "y": 2.705203242075528
+      },
+      "prevControl": {
+        "x": 3.1890390042708536,
+        "y": 2.769612843077326
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,19 +46,24 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.65,
-      "rotationDegrees": 10.0,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -31.944912624243326,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.15,
+      "rotationDegrees": -32.578589523980405,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.65,
-      "maxWaypointRelativePos": 0.85,
+      "name": "Shoot 8",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.55,
       "constraints": {
         "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }
@@ -67,8 +88,8 @@
       }
     },
     {
-      "name": "Shoot 5",
-      "waypointRelativePos": 0.65,
+      "name": "Shoot 8",
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -91,15 +112,15 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -179.29268063145577,
-    "rotateFast": false
+    "velocity": 2.0,
+    "rotation": -152.3189384315147,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Center",
   "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
+    "rotation": 20.98489783588218,
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

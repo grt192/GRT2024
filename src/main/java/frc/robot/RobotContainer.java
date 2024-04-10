@@ -247,11 +247,27 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new WaitCommand(.05),
                 new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
+                    !intakeRollerSubsystem.getRockwellSensorValue() 
+                    && 
+                    !intakeRollerSubsystem.getAmpSensor() 
+                    && 
+                    !intakeRollerSubsystem.getFrontSensorValue()),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+            ),
+            new SwerveAimCommand(swerveSubsystem)
+        ));
+
+        NamedCommands.registerCommand("StationaryShoot", new ParallelDeadlineGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(.05),
+                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
             ),
             new SwerveAimCommand(swerveSubsystem)
         ));
+
         NamedCommands.registerCommand(
             "Intake", 
             new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))

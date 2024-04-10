@@ -80,7 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
-    public static final double SHOT_SPEED = 25; // meters per sec
+    public static final double SHOT_SPEED = 30; // meters per sec
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
@@ -199,7 +199,9 @@ public class SwerveSubsystem extends SubsystemBase {
                         FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, true)
                 ),
-            redSupplier,
+            () -> {
+                return false;
+            },
             this
         );
 
@@ -461,10 +463,6 @@ public class SwerveSubsystem extends SubsystemBase {
         return currentSpeeds;
     }
 
-    public double getAngleError(){
-        return getRobotPosition().getRotation().getRadians() - getAngleToTarget();
-    }
-
     public boolean atTargetAngle(){
         return Math.abs(getAngleError()) < Units.degreesToRadians(5);
     }
@@ -502,7 +500,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     /** Returns the PID error for the rotation controller. */
-    public double getAnglePIDError() {
+    public double getAngleError() {
         return thetaController.getPositionError();
     }
 

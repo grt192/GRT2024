@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6933452953924437,
-      "y": 6.593200975274989
+      "x": 0.7050561319382253,
+      "y": 4.450117887396973
     },
-    "rotation": 56.64597424848324
+    "rotation": -63.43494882292203
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A4"
+            "pathName": "S3"
           }
         },
         {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4X5"
+            "pathName": "32"
           }
         },
         {
@@ -38,24 +38,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5X1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "2W"
           }
         }
       ]
     }
   },
-  "folder": "A",
+  "folder": "S",
   "choreoAuto": false
 }

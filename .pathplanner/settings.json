@@ -3,9 +3,18 @@
   "robotLength": 0.76,
   "holonomicMode": true,
   "pathFolders": [
-    "A456"
+    "Center",
+    "Full",
+    "Wing",
+    "Start"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Full",
+    "A",
+    "E",
+    "M",
+    "S"
+  ],
   "defaultMaxVel": 4.12,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
