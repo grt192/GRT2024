@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -254,6 +255,15 @@ public class RobotContainer {
         NamedCommands.registerCommand(
             "Intake", 
             new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))
+        );
+
+        NamedCommands.registerCommand("AutoIntake", 
+            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController).until(intakeRollerSubsystem::getAmpSensor).alongWith(
+                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)
+            )
+        );
+        NamedCommands.registerCommand("Feed", 
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
         );
                         
                 
@@ -625,7 +635,7 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return AutoBuilder.followPath(PathPlannerPath.fromPathFile("E876")).alongWith(
+        return AutoBuilder.buildAuto("A456").alongWith(
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
             new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)

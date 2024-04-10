@@ -80,7 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public static final double MAX_ALPHA = 8;
 
     public static final double ANGLE_OFFSET_FOR_AUTO_AIM = Units.degreesToRadians(0);
-    public static final double SHOT_SPEED = 30; // meters per sec
+    public static final double SHOT_SPEED = 25; // meters per sec
 
     private final SwerveModule frontLeftModule;
     private final SwerveModule frontRightModule;
