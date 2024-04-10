@@ -199,9 +199,7 @@ public class SwerveSubsystem extends SubsystemBase {
                         FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, true)
                 ),
-            () -> {
-                return false;
-            },
+            redSupplier,
             this
         );
 
