@@ -167,6 +167,7 @@ public class RobotContainer {
 
     private NetworkTableInstance ntInstance;
     private NetworkTable autonTable;
+    private NetworkTableEntry listEntry;
     private String autonValue;
     private int autonHandle;
     private String autoName = "A145";
@@ -176,14 +177,13 @@ public class RobotContainer {
     public RobotContainer() {
         ntInstance = NetworkTableInstance.getDefault();
         autonTable = ntInstance.getTable("Auton");
-        // try{
-            autonTable.addListener("Auton", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
-                this.autonValue = event.valueData.value.getString();
-                System.out.print("New auton value: " + this.autonValue);
-            });
-        // } catch (Exception e) {
-        //     System.out.print(e);
-        // }
+        listEntry = autonTable.getEntry("AutonList");
+        // System.out.print("Available Autons: " + AutoBuilder.getAllAutoNames().toArray(new String[0]));
+        listEntry.setStringArray(AutoBuilder.getAllAutoNames().toArray(new String[0]));
+        autonTable.addListener("Auton", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
+            this.autonValue = event.valueData.value.getString();
+            System.out.print("New auton value: " + this.autonValue);
+        });
         fmsSubsystem = new FieldManagementSubsystem();
         lightBarSubsystem = new LightBarSubsystem();
         superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
@@ -241,7 +241,6 @@ public class RobotContainer {
             swerveSubsystem, 
             lightBarSubsystem, fmsSubsystem
         );
-
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
@@ -662,11 +661,8 @@ public class RobotContainer {
         );
         offsetDownButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
-        );
+        ); 
 
-        
-
-        
     }
 
     /**
@@ -675,7 +671,7 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto(autoName).alongWith(
+        return AutoBuilder.buildAuto(autonValue).alongWith(
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
             new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
