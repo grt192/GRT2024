@@ -122,7 +122,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         angleSpline = akima.interpolate(distances, angles);
 
         //field
-        autoAim = false;
+        autoAim = true;
 
         rotationPIDController.setReference(Units.degreesToRadians(18), ControlType.kPosition);
         

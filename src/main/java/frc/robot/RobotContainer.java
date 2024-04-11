@@ -83,6 +83,7 @@ import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
+import frc.robot.subsystems.superstructure.MatchStatus;
 import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
@@ -159,7 +160,9 @@ public class RobotContainer {
     private boolean isNoteTrapReady = false;
     private boolean noteInBack = false;
 
-    private String autoName = "A456";
+    private String autoName = "A145";
+
+    
 
 
     /**
@@ -250,6 +253,7 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new WaitCommand(.05),
                 new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(intakeRollerSubsystem::getRockwellSensorValue),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
                     !intakeRollerSubsystem.getRockwellSensorValue() 
                     && 
@@ -284,7 +288,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed", 
             new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
         );
-                    
+        
+        swerveSubsystem.targetSpeaker();
 
         configureBindings();
     }
@@ -578,7 +583,9 @@ public class RobotContainer {
                 
                 }
             } else {
-                shooterPivotSubsystem.setAutoAimBoolean(false);
+                // if(fmsSubsystem.getMatchStatus() != MatchStatus.AUTON){
+                //     shooterPivotSubsystem.setAutoAimBoolean(false);
+                // }
                 if (mechController.getPOV() == 90) {
 
                     if (shooterFlywheelSubsystem.atSpeed()) {
@@ -653,9 +660,7 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        Pose2d autoStartPose = PathPlannerAuto.getStaringPoseFromAutoFile(autoName);
         return AutoBuilder.buildAuto(autoName).alongWith(
-            autonBuilder.resetSwerve(autoStartPose),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
             new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
             new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
