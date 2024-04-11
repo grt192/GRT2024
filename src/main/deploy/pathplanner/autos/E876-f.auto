@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.5131038535971493,
+      "y": 1.3701678758564357
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E876"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Full",
+  "choreoAuto": false
+}

@@ -24,6 +24,7 @@ public class VortexDriveMotor implements SwerveDriveMotor {
     public VortexDriveMotor(int canID) {
         motor = new CANSparkFlex(canID, MotorType.kBrushless);
         motor.setIdleMode(IdleMode.kBrake);
+        motor.setClosedLoopRampRate(.1);
 
         encoder = motor.getEncoder();
         encoder.setVelocityConversionFactor(conversionFactor); //STUB

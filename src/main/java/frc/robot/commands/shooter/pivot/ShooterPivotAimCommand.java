@@ -23,7 +23,7 @@ public class ShooterPivotAimCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterPivotSubsystem.setAutoAimBoolean(false);
+        // shooterPivotSubsystem.setAutoAimBoolean(false);
     }
 
     @Override

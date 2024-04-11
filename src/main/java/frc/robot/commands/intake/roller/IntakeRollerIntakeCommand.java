@@ -9,6 +9,7 @@ import frc.robot.subsystems.superstructure.LightBarStatus;
 public class IntakeRollerIntakeCommand extends Command {
     private final IntakeRollerSubsystem intakeSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
+    private double speed = .7;
 
     /**
      * Runs the rollers on the intake until a note is detected.
@@ -22,6 +23,13 @@ public class IntakeRollerIntakeCommand extends Command {
         addRequirements(intakeSubsystem);
     }
 
+    public IntakeRollerIntakeCommand(IntakeRollerSubsystem intakeSubsystem, LightBarSubsystem lightBarSubsystem, double speed) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.lightBarSubsystem = lightBarSubsystem;
+        addRequirements(intakeSubsystem);
+        this.speed = speed;
+    }
+
     @Override
     public void initialize() {
         lightBarSubsystem.setLightBarStatus(LightBarStatus.INTAKING, 2);
@@ -29,7 +37,7 @@ public class IntakeRollerIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        intakeSubsystem.setRollSpeeds(.7, .7);
+        intakeSubsystem.setRollSpeeds(speed, speed);
     }
 
     @Override
