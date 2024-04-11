@@ -8,6 +8,7 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
+import java.util.EnumSet;
 import java.util.function.BooleanSupplier;
 
 import com.choreo.lib.ChoreoTrajectory;
@@ -18,6 +19,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -145,10 +150,24 @@ public class RobotContainer {
     private boolean isNoteTrapReady = false;
     private boolean noteInBack = false;
 
+    private NetworkTableInstance ntInstance;
+    private NetworkTable autonTable;
+    private String autonValue;
+    private int autonHandle;
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        ntInstance = NetworkTableInstance.getDefault();
+        autonTable = ntInstance.getTable("Auton");
+        // try{
+            autonTable.addListener("Auton", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
+                this.autonValue = event.valueData.value.getString();
+                System.out.print("New auton value: " + this.autonValue);
+            });
+        // } catch (Exception e) {
+        //     System.out.print(e);
+        // }
         fmsSubsystem = new FieldManagementSubsystem();
         lightBarSubsystem = new LightBarSubsystem();
         superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
