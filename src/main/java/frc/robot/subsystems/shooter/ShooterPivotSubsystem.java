@@ -128,7 +128,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         
         ntInstance = NetworkTableInstance.getDefault();
         motorsTable = ntInstance.getTable("Motors");
-        shooter12CurrentEntry = motorsTable.getEntry("Shooter12CurrentEntry");
+        shooter12CurrentEntry = motorsTable.getEntry("Shooter12Current");
         shooter12VoltageEntry = motorsTable.getEntry("Shooter12Voltage");
         shooter12TemperatureEntry = motorsTable.getEntry("Shooter12Temperature");
     }
