@@ -168,7 +168,7 @@ public class RobotContainer {
     private NetworkTableInstance ntInstance;
     private NetworkTable autonTable;
     private NetworkTableEntry listEntry;
-    private String autonValue;
+    private String autonValue = "A145";
     private int autonHandle;
     private String autoName = "A145";
     /**
