@@ -88,4 +88,7 @@ public abstract class BaseDriveController {
      * Gets the button to aim the shooter at the speaker.
      */
     public abstract JoystickButton getShooterAimButton();
+
+    /** Returns the button to auto-align to the nearest stage face. */
+    public abstract JoystickButton getStageAlignButton();
 }

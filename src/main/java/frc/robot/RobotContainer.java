@@ -9,7 +9,6 @@ import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
 import java.util.EnumSet;
-import java.util.function.BooleanSupplier;
 
 import com.choreo.lib.ChoreoTrajectory;
 import com.fasterxml.jackson.databind.util.Named;
@@ -224,11 +223,11 @@ public class RobotContainer {
         }
 
         try {
-        driverCamera = new UsbCamera("fisheye", 0);
-        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
-        driverCamera.setExposureManual(40);
-        driverCameraServer = new MjpegServer("m1", 1181);
-        driverCameraServer.setSource(driverCamera);
+            driverCamera = new UsbCamera("fisheye", 0);
+            driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+            driverCamera.setExposureManual(40);
+            driverCameraServer = new MjpegServer("m1", 1181);
+            driverCameraServer.setSource(driverCamera);
         } catch (Exception e) {
             System.out.print(e);
         }
@@ -349,14 +348,14 @@ public class RobotContainer {
         /* Automatic Amping -- Pressing and holding the button will cause the robot to automatically path find to the
          * amp and deposit its note. Releasing the button will stop the robot (and the path finding). */
         // TODO: Bring back LED integration.
-        driveController.getAutoAmp().onTrue(
-            new AutoAmpSequence(fmsSubsystem,
-                                swerveSubsystem, 
-                                elevatorSubsystem,
-                                intakePivotSubsystem,
-                                intakeRollerSubsystem)
-
-                .onlyWhile(driveController.getAutoAmp())
+        driveController.getAutoAmp().whileTrue(
+            Commands.deferredProxy(() -> new AutoAmpSequence(
+                fmsSubsystem,
+                swerveSubsystem, 
+                elevatorSubsystem,
+                intakePivotSubsystem,
+                intakeRollerSubsystem
+            ))
         );
 
         // DEPRECATED AMP ALIGN
@@ -366,8 +365,21 @@ public class RobotContainer {
         //         AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
         //         new ConditionalWaitCommand(
         //             () -> !driveController.getAmpAlign().getAsBoolean()))
-        //      ).andThen(new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1)))
+        //             ).andThen(
+        //                 new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1))
+        //             )
         // );
+
+        /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
+         * climb hooks will end up directly above the center of the nearest chain. */
+        driveController.getStageAlignButton().whileTrue(
+            Commands.deferredProxy(() -> AlignCommand.getStageAlignCommand(
+                swerveSubsystem,
+                swerveSubsystem::getRobotPosition,
+                fmsSubsystem::isRedAlliance
+            ))
+        );
+
 
         /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
         driveController.getNoteAlign().onTrue(
