@@ -189,7 +189,7 @@ public final class Constants {
          * corresponding apriltag's pose transformed by a constant distance to the chain. "Stage Left", in this case,
          * refers to the left third of the stage when facing the stage from the driver station. We are aware that this
          * naming scheme differs from the theatre convention. */
-        private static final Transform2d STAGE_TAG_TO_ROBOT = new Transform2d(Units.inchesToMeters(17.0),
+        private static final Transform2d STAGE_TAG_TO_ROBOT = new Transform2d(Units.inchesToMeters(24.0),
                                                                               Units.inchesToMeters(0),
                                                                               Rotation2d.fromDegrees(180));
 
