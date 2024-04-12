@@ -132,7 +132,7 @@ public class AutonBuilder {
      */
     public Command shoot() {
         return new ShooterPivotAimCommand(shooterPivotSubsystem)
-            .alongWith(new SetCalculatedAngleCommand(swerveSubsystem)).withTimeout(1)
+            .alongWith(new SwerveAimCommand(swerveSubsystem)).withTimeout(1)
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem).until(
                 () -> !intakeRollerSubsystem.getRockwellSensorValue())
             .andThen(new IntakeRollerFeedCommand(intakeRollerSubsystem)).withTimeout(.5)
@@ -173,7 +173,7 @@ public class AutonBuilder {
         autonSequence.addCommands(
             resetSwerve(GRTUtil.mirrorAcrossField(initPose, fmsSubsystem::isRedAlliance)),
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem).alongWith(
-                new SetCalculatedAngleCommand(swerveSubsystem),
+                new SwerveAimCommand(swerveSubsystem),
                 new ShooterPivotAimCommand(shooterPivotSubsystem),
                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
             ).withTimeout(2)

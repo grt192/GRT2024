@@ -199,9 +199,7 @@ public class SwerveSubsystem extends SubsystemBase {
                         FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig(true, true)
                 ),
-            () -> {
-                return false;
-            },
+            redSupplier,
             this
         );
 
@@ -463,6 +461,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return currentSpeeds;
     }
 
+    public boolean atTargetAngle(){
+        return Math.abs(getAngleError()) < Units.degreesToRadians(5);
+    }
+
     public Translation2d getTargetPoint() {
         return targetPoint;
     }
@@ -598,10 +600,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     /** Prints the current module angles. Used for zeroing swerve. */
     public void printModuleAngles() {
-        System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
-                        + " FR: " + GRTUtil.twoDecimals(frontRightModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
-                        + " BL: " + GRTUtil.twoDecimals(backLeftModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2)
-                        + " BR: " + GRTUtil.twoDecimals(backRightModule.getWrappedAngle().getRadians() * -1 + Math.PI / 2));
+        System.out.println("FL: " + GRTUtil.twoDecimals(frontLeftModule.getRawAngle().getRadians())
+                        + " FR: " + GRTUtil.twoDecimals(frontRightModule.getRawAngle().getRadians())
+                        + " BL: " + GRTUtil.twoDecimals(backLeftModule.getRawAngle().getRadians())
+                        + " BR: " + GRTUtil.twoDecimals(backRightModule.getRawAngle().getRadians()));
     }
 
     /**

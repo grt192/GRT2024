@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4896821805055864,
+      "y": 1.756625481867227
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E7-p"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7ZE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "EW"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "E",
+  "choreoAuto": false
+}

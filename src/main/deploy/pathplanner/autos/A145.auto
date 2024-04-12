@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6582127857550991,
+      "y": 6.628333484912334
+    },
+    "rotation": 55.459909092929095
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "14"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4X5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5X"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "A",
+  "choreoAuto": false
+}

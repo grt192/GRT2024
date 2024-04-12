@@ -52,9 +52,4 @@ public class ShooterFlywheelReadyCommand extends Command {
 
         lightBarSubsystem.updateShooterSpeedPercentage(avg);
     }
-
-    @Override
-    public boolean isFinished() {
-        return shooterSubsystem.atSpeed();
-    }
 }

@@ -8,9 +8,17 @@ import static frc.robot.Constants.VisionConstants.BACK_LEFT_CAMERA;
 import static frc.robot.Constants.VisionConstants.BACK_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.NOTE_CAMERA;
 
+import java.util.EnumSet;
 import java.util.function.BooleanSupplier;
 
 import com.choreo.lib.ChoreoTrajectory;
+import com.fasterxml.jackson.databind.util.Named;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
@@ -18,9 +26,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.XboxController;
@@ -32,14 +45,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.auton.AutoAmpSequence;
 import frc.robot.commands.auton.AutonBuilder;
+import frc.robot.commands.auton.SwerveAimCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
@@ -47,10 +63,13 @@ import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
 import frc.robot.commands.intake.roller.IntakeRollerAmpIntakeCommand;
+import frc.robot.commands.intake.roller.IntakeRollerFeedCommand;
 import frc.robot.commands.intake.roller.IntakeRollerIntakeCommand;
 import frc.robot.commands.intake.roller.IntakeRollerOuttakeCommand;
 import frc.robot.commands.sequences.PrepareAmpSequence;
+import frc.robot.commands.shooter.flywheel.ShooterFlywheelReadyCommand;
 import frc.robot.commands.shooter.flywheel.ShooterFlywheelShuttleCommand;
+import frc.robot.commands.shooter.pivot.ShooterPivotAimCommand;
 import frc.robot.commands.swerve.AlignCommand;
 import frc.robot.commands.swerve.AutoIntakeSequence;
 import frc.robot.commands.swerve.NoteAlignCommand;
@@ -69,6 +88,7 @@ import frc.robot.subsystems.leds.LightBarSubsystem;
 import frc.robot.subsystems.shooter.ShooterFlywheelSubsystem;
 import frc.robot.subsystems.shooter.ShooterPivotSubsystem;
 import frc.robot.subsystems.superstructure.LightBarStatus;
+import frc.robot.subsystems.superstructure.MatchStatus;
 import frc.robot.subsystems.superstructure.SuperstructureSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.util.ConditionalWaitCommand;
@@ -145,10 +165,25 @@ public class RobotContainer {
     private boolean isNoteTrapReady = false;
     private boolean noteInBack = false;
 
+    private NetworkTableInstance ntInstance;
+    private NetworkTable autonTable;
+    private NetworkTableEntry listEntry;
+    private String autonValue = "A145";
+    private int autonHandle;
+    private String autoName = "A145";
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        ntInstance = NetworkTableInstance.getDefault();
+        autonTable = ntInstance.getTable("Auton");
+        listEntry = autonTable.getEntry("AutonList");
+        // System.out.print("Available Autons: " + AutoBuilder.getAllAutoNames().toArray(new String[0]));
+        listEntry.setStringArray(AutoBuilder.getAllAutoNames().toArray(new String[0]));
+        autonTable.addListener("Auton", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
+            this.autonValue = event.valueData.value.getString();
+            System.out.print("New auton value: " + this.autonValue);
+        });
         fmsSubsystem = new FieldManagementSubsystem();
         lightBarSubsystem = new LightBarSubsystem();
         superstructureSubsystem = new SuperstructureSubsystem(lightBarSubsystem, fmsSubsystem);
@@ -206,7 +241,6 @@ public class RobotContainer {
             swerveSubsystem, 
             lightBarSubsystem, fmsSubsystem
         );
-
         autonPathChooser = new SendableChooser<>();
         autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
         autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
@@ -228,6 +262,48 @@ public class RobotContainer {
         autonPathChooser.addOption("bottomtopcenterdisruptor", autonBuilder.getBottomTopCenterDistruptor());
 
         swerveCrauton.add(autonPathChooser);
+
+        NamedCommands.registerCommand("Shoot", new ParallelDeadlineGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(.05),
+                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(intakeRollerSubsystem::getRockwellSensorValue),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
+                    !intakeRollerSubsystem.getRockwellSensorValue() 
+                    && 
+                    !intakeRollerSubsystem.getAmpSensor() 
+                    && 
+                    !intakeRollerSubsystem.getFrontSensorValue()),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+            ),
+            new SwerveAimCommand(swerveSubsystem)
+        ));
+
+        NamedCommands.registerCommand("StationaryShoot", new ParallelDeadlineGroup(
+            new SequentialCommandGroup(
+                new WaitCommand(.05),
+                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
+                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+            ),
+            new SwerveAimCommand(swerveSubsystem)
+        ));
+
+        NamedCommands.registerCommand(
+            "Intake", 
+            new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))
+        );
+
+        NamedCommands.registerCommand("AutoIntake", 
+            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController).until(intakeRollerSubsystem::getAmpSensor).alongWith(
+                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)
+            )
+        );
+        NamedCommands.registerCommand("Feed", 
+            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
+        );
+        
+        swerveSubsystem.targetSpeaker();
 
         configureBindings();
     }
@@ -521,7 +597,9 @@ public class RobotContainer {
                 
                 }
             } else {
-                shooterPivotSubsystem.setAutoAimBoolean(false);
+                // if(fmsSubsystem.getMatchStatus() != MatchStatus.AUTON){
+                //     shooterPivotSubsystem.setAutoAimBoolean(false);
+                // }
                 if (mechController.getPOV() == 90) {
 
                     if (shooterFlywheelSubsystem.atSpeed()) {
@@ -583,11 +661,8 @@ public class RobotContainer {
         );
         offsetDownButton.onFalse(new InstantCommand(
             () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
-        );
+        ); 
 
-        
-
-        
     }
 
     /**
@@ -596,6 +671,10 @@ public class RobotContainer {
      * @return The selected autonomous command.
      */
     public Command getAutonomousCommand() {
-        return autonBuilder.getMiddleFourPiece();//autonPathChooser.getSelected();
+        return AutoBuilder.buildAuto(autonValue).alongWith(
+            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
+            new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
+            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+        );
     }
 }

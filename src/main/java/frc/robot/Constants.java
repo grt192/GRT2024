@@ -63,19 +63,19 @@ public final class Constants {
     public static class SwerveConstants {
         public static final int FL_DRIVE = 8;
         public static final int FL_STEER = 1;
-        public static final double FL_OFFSET = .8606 + Math.PI * 5.0 / 4.;
+        public static final double FL_OFFSET = -.9201 - Math.PI / 2;
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = 3.068 + Math.PI * 3.0 / 4 - Math.PI;
+        public static final double FR_OFFSET = .6216 + Math.PI / 2;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = 5.79 + Math.PI * 7.0 / 4 + Math.PI * 1.0 / 8 + Math.PI * 3.0 / 4;
+        public static final double BL_OFFSET = .2301 - Math.PI / 2;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
-        public static final double BR_OFFSET = 0.43 + Math.PI * 1.0 / 4.0 + Math.PI;
+        public static final double BR_OFFSET = 2.828 + Math.PI / 2;
 
         public static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
         public static final Translation2d FL_POS = new Translation2d(MODULE_DIST, MODULE_DIST);

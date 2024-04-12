@@ -1,0 +1,99 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.9066934025451485,
+        "y": 7.003080254377342
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9464048057910655,
+        "y": 6.558068465637644
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.0635131712488803,
+        "y": 5.609490705429342
+      },
+      "prevControl": {
+        "x": 1.36086297850199,
+        "y": 5.445538993788401
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Shoot 1",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.6,
+      "constraints": {
+        "maxVelocity": 0.6,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Feed",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Feed"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot 1",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.12,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": -5.07960786001444,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Wing",
+  "previewStartingState": {
+    "rotation": 22.750976342787578,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

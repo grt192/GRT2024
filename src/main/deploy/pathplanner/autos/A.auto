@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.325730468864645,
+      "y": 5.515804013063089
+    },
+    "rotation": 58.75307058652307
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "StationaryShoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "A",
+  "choreoAuto": false
+}
