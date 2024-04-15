@@ -385,7 +385,8 @@ public class RobotContainer {
         driveController.getNoteAlign().onTrue(
             new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
                                    swerveSubsystem, noteDetector,
-                                   driveController, lightBarSubsystem)                  
+                                   driveController, lightBarSubsystem)
+            .andThen(new IntakePivotSetPositionCommand(intakePivotSubsystem, 0))  
             .onlyWhile(driveController.getNoteAlign())
         );
     
