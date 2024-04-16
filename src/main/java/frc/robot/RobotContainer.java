@@ -686,8 +686,9 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return AutoBuilder.buildAuto(autonValue).alongWith(
             new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
-            new InstantCommand(() -> {shooterPivotSubsystem.setAutoAimBoolean(true);}),
-            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1)
+            new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true)),
+            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1),
+            new ClimbLowerCommand(climbSubsystem)
         );
     }
 }
