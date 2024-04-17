@@ -40,7 +40,7 @@ public final class Constants {
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 2.3;
-        public static final double EXTENSION_I = 0.0035;
+        public static final double EXTENSION_I = 0.0039;
         public static final double EXTENSION_D = 0;
         public static final double EXTENSION_TOLERANCE = 0.008;
 

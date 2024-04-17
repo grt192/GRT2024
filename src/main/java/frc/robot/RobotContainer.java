@@ -58,6 +58,7 @@ import frc.robot.commands.auton.SwerveAimCommand;
 import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
+import frc.robot.commands.elevator.ElevatorToLimitSwitchCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
@@ -133,6 +134,8 @@ public class RobotContainer {
     private final JoystickButton rightStickButton = new JoystickButton(mechController,
         XboxController.Button.kRightStick.value);
     private final POVButton dPadRight = new POVButton(mechController, 90);
+    private final POVButton dPadUp = new POVButton(mechController, 0);
+    private final POVButton dPadDown = new POVButton(mechController, 180);
     private final JoystickButton startButton = new JoystickButton(mechController, XboxController.Button.kStart.value);
 
     private final GenericHID switchboard = new GenericHID(3);
@@ -459,8 +462,8 @@ public class RobotContainer {
 
         /* ElEVATOR TEST */
 
-        // rightBumper.onTrue(new ElevatorToAMPCommand(elevatorSubsystem));
-        // leftBumper.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+        dPadUp.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
+        dPadDown.onTrue(new ElevatorToLimitSwitchCommand(elevatorSubsystem));
 
         // elevatorSubsystem.setManual();
 
