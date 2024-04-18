@@ -26,6 +26,6 @@ public class ElevatorToTrapCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.atState(ElevatorState.TRAP);
+        return elevatorSubsystem.atTrapState();
     }
 }

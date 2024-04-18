@@ -59,6 +59,7 @@ import frc.robot.commands.climb.ClimbLowerCommand;
 import frc.robot.commands.elevator.ElevatorToAmpCommand;
 import frc.robot.commands.elevator.ElevatorToEncoderZeroCommand;
 import frc.robot.commands.elevator.ElevatorToLimitSwitchCommand;
+import frc.robot.commands.elevator.ElevatorToMidCommand;
 import frc.robot.commands.elevator.ElevatorToTrapCommand;
 import frc.robot.commands.elevator.ElevatorToZeroCommand;
 import frc.robot.commands.intake.pivot.IntakePivotSetPositionCommand;
@@ -134,6 +135,7 @@ public class RobotContainer {
     private final JoystickButton rightStickButton = new JoystickButton(mechController,
         XboxController.Button.kRightStick.value);
     private final POVButton dPadRight = new POVButton(mechController, 90);
+    private final POVButton dPadLeft = new POVButton(mechController, 270);
     private final POVButton dPadUp = new POVButton(mechController, 0);
     private final POVButton dPadDown = new POVButton(mechController, 180);
     private final JoystickButton startButton = new JoystickButton(mechController, XboxController.Button.kStart.value);
@@ -272,7 +274,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot", new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 new WaitCommand(.05),
-                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle).withTimeout(1),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(intakeRollerSubsystem::getRockwellSensorValue),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
                     !intakeRollerSubsystem.getRockwellSensorValue() 
@@ -464,9 +466,12 @@ public class RobotContainer {
 
         dPadUp.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
         dPadUp.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)));
-        dPadDown.onTrue(new ElevatorToLimitSwitchCommand(elevatorSubsystem));
+        dPadDown.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
         dPadDown.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(true)));
 
+
+        dPadLeft.onTrue(new ElevatorToMidCommand(elevatorSubsystem));
+        dPadLeft.onFalse(new ElevatorToZeroCommand(elevatorSubsystem));
         // elevatorSubsystem.setManual();
 
         // elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -482,7 +487,7 @@ public class RobotContainer {
         //     }
         // }, elevatorSubsystem));
 
-        elevatorToZero.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+        elevatorToZero.onTrue(new ElevatorToLimitSwitchCommand(elevatorSubsystem));
         /* INTAKE TEST */
 
         // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3),
@@ -541,26 +546,28 @@ public class RobotContainer {
                     }, intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
-                        new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)),
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, .45)
+                        new InstantCommand(() -> {
+                            intakePivotSubsystem.enablePowerLimit(false);
+                            intakePivotSubsystem.setPosition(.45);
+                        })
                     ), 
                     new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
                         new ConditionalWaitCommand(intakeRollerSubsystem::getFrontSensorReached),
-                        new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
+                        new InstantCommand(() -> intakePivotSubsystem.setPosition(0))
                     ),
                     intakeRollerSubsystem::getAmpSensor
                 ), // raise the elevator
-                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+                () -> (elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
+                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP) && elevatorSubsystem.getExtensionPercent() > .5)
         );
 
 
         // roll behaviors
         leftBumper.onTrue(
             new ConditionalCommand(
-                null,
+                new InstantCommand(),
                 new ConditionalCommand(
-                    null,
+                    new InstantCommand(),
                     new WaitCommand(.05).andThen( 
                         new ConditionalWaitCommand(intakePivotSubsystem::atPosition), // extend pivot
                         new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
@@ -586,7 +593,7 @@ public class RobotContainer {
                         new InstantCommand(
                             () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
                         ), 
-                        () -> aButton.getAsBoolean()
+                        aButton
                     )
                 ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             
@@ -630,9 +637,9 @@ public class RobotContainer {
             if (yButton.getAsBoolean()) {
                 lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
                 // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterSpeed); // for tuning
-                if (intakePivotSubsystem.atPosition()) {
-                    shooterFlywheelSubsystem.setShooterMotorSpeed();
-                }
+                
+                shooterFlywheelSubsystem.setShooterMotorSpeed();
+                
                 shooterPivotSubsystem.setAutoAimBoolean(true);
                 if (shooterFlywheelSubsystem.atSpeed()) {
                     mechController.setRumble(RumbleType.kBothRumble, .4);
@@ -694,8 +701,9 @@ public class RobotContainer {
         dPadRight.whileTrue(
             new ConditionalWaitCommand(() -> intakePivotSubsystem.atPosition())
             .andThen(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem,
-                                                       shooterPivotSubsystem, .7, mechController))
+                                                       shooterPivotSubsystem, .65, mechController))
         );
+        
         // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
         //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
         //     intakePivotSubsystem.setPosition(intakePosition);

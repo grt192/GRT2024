@@ -10,7 +10,7 @@ public class IntakeRollerIntakeCommand extends Command {
     private final IntakeRollerSubsystem intakeSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
     private double frontSpeed = .7;
-    private double integrationSpeed = .4;
+    private double integrationSpeed = .55;
 
     /**
      * Runs the rollers on the intake until a note is detected.
@@ -40,7 +40,6 @@ public class IntakeRollerIntakeCommand extends Command {
     @Override
     public void execute() {
         intakeSubsystem.setRollSpeeds(frontSpeed, integrationSpeed);
-        System.out.println(intakeSubsystem.getRockwellSensorValue());
     }
 
     @Override

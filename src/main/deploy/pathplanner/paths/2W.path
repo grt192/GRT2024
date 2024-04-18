@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Shoot 1",
-      "minWaypointRelativePos": 0,
+      "minWaypointRelativePos": 0.75,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 0.1,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -62,7 +62,7 @@
     },
     {
       "name": "Shoot 1",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
         "data": {

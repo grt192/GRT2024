@@ -2,7 +2,7 @@ package frc.robot.commands.intake.roller;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.intake.IntakeRollerSubsystem;
 
 public class IntakeRollerAmpIntakeCommand extends Command {
@@ -16,7 +16,8 @@ public class IntakeRollerAmpIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-       intakeRollerSubsystem.setRollSpeeds(0.7, 0);
+        intakeRollerSubsystem.setRollSpeeds(0.5, 0);
+
     }
 
     @Override

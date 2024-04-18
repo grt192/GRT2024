@@ -52,7 +52,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
         pivotMotor.getConfigurator().apply(slot0Configs);
         pivotMotor.setPosition(0);
-        pivotMotor.getConfigurator().apply(voltageConfig);
+        // pivotMotor.getConfigurator().apply(voltageConfig);
         
 
         request.withLimitForwardMotion(false);
@@ -116,7 +116,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
             voltageConfig.PeakForwardVoltage = 16;
         }
 
-        pivotMotor.getConfigurator().apply(voltageConfig);
+        // pivotMotor.getConfigurator().apply(voltageConfig);
     }
 
     @Override

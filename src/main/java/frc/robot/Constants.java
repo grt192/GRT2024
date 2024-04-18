@@ -40,7 +40,7 @@ public final class Constants {
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 2.3;
-        public static final double EXTENSION_I = 0.0039;
+        public static final double EXTENSION_I = 0.01;
         public static final double EXTENSION_D = 0;
         public static final double EXTENSION_TOLERANCE = 0.008;
 
@@ -98,7 +98,7 @@ public final class Constants {
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
         
-        public static final double PIVOT_P = 2.5;
+        public static final double PIVOT_P = 1; //old 2.5
         public static final double PIVOT_I = 0;
         public static final double PIVOT_D = 0;
         public static final double PIVOT_CONVERSION_FACTOR = 0.2142;
