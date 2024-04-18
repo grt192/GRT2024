@@ -167,7 +167,8 @@ public class RobotContainer {
     private NetworkTableInstance ntInstance;
     private NetworkTable autonTable;
     private NetworkTableEntry listEntry;
-    private String autonValue = "A145";
+    private NetworkTableEntry selectedAutonEntry;
+    private String autonValue = "A123";
     private int autonHandle;
     private String autoName = "A145";
     /**
@@ -177,10 +178,13 @@ public class RobotContainer {
         ntInstance = NetworkTableInstance.getDefault();
         autonTable = ntInstance.getTable("Auton");
         listEntry = autonTable.getEntry("AutonList");
+        selectedAutonEntry = autonTable.getEntry("Selected");
         // System.out.print("Available Autons: " + AutoBuilder.getAllAutoNames().toArray(new String[0]));
         listEntry.setStringArray(AutoBuilder.getAllAutoNames().toArray(new String[0]));
+        selectedAutonEntry.setString(autonValue);
         autonTable.addListener("Auton", EnumSet.of(NetworkTableEvent.Kind.kValueAll), (table, key, event) -> {
             this.autonValue = event.valueData.value.getString();
+            this.selectedAutonEntry.setString(this.autonValue);
             System.out.print("New auton value: " + this.autonValue);
         });
         fmsSubsystem = new FieldManagementSubsystem();
