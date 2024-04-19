@@ -72,7 +72,7 @@ public final class Constants {
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = .2301 - Math.PI / 2;
+        public static final double BL_OFFSET = 1.7 + Math.toRadians(75) - Math.PI / 2;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
