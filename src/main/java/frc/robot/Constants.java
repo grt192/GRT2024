@@ -26,7 +26,7 @@ public final class Constants {
 
     /** Constants for the elevator subsystem. */
     public static class ElevatorConstants {
-        public static final boolean LIMIT_SWITCH_ENABLED = true;
+        public static final boolean LIMIT_SWITCH_ENABLED = false;
 
         public static final int EXTENSION_ID = 10;
         public static final int EXTENSION_FOLLOW_ID = 11;

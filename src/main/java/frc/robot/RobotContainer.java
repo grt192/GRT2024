@@ -289,7 +289,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("StationaryShoot", new ParallelDeadlineGroup(
             new SequentialCommandGroup(
-                new WaitCommand(.05),
+                new ConditionalWaitCommand(shooterFlywheelSubsystem::atSpeed),
                 new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
                 new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
@@ -600,7 +600,7 @@ public class RobotContainer {
         );
 
         // bButton stops the rollers
-        bButton.onTrue(Commands.idle(intakeRollerSubsystem));
+        bButton.onTrue(Commands.idle(intakeRollerSubsystem).withTimeout(0));
 
         // xButton toggles the intake being stowed
         xButton.onTrue(new InstantCommand(() ->  {

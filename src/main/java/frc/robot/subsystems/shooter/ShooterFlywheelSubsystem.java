@@ -93,7 +93,7 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
                               6, 
                               ShooterConstants.MAX_SHOOTER_DISTANCE};
 
-        double[] speeds = {.6, .6, .65, .75, .75, .8, .8};
+        double[] speeds = {.6, .6, .65, .7, .7, .7, .7};
 
         targetTopRPS = 0.0;
         targetBottomRPS = 0.0; 
