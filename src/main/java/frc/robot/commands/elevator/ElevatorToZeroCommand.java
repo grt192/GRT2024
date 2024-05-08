@@ -14,8 +14,8 @@ public class ElevatorToZeroCommand extends SequentialCommandGroup{
         this.addRequirements(elevatorSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
         addCommands(
-            new ElevatorToEncoderZeroCommand(elevatorSubsystem),
-            new ElevatorToLimitSwitchCommand(elevatorSubsystem)
+            new ElevatorToEncoderZeroCommand(elevatorSubsystem)//,
+            // new ElevatorToLimitSwitchCommand(elevatorSubsystem)
         );
     }
 

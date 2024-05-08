@@ -26,7 +26,7 @@ public final class Constants {
 
     /** Constants for the elevator subsystem. */
     public static class ElevatorConstants {
-        public static final boolean LIMIT_SWITCH_ENABLED = true;
+        public static final boolean LIMIT_SWITCH_ENABLED = false;
 
         public static final int EXTENSION_ID = 10;
         public static final int EXTENSION_FOLLOW_ID = 11;
@@ -40,7 +40,7 @@ public final class Constants {
         public static final double TRAP_POSITION = 1.;
 
         public static final double EXTENSION_P = 2.3;
-        public static final double EXTENSION_I = 0.0035;
+        public static final double EXTENSION_I = 0.01;
         public static final double EXTENSION_D = 0;
         public static final double EXTENSION_TOLERANCE = 0.008;
 
@@ -64,19 +64,19 @@ public final class Constants {
     public static class SwerveConstants {
         public static final int FL_DRIVE = 8;
         public static final int FL_STEER = 1;
-        public static final double FL_OFFSET = -.9201 - Math.PI / 2;
+        public static final double FL_OFFSET = -2.48;
 
         public static final int FR_DRIVE = 2;
         public static final int FR_STEER = 3;
-        public static final double FR_OFFSET = .6216 + Math.PI / 2;
+        public static final double FR_OFFSET = -4.12;
 
         public static final int BL_DRIVE = 4;
         public static final int BL_STEER = 5;
-        public static final double BL_OFFSET = .2301 - Math.PI / 2;
+        public static final double BL_OFFSET = -6.31;
 
         public static final int BR_DRIVE = 6;
         public static final int BR_STEER = 7;
-        public static final double BR_OFFSET = 2.828 + Math.PI / 2;
+        public static final double BR_OFFSET = -1.79;
 
         public static double MODULE_DIST = Units.inchesToMeters(27.25 / 2.0);
         public static final Translation2d FL_POS = new Translation2d(MODULE_DIST, MODULE_DIST);
@@ -98,7 +98,7 @@ public final class Constants {
         public static final int BACK_MOTOR_ID = 18;
         public static final int PIVOT_MOTOR_ID = 16;
         
-        public static final double PIVOT_P = 1;
+        public static final double PIVOT_P = 1; //old 2.5
         public static final double PIVOT_I = 0;
         public static final double PIVOT_D = 0;
         public static final double PIVOT_CONVERSION_FACTOR = 0.2142;
