@@ -160,7 +160,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        frontSensorEntry.setBoolean(getFrontSensorReached());
+        frontSensorEntry.setBoolean(getFrontSensorValue());
         rockwellSensorEntry.setBoolean(getRockwellSensorValue());
         ampSenSorEntry.setBoolean(getAmpSensor());
 

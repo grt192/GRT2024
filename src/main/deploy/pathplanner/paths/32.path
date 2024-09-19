@@ -33,7 +33,7 @@
     {
       "name": "Shoot 1",
       "minWaypointRelativePos": 0.35,
-      "maxWaypointRelativePos": 0.6,
+      "maxWaypointRelativePos": 0.65,
       "constraints": {
         "maxVelocity": 0.6,
         "maxAcceleration": 3.0,

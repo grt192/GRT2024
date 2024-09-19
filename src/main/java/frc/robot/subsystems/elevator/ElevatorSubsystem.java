@@ -81,7 +81,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         extensionPidController.setIZone(0.15);
         extensionPidController.setD(ElevatorConstants.EXTENSION_D);
         extensionPidController.setSmartMotionAllowedClosedLoopError(ElevatorConstants.EXTENSION_TOLERANCE, 0);
-        extensionPidController.setOutputRange(-0.3, 1);
+        extensionPidController.setOutputRange(-0.5, 1);
 
         elevatorNetworkTableInstance = NetworkTableInstance.getDefault();
         elevatorNetworkTable  = elevatorNetworkTableInstance.getTable("Elevator");
@@ -151,6 +151,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public boolean atState(ElevatorState state) {
         double distance = Math.abs(this.getExtensionPercent() - state.getExtendDistanceMeters());
         return distance < ElevatorConstants.EXTENSION_TOLERANCE;
+    }
+
+    public boolean atTrapState(){
+        double distance = Math.abs(this.getExtensionPercent() - ElevatorState.TRAP.getExtendDistanceMeters());
+        return distance < .03;
     }
 
     /**

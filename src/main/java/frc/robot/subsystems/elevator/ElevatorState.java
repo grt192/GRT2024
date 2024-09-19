@@ -6,7 +6,8 @@ import frc.robot.Constants;
 public enum ElevatorState {
     ZERO(Constants.ElevatorConstants.ZERO_POSITION),
     AMP(Constants.ElevatorConstants.AMP_POSITION),
-    TRAP(Constants.ElevatorConstants.TRAP_POSITION);
+    TRAP(Constants.ElevatorConstants.TRAP_POSITION),
+    MID(.3);
 
     private final double extendDistanceMeters;
 
