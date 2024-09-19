@@ -586,8 +586,10 @@ public class RobotContainer {
             Commands.runOnce(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem).alongWith(
                 new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)).andThen(
                     new ConditionalCommand(
-                        new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
-                            new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                        new WaitCommand(.3).andThen(
+                            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
+                                new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+                            )
                         ), 
                         
                         new InstantCommand(
