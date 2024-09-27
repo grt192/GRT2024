@@ -465,9 +465,9 @@ public class RobotContainer {
         /* ElEVATOR TEST */
 
         dPadUp.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
-        dPadUp.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)));
+        //dPadUp.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)));
         dPadDown.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
-        dPadDown.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(true)));
+        //dPadDown.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(true)));
 
 
         dPadLeft.onTrue(new ElevatorToMidCommand(elevatorSubsystem));
@@ -520,7 +520,7 @@ public class RobotContainer {
                 // if elevator is up
                 new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
                     Commands.runOnce(() -> {
-                        intakePivotSubsystem.enablePowerLimit(true);
+                        //intakePivotSubsystem.enablePowerLimit(true);
                         intakePivotSubsystem.setPosition(0);
                     }, intakePivotSubsystem)
                 ), // stow the pivot
@@ -541,13 +541,13 @@ public class RobotContainer {
             new ConditionalCommand(
                 new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
                     () -> {
-                        intakePivotSubsystem.enablePowerLimit(true);
+                        //intakePivotSubsystem.enablePowerLimit(true);
                         intakePivotSubsystem.setPosition(0);
                     }, intakePivotSubsystem)), // stow intake
                 new ConditionalCommand(
                     new ElevatorToTrapCommand(elevatorSubsystem).andThen(
                         new InstantCommand(() -> {
-                            intakePivotSubsystem.enablePowerLimit(false);
+                            //intakePivotSubsystem.enablePowerLimit(false);
                             intakePivotSubsystem.setPosition(.45);
                         })
                     ), 

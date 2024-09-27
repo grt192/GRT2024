@@ -19,10 +19,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
@@ -45,24 +42,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     private boolean prevFrontSensorValue = false;
 
-    private NetworkTableInstance ntInstance;
-    private NetworkTable ntTable;
-    private BooleanPublisher ntFrontPublisher;
-    private BooleanPublisher ntBackPublisher;
-
-    private NetworkTable motorsNTTable;
-    private NetworkTableEntry frontMotorCurrentEntry;
-    private NetworkTableEntry frontMotorVoltageEntry;
-    private NetworkTableEntry frontMotorTemperatureEntry;
-    private NetworkTableEntry integrationMotorCurrentEntry;
-    private NetworkTableEntry integrationMotorVoltageEntry;
-    private NetworkTableEntry integrationMotorTemperatureEntry;
-
-    private NetworkTable intakeNTTable;
-    private NetworkTableEntry frontSensorEntry;
-    private NetworkTableEntry rockwellSensorEntry;
-    private NetworkTableEntry ampSenSorEntry;
-
     private final LightBarSubsystem lightBarSubsystem;
 
     private Timer colorResetTimer;
@@ -80,22 +59,6 @@ public class IntakeRollerSubsystem extends SubsystemBase {
         rockwellSensor = new DigitalInput(4);
         ampSensor = new DigitalInput(5);
     
-        ntInstance = NetworkTableInstance.getDefault();
-        ntTable = ntInstance.getTable("RobotStatus");
-        intakeNTTable = ntInstance.getTable("Intake");
-        frontSensorEntry = intakeNTTable.getEntry("FrontSensor");
-        rockwellSensorEntry = intakeNTTable.getEntry("Rockwell");
-        ampSenSorEntry = intakeNTTable.getEntry("AMPSensor");
-        ntFrontPublisher = ntTable.getBooleanTopic("FrontSensor").publish();
-        ntBackPublisher = ntTable.getBooleanTopic("BackSensor").publish();
-
-        motorsNTTable = ntInstance.getTable("Motors");
-        frontMotorCurrentEntry = motorsNTTable.getEntry("Intake17Current");
-        frontMotorVoltageEntry = motorsNTTable.getEntry("Intake17Voltage");
-        frontMotorTemperatureEntry = motorsNTTable.getEntry("Intake17Temperature");
-        integrationMotorCurrentEntry = motorsNTTable.getEntry("Intake19Current");
-        integrationMotorVoltageEntry = motorsNTTable.getEntry("Intake19Voltage");
-        integrationMotorTemperatureEntry = motorsNTTable.getEntry("Intake19Temperature");
         this.lightBarSubsystem = lightBarSubsystem;
 
         // colorResetTimer = new Timer();
@@ -160,18 +123,7 @@ public class IntakeRollerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        frontSensorEntry.setBoolean(getFrontSensorValue());
-        rockwellSensorEntry.setBoolean(getRockwellSensorValue());
-        ampSenSorEntry.setBoolean(getAmpSensor());
 
-        frontMotorCurrentEntry.setDouble(frontMotors.getOutputCurrent());
-        frontMotorVoltageEntry.setDouble(frontMotors.getBusVoltage());
-        frontMotorTemperatureEntry.setDouble(frontMotors.getMotorTemperature());
-        integrationMotorCurrentEntry.setDouble(integrationMotor.getSupplyCurrent());
-        integrationMotorVoltageEntry.setDouble(integrationMotor.getMotorOutputVoltage());
-        integrationMotorTemperatureEntry.setDouble(integrationMotor.getTemperature());
-
-        ntFrontPublisher.set(getFrontSensorReached());
         prevFrontSensorValue = getFrontSensorValue();
         if (getFrontSensorValue()) {
             lightBarSubsystem.setLightBarStatus(LightBarStatus.HOLDING_NOTE, 2);
