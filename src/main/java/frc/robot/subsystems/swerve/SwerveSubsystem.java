@@ -26,10 +26,6 @@ import static frc.robot.Constants.VisionConstants.FRONT_RIGHT_CAMERA;
 import static frc.robot.Constants.VisionConstants.FRONT_RIGHT_CAMERA_POSE;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Nat;
@@ -187,22 +183,6 @@ public class SwerveSubsystem extends SubsystemBase {
         );
         
         // Configure AutoBuilder
-        AutoBuilder.configureHolonomic(
-            this::getRobotPosition, 
-            this::resetPose, 
-            this::getRobotRelativeChassisSpeeds, 
-            this::setRobotRelativeDrivePowers, 
-            new HolonomicPathFollowerConfig(
-                        new PIDConstants(3.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(3.0, 0.0, 0.0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
-                        FL_POS.getNorm(), // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig(true, true)
-                ),
-            redSupplier,
-            this
-        );
-
         velocityTimer.start();
     }
 

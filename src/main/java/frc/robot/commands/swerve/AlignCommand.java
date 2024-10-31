@@ -7,8 +7,6 @@ import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_BACK_POSE;
 import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_LEFT_POSE;
 import static frc.robot.Constants.AutoAlignConstants.RED_STAGE_RIGHT_POSE;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
