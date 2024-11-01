@@ -101,24 +101,24 @@ public class RobotContainer {
     private final BaseDriveController driveController;
     private final SwerveSubsystem swerveSubsystem;
 
-    private final IntakePivotSubsystem intakePivotSubsystem;
-    private final IntakeRollerSubsystem intakeRollerSubsystem;
+    // private final IntakePivotSubsystem intakePivotSubsystem;
+    // private final IntakeRollerSubsystem intakeRollerSubsystem;
 
-    private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
-    private final ShooterPivotSubsystem shooterPivotSubsystem;
+    // private final ShooterFlywheelSubsystem shooterFlywheelSubsystem;
+    // private final ShooterPivotSubsystem shooterPivotSubsystem;
 
-    private final ClimbSubsystem climbSubsystem;
+    // private final ClimbSubsystem climbSubsystem;
 
-    private final ElevatorSubsystem elevatorSubsystem;
+    // private final ElevatorSubsystem elevatorSubsystem;
 
     private final FieldManagementSubsystem fmsSubsystem;
     private final LightBarSubsystem lightBarSubsystem;
     private final SuperstructureSubsystem superstructureSubsystem;
 
-    private final SendableChooser<Command> autonPathChooser;
-    private final AutonBuilder autonBuilder;
+    // private final SendableChooser<Command> autonPathChooser;
+    // private final AutonBuilder autonBuilder;
 
-    private final NoteDetectionWrapper noteDetector;
+    // private final NoteDetectionWrapper noteDetector;
 
     /* MECH BUTTONS */
     private final XboxController mechController = new XboxController(2);
@@ -199,23 +199,23 @@ public class RobotContainer {
         swerveSubsystem = new SwerveSubsystem(fmsSubsystem::isRedAlliance);
         swerveSubsystem.setVerbose(false); // SET THIS TO true FOR TUNING VALUES
 
-        intakePivotSubsystem = new IntakePivotSubsystem();
-        intakeRollerSubsystem = new IntakeRollerSubsystem(lightBarSubsystem);
+        // intakePivotSubsystem = new IntakePivotSubsystem();
+        // intakeRollerSubsystem = new IntakeRollerSubsystem(lightBarSubsystem);
 
-        shooterPivotSubsystem = new ShooterPivotSubsystem(
-            swerveSubsystem::getShootingDistance, 
-            fmsSubsystem::isRedAlliance
-        );
-        shooterFlywheelSubsystem = new ShooterFlywheelSubsystem(
-            swerveSubsystem::getShootingDistance, 
-            fmsSubsystem::isRedAlliance
-        );
+        // shooterPivotSubsystem = new ShooterPivotSubsystem(
+        //     swerveSubsystem::getShootingDistance, 
+        //     fmsSubsystem::isRedAlliance
+        // );
+        // shooterFlywheelSubsystem = new ShooterFlywheelSubsystem(
+        //     swerveSubsystem::getShootingDistance, 
+        //     fmsSubsystem::isRedAlliance
+        // );
 
-        elevatorSubsystem = new ElevatorSubsystem();
+        // elevatorSubsystem = new ElevatorSubsystem();
 
-        climbSubsystem = new ClimbSubsystem();
+        // climbSubsystem = new ClimbSubsystem();
 
-        noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
+        // noteDetector = new NoteDetectionWrapper(NOTE_CAMERA);
 
         xPID = new PIDController(4, 0, 0);
         yPID = new PIDController(4, 0, 0);
@@ -241,77 +241,77 @@ public class RobotContainer {
             System.out.print(e);
         }
 
-        autonBuilder = new AutonBuilder(
-            intakePivotSubsystem, intakeRollerSubsystem, 
-            shooterFlywheelSubsystem, shooterPivotSubsystem, 
-            elevatorSubsystem,
-            climbSubsystem, 
-            swerveSubsystem, 
-            lightBarSubsystem, fmsSubsystem
-        );
-        autonPathChooser = new SendableChooser<>();
-        autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
-        autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
-        autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
-        autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
-        autonPathChooser.addOption("centerTop2Piece", autonBuilder.getTopCenterTwoPiece()); //UNTESTED
-        autonPathChooser.addOption("top2PieceThenCenterTop1", autonBuilder.getTopTwoPieceThenCenter1()); //UNTESTED
-        autonPathChooser.addOption("top2PieceThenCenterTop2", autonBuilder.getTopTwoPieceThenCenter2()); //UNTESTED
-        autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
-        autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
-        autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
-        autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
-        autonPathChooser.addOption("middle2PieceThenCenterTop1", autonBuilder.getMiddleTwoPieceThen1TopCenter()); 
-        autonPathChooser.addOption("middle2PieceThenCenterTop2", autonBuilder.getMiddleTwoPieceThen2TopCenter());
-        autonPathChooser.addOption("middlecenter2piece", autonBuilder.getMiddleCenterTwoPiece());
-        autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
-        autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
-        autonPathChooser.addOption("bottombottomcenterdisruptor", autonBuilder.getBottomBottomCenterDistruptor());
-        autonPathChooser.addOption("bottomtopcenterdisruptor", autonBuilder.getBottomTopCenterDistruptor());
+        // autonBuilder = new AutonBuilder(
+        //     intakePivotSubsystem, intakeRollerSubsystem, 
+        //     shooterFlywheelSubsystem, shooterPivotSubsystem, 
+        //     elevatorSubsystem,
+        //     climbSubsystem, 
+        //     swerveSubsystem, 
+        //     lightBarSubsystem, fmsSubsystem
+        // // );
+        // autonPathChooser = new SendableChooser<>();
+        // autonPathChooser.addOption("topPreloaded", autonBuilder.getMiddleFourPiece());
+        // autonPathChooser.addOption("top2Piece", autonBuilder.getTopTwoPiece());
+        // autonPathChooser.addOption("top3Piece", autonBuilder.getTopThreePiece());
+        // autonPathChooser.addOption("top4Piece", autonBuilder.getTopFourPiece());
+        // autonPathChooser.addOption("centerTop2Piece", autonBuilder.getTopCenterTwoPiece()); //UNTESTED
+        // autonPathChooser.addOption("top2PieceThenCenterTop1", autonBuilder.getTopTwoPieceThenCenter1()); //UNTESTED
+        // autonPathChooser.addOption("top2PieceThenCenterTop2", autonBuilder.getTopTwoPieceThenCenter2()); //UNTESTED
+        // autonPathChooser.setDefaultOption("middlePreloaded", autonBuilder.getMiddlePreloaded());
+        // autonPathChooser.addOption("middle2Piece", autonBuilder.getMiddleTwoPiece());
+        // autonPathChooser.addOption("middle3Piece", autonBuilder.getMiddleThreePiece());
+        // autonPathChooser.addOption("middle4Piece", autonBuilder.getMiddleFourPiece());
+        // autonPathChooser.addOption("middle2PieceThenCenterTop1", autonBuilder.getMiddleTwoPieceThen1TopCenter()); 
+        // autonPathChooser.addOption("middle2PieceThenCenterTop2", autonBuilder.getMiddleTwoPieceThen2TopCenter());
+        // autonPathChooser.addOption("middlecenter2piece", autonBuilder.getMiddleCenterTwoPiece());
+        // autonPathChooser.addOption("bottomPreloaded", autonBuilder.getBottomPreloaded());
+        // autonPathChooser.addOption("bottom2Piece", autonBuilder.getBottomTwoPiece());
+        // autonPathChooser.addOption("bottombottomcenterdisruptor", autonBuilder.getBottomBottomCenterDistruptor());
+        // autonPathChooser.addOption("bottomtopcenterdisruptor", autonBuilder.getBottomTopCenterDistruptor());
 
-        swerveCrauton.add(autonPathChooser);
+        // swerveCrauton.add(autonPathChooser);
 
-        NamedCommands.registerCommand("Shoot", new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                new WaitCommand(.05),
-                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle).withTimeout(1),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(intakeRollerSubsystem::getRockwellSensorValue),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
-                    !intakeRollerSubsystem.getRockwellSensorValue() 
-                    && 
-                    !intakeRollerSubsystem.getAmpSensor() 
-                    && 
-                    !intakeRollerSubsystem.getFrontSensorValue()),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
-            ),
-            new SwerveAimCommand(swerveSubsystem)
-        ));
+        // NamedCommands.registerCommand("Shoot", new ParallelDeadlineGroup(
+        //     new SequentialCommandGroup(
+        //         new WaitCommand(.05),
+        //         new ConditionalWaitCommand(swerveSubsystem::atTargetAngle).withTimeout(1),
+        //         new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(intakeRollerSubsystem::getRockwellSensorValue),
+        //         new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> 
+        //             !intakeRollerSubsystem.getRockwellSensorValue() 
+        //             && 
+        //             !intakeRollerSubsystem.getAmpSensor() 
+        //             && 
+        //             !intakeRollerSubsystem.getFrontSensorValue()),
+        //         new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+        //     ),
+        //     new SwerveAimCommand(swerveSubsystem)
+        // // ));
 
-        NamedCommands.registerCommand("StationaryShoot", new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                new ConditionalWaitCommand(shooterFlywheelSubsystem::atSpeed),
-                new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
-                new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
-            ),
-            new SwerveAimCommand(swerveSubsystem)
-        ));
+        // NamedCommands.registerCommand("StationaryShoot", new ParallelDeadlineGroup(
+        //     new SequentialCommandGroup(
+        //         new ConditionalWaitCommand(shooterFlywheelSubsystem::atSpeed),
+        //         new ConditionalWaitCommand(swerveSubsystem::atTargetAngle),
+        //         new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).until(() -> !intakeRollerSubsystem.getRockwellSensorValue()),
+        //         new IntakeRollerFeedCommand(intakeRollerSubsystem, 1).withTimeout(.3)
+        //     ),
+        //     new SwerveAimCommand(swerveSubsystem)
+        // ));
 
-        NamedCommands.registerCommand(
-            "Intake", 
-            new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))
-        );
+        // NamedCommands.registerCommand(
+        //     "Intake", 
+        //     new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem).andThen(new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem))
+        // );
 
-        NamedCommands.registerCommand("AutoIntake", 
-            new NoteAlignCommand(swerveSubsystem, noteDetector, driveController).until(intakeRollerSubsystem::getAmpSensor).alongWith(
-                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)
-            )
-        );
-        NamedCommands.registerCommand("Feed", 
-            new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
-        );
+        // NamedCommands.registerCommand("AutoIntake", 
+        //     new NoteAlignCommand(swerveSubsystem, noteDetector, driveController).until(intakeRollerSubsystem::getAmpSensor).alongWith(
+        //         new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)
+        //     )
+        // );
+        // NamedCommands.registerCommand("Feed", 
+        //     new IntakeRollerFeedCommand(intakeRollerSubsystem).until(intakeRollerSubsystem::getRockwellSensorValue)
+        // );
         
-        swerveSubsystem.targetSpeaker();
+        // swerveSubsystem.targetSpeaker();
 
         configureBindings();
     }
@@ -342,136 +342,136 @@ public class RobotContainer {
             xError.setValue(xPID.getPositionError());
             yError.setValue(yPID.getPositionError());
 
-        }, swerveSubsystem));
+        }, swerveSubsystem));}
 
-        /* Pressing the button resets the field axes to the current robot axes. */
-        driveController.getDriverHeadingResetButton().onTrue(new InstantCommand(() -> {
-            swerveSubsystem.resetDriverHeading();
-        }));
+        // /* Pressing the button resets the field axes to the current robot axes. */
+        // driveController.getDriverHeadingResetButton().onTrue(new InstantCommand(() -> {
+        //     swerveSubsystem.resetDriverHeading();
+        // }));
         
-        /* SWERVE BINDINGS */
+        // /* SWERVE BINDINGS */
 
-        /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
-        // drive
+        // /* Shooter Aim -- Holding down the button will change the shooter's pitch to aim it at the speaker. */
+        // // drive
 
-        /* Automatic Amping -- Pressing and holding the button will cause the robot to automatically path find to the
-         * amp and deposit its note. Releasing the button will stop the robot (and the path finding). */
-        // TODO: Bring back LED integration.
-        driveController.getAutoAmp().whileTrue(
-            Commands.deferredProxy(() -> new AutoAmpSequence(
-                fmsSubsystem,
-                swerveSubsystem, 
-                elevatorSubsystem,
-                intakePivotSubsystem,
-                intakeRollerSubsystem
-            ))
-        );
-
-        // DEPRECATED AMP ALIGN
-        // driveController.getAmpAlign().onTrue(new InstantCommand(
-        //     () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
-        //     ).andThen(new ParallelRaceGroup(
-        //         AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
-        //         new ConditionalWaitCommand(
-        //             () -> !driveController.getAmpAlign().getAsBoolean()))
-        //             ).andThen(
-        //                 new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1))
-        //             )
+        // /* Automatic Amping -- Pressing and holding the button will cause the robot to automatically path find to the
+        //  * amp and deposit its note. Releasing the button will stop the robot (and the path finding). */
+        // // TODO: Bring back LED integration.
+        // driveController.getAutoAmp().whileTrue(
+        //     Commands.deferredProxy(() -> new AutoAmpSequence(
+        //         fmsSubsystem,
+        //         swerveSubsystem, 
+        //         elevatorSubsystem,
+        //         intakePivotSubsystem,
+        //         intakeRollerSubsystem
+        //     ))
         // );
 
-        /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
-         * climb hooks will end up directly above the center of the nearest chain. */
-        driveController.getStageAlignButton().whileTrue(
-            Commands.deferredProxy(() -> AlignCommand.getStageAlignCommand(
-                swerveSubsystem,
-                swerveSubsystem::getRobotPosition,
-                fmsSubsystem::isRedAlliance
-            ))
-        );
+        // // DEPRECATED AMP ALIGN
+        // // driveController.getAmpAlign().onTrue(new InstantCommand(
+        // //     () -> lightBarSubsystem.setLightBarStatus(LightBarStatus.AUTO_ALIGN, 1)
+        // //     ).andThen(new ParallelRaceGroup(
+        // //         AlignCommand.getAmpAlignCommand(swerveSubsystem, fmsSubsystem.isRedAlliance()),
+        // //         new ConditionalWaitCommand(
+        // //             () -> !driveController.getAmpAlign().getAsBoolean()))
+        // //             ).andThen(
+        // //                 new InstantCommand(() -> lightBarSubsystem.setLightBarStatus(LightBarStatus.DORMANT, 1))
+        // //             )
+        // // );
+
+        // /* Stage Align -- Pressing and holding the button will cause the robot to automatically pathfind such that its
+        //  * climb hooks will end up directly above the center of the nearest chain. */
+        // driveController.getStageAlignButton().whileTrue(
+        //     Commands.deferredProxy(() -> AlignCommand.getStageAlignCommand(
+        //         swerveSubsystem,
+        //         swerveSubsystem::getRobotPosition,
+        //         fmsSubsystem::isRedAlliance
+        //     ))
+        // );
 
 
-        /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
-        driveController.getNoteAlign().onTrue(
-            new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
-                                   swerveSubsystem, noteDetector,
-                                   driveController, lightBarSubsystem)
-            .andThen(new IntakePivotSetPositionCommand(intakePivotSubsystem, 0))  
-            .onlyWhile(driveController.getNoteAlign())
-        );
+        // /* Note align -- Auto-intakes the nearest visible note, leaving left power control to the driver. */
+        // driveController.getNoteAlign().onTrue(
+        //     new AutoIntakeSequence(intakeRollerSubsystem, intakePivotSubsystem,
+        //                            swerveSubsystem, noteDetector,
+        //                            driveController, lightBarSubsystem)
+        //     .andThen(new IntakePivotSetPositionCommand(intakePivotSubsystem, 0))  
+        //     .onlyWhile(driveController.getNoteAlign())
+        // );
     
-        /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
-        driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
+        // /* Swerve Stop -- Pressing the button completely stops the robot's motion. */
+        // driveController.getSwerveStop().onTrue(new SwerveStopCommand(swerveSubsystem));
 
-        driveController.getShooterAimButton().onTrue(Commands.runOnce(
-            () -> {
-                swerveSubsystem.setTargetPoint(fmsSubsystem.isRedAlliance() ? SwerveConstants.RED_SPEAKER_POS : SwerveConstants.BLUE_SPEAKER_POS);
-                swerveSubsystem.setAim(true);
-            }
-        ));
+        // driveController.getShooterAimButton().onTrue(Commands.runOnce(
+        //     () -> {
+        //         swerveSubsystem.setTargetPoint(fmsSubsystem.isRedAlliance() ? SwerveConstants.RED_SPEAKER_POS : SwerveConstants.BLUE_SPEAKER_POS);
+        //         swerveSubsystem.setAim(true);
+        //     }
+        // ));
 
-        driveController.getShooterAimButton().onFalse(Commands.runOnce(
-            () -> {
-                swerveSubsystem.setAim(false);
-            }
-        ));
+        // driveController.getShooterAimButton().onFalse(Commands.runOnce(
+        //     () -> {
+        //         swerveSubsystem.setAim(false);
+        //     }
+        // ));
 
         
 
-        /* SHOOTER PIVOT TEST */
+        // /* SHOOTER PIVOT TEST */
 
-        // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
-        // Units.degreesToRadians(18)));
+        // // rightBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
+        // // Units.degreesToRadians(18)));
 
-        // leftBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
-        // Units.degreesToRadians(60)));
+        // // leftBumper.onTrue(new ShooterPivotSetAngleCommand(shooterPivotSubsystem,
+        // // Units.degreesToRadians(60)));
 
-        /* SHOOTER PIVOT TUNE */
+        // /* SHOOTER PIVOT TUNE */
 
-        shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            //TODO: switch to enum for dpad angles
+        // shooterPivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        //     //TODO: switch to enum for dpad angles
 
-            switch (mechController.getPOV()) {
-                case 0:
-                    shooterPivotSetPosition += .003;
-                    break;
+        //     switch (mechController.getPOV()) {
+        //         case 0:
+        //             shooterPivotSetPosition += .003;
+        //             break;
 
-                case 180:
-                    shooterPivotSetPosition -= .003;
-                    break;
+        //         case 180:
+        //             shooterPivotSetPosition -= .003;
+        //             break;
 
-                case 90:
-                    shooterSpeed += .001;
-                    break;
+        //         case 90:
+        //             shooterSpeed += .001;
+        //             break;
 
-                case 270:
-                    shooterSpeed -= .001;
-                    break;
+        //         case 270:
+        //             shooterSpeed -= .001;
+        //             break;
 
-                default:
-                    break;
-            }
+        //         default:
+        //             break;
+        //     }
 
-            // System.out.println(intakePosition);
+        //     // System.out.println(intakePosition);
 
 
             
-            // System.out.print(" Speed: " + GRTUtil.twoDecimals(shooterSpeed)
-            // );
+        //     // System.out.print(" Speed: " + GRTUtil.twoDecimals(shooterSpeed)
+        //     // );
 
-            // shooterPivotSubsystem.getAutoAimAngle();
-            // shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
-        }, shooterPivotSubsystem));
+        //     // shooterPivotSubsystem.getAutoAimAngle();
+        //     // shooterPivotSubsystem.setAngle(shooterPivotSetPosition);
+        // }, shooterPivotSubsystem));
 
         /* ElEVATOR TEST */
 
-        dPadUp.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
-        dPadUp.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)));
-        dPadDown.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
-        dPadDown.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(true)));
+        // dPadUp.onTrue(new ElevatorToTrapCommand(elevatorSubsystem));
+        // dPadUp.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(false)));
+        // dPadDown.onTrue(new ElevatorToZeroCommand(elevatorSubsystem));
+        // dPadDown.onTrue(new InstantCommand(() -> intakePivotSubsystem.enablePowerLimit(true)));
 
 
-        dPadLeft.onTrue(new ElevatorToMidCommand(elevatorSubsystem));
-        dPadLeft.onFalse(new ElevatorToZeroCommand(elevatorSubsystem));
+        // dPadLeft.onTrue(new ElevatorToMidCommand(elevatorSubsystem));
+        // dPadLeft.onFalse(new ElevatorToZeroCommand(elevatorSubsystem));
         // elevatorSubsystem.setManual();
 
         // elevatorSubsystem.setDefaultCommand(new InstantCommand(() -> {
@@ -487,7 +487,7 @@ public class RobotContainer {
         //     }
         // }, elevatorSubsystem));
 
-        elevatorToZero.onTrue(new ElevatorToLimitSwitchCommand(elevatorSubsystem));
+        // elevatorToZero.onTrue(new ElevatorToLimitSwitchCommand(elevatorSubsystem));
         /* INTAKE TEST */
 
         // xButton.onTrue(new InstantCommand(() -> intakePivotSubsystem.setPosition(.3),
@@ -503,250 +503,249 @@ public class RobotContainer {
 
         /* Climb Controls -- Left and right joystick up/down controls left and right arm up/down, respectively. Pressing
          * down on either the left or right joystick toggles automatic lowering (on by default), which brings down both
-         * arms automatically when there is no joystick input. */
-        climbSubsystem.setDefaultCommand(Commands.run(
-            () -> climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY()), climbSubsystem
-        ));
+        //  * arms automatically when there is no joystick input. */
+        // climbSubsystem.setDefaultCommand(Commands.run(
+        //     () -> climbSubsystem.setSpeeds(-mechController.getLeftY(), -mechController.getRightY()), climbSubsystem
+        // ));
 
-        leftStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
-        rightStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
+        // leftStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
+        // rightStickButton.onTrue(Commands.runOnce(() -> climbSubsystem.toggleAutomaticLowering(), climbSubsystem));
 
         
         // rightBumper toggles the amp sequence 
         // if the elevator is up, lower it and stow the intake
         // if the elevator is down, run the amp sequence
-        rightBumper.onTrue(
-            new ConditionalCommand(
-                // if elevator is up
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
-                    Commands.runOnce(() -> {
-                        intakePivotSubsystem.enablePowerLimit(true);
-                        intakePivotSubsystem.setPosition(0);
-                    }, intakePivotSubsystem)
-                ), // stow the pivot
+        // rightBumper.onTrue(
+        //     new ConditionalCommand(
+        //         // if elevator is up
+        //         new ElevatorToZeroCommand(elevatorSubsystem).alongWith(
+        //             Commands.runOnce(() -> {
+        //                 intakePivotSubsystem.enablePowerLimit(true);
+        //                 intakePivotSubsystem.setPosition(0);
+        //             }, intakePivotSubsystem)
+        //         ), // stow the pivot
 
-                // if elevator is down
-                new PrepareAmpSequence(elevatorSubsystem, intakePivotSubsystem, intakeRollerSubsystem)
-                    .until(() -> mechController.getLeftTriggerAxis() > .05 
-                                || mechController.getRightTriggerAxis() > .05),
+        //         // if elevator is down
+        //         new PrepareAmpSequence(elevatorSubsystem, intakePivotSubsystem, intakeRollerSubsystem)
+        //             .until(() -> mechController.getLeftTriggerAxis() > .05 
+        //                         || mechController.getRightTriggerAxis() > .05),
                 
-                // check if the elevator is currently targeting one of the upper positions to choose what to do
-                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP
-            )
-        );
+        //         // check if the elevator is currently targeting one of the upper positions to choose what to do
+        //         () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP
+        //             || elevatorSubsystem.getTargetState() == ElevatorState.TRAP
+        //     )
+        // );
 
-        // leftBumper toggles the trap position for the elevator
-        leftBumper.onTrue(
-            new ConditionalCommand(
-                new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
-                    () -> {
-                        intakePivotSubsystem.enablePowerLimit(true);
-                        intakePivotSubsystem.setPosition(0);
-                    }, intakePivotSubsystem)), // stow intake
-                new ConditionalCommand(
-                    new ElevatorToTrapCommand(elevatorSubsystem).andThen(
-                        new InstantCommand(() -> {
-                            intakePivotSubsystem.enablePowerLimit(false);
-                            intakePivotSubsystem.setPosition(.45);
-                        })
-                    ), 
-                    new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
-                        new ConditionalWaitCommand(intakeRollerSubsystem::getFrontSensorReached),
-                        new InstantCommand(() -> intakePivotSubsystem.setPosition(0))
-                    ),
-                    intakeRollerSubsystem::getAmpSensor
-                ), // raise the elevator
-                () -> (elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP) && elevatorSubsystem.getExtensionPercent() > .5)
-        );
-
-
-        // roll behaviors
-        leftBumper.onTrue(
-            new ConditionalCommand(
-                new InstantCommand(),
-                new ConditionalCommand(
-                    new InstantCommand(),
-                    new WaitCommand(.05).andThen( 
-                        new ConditionalWaitCommand(intakePivotSubsystem::atPosition), // extend pivot
-                        new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
-                                .until(intakeRollerSubsystem::getFrontSensorReached)
-                    ),
-                    intakeRollerSubsystem::getAmpSensor
-                ), // raise the elevator
-                () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
-                    || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
-        );
+    //     // leftBumper toggles the trap position for the elevator
+    //     leftBumper.onTrue(
+    //         new ConditionalCommand(
+    //             new ElevatorToZeroCommand(elevatorSubsystem).alongWith(new InstantCommand(// lower the elevator
+    //                 () -> {
+    //                     intakePivotSubsystem.enablePowerLimit(true);
+    //                     intakePivotSubsystem.setPosition(0);
+    //                 }, intakePivotSubsystem)), // stow intake
+    //             new ConditionalCommand(
+    //                 new ElevatorToTrapCommand(elevatorSubsystem).andThen(
+    //                     new InstantCommand(() -> {
+    //                         intakePivotSubsystem.enablePowerLimit(false);
+    //                         intakePivotSubsystem.setPosition(.45);
+    //                     })
+    //                 ), 
+    //                 new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(// extend pivot
+    //                     new ConditionalWaitCommand(intakeRollerSubsystem::getFrontSensorReached),
+    //                     new InstantCommand(() -> intakePivotSubsystem.setPosition(0))
+    //                 ),
+    //                 intakeRollerSubsystem::getAmpSensor
+    //             ), // raise the elevator
+    //             () -> (elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
+    //                 || elevatorSubsystem.getTargetState() == ElevatorState.TRAP) && elevatorSubsystem.getExtensionPercent() > .5)
+    //     );
 
 
+    //     // roll behaviors
+    //     leftBumper.onTrue(
+    //         new ConditionalCommand(
+    //             new InstantCommand(),
+    //             new ConditionalCommand(
+    //                 new InstantCommand(),
+    //                 new WaitCommand(.05).andThen( 
+    //                     new ConditionalWaitCommand(intakePivotSubsystem::atPosition), // extend pivot
+    //                     new IntakeRollerOuttakeCommand(intakeRollerSubsystem, .17, .75) // run rollers to front sensor
+    //                             .until(intakeRollerSubsystem::getFrontSensorReached)
+    //                 ),
+    //                 intakeRollerSubsystem::getAmpSensor
+    //             ), // raise the elevator
+    //             () -> elevatorSubsystem.getTargetState() == ElevatorState.AMP // check if targeting a high pos
+    //                 || elevatorSubsystem.getTargetState() == ElevatorState.TRAP)
+    //     );
 
-        // aButton runs the intake sequence
-        aButton.onTrue(
-            Commands.runOnce(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem).alongWith(
-                new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)).andThen(
-                    new ConditionalCommand(
-                        new WaitCommand(.3).andThen(
-                            new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
-                                new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
-                            )
-                        ), 
+
+
+    //     // aButton runs the intake sequence
+    //     aButton.onTrue(
+    //         Commands.runOnce(() -> intakePivotSubsystem.setPosition(1), intakePivotSubsystem).alongWith(
+    //             new IntakeRollerAmpIntakeCommand(intakeRollerSubsystem)).andThen(
+    //                 new ConditionalCommand(
+    //                     new WaitCommand(.3).andThen(
+    //                         new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem).andThen(
+    //                             new InstantCommand(() -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem)
+    //                         )
+    //                     ), 
                         
-                        new InstantCommand(
-                            () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
-                        ), 
-                        aButton
-                    )
-                ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
+    //                     new InstantCommand(
+    //                         () -> intakePivotSubsystem.setPosition(0), intakePivotSubsystem
+    //                     ), 
+    //                     aButton
+    //                 )
+    //             ).until(() -> mechController.getLeftTriggerAxis() > .1) // cancel if try to outtake
             
-        );
+    //     );
 
-        // bButton stops the rollers
-        bButton.onTrue(Commands.idle(intakeRollerSubsystem).withTimeout(0));
+    //     // bButton stops the rollers
+    //     bButton.onTrue(Commands.idle(intakeRollerSubsystem).withTimeout(0));
 
-        // xButton toggles the intake being stowed
-        xButton.onTrue(new InstantCommand(() ->  {
-            double outPosition = 1;
-            double stowPosition = 0;
-            if (elevatorSubsystem.getExtensionPercent() > .5 
-                && elevatorSubsystem.getTargetState() == ElevatorState.TRAP) {
-                outPosition = .45; // push intake out
-            } else if (elevatorSubsystem.getExtensionPercent() > .5 
-                && elevatorSubsystem.getTargetState() == ElevatorState.AMP) {
-                stowPosition = .2;
-            }
+    //     // xButton toggles the intake being stowed
+    //     xButton.onTrue(new InstantCommand(() ->  {
+    //         double outPosition = 1;
+    //         double stowPosition = 0;
+    //         if (elevatorSubsystem.getExtensionPercent() > .5 
+    //             && elevatorSubsystem.getTargetState() == ElevatorState.TRAP) {
+    //             outPosition = .45; // push intake out
+    //         } else if (elevatorSubsystem.getExtensionPercent() > .5 
+    //             && elevatorSubsystem.getTargetState() == ElevatorState.AMP) {
+    //             stowPosition = .2;
+    //         }
 
-            intakePivotSubsystem.setPosition(
-                intakePivotSubsystem.getEncoderPosition() < (outPosition + stowPosition) / 2 
-                ? outPosition 
-                : stowPosition
-            );
+    //         intakePivotSubsystem.setPosition(
+    //             intakePivotSubsystem.getEncoderPosition() < (outPosition + stowPosition) / 2 
+    //             ? outPosition 
+    //             : stowPosition
+    //         );
 
-        }, intakePivotSubsystem));
+    //     }, intakePivotSubsystem));
 
-        // yButton runs the flywheels
+    //     // yButton runs the flywheels
 
-        yButton.onTrue(
-            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
-            ).unless(intakeRollerSubsystem::getRockwellSensorValue).andThen(
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
-            )
-        );
+    //     yButton.onTrue(
+    //         new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
+    //             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
+    //             new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
+    //         ).unless(intakeRollerSubsystem::getRockwellSensorValue).andThen(
+    //             new IntakePivotSetPositionCommand(intakePivotSubsystem, 0)
+    //         )
+    //     );
 
-        shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            if (yButton.getAsBoolean()) {
-                lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
-                // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterSpeed); // for tuning
+    //     shooterFlywheelSubsystem.setDefaultCommand(new InstantCommand(() -> {
+    //         if (yButton.getAsBoolean()) {
+    //             lightBarSubsystem.setLightBarStatus(LightBarStatus.SHOOTER_SPIN_UP, 2);
+    //             // shooterFlywheelSubsystem.setShooterMotorSpeed(shooterSpeed); // for tuning
                 
-                shooterFlywheelSubsystem.setShooterMotorSpeed();
+    //             shooterFlywheelSubsystem.setShooterMotorSpeed();
                 
-                shooterPivotSubsystem.setAutoAimBoolean(true);
-                if (shooterFlywheelSubsystem.atSpeed()) {
-                    mechController.setRumble(RumbleType.kBothRumble, .4);
-                } else {
-                    mechController.setRumble(RumbleType.kBothRumble, 0);
-                    if (lightBarSubsystem.getLightBarMechStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
-                        double top = shooterFlywheelSubsystem.getTopSpeed() 
-                            / shooterFlywheelSubsystem.getTargetTopRPS();
-                        double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
-                                    / shooterFlywheelSubsystem.getTargetBottomRPS();
-                        double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
+    //             shooterPivotSubsystem.setAutoAimBoolean(true);
+    //             if (shooterFlywheelSubsystem.atSpeed()) {
+    //                 mechController.setRumble(RumbleType.kBothRumble, .4);
+    //             } else {
+    //                 mechController.setRumble(RumbleType.kBothRumble, 0);
+    //                 if (lightBarSubsystem.getLightBarMechStatus() == LightBarStatus.SHOOTER_SPIN_UP) {
+    //                     double top = shooterFlywheelSubsystem.getTopSpeed() 
+    //                         / shooterFlywheelSubsystem.getTargetTopRPS();
+    //                     double bottom = shooterFlywheelSubsystem.getBottomSpeed() 
+    //                                 / shooterFlywheelSubsystem.getTargetBottomRPS();
+    //                     double avg = (top + bottom) / 2; // in case they're different, this just shows the average. 
 
-                        lightBarSubsystem.updateShooterSpeedPercentage(avg);
-                    }
+    //                     lightBarSubsystem.updateShooterSpeedPercentage(avg);
+    //                 }
                 
-                }
-            } else {
-                // if(fmsSubsystem.getMatchStatus() != MatchStatus.AUTON){
-                //     shooterPivotSubsystem.setAutoAimBoolean(false);
-                // }
-                if (mechController.getPOV() == 90) {
+    //             }
+    //         } else {
+    //             // if(fmsSubsystem.getMatchStatus() != MatchStatus.AUTON){
+    //             //     shooterPivotSubsystem.setAutoAimBoolean(false);
+    //             // }
+    //             if (mechController.getPOV() == 90) {
 
-                    if (shooterFlywheelSubsystem.atSpeed()) {
-                        mechController.setRumble(RumbleType.kBothRumble, .4);
-                    } else {
-                        mechController.setRumble(RumbleType.kBothRumble, 0);
-                    }
-                } else {
-                    shooterFlywheelSubsystem.stopShooter();
-                    mechController.setRumble(RumbleType.kBothRumble, 0);
-                }
-            }
-            if (shooterFlywheelSubsystem.atSpeed()) {
-                mechController.setRumble(RumbleType.kBothRumble, .4);
-            } else {
-                mechController.setRumble(RumbleType.kBothRumble, 0);
-            }
+    //                 if (shooterFlywheelSubsystem.atSpeed()) {
+    //                     mechController.setRumble(RumbleType.kBothRumble, .4);
+    //                 } else {
+    //                     mechController.setRumble(RumbleType.kBothRumble, 0);
+    //                 }
+    //             } else {
+    //                 shooterFlywheelSubsystem.stopShooter();
+    //                 mechController.setRumble(RumbleType.kBothRumble, 0);
+    //             }
+    //         }
+    //         if (shooterFlywheelSubsystem.atSpeed()) {
+    //             mechController.setRumble(RumbleType.kBothRumble, .4);
+    //         } else {
+    //             mechController.setRumble(RumbleType.kBothRumble, 0);
+    //         }
 
-            if (noteInBack 
-                && !intakeRollerSubsystem.getRockwellSensorValue()
-                && intakeRollerSubsystem.getIntegrationSpeed() > 0 
-            ) {
-                System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
-                                + " Angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(shooterPivotSubsystem.getPosition()))
-                                + " Speed: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getSplineSpeed()));
-            }
-            noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
+    //         if (noteInBack 
+    //             && !intakeRollerSubsystem.getRockwellSensorValue()
+    //             && intakeRollerSubsystem.getIntegrationSpeed() > 0 
+    //         ) {
+    //             System.out.println("Dist: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getShootingDistance())
+    //                             + " Angle: " + GRTUtil.twoDecimals(Units.radiansToDegrees(shooterPivotSubsystem.getPosition()))
+    //                             + " Speed: " + GRTUtil.twoDecimals(shooterFlywheelSubsystem.getSplineSpeed()));
+    //         }
+    //         noteInBack = intakeRollerSubsystem.getRockwellSensorValue();
 
-            // if we are at speed, rumble the mech controller
+    //         // if we are at speed, rumble the mech controller
            
-        }, shooterFlywheelSubsystem
-        ));
+    //     }, shooterFlywheelSubsystem
+    //     ));
 
-        dPadRight.onTrue(new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
-                new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
-                new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
-            ).unless(intakeRollerSubsystem::getRockwellSensorValue));
+    //     dPadRight.onTrue(new IntakePivotSetPositionCommand(intakePivotSubsystem, 1).andThen(
+    //             new IntakeRollerIntakeCommand(intakeRollerSubsystem, lightBarSubsystem),
+    //             new IntakePivotSetPositionCommand(intakePivotSubsystem, intakePosition)
+    //         ).unless(intakeRollerSubsystem::getRockwellSensorValue));
         
-        dPadRight.whileTrue(
-            new ConditionalWaitCommand(() -> intakePivotSubsystem.atPosition())
-            .andThen(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem,
-                                                       shooterPivotSubsystem, .65, mechController))
-        );
+    //     dPadRight.whileTrue(
+    //         new ConditionalWaitCommand(() -> intakePivotSubsystem.atPosition())
+    //         .andThen(new ShooterFlywheelShuttleCommand(swerveSubsystem, shooterFlywheelSubsystem, fmsSubsystem,
+    //                                                    shooterPivotSubsystem, .65, mechController))
+    //     );
         
-        // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
-        //     intakePivotSubsystem.setPosition(intakePosition);
-        // }, intakePivotSubsystem));
+    //     // intakePivotSubsystem.setDefaultCommand(new InstantCommand(() -> {
+    //     //     intakePosition = MathUtil.clamp(intakePosition, 0, 1);
+    //     //     intakePivotSubsystem.setPosition(intakePosition);
+    //     // }, intakePivotSubsystem));
 
-        // The triggers intake/outtake the rollers
-        intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
+    //     // The triggers intake/outtake the rollers
+    //     intakeRollerSubsystem.setDefaultCommand(new InstantCommand(() -> {
 
-            double power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
+    //         double power = .7 * (mechController.getRightTriggerAxis() - mechController.getLeftTriggerAxis());
 
-            intakeRollerSubsystem.setRollSpeeds(power, power);
-        }, intakeRollerSubsystem));
+    //         intakeRollerSubsystem.setRollSpeeds(power, power);
+    //     }, intakeRollerSubsystem));
 
-        // Offset buttons to correct the shooter if needed
-        offsetUpButton.onTrue(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(3)))
-        );
-        offsetUpButton.onFalse(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
-        );
+    //     // Offset buttons to correct the shooter if needed
+    //     offsetUpButton.onTrue(new InstantCommand(
+    //         () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(3)))
+    //     );
+    //     offsetUpButton.onFalse(new InstantCommand(
+    //         () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
+    //     );
 
-        offsetDownButton.onTrue(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-3)))
-        );
-        offsetDownButton.onFalse(new InstantCommand(
-            () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
-        ); 
+    //     offsetDownButton.onTrue(new InstantCommand(
+    //         () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(-3)))
+    //     );
+    //     offsetDownButton.onFalse(new InstantCommand(
+    //         () -> shooterPivotSubsystem.setAngleOffset(Units.degreesToRadians(0)))
+    //     ); 
 
-    }
+    // }
 
-    /**
-     * Returns the autonomous command.
-     *
-     * @return The selected autonomous command.
-     */
-    public Command getAutonomousCommand() {
-        return AutoBuilder.buildAuto(autonValue).alongWith(
-            new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
-            new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true)),
-            new IntakePivotSetPositionCommand(intakePivotSubsystem, 1),
-            new ClimbLowerCommand(climbSubsystem)
-        );
-    }
+    // /**
+    //  * Returns the autonomous command.
+    //  *
+    //  * @return The selected autonomous command.
+    // public Command getAutonomousCommand() {
+    //     return AutoBuilder.buildAuto(autonValue).alongWith(
+    //         new ShooterFlywheelReadyCommand(shooterFlywheelSubsystem, lightBarSubsystem),
+    //         new InstantCommand(() -> shooterPivotSubsystem.setAutoAimBoolean(true)),
+    //         new IntakePivotSetPositionCommand(intakePivotSubsystem, 1),
+    //         new ClimbLowerCommand(climbSubsystem)
+    //     );
+    // }
 }

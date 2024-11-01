@@ -126,7 +126,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         //field
         autoAim = true;
 
-        rotationPIDController.setReference(Units.degreesToRadians(18), ControlType.kPosition);
+        rotationPIDController.setReference(Units.degreesToRadians(58), ControlType.kPosition);
         
         ntInstance = NetworkTableInstance.getDefault();
         motorsTable = ntInstance.getTable("Motors");
@@ -142,7 +142,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     /** Sets Angle of the pivot.*/
     public void setAngle(double angle) { 
-        rotationPIDController.setReference(angle + angleOffset, CANSparkMax.ControlType.kPosition);
+        rotationPIDController.setReference(Units.degreesToRadians(58), ControlType.kPosition); // originally angle + angleOffset, CANSparkMax.ControlType.kPosition
        
     }
 

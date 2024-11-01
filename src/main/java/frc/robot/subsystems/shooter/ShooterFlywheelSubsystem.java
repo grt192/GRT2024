@@ -126,8 +126,8 @@ public class ShooterFlywheelSubsystem extends SubsystemBase {
 
     /** Sets shooting motor speed.  */
     public void setShooterMotorSpeed(double topSpeed, double bottomSpeed) {
-        targetTopRPS = ShooterConstants.MAX_FLYWHEEL_RPS * topSpeed;
-        targetBottomRPS = ShooterConstants.MAX_FLYWHEEL_RPS * bottomSpeed;
+        targetTopRPS = 60;
+        targetBottomRPS = 60; // hard code speed
 
         shooterMotorTop.setControl(request.withVelocity(targetTopRPS));
         shooterMotorBottom.setControl(request.withVelocity(targetBottomRPS));
